@@ -1,0 +1,644 @@
+[
+ {
+  "name": "Absolute",
+  "mode": "keyword",
+  "match": "Absolute",
+  "reminder": "Absolute — This card can only be played or Arrive to the Field if its Mana Cost is paid."
+ },
+ {
+  "name": "Airborne",
+  "mode": "keyword",
+  "match": "Airborne",
+  "reminder": "Airborne — This Character can only be blocked by other Characters with Airborne."
+ },
+ {
+  "name": "Amalgam",
+  "mode": "keyword",
+  "match": "Amalgam",
+  "reminder": "Amalgam — When you play this card you may sacrifice any number of Field Cards that share a card Sub-Type with this card, if you do, subtract the sacrificed cards Mana Cost from this card's Mana Cost."
+ },
+ {
+  "name": "Amass",
+  "mode": "keyword",
+  "match": "Amass",
+  "reminder": "Amass (Parameter) — For each mana in this card’s Mana Cost you may Lock an Unlocked (Parameter) Field Card to pay for a mana in the cost of a matching color to that card’s own color or 1 colorless mana."
+ },
+ {
+  "name": "Amplify",
+  "mode": "keyword",
+  "match": "Amplify",
+  "reminder": "Amplify — When you play this card, you may pay (Cost) any number of times. If you do, (Effect) for each time you did."
+ },
+ {
+  "name": "Arrive",
+  "mode": "keyword",
+  "match": "Arrive",
+  "reminder": "Arrive — When this card is put on the Field, ..."
+ },
+ {
+  "name": "Barrier",
+  "mode": "keyword",
+  "match": "Barrier",
+  "reminder": "Barrier — This card can’t be targeted by cards or abilities you opponents control unless the controller of that card or ability pays (Cost)."
+ },
+ {
+  "name": "Barrier",
+  "mode": "keyword",
+  "match": "Barrier",
+  "reminder": "Barrier — This card can’t be targeted by cards or abilities you opponents control unless the controller of that card or ability (X)."
+ },
+ {
+  "name": "Barrier",
+  "mode": "keyword",
+  "match": "Barrier",
+  "reminder": "Barrier — This card can’t be targeted by cards or abilities you opponents control from (Parameter) sources."
+ },
+ {
+  "name": "Barrier",
+  "mode": "keyword",
+  "match": "Barrier",
+  "reminder": "Barrier — This card can’t be targeted by cards or abilities you opponents control."
+ },
+ {
+  "name": "Battlecry",
+  "mode": "keyword",
+  "match": "Battlecry",
+  "reminder": "Battlecry — Whenever this card attacks, ..."
+ },
+ {
+  "name": "Bloodlust",
+  "mode": "keyword",
+  "match": "Bloodlust",
+  "reminder": "Bloodlust — This Character attacks each Battle if able."
+ },
+ {
+  "name": "Coalesce",
+  "mode": "keyword",
+  "match": "Coalesce",
+  "reminder": "Coalesce — Whenever an Essence Arrives under your control, ..."
+ },
+ {
+  "name": "Decayed",
+  "mode": "keyword",
+  "match": "Decayed",
+  "reminder": "Decayed — Whenever any amount of damage is dealt to this card, its controller sacrifices it. Whenever this card attacks, its controller sacrifices it at the end of turn."
+ },
+ {
+  "name": "Demise",
+  "mode": "keyword",
+  "match": "Demise",
+  "reminder": "Demise — When this card is destroyed and put into the Grave, ..."
+ },
+ {
+  "name": "Depleted",
+  "mode": "keyword",
+  "match": "Depleted",
+  "reminder": "Depleted — This card cannot be Crystallized."
+ },
+ {
+  "name": "Desperation",
+  "mode": "keyword",
+  "match": "Desperation",
+  "reminder": "Desperation (X) — If your Life Total is equal to or less than (X)..."
+ },
+ {
+  "name": "Domain",
+  "mode": "keyword",
+  "match": "Domain",
+  "reminder": "Domain — If this card is your Lord you may have an additional Lord card as long as it's a (Parameter) card."
+ },
+ {
+  "name": "Elevate",
+  "mode": "keyword",
+  "match": "Elevate",
+  "reminder": "Elevate — You may pay any additional Elevate costs when you play this card. If you do, add the Elevate cost to the Mana Cost of the card until that card leaves the Stack. The additional Elevate modes resolve in order."
+ },
+ {
+  "name": "Dredge",
+  "mode": "keyword",
+  "match": "Dredge",
+  "reminder": "Dredge — You may Banish any number of cards from your Grave when you play this card or use this ability. Pay {1} for each card you Banish."
+ },
+ {
+  "name": "Dredge",
+  "mode": "keyword",
+  "match": "Dredge",
+  "reminder": "Dredge (Parameter) — You may Banish any number of (Parameter) cards from your Grave when you play this card or use this ability. Pay {1} for each card you Banish."
+ },
+ {
+  "name": "Envoy",
+  "mode": "keyword",
+  "match": "Envoy",
+  "reminder": "Envoy — When this card Arrives, Donate it. This card can't attack or block its owner or cards its owner controls."
+ },
+ {
+  "name": "Empower",
+  "mode": "keyword",
+  "match": "Empower",
+  "reminder": "Empower — Whenever you play a Spell, ..."
+ },
+ {
+  "name": "Enact",
+  "mode": "keyword",
+  "match": "Enact",
+  "reminder": "Enact — Whenever you play an Action, ..."
+ },
+ {
+  "name": "Firebreathing",
+  "mode": "keyword",
+  "match": "Firebreathing",
+  "reminder": "Firebreathing — {R}: This Character gains +1 Attack this turn."
+ },
+ {
+  "name": "Flux",
+  "mode": "keyword",
+  "match": "Flux",
+  "reminder": "Flux: (Cost) — If you pay the Flux cost, replace each instance of \"target\" with \"each\" on this card."
+ },
+ {
+  "name": "Fortify",
+  "mode": "keyword",
+  "match": "Fortify",
+  "reminder": "Fortify — {Y}: This Character gains +1 Health this turn."
+ },
+ {
+  "name": "Fury",
+  "mode": "keyword",
+  "match": "Fury",
+  "reminder": "Fury — This Character deals Battle damage before each other Character without Fury during the Battle Damage Phase."
+ },
+ {
+  "name": "Gouge",
+  "mode": "keyword",
+  "match": "Gouge",
+  "reminder": "Gouge (X) — Whenever this card deals damage to a player, that player Grinds (X) times that many cards."
+ },
+ {
+  "name": "Gouge",
+  "mode": "keyword",
+  "match": "Gouge",
+  "reminder": "Gouge — Whenever this card deals damage to a player, that player Grinds that many cards."
+ },
+ {
+  "name": "Guardian",
+  "mode": "keyword",
+  "match": "Guardian",
+  "reminder": "Guardian — This card can't attack."
+ },
+ {
+  "name": "Illusion",
+  "mode": "keyword",
+  "match": "Illusion",
+  "reminder": "Illusion — Whenever this card is successfully targeted by a card or ability its controller sacrifices it."
+ },
+ {
+  "name": "Immune",
+  "mode": "keyword",
+  "match": "Immune",
+  "reminder": "Immune — This card can't be dealt damage, targeted, blocked, or destroyed by (X) cards."
+ },
+ {
+  "name": "Intimidate",
+  "mode": "keyword",
+  "match": "Intimidate",
+  "reminder": "Intimidate — This card must be blocked by an additional Character."
+ },
+ {
+  "name": "Intimidate",
+  "mode": "keyword",
+  "match": "Intimidate",
+  "reminder": "Intimidate (X) — This card must be blocked by (X) additional Characters."
+ },
+ {
+  "name": "Invulnerable",
+  "mode": "keyword",
+  "match": "Invulnerable",
+  "reminder": "Invulnerable — This card cannot be destroyed due to damage or Non-Rendering effects."
+ },
+ {
+  "name": "Lethal",
+  "mode": "keyword",
+  "match": "Lethal",
+  "reminder": "Lethal — Whenever this card deals damage to a Character, destroy that Character."
+ },
+ {
+  "name": "Lucky",
+  "mode": "keyword",
+  "match": "Lucky",
+  "reminder": "Lucky (X) — Whenever this card would be destroyed, instead flip up to (X) coins. If you win a flip, don't destroy it, and remove all damage from it and stop flipping coins."
+ },
+ {
+  "name": "Lucky",
+  "mode": "keyword",
+  "match": "Lucky",
+  "reminder": "Lucky — Whenever this card would be destroyed, instead flip a coin. If you win the flip, don't destroy it, and remove all damage from it."
+ },
+ {
+  "name": "Mechanical",
+  "mode": "keyword",
+  "match": "Mechanical",
+  "reminder": "Mechanical (X) — If you control (X) or more Objects,..."
+ },
+ {
+  "name": "Mechanical",
+  "mode": "keyword",
+  "match": "Mechanical",
+  "reminder": "Mechanical (Parameter) (X) — If you control (X) or more (Paremeter) Objects,..."
+ },
+ {
+  "name": "Meditate",
+  "mode": "keyword",
+  "match": "Meditate",
+  "reminder": "Meditate — {B}: This Character gains +1 Arcane this turn."
+ },
+ {
+  "name": "Miracle",
+  "mode": "keyword",
+  "match": "Miracle",
+  "reminder": "Miracle: (Cost) — You may play this card for (Cost) if it’s the first card you’ve played this game."
+ },
+ {
+  "name": "Mutate",
+  "mode": "keyword",
+  "match": "Mutate",
+  "reminder": "Mutate — You rearrange the stats on target Character this turn. A specific Character can only be mutated once each turn."
+ },
+ {
+  "name": "Overwhelm",
+  "mode": "keyword",
+  "match": "Overwhelm",
+  "reminder": "Overwhelm — This card deals excess damage to the controller of the card it’s dealing damage to."
+ },
+ {
+  "name": "Prismatic",
+  "mode": "keyword",
+  "match": "Prismatic",
+  "reminder": "Prismatic — For each color of mana used to play this card, ..."
+ },
+ {
+  "name": "Puppeteer",
+  "mode": "keyword",
+  "match": "Puppeteer",
+  "reminder": "Puppeteer — If you don’t control a Construct or Illusion Character, create a locked copy of Puppet. If you do, ..."
+ },
+ {
+  "name": "Raid",
+  "mode": "keyword",
+  "match": "Raid",
+  "reminder": "Raid — Whenever this card deals Battle damage to a player, ..."
+ },
+ {
+  "name": "Seal",
+  "mode": "keyword",
+  "match": "Seal",
+  "reminder": "Seal — The target becomes Sealed."
+ },
+ {
+  "name": "Sealed",
+  "mode": "keyword",
+  "match": "Sealed",
+  "reminder": "Sealed — This card can’t activate abilities, have abilities trigger, attack, block, or Unlock."
+ },
+ {
+  "name": "Seance",
+  "mode": "keyword",
+  "match": "Seance",
+  "reminder": "Seance (X) — If you have (X) or more cards in your Grave,..."
+ },
+ {
+  "name": "Seance",
+  "mode": "keyword",
+  "match": "Seance",
+  "reminder": "Seance (Parameter) (X) — If you have (X) or more (Paremeter) cards in your Grave,..."
+ },
+ {
+  "name": "Shade",
+  "mode": "keyword",
+  "match": "Shade",
+  "reminder": "Shade — This card can't be blocked by or block other Characters unless they also have Shade and can't be targeted by cards or abilities (including your own)."
+ },
+ {
+  "name": "Snare",
+  "mode": "keyword",
+  "match": "Snare",
+  "reminder": "Snare — This Character may block Characters with Airborne."
+ },
+ {
+  "name": "Sovereign",
+  "mode": "keyword",
+  "match": "Sovereign",
+  "reminder": "Sovereign — If you have the greatest Life Total, ..."
+ },
+ {
+  "name": "Steadfast",
+  "mode": "keyword",
+  "match": "Steadfast",
+  "reminder": "Steadfast — This Character can block if it's Locked."
+ },
+ {
+  "name": "Sustain",
+  "mode": "keyword",
+  "match": "Sustain",
+  "reminder": "Sustain (X) — Whenever this card deals damage, you gain (X) times that much Life."
+ },
+ {
+  "name": "Sustain",
+  "mode": "keyword",
+  "match": "Sustain",
+  "reminder": "Sustain — Whenever this card deals damage, you gain that much Life."
+ },
+ {
+  "name": "Swift",
+  "mode": "keyword",
+  "match": "Swift",
+  "reminder": "Swift — This Character can attack and activate Lock abilities the turn it's played."
+ },
+ {
+  "name": "Taunt",
+  "mode": "keyword",
+  "match": "Taunt",
+  "reminder": "Taunt (X) — Whenever this Character attacks, it must be blocked at least (X) additional times if able."
+ },
+ {
+  "name": "Taunt",
+  "mode": "keyword",
+  "match": "Taunt",
+  "reminder": "Taunt — Whenever this Character attacks, it must be blocked if able."
+ },
+ {
+  "name": "Thaumaturge",
+  "mode": "keyword",
+  "match": "Thaumaturge",
+  "reminder": "Thaumaturge — This Character can only be blocked by Characters with Arcane, if this Character is blocked, compare each Character’s Arcane and destroy the one with less Arcane. If not, this Character deals Battle damage equal to its Arcane."
+ },
+ {
+  "name": "Toughened",
+  "mode": "keyword",
+  "match": "Toughened",
+  "reminder": "Toughened — Whenever this Character blocks, it deals Battle damage equal to its Health rather than any other stat."
+ },
+ {
+  "name": "Unblockable",
+  "mode": "keyword",
+  "match": "Unblockable",
+  "reminder": "Unblockable — This card can’t be blocked."
+ },
+ {
+  "name": "Unique",
+  "mode": "keyword",
+  "match": "Unique",
+  "reminder": "Unique — Decks may contain only one of this card."
+ },
+ {
+  "name": "Unlimited",
+  "mode": "keyword",
+  "match": "Unlimited",
+  "reminder": "Unlimited — Decks may contain any number of this card."
+ },
+ {
+  "name": "Volley",
+  "mode": "keyword",
+  "match": "Volley",
+  "reminder": "Volley (X) — This Character deals Battle damage (X) additional times during the Battle damage phase."
+ },
+ {
+  "name": "Volley",
+  "mode": "keyword",
+  "match": "Volley",
+  "reminder": "Volley — This Character deals Battle damage an additional time during the Battle damage phase."
+ },
+ {
+  "name": "Crystallize",
+  "mode": "keyterm",
+  "match": "Crystallize",
+  "reminder": "Crystallize — This card can only be Crystallized as (X)."
+ },
+ {
+  "name": "Delve",
+  "mode": "keyterm",
+  "match": "Delve",
+  "reminder": "Delve (X) — Look at the top (X) cards of your Deck, you may put any number of them in your Grave. Put the rest on top of your Deck in any order."
+ },
+ {
+  "name": "Delve",
+  "mode": "keyterm",
+  "match": "Delve",
+  "reminder": "Delve — Look at the top card of your Deck, you may put that card in your Grave."
+ },
+ {
+  "name": "Donate",
+  "mode": "keyterm",
+  "match": "Donate",
+  "reminder": "Donate (Parameter) — Target opponent gains control of a (Parameter) card you control."
+ },
+ {
+  "name": "Foreshadow",
+  "mode": "keyterm",
+  "match": "Foreshadow",
+  "reminder": "Foreshadow (X) — Look at the top (X) cards of target opponent’s Deck, you may put any number of them on the bottom of their Deck. Put the rest on top of their Deck in any order."
+ },
+ {
+  "name": "Foreshadow",
+  "mode": "keyterm",
+  "match": "Foreshadow",
+  "reminder": "Foreshadow — Look at the top card of target opponent’s Deck, you may put it on the bottom of their Deck."
+ },
+ {
+  "name": "Foretell",
+  "mode": "keyterm",
+  "match": "Foretell",
+  "reminder": "Foretell (X) — Look at the top (X) cards of your Deck, you may put any number of them on the bottom of your Deck. Put the rest on top of your Deck in any order."
+ },
+ {
+  "name": "Foretell",
+  "mode": "keyterm",
+  "match": "Foretell",
+  "reminder": "Foretell — Look at the top card of your Deck, you may put that card on the bottom of your Deck."
+ },
+ {
+  "name": "Grind",
+  "mode": "keyterm",
+  "match": "Grind",
+  "reminder": "Grind (X) — Remove the top (X) cards of your Deck and put them into your Grave."
+ },
+ {
+  "name": "Grind",
+  "mode": "keyterm",
+  "match": "Grind",
+  "reminder": "Grind — Remove the top card of your Deck and put it into your Grave."
+ },
+ {
+  "name": "Heal",
+  "mode": "keyterm",
+  "match": "Heal",
+  "reminder": "Heal — The next time this card would be destroyed or dealt damage this turn, instead don't. If it's in Battle, remove it from Battle and Lock it."
+ },
+ {
+  "name": "Ignite",
+  "mode": "keyterm",
+  "match": "Ignite",
+  "reminder": "Ignite (X) — Suspend the top (X) cards of your Deck. You may play them this turn. If you don’t, put them in your Grave."
+ },
+ {
+  "name": "Ignite",
+  "mode": "keyterm",
+  "match": "Ignite",
+  "reminder": "Ignite — Suspend the top card of your Deck. You may play it this turn. If you don’t, put it in your Grave."
+ },
+ {
+  "name": "Recall",
+  "mode": "keyterm",
+  "match": "Recall",
+  "reminder": "Recall — You may play this card from your Grave, then Banish it."
+ },
+ {
+  "name": "Recover",
+  "mode": "keyterm",
+  "match": "Recover",
+  "reminder": "Recover — Return target (Parameter) card from your Grave to your Hand."
+ },
+ {
+  "name": "Revive",
+  "mode": "keyterm",
+  "match": "Revive",
+  "reminder": "Revive — Return target (Parameter) card from your Grave to the Field."
+ },
+ {
+  "name": "Switch",
+  "mode": "keyterm",
+  "match": "Switch",
+  "reminder": "Switch a (Parameter) card from (Area) to (Area) — If a card is Switched to the Field it replaces the exsisting card."
+ },
+ {
+  "name": "Wish",
+  "mode": "keyterm",
+  "match": "Wish",
+  "reminder": "Wish — Move a (Parameter) card from your Wish Deck or Essence Deck and move it to (Area)."
+ },
+ {
+  "name": "Your Offset",
+  "mode": "keyterm",
+  "match": "Your Offset",
+  "reminder": "Your Offset — At the end of your turn, ..."
+ },
+ {
+  "name": "Each Offset",
+  "mode": "keyterm",
+  "match": "Each Offset",
+  "reminder": "Each Offset — At the end of each turn, ..."
+ },
+ {
+  "name": "Your Onset",
+  "mode": "keyterm",
+  "match": "Your Onset",
+  "reminder": "Your Onset — At the start of your turn, ..."
+ },
+ {
+  "name": "Each Onset",
+  "mode": "keyterm",
+  "match": "Each Onset",
+  "reminder": "Each Onset — At the start of each turn, ..."
+ },
+ {
+  "name": "Flip a Coin",
+  "mode": "dice",
+  "match": "Flip a Coin",
+  "reminder": "Flip a Coin to determine \"Heads or Tails\"."
+ },
+ {
+  "name": "flip a coin",
+  "mode": "dice",
+  "match": "flip a coin",
+  "reminder": "Flip a coin to determine \"Heads or Tails\"."
+ },
+ {
+  "name": "D4",
+  "mode": "dice",
+  "match": "D4",
+  "reminder": "Roll a 4-Sided Die to determine \"D4\"."
+ },
+ {
+  "name": "D6",
+  "mode": "dice",
+  "match": "D6",
+  "reminder": "Roll a 6-Sided Die to determine \"D6\"."
+ },
+ {
+  "name": "D8",
+  "mode": "dice",
+  "match": "D8",
+  "reminder": "Roll a 8-Sided Die to determine \"D8\"."
+ },
+ {
+  "name": "D10",
+  "mode": "dice",
+  "match": "D10",
+  "reminder": "Roll a 10-Sided Die to determine \"D10\"."
+ },
+ {
+  "name": "D12",
+  "mode": "dice",
+  "match": "D12",
+  "reminder": "Roll a 12-Sided Die to determine \"D12\"."
+ },
+ {
+  "name": "D20",
+  "mode": "dice",
+  "match": "D20",
+  "reminder": "Roll a 20-Sided Die to determine \"D20\"."
+ },
+ {
+  "name": "Color counter",
+  "mode": "counter",
+  "match": "Color counter",
+  "reminder": "Color counter — Color counters correspond to the colors of Conjure. Only existing colors may be chosen for Color counters (Red, Orange, Yellow, Green, Blue, Indigo, Violet). Color counters, on their own, don’t do anything innately."
+ },
+ {
+  "name": "Animate counter",
+  "mode": "counter",
+  "match": "Animate counter",
+  "reminder": "Animate counter - An Object or Ongoing card with an Animate counter on it is a Character in addition to its other types and has Attack and Health equal to its Mana Cost."
+ },
+ {
+  "name": "Shield counter",
+  "mode": "counter",
+  "match": "Shield counter",
+  "reminder": "Shield counter — If a Field card with a Shield counter would be destroyed or dealt damage, instead remove a Shield counter from that card and prevent that card from being destroyed or being dealt damage."
+ },
+ {
+  "name": "Impede counter",
+  "mode": "counter",
+  "match": "Impede counter",
+  "reminder": "Impede counter — If a Field Card with an Impede counter would Unlock, instead remove 1 Impede counter from that card and don’t Unlock it."
+ },
+ {
+  "name": "Seal counter",
+  "mode": "counter",
+  "match": "Seal counter",
+  "reminder": "Seal counter — Any Field Card with a Seal counter can’t activate abilities, have abilities trigger, attack, block, or Unlock. Each Onset the active player removes a Seal counter from each card they control."
+ },
+ {
+  "name": "Oblivion counter",
+  "mode": "counter",
+  "match": "Oblivion counter",
+  "reminder": "Oblivion counter - If a Field Card with an Oblivion counter would leave the Field, instead Banish it."
+ },
+ {
+  "name": "Wound counter",
+  "mode": "counter",
+  "match": "Wound counter",
+  "reminder": "Wound counter - As long as a player has a Wound counter they can’t gain Life. During each player’s Onset, that player takes damage equal to the number of Wound counters they have then removes 1 Wound counter."
+ },
+ {
+  "name": "+1 counter",
+  "mode": "counter",
+  "match": "+1 counter",
+  "reminder": "+1 counter — ..."
+ },
+ {
+  "name": "-1 counter",
+  "mode": "counter",
+  "match": "-1 counter",
+  "reminder": "-1 counter — ..."
+ }
+]
