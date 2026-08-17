@@ -2,13 +2,17 @@
  {
   "id": "Beginnings",
   "name": "Beginnings",
-  "cardCount": 1316,
-  "derived": true
+  "author": "Conjure UCG LLC",
+  "version": "1.0",
+  "description": "",
+  "cardCount": 1332
  },
  {
   "id": "Infinite",
   "name": "Infinite",
-  "cardCount": 269,
-  "derived": true
+  "author": "",
+  "version": "1.0",
+  "description": "",
+  "cardCount": 269
  }
 ]

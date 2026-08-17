@@ -1,11 +1,11 @@
 {
  "manifest": {
-  "name": "Conjure_Card_Catalog",
+  "name": "Conjure UCG",
   "format": 2,
   "cardCount": 1601,
   "keywordCount": 107,
   "artBase": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/",
-  "artFiles": 0,
+  "artFiles": 1830,
   "artEncoding": "webp q82, 1600px wide"
  },
  "cards": [
