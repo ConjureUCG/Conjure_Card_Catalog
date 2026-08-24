@@ -6,7 +6,7 @@
   "pinMode": "gradient",
   "tplDefaults": {
    "h": {
-    "fit": "contain",
+    "fit": "cover",
     "xf": {
      "z": 1,
      "x": 0,

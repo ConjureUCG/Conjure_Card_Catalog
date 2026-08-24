@@ -60539,7 +60539,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-03-29",
+   "lastUpdated": "2026-08-24",
    "variants": [
     {
      "id": "v1",
@@ -60549,7 +60549,8 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings"
+   "sagaId": "Beginnings",
+   "id": "cmt7u9lm7tz0x8"
   },
   {
    "name": "Abyssal Archives",
@@ -90642,13 +90643,41 @@
    "arcane": "6H",
    "ruleText": "Barrier — Grind 6\n Intimidate, Gouge 5, Lethal\n (Gouge — Whenever this card deals damage to a player, that player Grinds 5 times that many cards.)",
    "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_2013.webp",
-   "lastUpdated": "2026-06-13",
+   "lastUpdated": "2026-08-24",
    "art": "",
    "saga": "Beginnings",
    "designer": "Conjure UCG LLC 2026",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
-   "sagaId": "Beginnings"
+   "sagaId": "Beginnings",
+   "flavor": "",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "2"
+    },
+    {
+     "type": "health",
+     "value": "6"
+    },
+    {
+     "type": "arcane",
+     "value": "6H"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "fit": "contain",
+   "id": "cmt7u7uetlmhk5",
+   "artXf": {
+    "z": 1.99,
+    "x": 0,
+    "y": 30,
+    "r": 0,
+    "f": 1
+   }
   },
   {
    "name": "Northern Flame",
