@@ -90910,13 +90910,41 @@
    "arcane": "",
    "ruleText": "This card gains +1 Health for each Shield Armed to it.",
    "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_2085.webp",
-   "lastUpdated": "2026-06-13",
+   "lastUpdated": "2026-08-24",
    "art": "",
    "saga": "Beginnings",
    "designer": "Conjure UCG LLC 2026",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
-   "sagaId": "Beginnings"
+   "sagaId": "Beginnings",
+   "flavor": "",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "1"
+    },
+    {
+     "type": "health",
+     "value": "1"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "fit": "contain",
+   "id": "cmt7ua9zws8w0v",
+   "artXf": {
+    "z": 2.04,
+    "x": 0,
+    "y": 33,
+    "r": 0,
+    "f": 1
+   }
   },
   {
    "name": "Druid Ascendency",

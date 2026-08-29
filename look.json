@@ -30,25 +30,33 @@
   "align": [
    {
     "key": "character",
+    "kind": "super",
     "h": "left",
     "v": "top"
    },
    {
     "key": "essence",
+    "kind": "super",
     "h": "center",
     "v": "middle"
    },
    {
     "key": "object",
+    "kind": "super",
     "h": "center",
     "v": "top"
    },
    {
     "key": "action",
+    "kind": "super",
     "h": "center",
     "v": "middle"
    }
   ],
+  "alignBase": {
+   "h": "left",
+   "v": "top"
+  },
   "kwStyles": {},
   "pillsOn": true,
   "kwCustom": [],
