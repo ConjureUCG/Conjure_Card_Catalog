@@ -6219,7 +6219,7 @@
   {
    "name": "Fight Me!",
    "manaCost": "R/OR/O",
-   "cmc": "4",
+   "cmc": "2",
    "colors": [
     "red",
     "orange"
@@ -6391,7 +6391,7 @@
   {
    "name": "Polychromatic Paradox",
    "manaCost": "Y/B1",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "yellow",
     "blue"
@@ -6503,7 +6503,7 @@
   {
    "name": "Pick Clean",
    "manaCost": "G/V",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "green",
     "violet"
@@ -7004,7 +7004,7 @@
   {
    "name": "Mark of the Beast",
    "manaCost": "R/GI",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "red",
     "green",
@@ -8766,7 +8766,7 @@
   {
    "name": "Double Thick Plating",
    "manaCost": "O/Y",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "orange",
     "yellow",
@@ -8989,7 +8989,7 @@
   {
    "name": "X Marks the Spot",
    "manaCost": "V/OV/O",
-   "cmc": "4",
+   "cmc": "2",
    "colors": [
     "orange",
     "violet"
@@ -9376,7 +9376,7 @@
   {
    "name": "Mournful Attendant",
    "manaCost": "V/Y",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "yellow",
     "violet"
@@ -10236,7 +10236,7 @@
   {
    "name": "Trina, Spell Paw",
    "manaCost": "B/RB/R1",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "red",
     "blue"
@@ -11040,7 +11040,7 @@
   {
    "name": "Felix the Lucky",
    "manaCost": "R/YR/YR/YR/Y",
-   "cmc": "8",
+   "cmc": "4",
    "colors": [
     "red",
     "yellow"
@@ -12965,7 +12965,7 @@
   {
    "name": "Rallar, Calibration Supreme",
    "manaCost": "B/RO/Y1",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "red",
     "orange",
@@ -13376,7 +13376,7 @@
   {
    "name": "Outlive",
    "manaCost": "RV/Y1",
-   "cmc": "4",
+   "cmc": "3",
    "colors": [
     "red",
     "yellow",
@@ -13623,7 +13623,7 @@
   {
    "name": "Beginner’s Thopter",
    "manaCost": "Y/B",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "yellow",
     "blue",
@@ -18397,7 +18397,7 @@
   {
    "name": "Beginner’s Masquerade",
    "manaCost": "B/I",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "blue",
     "indigo"
@@ -22437,7 +22437,7 @@
   {
    "name": "Soul Sorcery",
    "manaCost": "B/RV",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "red",
     "blue",
@@ -23890,7 +23890,7 @@
   {
    "name": "Whisper of Power",
    "manaCost": "V/Y",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "yellow",
     "violet"
@@ -24221,7 +24221,7 @@
   {
    "name": "Spell Craft",
    "manaCost": "B/RB/R2",
-   "cmc": "6",
+   "cmc": "4",
    "colors": [
     "red",
     "blue"
@@ -25074,7 +25074,7 @@
   {
    "name": "Supply Termination",
    "manaCost": "R/O1",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "red",
     "orange"
@@ -26316,7 +26316,7 @@
   {
    "name": "Silversoul’s Blessing",
    "manaCost": "O/GO/GY",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "orange",
     "yellow",
@@ -26493,7 +26493,7 @@
   {
    "name": "Slippery",
    "manaCost": "B/V",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "blue",
     "violet"
@@ -26885,7 +26885,7 @@
   {
    "name": "Scaled Protection",
    "manaCost": "Y/G",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "yellow",
     "green"
@@ -27165,7 +27165,7 @@
   {
    "name": "Lunar Matron",
    "manaCost": "B/I",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "blue",
     "indigo"
@@ -27329,7 +27329,7 @@
   {
    "name": "Silversoul’s Boon",
    "manaCost": "RO/GO/G",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "red",
     "orange",
@@ -29942,7 +29942,7 @@
   {
    "name": "Play a Tune",
    "manaCost": "Y/G",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "yellow",
     "green"
@@ -31137,7 +31137,7 @@
   {
    "name": "Cerebral Phantom",
    "manaCost": "B/IB/IB/II2",
-   "cmc": "9",
+   "cmc": "6",
    "colors": [
     "blue",
     "indigo"
@@ -32268,7 +32268,7 @@
   {
    "name": "Mind Dominus",
    "manaCost": "B/IB/IB/I3",
-   "cmc": "9",
+   "cmc": "6",
    "colors": [
     "blue",
     "indigo"
@@ -32441,7 +32441,7 @@
   {
    "name": "Primus’ Boon",
    "manaCost": "RO/GO/GX",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "red",
     "orange",
@@ -32729,7 +32729,7 @@
   {
    "name": "Runic Jewler",
    "manaCost": "OY/B",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "orange",
     "yellow",
@@ -33069,7 +33069,7 @@
   {
    "name": "Tactical Retreat",
    "manaCost": "O/Y",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "orange",
     "yellow"
@@ -34324,7 +34324,7 @@
   {
    "name": "Gift of Land and Sea",
    "manaCost": "O/GO/GBB1",
-   "cmc": "7",
+   "cmc": "5",
    "colors": [
     "orange",
     "green",
@@ -36134,7 +36134,7 @@
   {
    "name": "Wheel Treads",
    "manaCost": "R/O",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "red",
     "orange",
@@ -36835,7 +36835,7 @@
   {
    "name": "Field Testing",
    "manaCost": "B/RB/R1",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "red",
     "blue"
@@ -38574,7 +38574,7 @@
   {
    "name": "Vanity’s Volition",
    "manaCost": "B/V/RR",
-   "cmc": "4",
+   "cmc": "2",
    "colors": [
     "red",
     "blue",
@@ -39266,7 +39266,7 @@
   {
    "name": "Circle Guardsman",
    "manaCost": "R/OY",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "red",
     "orange",
@@ -39500,7 +39500,7 @@
   {
    "name": "Familial Bond",
    "manaCost": "O/G",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "orange",
     "green"
@@ -40138,7 +40138,7 @@
   {
    "name": "Malefactor Consort",
    "manaCost": "I/VR3",
-   "cmc": "6",
+   "cmc": "5",
    "colors": [
     "red",
     "indigo",
@@ -40484,7 +40484,7 @@
   {
    "name": "Old Poet",
    "manaCost": "BV/Y1",
-   "cmc": "4",
+   "cmc": "3",
    "colors": [
     "yellow",
     "blue",
@@ -42465,7 +42465,7 @@
   {
    "name": "Archon of Mana",
    "manaCost": "B/RGG2",
-   "cmc": "6",
+   "cmc": "5",
    "colors": [
     "red",
     "green",
@@ -42577,7 +42577,7 @@
   {
    "name": "Basic Alchemy",
    "manaCost": "B/RB/R",
-   "cmc": "4",
+   "cmc": "2",
    "colors": [
     "red",
     "blue"
@@ -42803,7 +42803,7 @@
   {
    "name": "Caller of Light",
    "manaCost": "YY/G",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "yellow",
     "green"
@@ -42858,7 +42858,7 @@
   {
    "name": "Catch and Release",
    "manaCost": "OO/G1",
-   "cmc": "4",
+   "cmc": "3",
    "colors": [
     "orange",
     "green"
@@ -43043,7 +43043,7 @@
   {
    "name": "Compound Extractions",
    "manaCost": "R/GG/BG",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "red",
     "green",
@@ -43101,7 +43101,7 @@
   {
    "name": "Defensive Stance",
    "manaCost": "O/YO/G",
-   "cmc": "4",
+   "cmc": "2",
    "colors": [
     "orange",
     "yellow",
@@ -43329,7 +43329,7 @@
   {
    "name": "Dusk Keeper",
    "manaCost": "V/YV/Y2",
-   "cmc": "6",
+   "cmc": "4",
    "colors": [
     "yellow",
     "violet"
@@ -44009,7 +44009,7 @@
   {
    "name": "Glass Animal",
    "manaCost": "B/IG",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "green",
     "blue",
@@ -44403,7 +44403,7 @@
   {
    "name": "Hidden in Aether",
    "manaCost": "Y/GB",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "yellow",
     "green",
@@ -45187,7 +45187,7 @@
   {
    "name": "Lyre of Plenty",
    "manaCost": "Y/G/B",
-   "cmc": "3",
+   "cmc": "1",
    "colors": [
     "yellow",
     "green",
@@ -45419,7 +45419,7 @@
   {
    "name": "Mark of Death",
    "manaCost": "V/R",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "red",
     "violet"
@@ -45764,7 +45764,7 @@
   {
    "name": "Principle Arcane",
    "manaCost": "BY/BB/R",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "red",
     "yellow",
@@ -45821,7 +45821,7 @@
   {
    "name": "Quick Reflexes",
    "manaCost": "O/G",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "orange",
     "green"
@@ -46281,7 +46281,7 @@
   {
    "name": "Shield Garrison",
    "manaCost": "O/YO/Y2",
-   "cmc": "6",
+   "cmc": "4",
    "colors": [
     "orange",
     "yellow"
@@ -46336,7 +46336,7 @@
   {
    "name": "Shrunked Head",
    "manaCost": "I/VB/I1",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "blue",
     "indigo",
@@ -46506,7 +46506,7 @@
   {
    "name": "Spectra Branch",
    "manaCost": "Y/B",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "yellow",
     "blue"
@@ -46730,7 +46730,7 @@
   {
    "name": "Steeled Resolve",
    "manaCost": "OO/YY",
-   "cmc": "4",
+   "cmc": "3",
    "colors": [
     "orange",
     "yellow"
@@ -47462,7 +47462,7 @@
   {
    "name": "Vandalist",
    "manaCost": "R/G",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "red",
     "green"
@@ -49443,7 +49443,7 @@
   {
    "name": "Basalt Hammer",
    "manaCost": "O/G",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "orange",
     "green",
@@ -50857,7 +50857,7 @@
   {
    "name": "Condensal",
    "manaCost": "Y/BY/B1",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "yellow",
     "blue"
@@ -54372,7 +54372,7 @@
   {
    "name": "Kite Strewn Wings",
    "manaCost": "Y/BY/B1",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "yellow",
     "blue",
@@ -54824,7 +54824,7 @@
   {
    "name": "Lucky Coin",
    "manaCost": "R/YR/Y1",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "red",
     "yellow",
@@ -57061,7 +57061,7 @@
   {
    "name": "Reliquary Mausoleum",
    "manaCost": "V/YV/YO/GO/G1",
-   "cmc": "9",
+   "cmc": "5",
    "colors": [
     "orange",
     "yellow",
@@ -58247,7 +58247,7 @@
   {
    "name": "Spell Core Amplification",
    "manaCost": "O/G",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "orange",
     "green"
@@ -60610,7 +60610,7 @@
   {
    "name": "Aim for the Throne",
    "manaCost": "V/RV/R2",
-   "cmc": "6",
+   "cmc": "4",
    "colors": [
     "red",
     "violet"
@@ -61069,7 +61069,7 @@
   {
    "name": "Cloud Glider",
    "manaCost": "GY/B1",
-   "cmc": "4",
+   "cmc": "3",
    "colors": [
     "yellow",
     "green",
@@ -61347,7 +61347,7 @@
   {
    "name": "Dearg Ravanger",
    "manaCost": "V/RV/R2",
-   "cmc": "6",
+   "cmc": "4",
    "colors": [
     "red",
     "violet"
@@ -61515,7 +61515,7 @@
   {
    "name": "Devourer of Thought",
    "manaCost": "I/VI/V",
-   "cmc": "4",
+   "cmc": "2",
    "colors": [
     "indigo",
     "violet"
@@ -61740,7 +61740,7 @@
   {
    "name": "Equalize the Flesh",
    "manaCost": "Y/IY/I2",
-   "cmc": "6",
+   "cmc": "4",
    "colors": [
     "yellow",
     "indigo"
@@ -62526,7 +62526,7 @@
   {
    "name": "Lonesome Infiltrator",
    "manaCost": "B/VB/V1",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "blue",
     "violet"
@@ -63086,7 +63086,7 @@
   {
    "name": "Nothing is Absolute",
    "manaCost": "YI/V",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "yellow",
     "indigo",
@@ -63198,7 +63198,7 @@
   {
    "name": "Obscura Dusk Phage",
    "manaCost": "B/IB/VI/V",
-   "cmc": "6",
+   "cmc": "3",
    "colors": [
     "blue",
     "indigo",
@@ -64323,7 +64323,7 @@
   {
    "name": "Soil Sower Worm",
    "manaCost": "G/I",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "green",
     "indigo"
@@ -64379,7 +64379,7 @@
   {
    "name": "Terrapin Armet",
    "manaCost": "O/GO/GY",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "orange",
     "yellow",
@@ -64721,7 +64721,7 @@
   {
    "name": "Turmoil Elephanite",
    "manaCost": "I/VI/VI/V2",
-   "cmc": "8",
+   "cmc": "5",
    "colors": [
     "indigo",
     "violet"
@@ -65004,7 +65004,7 @@
   {
    "name": "Vesper Weaver",
    "manaCost": "BI/V",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "blue",
     "indigo",
@@ -65285,7 +65285,7 @@
   {
    "name": "Cloak of Old",
    "manaCost": "O/GO/G",
-   "cmc": "4",
+   "cmc": "2",
    "colors": [
     "orange",
     "green",
@@ -65345,7 +65345,7 @@
   {
    "name": "Coastal Egg Patch",
    "manaCost": "B/I",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "blue",
     "indigo"
@@ -65573,7 +65573,7 @@
   {
    "name": "Fey Deception",
    "manaCost": "Y/IG",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "yellow",
     "green",
@@ -66102,7 +66102,7 @@
   {
    "name": "The Pillar of Autumn",
    "manaCost": "O/GO/YY/G",
-   "cmc": "6",
+   "cmc": "3",
    "colors": [
     "orange",
     "yellow",
@@ -66169,7 +66169,7 @@
   {
    "name": "Reconstituted Barrier",
    "manaCost": "Y/B/I",
-   "cmc": "3",
+   "cmc": "1",
    "colors": [
     "yellow",
     "blue",
@@ -66455,7 +66455,7 @@
   {
    "name": "Storm Dojo",
    "manaCost": "Y/BG1",
-   "cmc": "4",
+   "cmc": "3",
    "colors": [
     "yellow",
     "green",
@@ -66796,7 +66796,7 @@
   {
    "name": "Assassin’s Determination",
    "manaCost": "B/VI/R1",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "red",
     "blue",
@@ -67087,7 +67087,7 @@
   {
    "name": "Check Point",
    "manaCost": "O/YO/Y1",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "orange",
     "yellow"
@@ -67306,7 +67306,7 @@
   {
    "name": "Corpseblossom’s Baron",
    "manaCost": "GGI/VI/V2",
-   "cmc": "8",
+   "cmc": "6",
    "colors": [
     "green",
     "indigo",
@@ -68574,7 +68574,7 @@
   {
    "name": "Memorial Performance",
    "manaCost": "V/Y2",
-   "cmc": "4",
+   "cmc": "3",
    "colors": [
     "yellow",
     "violet"
@@ -68861,7 +68861,7 @@
   {
    "name": "Null and Void",
    "manaCost": "Y/B/II1",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "yellow",
     "blue",
@@ -69035,7 +69035,7 @@
   {
    "name": "Outpost Rampart",
    "manaCost": "O/YO/Y2",
-   "cmc": "6",
+   "cmc": "4",
    "colors": [
     "orange",
     "yellow",
@@ -69094,7 +69094,7 @@
   {
    "name": "Power Overwhelming",
    "manaCost": "R/O/GR/O/G",
-   "cmc": "6",
+   "cmc": "2",
    "colors": [
     "red",
     "orange",
@@ -69151,7 +69151,7 @@
   {
    "name": "Protective Weave",
    "manaCost": "Y/B",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "yellow",
     "blue"
@@ -69323,7 +69323,7 @@
   {
    "name": "Rough Crowd",
    "manaCost": "I/V",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "indigo",
     "violet"
@@ -69435,7 +69435,7 @@
   {
    "name": "Seasoned Veteran",
    "manaCost": "OO/G5",
-   "cmc": "8",
+   "cmc": "7",
    "colors": [
     "orange",
     "green"
@@ -69660,7 +69660,7 @@
   {
    "name": "Soul Pick",
    "manaCost": "V/YB/I",
-   "cmc": "4",
+   "cmc": "2",
    "colors": [
     "yellow",
     "blue",
@@ -70072,7 +70072,7 @@
   {
    "name": "Territory Pathfinder",
    "manaCost": "Y/GO/G2",
-   "cmc": "6",
+   "cmc": "4",
    "colors": [
     "orange",
     "yellow",
@@ -70130,7 +70130,7 @@
   {
    "name": "Trade Route",
    "manaCost": "O/Y",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "orange",
     "yellow"
@@ -70240,7 +70240,7 @@
   {
    "name": "Vermillion Visionary",
    "manaCost": "B/RB/R2",
-   "cmc": "6",
+   "cmc": "4",
    "colors": [
     "red",
     "blue"
@@ -70358,7 +70358,7 @@
   {
    "name": "Whsiper of Wings",
    "manaCost": "B/I3",
-   "cmc": "5",
+   "cmc": "4",
    "colors": [
     "blue",
     "indigo"
@@ -71091,7 +71091,7 @@
   {
    "name": "Choke Point Bullwark",
    "manaCost": "O/YO/Y3",
-   "cmc": "7",
+   "cmc": "5",
    "colors": [
     "orange",
     "yellow",
@@ -71375,7 +71375,7 @@
   {
    "name": "Cryptic Consumer",
    "manaCost": "YI/V",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "yellow",
     "indigo",
@@ -71488,7 +71488,7 @@
   {
    "name": "Delusion Animus",
    "manaCost": "B/I/V1",
-   "cmc": "4",
+   "cmc": "2",
    "colors": [
     "blue",
     "indigo",
@@ -72852,7 +72852,7 @@
   {
    "name": "Loaded Dice",
    "manaCost": "R/Y",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "red",
     "yellow"
@@ -72908,7 +72908,7 @@
   {
    "name": "Lookout",
    "manaCost": "O/GO/G1",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "orange",
     "green"
@@ -73189,7 +73189,7 @@
   {
    "name": "Mind Drinker",
    "manaCost": "B/IV1",
-   "cmc": "4",
+   "cmc": "3",
    "colors": [
     "blue",
     "indigo",
@@ -74161,7 +74161,7 @@
   {
    "name": "Serene Casting",
    "manaCost": "R/YB",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "red",
     "yellow",
@@ -74561,7 +74561,7 @@
   {
    "name": "Solemn Wind Born",
    "manaCost": "O/GB",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "orange",
     "green",
@@ -75774,7 +75774,7 @@
   {
    "name": "Traitor’s Reward",
    "manaCost": "V/R1",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "red",
     "violet"
@@ -75837,7 +75837,7 @@
   {
    "name": "Will to War",
    "manaCost": "RRO/G1",
-   "cmc": "5",
+   "cmc": "4",
    "colors": [
     "red",
     "orange",
@@ -76133,7 +76133,7 @@
   {
    "name": "A Hero Never Dies",
    "manaCost": "O/YY1",
-   "cmc": "4",
+   "cmc": "3",
    "colors": [
     "orange",
     "yellow"
@@ -76363,7 +76363,7 @@
   {
    "name": "Alteration Spellbook",
    "manaCost": "Y/B/I",
-   "cmc": "3",
+   "cmc": "1",
    "colors": [
     "yellow",
     "blue",
@@ -77107,7 +77107,7 @@
   {
    "name": "Arcanic Spectrum",
    "manaCost": "Y/B",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "yellow",
     "blue"
@@ -77500,7 +77500,7 @@
   {
    "name": "Assassin’s Guidebook",
    "manaCost": "V/R",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "red",
     "violet",
@@ -77614,7 +77614,7 @@
   {
    "name": "Aureir Cast Sentinel",
    "manaCost": "R/OO/Y",
-   "cmc": "4",
+   "cmc": "2",
    "colors": [
     "red",
     "orange",
@@ -78588,7 +78588,7 @@
   {
    "name": "Chronicler of Might",
    "manaCost": "O/GO/G1",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "orange",
     "green"
@@ -79723,7 +79723,7 @@
   {
    "name": "Dusk Drinker’s Devoted",
    "manaCost": "B/IV2",
-   "cmc": "5",
+   "cmc": "4",
    "colors": [
     "blue",
     "indigo",
@@ -79897,7 +79897,7 @@
   {
    "name": "Enchantment Spellbook",
    "manaCost": "Y/I",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "yellow",
     "indigo",
@@ -80635,7 +80635,7 @@
   {
    "name": "Guardkeep’s Guidebook",
    "manaCost": "O/Y",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "orange",
     "yellow",
@@ -81253,7 +81253,7 @@
   {
    "name": "Leopard Seal",
    "manaCost": "B/II/V",
-   "cmc": "4",
+   "cmc": "2",
    "colors": [
     "blue",
     "indigo",
@@ -82387,7 +82387,7 @@
   {
    "name": "Reckoning Axe",
    "manaCost": "RR/YY",
-   "cmc": "4",
+   "cmc": "3",
    "colors": [
     "red",
     "yellow"
@@ -82732,7 +82732,7 @@
   {
    "name": "Skymarch Crest",
    "manaCost": "R/OO/Y",
-   "cmc": "4",
+   "cmc": "2",
    "colors": [
     "red",
     "orange",
@@ -83241,7 +83241,7 @@
   {
    "name": "Survialist’s Guidebook",
    "manaCost": "O/Y/G",
-   "cmc": "3",
+   "cmc": "1",
    "colors": [
     "orange",
     "yellow",
@@ -83301,7 +83301,7 @@
   {
    "name": "Thaumic Spellbook",
    "manaCost": "B/R",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "red",
     "blue",
@@ -83359,7 +83359,7 @@
   {
    "name": "Thaumic Whispers",
    "manaCost": "GG/BB1",
-   "cmc": "5",
+   "cmc": "4",
    "colors": [
     "green",
     "blue"
@@ -83839,7 +83839,7 @@
   {
    "name": "Trapper’s Guidebook",
    "manaCost": "V/R/O",
-   "cmc": "3",
+   "cmc": "1",
    "colors": [
     "red",
     "orange",
@@ -85597,7 +85597,7 @@
   {
    "name": "Cross Range Maneuver",
    "manaCost": "OO/G",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "orange",
     "green"
@@ -85820,7 +85820,7 @@
   {
    "name": "Destructive Expertise",
    "manaCost": "V/R1",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "red",
     "violet"
@@ -85935,7 +85935,7 @@
   {
    "name": "Diminishing Returns",
    "manaCost": "O/YY",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "orange",
     "yellow"
@@ -86328,7 +86328,7 @@
   {
    "name": "Fascination",
    "manaCost": "Y/B",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "yellow",
     "blue"
@@ -86386,7 +86386,7 @@
   {
    "name": "Feel the Weight",
    "manaCost": "R/YR/Y",
-   "cmc": "4",
+   "cmc": "2",
    "colors": [
     "red",
     "yellow"
@@ -86724,7 +86724,7 @@
   {
    "name": "Giant of Straight's Pass",
    "manaCost": "RR/GR/GR/GG2",
-   "cmc": "10",
+   "cmc": "7",
    "colors": [
     "red",
     "green"
@@ -86949,7 +86949,7 @@
   {
    "name": "Gold Sun",
    "manaCost": "O/GY",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "orange",
     "yellow",
@@ -87628,7 +87628,7 @@
   {
    "name": "Jade Bagpipes",
    "manaCost": "GG/B1",
-   "cmc": "4",
+   "cmc": "3",
    "colors": [
     "green",
     "blue"
@@ -87799,7 +87799,7 @@
   {
    "name": "Knight's Resolution",
    "manaCost": "R/O",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "red",
     "orange"
@@ -87855,7 +87855,7 @@
   {
    "name": "Lament Sonance",
    "manaCost": "YYY/III1",
-   "cmc": "7",
+   "cmc": "6",
    "colors": [
     "yellow",
     "indigo"
@@ -88021,7 +88021,7 @@
   {
    "name": "Loom Weaver's Apron",
    "manaCost": "OY/B",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "orange",
     "yellow",
@@ -88080,7 +88080,7 @@
   {
    "name": "Lowland Maneuver",
    "manaCost": "OO/Y",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "orange",
     "yellow"
@@ -88306,7 +88306,7 @@
   {
    "name": "Mountain Maneuver",
    "manaCost": "OR/O",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "red",
     "orange"
@@ -88865,7 +88865,7 @@
   {
    "name": "Rune Carved Stave",
    "manaCost": "Y/BB",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "yellow",
     "blue",
@@ -89093,7 +89093,7 @@
   {
    "name": "Scripture Speaker",
    "manaCost": "Y/B/IBI",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "yellow",
     "blue",
@@ -89264,7 +89264,7 @@
   {
    "name": "Silversoul’s Plea",
    "manaCost": "RO/G",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "red",
     "orange",
@@ -89772,7 +89772,7 @@
   {
    "name": "Suspicious Cheese",
    "manaCost": "G/V",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "green",
     "violet"
@@ -89939,7 +89939,7 @@
   {
    "name": "Thaumic Expertise",
    "manaCost": "Y/B1",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "yellow",
     "blue"
