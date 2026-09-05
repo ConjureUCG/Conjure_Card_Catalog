@@ -51,6 +51,42 @@
     "kind": "super",
     "h": "center",
     "v": "middle"
+   },
+   {
+    "key": "Core",
+    "kind": "super",
+    "h": "default",
+    "v": "default"
+   },
+   {
+    "key": "Dual",
+    "kind": "super",
+    "h": "default",
+    "v": "default"
+   },
+   {
+    "key": "Mythic",
+    "kind": "super",
+    "h": "default",
+    "v": "default"
+   },
+   {
+    "key": "Ongoing",
+    "kind": "super",
+    "h": "default",
+    "v": "default"
+   },
+   {
+    "key": "Quick",
+    "kind": "super",
+    "h": "default",
+    "v": "default"
+   },
+   {
+    "key": "Spell",
+    "kind": "super",
+    "h": "default",
+    "v": "default"
    }
   ],
   "alignBase": {
