@@ -961,6 +961,10 @@ body.light tr.hl-match{box-shadow:inset 0 0 0 2px rgba(0,0,0,.5);animation-name:
 .deck-warn-row.over{background:rgba(196,92,92,.12);color:var(--re)}
 .deck-warn-row.unique{background:rgba(201,168,76,.1);color:var(--txt-accent)}
 .deck-warn-row.missing{background:rgba(100,100,120,.15);color:var(--td)}
+/* A Draft Deck's pool, and the button to draft from it (session 55k). */
+.deck-warn-row.pool{background:rgba(201,168,76,.08);color:var(--tx);padding:8px 10px}
+.deck-warn-row.pool b{color:var(--txt-accent)}
+.deck-warn-row.pool .dr-poolgo{margin-left:auto}
 .deck-warn-icon{font-size:1rem;flex-shrink:0}
 /* saved decks panel */
 .saved-hdr{font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-accent);padding:6px 11px 4px;display:flex;align-items:center;justify-content:space-between}
@@ -1083,6 +1087,7 @@ body.light .dl-card-hero-grad{background:linear-gradient(to right,var(--s1) 25%,
 .dl-card-body{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;min-height:200px;padding:0 12px 10px}
 .dl-card-row{display:flex;flex-direction:row;align-items:center;gap:8px;flex-wrap:wrap;font-size:1rem;font-weight:700;color:var(--td);margin-top:4px}
 .dl-card-row strong{color:var(--txt-accent)}
+.dl-card-row .dl-card-draft{margin-left:auto}
 .dl-card-legal{width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0}
 .dl-card-legal.ok{background:rgba(92,158,110,.25);color:var(--gr);border:1.5px solid var(--gr)}
 .dl-card-legal.err{background:rgba(196,92,92,.25);color:var(--re);border:1.5px solid var(--re)}
@@ -7062,6 +7067,105 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
     box-shadow:0 0 10px 2px rgba(232,201,106,.42)}
 }
 
+/* == DRAFT (session 55k) =====================================================
+   The draft window, its setup, and the pool line on the Deck tab. Inside
+   .tbl-dlg, so it wears the Play Online dialogs' dark colours in both themes.
+   Hover lifts and never repaints (HANDOFF 12.1 G): a tile under the pointer
+   rises and casts a shadow, and keeps its own colours. */
+.dr-ov{z-index:9200;padding:12px}
+.dr-dlg{width:min(1560px,98vw);height:min(960px,96vh);max-height:none}
+.dr-head{flex-wrap:wrap;row-gap:8px}
+.dr-status{font-size:.95rem;color:var(--tx);white-space:nowrap}
+.dr-status b{color:var(--g2);font-weight:700}
+.dr-clock{font-family:Cinzel,serif;font-weight:700;font-size:1.05rem;color:var(--tx);
+  min-width:3.2em;text-align:right;font-variant-numeric:tabular-nums}
+.dr-clock.low{color:#ff8c8c}
+.dr-body{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 300px}
+.dr-main{overflow:auto;padding:16px 18px;min-width:0;position:relative}
+.dr-side{border-left:1px solid var(--b1);overflow:auto;padding:12px 14px;display:flex;
+  flex-direction:column;gap:9px;background:var(--s1);border-radius:0 0 12px 0}
+.dr-sideh{font-family:Cinzel,serif;font-size:.74rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--tx);display:flex;align-items:center;gap:8px;margin-top:4px}
+.dr-n{margin-left:auto;font-family:Cinzel,serif;font-size:.8rem;color:var(--g2);letter-spacing:.02em}
+.dr-n.ok{color:#5fcf8a}
+.dr-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(168px,1fr))}
+.dr-card{position:relative;border-radius:8px;overflow:hidden;background:var(--s2);
+  border:1px solid var(--b1);cursor:pointer;transition:transform .12s,box-shadow .12s,opacity .12s}
+.dr-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.55)}
+.dr-card.sel{outline:3px solid var(--g2);outline-offset:2px;box-shadow:0 0 18px rgba(232,201,106,.45)}
+.dr-card.out{opacity:.32}
+.dr-card .td-face,.dr-top .td-face,.dr-wcard .td-face{aspect-ratio:409/571;height:auto}
+.dr-cnt{position:absolute;top:34%;right:6px;padding:1px 8px;border-radius:9px;
+  background:rgba(0,0,0,.74);color:var(--g2);font-family:Cinzel,serif;font-weight:700;font-size:.8rem}
+.dr-empty{display:flex;align-items:center;justify-content:center;min-height:260px;
+  font-family:Cinzel,serif;color:var(--tm);font-size:1rem}
+.dr-none{color:var(--tm);font-size:.9rem;padding:4px 6px}
+/* Hex: six piles round a hexagon, in ring order. */
+/* As wide as the column allows and never taller than the window: the six
+   piles and the middle all have to be on screen at once. */
+.dr-hex{position:relative;width:min(100%,calc((min(960px,96vh) - 150px) * 1.25));
+  aspect-ratio:1.25;margin:0 auto}
+.dr-pile{position:absolute;width:15%;transform:translate(-50%,-50%);cursor:pointer;
+  border-radius:9px;transition:box-shadow .12s}
+.dr-pile:hover{box-shadow:0 0 18px var(--hv-glow)}
+.dr-top{border-radius:8px;overflow:hidden;border:1px solid var(--b1);background:var(--s2);
+  box-shadow:3px 3px 0 var(--b2),6px 6px 0 var(--s3)}
+.dr-pile.sel .dr-top{outline:3px solid var(--g2);outline-offset:2px}
+.dr-pile.pair .dr-top{outline:2px dashed var(--g2);outline-offset:2px}
+.dr-pile.off{cursor:default}
+.dr-pile.taken{opacity:.42}
+.dr-h{display:block;text-align:center;margin:8px 0 4px;font-size:.86rem;color:var(--tx);white-space:nowrap}
+.dr-hexmid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;
+  font-family:Cinzel,serif;color:var(--tx);font-size:1rem;line-height:1.6}
+.dr-hexmid b{color:var(--g2)}
+/* Winchester: four piles, face up, each card showing its name over the one
+   before it. */
+.dr-win{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:start}
+.dr-wpile{border:1px solid var(--b1);border-radius:10px;padding:8px 10px 12px;background:var(--s1);
+  cursor:pointer;min-height:220px;transition:box-shadow .12s}
+.dr-wpile:hover{box-shadow:0 0 16px var(--hv-glow)}
+.dr-wpile.sel{outline:3px solid var(--g2);outline-offset:2px}
+.dr-wpile.off{cursor:default}
+.dr-wstack{display:flex;flex-direction:column}
+.dr-wcard{border-radius:7px;overflow:hidden;border:1px solid var(--b1);background:var(--s2);
+  box-shadow:0 -2px 8px rgba(0,0,0,.45)}
+.dr-wcard + .dr-wcard{margin-top:-108%}
+/* The side column: who is at the draft, and what you have. */
+.dr-seats{display:flex;flex-direction:column;gap:6px}
+.dr-seat{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--b1);
+  border-radius:8px;font-size:.92rem;color:var(--tx)}
+.dr-seat.on{border-color:var(--g2);box-shadow:0 0 10px rgba(232,201,106,.22)}
+.tbl-av.dr-av{width:24px;height:24px;font-size:.78rem}
+.dr-sname{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dr-seat small{margin-left:auto;color:var(--td);white-space:nowrap;font-size:.8rem}
+.dr-last{font-size:.88rem;color:var(--td);line-height:1.5}
+.dr-last b{color:var(--tx);font-weight:600}
+.dr-plist{display:flex;flex-direction:column;gap:1px;min-height:0}
+.dr-prow{display:flex;gap:8px;align-items:center;padding:3px 6px;border-radius:5px;
+  font-size:.94rem;color:var(--tx);cursor:default}
+.dr-prow:hover{background:var(--hv-fill)}
+.dr-pc{min-width:1.7em;text-align:right;color:var(--g2);font-family:Cinzel,serif;font-weight:700;font-size:.8rem}
+.dr-pn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ed2-btn.tiny.dr-minus{padding:0 8px;line-height:1.3}
+.dr-save{display:flex;flex-direction:column;gap:8px;margin-top:auto;padding-top:10px;border-top:1px solid var(--b1)}
+.dr-save input{background:var(--s2);border:1px solid var(--b2);border-radius:6px;color:var(--tx);
+  padding:7px 9px;font-family:'Crimson Pro',serif;font-size:.98rem}
+.dr-save input:focus{outline:none;border-color:var(--g2)}
+/* The setup. */
+.dr-setdlg{width:min(760px,96vw)}
+.dr-setbody{padding:6px 18px 10px}
+.tbl-lbl.dr-lw{min-width:92px}
+.tbl-lbl.dr-lw2{margin-left:10px}
+.dr-setfoot{display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:1px solid var(--b1)}
+.dr-poolline{color:var(--td);font-size:.98rem}
+.dr-poolline b{color:var(--g2)}
+@media (max-width:900px){
+  .dr-body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}
+  .dr-side{border-left:0;border-top:1px solid var(--b1);max-height:34vh;border-radius:0 0 12px 12px}
+  .dr-win{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dr-pile{width:24%}
+}
+
 /* == SPECTATE IS PURPLE (HANDOFF 12.1 D) =====================================
    Last in the file on purpose: text that is about spectating wears
    .spect-ink, and it has to win against whatever colour the line it sits in
@@ -7964,6 +8068,7 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
           <option value='constructed'>Constructed</option>
           <option value='kingdoms'>Kingdoms</option>
           <option value='arena'>Arena</option>
+          <option value='draft'>Draft Deck</option>
           <option value='none'>None</option>
         </select>
         <select id='dlColMode' onchange='_dlFilter()' style='background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:6px 10px;color:var(--tx);font-family:Cinzel,serif;font-size:.8rem;font-weight:700;outline:none;cursor:pointer'>
@@ -11368,6 +11473,23 @@ var GAME_MODES = {
     ]
   },
 
+  /* ── A DRAFT DECK (session 55k) ──────────────────────────────────────────
+     Not a deck anybody plays: the pool a draft is dealt from (cat_draft.js).
+     Every card in every section is in the pool except Essence, which Arena
+     brings for itself. No size, no copy limit - so nothing is validated, and
+     the Deck tab shows the pool instead of warnings. Main game only, and NOT
+     in DECK_TYPES: that list is also every table's choice of format, and
+     nobody sits down to play a Draft Deck. */
+  draft: {
+    label: 'Draft Deck', draftPool: true, noValidation: true,
+    rules: [
+      {title:'Additional', text:'A card pool to draft from, not a deck to play.'},
+      {title:'Main Deck', text:'Any number of cards, in any section.'},
+      {title:'Core Essence', text:'Never drafted - Arena brings its own.'},
+      {title:'Dual Essence', text:'Never drafted - Arena brings its own.'}
+    ]
+  },
+
   /* ── REBIRTH ──────────────────────────────────────────────────────────────
      Rebirth's three deck types. They are NOT variants of the three above and
      never appear alongside them - DECK_TYPES below hands each game its own
@@ -11418,6 +11540,9 @@ var GAME_MODES = {
 var DECK_TYPES = REBIRTH
   ? ['character', 'encounter', 'rewards', 'none']
   : ['constructed', 'kingdoms', 'arena', 'none'];
+/* The Deck tab's own list: every deck type, and a Draft Deck besides. */
+var DECK_TAB_TYPES = REBIRTH ? DECK_TYPES
+  : ['constructed', 'kingdoms', 'arena', 'draft', 'none'];
 
 /* ── IS THIS DECK LEGAL ──────────────────────────────────────────────────────
    ⚠ THIS DECISION USED TO BE MADE TWICE, AND THE TWO DISAGREED SIX WAYS.
@@ -11512,7 +11637,7 @@ var _gameMode = DECK_TYPES[0];
 function _fillDeckTypes(){
   var sel = document.getElementById('gmSelect');
   if(!sel) return;
-  sel.innerHTML = DECK_TYPES.map(function(k){
+  sel.innerHTML = DECK_TAB_TYPES.map(function(k){
     var gm = GAME_MODES[k];
     return "<option value='" + k + "'>" + (gm ? gm.label : 'None') + "</option>";
   }).join('');
@@ -11823,6 +11948,19 @@ function _isUnlimitedCard(card){
    updateStatSummary(): AVG CMC / TOTAL CMC / STD DEV / MODE stat pills
 ═══════════════════════════════════════════════════════════════════════════ */
 function updateDeckWarnings(){
+  /* A Draft Deck is a pool, not a deck: what it holds for drafting, and a
+     button to draft from it, in place of warnings about a deck it is not. */
+  if(GAME_MODES[_gameMode] && GAME_MODES[_gameMode].draftPool){
+    var dbox = document.getElementById('deckWarnBox');
+    if(dbox && typeof drPoolOf === 'function'){
+      var dp = drPoolOf(drDeckEntry(''));
+      dbox.innerHTML = '<div class="deck-warn-box dr-poolbox"><div class="deck-warn-row pool">'
+        + '<span class="deck-warn-icon">&#9873;</span><span>' + drPoolLineHTML(dp) + '</span>'
+        + '<button class="ed2-btn tbl-green dr-poolgo" id="drPoolGo" onclick="drSetupOpen(\'\')"'
+        + (dp.names.length ? '' : ' disabled') + '>Draft</button></div></div>';
+    }
+    return;
+  }
   /* None mode, and every Rebirth deck type: no validation, clear any existing
      warnings. Rebirth's construction rules have not been specified, and a
      checker that invents its own limits would flag legal decks. */
@@ -23109,6 +23247,7 @@ function tblHandle(m){
   }
   if(m.t === 'host'){
     TBL.hostId = m.id || '';
+    if(typeof drOnHost === 'function') drOnHost(m);
     if(typeof toast === 'function')
       toast(m.id === TBL.you ? 'You are the host now' : (m.name + ' is the host now'));
     tblRenderPanel();
@@ -23158,6 +23297,11 @@ function tblHandle(m){
     /* Phase 3 hangs the game on this. Until then a message from the other
        player is received, counted and ignored - which is exactly what the
        connection checks need to see. */
+    /* ⚠ ADDRESSED TO SOMEBODY ELSE (session 55k). The relay delivers a
+       message carrying `to` to that one seat - but a relay from before that
+       rule sends it to everyone, and a draft pack meant for one player must
+       not be opened by the rest. */
+    if(m.msg && typeof m.msg.to === 'string' && m.msg.to && TBL.you && m.msg.to !== TBL.you) return;
     TBL.lastFrom = m.msg;
     TBL.gotCount = (TBL.gotCount || 0) + 1;
     if(typeof TBL.onMsg === 'function'){
@@ -23774,6 +23918,8 @@ TBL.onMsg = function(msg, fromId){
     tblRenderPanel();
     return;
   }
+  /* A draft - dealt by the host, picked by everyone - is cat_draftui.js's. */
+  if(typeof drOnMsg === 'function' && drOnMsg(msg, fromId)) return;
   /* Which deck each player has picked in the waiting room, and whether they
      are ready - see cat_online.js. A watcher reads it too. */
   if(msg.t === 'seat'){
@@ -23843,6 +23989,7 @@ TBL.onMsg = function(msg, fromId){
   if(msg.t === 'act'){ tblActFrom(msg.a, fromId); return; }
   if(msg.t === 'want'){
     if(typeof tboSendSeat === 'function') tboSendSeat();
+    if(typeof drOnWant === 'function') drOnWant(fromId);
     tblSendState();
     /* Anything you are already showing them has to be re-sent, or a reconnect
        would leave them looking at a zone you believe is open and they see as
@@ -24552,7 +24699,10 @@ var TBO = {
   /* Deck Restrictions ON by default (the author, session 55h): a table asks
      for a legal deck unless its host says otherwise. Remembered per machine
      after the first time, like every other host setting. */
-  host:{seats:2, pub:true, name:'', note:'', format:'', spect:true, strict:true, deck:''},
+  host:{seats:2, pub:true, name:'', note:'', format:'', spect:true, strict:true, deck:'',
+        /* A draft table (session 55k): Game or Draft, the Draft Deck the host
+           deals from, which draft, and how long a pick may take. */
+        mode:'game', ddeck:'', dtype:'standard', dtimer:0},
   deckPick:'',         /* '' = the deck in the Deck tab, else a saved deck's name */
   ready:false,
   seatInfo:{},         /* side -> {deck, counts, legal, ready} as each player said */
@@ -24574,6 +24724,19 @@ function tboFmtLabel(k){
   var gm = (typeof GAME_MODES !== 'undefined') && GAME_MODES[k];
   return gm ? gm.label : (k === 'none' ? 'None' : String(k || ''));
 }
+/* What a table IS, in the list and on the room's pill: its format, or - for a
+   draft table - "Draft · Hex". */
+function tboTableLabel(t){
+  if(t && t.mode === 'draft')
+    return 'Draft \u00b7 ' + ((typeof DRAFT_TYPES !== 'undefined' && DRAFT_TYPES[t.dtype])
+                             ? DRAFT_TYPES[t.dtype].short : 'Default');
+  return tboFmtLabel(t && t.format);
+}
+function tboHostDraft(){ return !REBIRTH && TBO.host.mode === 'draft'; }
+/* Hex is two players, whatever the Players switch says. */
+function tboHostSeats(){
+  return (tboHostDraft() && TBO.host.dtype === 'hex') ? 2 : TBO.host.seats;
+}
 /* ⚠ THE LIVE GAME'S LIVERY (the author, session 55f): the pill is the same
    box as the MAIN / REBIRTH switch in the app's top row - the live game's metal
    round it and its colour through the word - and every dialog's top row wears
@@ -24592,11 +24755,14 @@ function tboGamePill(extra){
 (function(){
   try{
     var h = JSON.parse(localStorage.getItem(TBO_HOST_KEY) || '{}') || {};
-    ['seats', 'pub', 'name', 'note', 'format', 'spect', 'strict', 'deck'].forEach(function(k){
+    ['seats', 'pub', 'name', 'note', 'format', 'spect', 'strict', 'deck',
+     'mode', 'ddeck', 'dtype', 'dtimer'].forEach(function(k){
       if(h[k] !== undefined) TBO.host[k] = h[k];
     });
   }catch(_){}
   TBO.host.seats = Math.max(2, Math.min(4, +TBO.host.seats || 2));
+  if(TBO.host.mode !== 'draft' || REBIRTH) TBO.host.mode = 'game';
+  if(typeof DRAFT_TYPES === 'undefined' || !DRAFT_TYPES[TBO.host.dtype]) TBO.host.dtype = 'standard';
   try{ TBL.name = TBL.name || localStorage.getItem(TBO_NAME_KEY) || ''; }catch(_){}
   try{ TBO.chatMode = localStorage.getItem(TBO_CHAT_KEY) === 'side' ? 'side' : 'pop'; }catch(_){}
 })();
@@ -24628,6 +24794,15 @@ function tboSegLight(key, v){
 function tboSeg(key, v){
   if(key === 'seats'){ TBO.host.seats = Math.max(2, Math.min(4, +v || 2)); tboSaveHost(); }
   else if(key === 'format'){ TBO.host.format = v; tboSaveHost(); tboHostDeckMark(); }
+  else if(key === 'hmode'){
+    TBO.host.mode = (v === 'draft' && !REBIRTH) ? 'draft' : 'game';
+    tboSaveHost();
+    tboReadHostFields();
+    var hb = document.getElementById('tblHostOpts');
+    if(hb && !hb.hidden){ hb.innerHTML = tboHostOptsHTML(); tboHostDeckMark(); }
+    tboSegLight('seats', tboHostSeats());
+    return;
+  }
   else if(key === 'sort'){ TBO.sort = v; tboLobbyRender(); }
   else if(key === 'chat'){ tboChatSetMode(v); return; }
   tboSegLight(key, v);
@@ -24867,7 +25042,7 @@ function tboHubHTML(){
       + tblRelayBoxHTML()
       + "<div class='tbl-box tbl-hostwrap' id='tblHostBox'>"
         + "<div class='tbl-onerow tbl-hostline'><h5>Host a table</h5>"
-          + tboSegHTML('seats', [['2', '2'], ['3', '3'], ['4', '4']], h.seats)
+          + tboSegHTML('seats', [['2', '2'], ['3', '3'], ['4', '4']], tboHostSeats())
           + tboPPHTML('host', h.pub)
           + "<span class='tbl-gap'></span>"
           + "<button class='ed2-btn' id='tblOptBtn' onclick='tboOpenHost()'>Options</button>"
@@ -24909,10 +25084,18 @@ function tblHostNew(){
 }
 function tboHost(){
   TBL.watch = false;
-  TBL.want = TBO.host.seats;
+  TBL.want = tboHostSeats();
   TBL.hostMeta = {pub:!!TBO.host.pub, name:(TBO.host.name || tboDefaultName()),
                   note:TBO.host.note || '', format:tboHostFormat(),
                   spect:TBO.host.spect !== false, strict:!!TBO.host.strict};
+  /* ⚠ A DRAFT TABLE PLAYS ARENA. What everyone drafts is built into a
+     thirty-card Arena deck, so that is the table's format from the start - the
+     waiting room judges the drafted decks against it like any other. */
+  if(tboHostDraft()){
+    TBL.hostMeta.mode = 'draft';
+    TBL.hostMeta.dtype = TBO.host.dtype;
+    TBL.hostMeta.format = 'arena';
+  }
   TBO.deckPick = TBO.host.deck || '';
   if(TBO.deckPick && !_savedLoad()[TBO.deckPick]) TBO.deckPick = '';
   TBO.ready = false;
@@ -25104,11 +25287,11 @@ function tboRowHTML(t, set, isMine){
   var playing = t.status === 'playing';
   var sub = isMine
     ? ((TBL.hostId === TBL.you ? 'you are hosting' : 'you are here')
-       + ' &middot; <b>' + e(tboFmtLabel(t.format)) + '</b> &middot; code ' + e(t.room))
+       + ' &middot; <b>' + e(tboTableLabel(t)) + '</b> &middot; code ' + e(t.room))
     : (playing && seats.length
         ? seats.map(function(s){ return '<b>' + e(s.name) + '</b>'; }).join(' vs ')
         : 'hosted by <b>' + e(t.host || (seats[0] && seats[0].name) || '?') + '</b>')
-      + ' &middot; <b>' + e(tboFmtLabel(t.format)) + '</b>'
+      + ' &middot; <b>' + e(tboTableLabel(t)) + '</b>'
       + (t.note ? ' &middot; &ldquo;' + e(t.note) + '&rdquo;' : '')
       + (otherSet ? " &middot; <span class='tbl-warn'>&#9888; different card set</span>" : '');
   var state = playing
@@ -25187,13 +25370,46 @@ function tboHostOptsHTML(){
      own line, six inches above this one now that the panel is inside the box
      (session 55i) - two switches showing one state, side by side, is a bug
      waiting to be reported. */
+  var dr = tboHostDraft();
+  var decks = (typeof drDraftDecks === 'function') ? drDraftDecks() : [];
+  if(h.ddeck && decks.indexOf(h.ddeck) < 0) h.ddeck = '';
+  if(!h.ddeck && decks.length) h.ddeck = decks[0];
+  /* ⚠ A DRAFT TABLE (session 55k): Mode first, because it decides what the
+     second row is. A game asks for a format and your deck; a draft asks for
+     the Draft Deck to deal from, which draft, and the pick timer - the format
+     is Arena and the deck is the one you are about to draft. */
+  var row2 = dr
+    ? "<div class='tbl-hrow'>"
+        + "<div class='tbl-il tbl-grow'><span class='tbl-lbl'>Draft Deck</span>"
+          + "<select id='tblDDeck' class='tbl-select' onchange='tboHostDDeck(this.value)'>"
+          + (decks.length ? decks.map(function(n){
+              return "<option value='" + e(n) + "'" + (n === h.ddeck ? ' selected' : '') + ">" + e(n) + "</option>";
+            }).join('') : "<option value=''>No Draft Decks saved</option>")
+          + "</select><span class='tbl-dcount' id='tblDDeckN'></span></div>"
+        + "<div class='tbl-il'><span class='tbl-lbl'>Draft</span>"
+          + "<select id='tblDType' class='tbl-select' onchange='tboHostDType(this.value)'>"
+          + DRAFT_ORDER.map(function(k){
+              return "<option value='" + k + "'" + (k === h.dtype ? ' selected' : '') + ">"
+                + e(DRAFT_TYPES[k].label) + "</option>";
+            }).join('')
+          + "</select></div>"
+        + "<div class='tbl-il'><span class='tbl-lbl'>Pick timer</span>"
+          + "<select id='tblDTimer' class='tbl-select' onchange='tboHostDTimer(this.value)'>"
+          + DR_TIMERS.map(function(o){
+              return "<option value='" + o[0] + "'" + (+o[0] === +h.dtimer ? ' selected' : '') + ">" + o[1] + "</option>";
+            }).join('')
+          + "</select></div>"
+      + "</div>"
+    : null;
   return "<div class='tbl-hostbody'>"
       + "<div class='tbl-hrow'>"
+        + (REBIRTH ? '' : "<div class='tbl-il'><span class='tbl-lbl'>Mode</span>"
+            + tboSegHTML('hmode', [['game', 'Game'], ['draft', 'Draft']], dr ? 'draft' : 'game') + "</div>")
         + "<div class='tbl-il tbl-grow'><span class='tbl-lbl'>Table name</span>"
           + "<input id='tblTName' maxlength='40' value='" + e(h.name || '') + "'"
           + " placeholder='" + e(tboDefaultName()) + "'></div>"
       + "</div>"
-      + "<div class='tbl-hrow'>"
+      + (row2 || ("<div class='tbl-hrow'>"
         + "<div class='tbl-il'><span class='tbl-lbl tbl-lw'>Format</span>"
           + "<select id='tblTFormat' class='tbl-select tbl-fmtsel' onchange='tboSetFormat(this.value)'>"
           + DECK_TYPES.map(function(k){
@@ -25205,7 +25421,7 @@ function tboHostOptsHTML(){
           + tboDeckSelectHTML('tblHDeck', h.deck, "tboHostDeck(this.value)")
           + "<span class='tbl-dcount' id='tblHDeckN'></span>"
           + "<span class='tbl-lmark' id='tblHDeckMark'></span></div>"
-      + "</div>"
+      + "</div>"))
       + "<div class='tbl-hrow'>"
         + tboOptHTML('strict', 'Deck Restrictions')
         + tboOptHTML('spect', 'Spectators')
@@ -25260,7 +25476,20 @@ function tboHostDeck(v){
   tboSaveHost();
   tboHostDeckMark();
 }
+function tboHostDDeck(v){ TBO.host.ddeck = v || ''; tboSaveHost(); tboHostDeckMark(); }
+function tboHostDType(v){
+  if(typeof DRAFT_TYPES === 'undefined' || !DRAFT_TYPES[v]) return;
+  TBO.host.dtype = v;
+  tboSaveHost();
+  tboSegLight('seats', tboHostSeats());
+}
+function tboHostDTimer(v){ TBO.host.dtimer = +v || 0; tboSaveHost(); }
 function tboHostDeckMark(){
+  var dn = document.getElementById('tblDDeckN');
+  if(dn && typeof drPoolOf === 'function'){
+    var dp = TBO.host.ddeck ? drPoolOf(drDeckEntry(TBO.host.ddeck)) : null;
+    dn.textContent = dp ? dp.names.length + ' cards' : '';
+  }
   var j = tboJudge(tboDeckEntry(TBO.host.deck), tboHostFormat());
   var n = document.getElementById('tblHDeckN'), m = document.getElementById('tblHDeckMark');
   if(n) n.textContent = j.counts;
@@ -25282,7 +25511,13 @@ function tboHostGo(){
    author, session 55e) - and nothing is refused on it: a table plays whatever
    its players sit down with. */
 function tboDeckSelectHTML(id, cur, act){
-  var names = Object.keys(_savedLoad()).sort();
+  /* ⚠ NOT THE DRAFT DECKS (session 55k). A Draft Deck is a pool to draft
+     from, not something anybody plays - offering it here would only ever be
+     picked by mistake. */
+  var all = _savedLoad();
+  var names = Object.keys(all).filter(function(n){
+    return !(all[n] && typeof all[n] === 'object' && all[n].mode === 'draft');
+  }).sort();
   return "<select id='" + id + "' class='tbl-select' onchange=\"" + act + "\">"
     + "<option value=''" + (cur ? '' : ' selected') + ">Current deck</option>"
     + names.map(function(n){
@@ -25403,6 +25638,7 @@ function tboToggleReady(){
 function tboIsHost(){ return !!TBL.you && TBL.hostId === TBL.you && !TBL.watch; }
 function tboCanStart(){
   if(!tblOn() || TBL.phase !== 'waiting' || !tboIsHost()) return false;
+  if(typeof drRunning === 'function' && drRunning()) return false;
   var seated = tblSeated();
   if(seated.length < 2) return false;
   var strict = tboStrict();
@@ -25424,7 +25660,7 @@ function tboRoomHTML(){
   return "<div class='ed2-modal tbl-dlg tbl-roomdlg' role='dialog' aria-label='Waiting room'>"
     + "<div class='ed2-modal-head tbl-head'>"
       + "<b class='tbl-rtitle' id='tblRoomTitle'>" + e(title) + "</b>"
-      + "<span id='tblRoomPill'>" + tboGamePill(tboFmtLabel(tboTableFormat())) + "</span>"
+      + "<span id='tblRoomPill'>" + tboGamePill(tboRoomLabel()) + "</span>"
       + "<span class='sg-head-gap'></span>"
       + (TBL.room ? "<span class='tbl-bigcode'>" + e(TBL.room) + "</span>"
           + "<button class='ed2-btn tiny primary' id='tblCopyCode' onclick='tboCopyCode()'>Copy code</button>"
@@ -25446,6 +25682,10 @@ function tboRoomHTML(){
       + "</div>"
     + "</div></div>";
 }
+function tboRoomLabel(){
+  return (TBL.table && TBL.table.mode === 'draft') ? tboTableLabel(TBL.table)
+                                                  : tboFmtLabel(tboTableFormat());
+}
 function tboHostSeat(){
   var s = TBL.seats || {};
   for(var k in s) if(s.hasOwnProperty(k) && s[k] && s[k].id === TBL.hostId) return s[k];
@@ -25460,7 +25700,7 @@ function tboRoomRender(){
   var hs = tboHostSeat();
   if(ttl) ttl.textContent = t.name || ((hs ? hs.name : (TBL.name || 'Player')) + "'s table");
   var pill = document.getElementById('tblRoomPill');
-  if(pill) pill.innerHTML = tboGamePill(tboFmtLabel(tboTableFormat()));
+  if(pill) pill.innerHTML = tboGamePill(tboRoomLabel());
 
   /* ── the line under the title ── */
   var words;
@@ -25474,6 +25714,8 @@ function tboRoomRender(){
                                            : (t.pub ? 'Public' : 'Private'));
       if(t.spect === false) words += " &middot; <span class='spect-ink'>No spectators</span>";
       if(t.strict) words += " &middot; <span class='tbl-strict-ink'>Deck Restrictions</span>";
+      if(t.mode === 'draft' && typeof drRunning === 'function' && drRunning())
+        words += " &middot; <b>Drafting</b>";
     }
     var nw = (TBL.watchList || []).length;
     if(nw) words += " &middot; <span class='spect-ink'>" + nw + ' spectating</span>';
@@ -25547,6 +25789,14 @@ function tboRoomRender(){
     a += "<span class='tbl-gap'></span>"
       + "<button class='ed2-btn danger' id='tblLeaveBtn' onclick='tblLeave()'>"
       + (TBL.watch ? 'Leave' : 'Leave table') + "</button>";
+    /* A draft table: the host deals the draft from here, and anyone whose
+       draft window is put away can bring it back. */
+    var isDraft = !!(TBL.table && TBL.table.mode === 'draft') && typeof DR !== 'undefined';
+    if(isDraft && !TBL.watch && DR.mode && DR.mode !== 'solo' && !DR.open)
+      a += "<button class='ed2-btn tbl-gold' id='tblDraftOpen' onclick='drShow();drRender()'>Open draft</button>";
+    if(isDraft && tboIsHost())
+      a += "<button class='ed2-btn tbl-gold tbl-big' id='tblDraftBtn' onclick='drHostStart()'"
+        + (tblOn() && TBL.phase === 'waiting' && !drRunning() ? '' : ' disabled') + ">Start Draft</button>";
     if(!TBL.watch)
       a += "<button class='ed2-btn tbl-green tbl-big' id='tblStartBtn' onclick='tboStart()'"
         + (tboCanStart() ? '' : ' disabled') + ">Start Game</button>";
@@ -25649,6 +25899,7 @@ function tboOnPeer(m){
     tboChatSys(m.name + (m.join ? ' sat down' : ' left the table'));
     if(!m.join) delete TBO.seatInfo[m.side];
     if(m.join) tboSendSeat();
+    if(typeof drOnPeer === 'function') drOnPeer(m);
   }
   if(tboDialogOpen() && TBO.view === 'room') tboRoomRender();
 }
@@ -25696,6 +25947,7 @@ function tboDeal(){
 
 /* Everything this file holds about the table, forgotten on leaving it. */
 function tboReset(){
+  if(typeof drOnLeave === 'function') drOnLeave();
   TBO.ready = false;
   TBO.seatInfo = {};
   TBO.seenJoin = '';
@@ -25827,6 +26079,1302 @@ function tboChatPanel(){
    that width. */
 function tboRefit(){
   try{ if(typeof tdRender === 'function') tdRender(); }catch(_){}
+}
+/* ═══ DRAFT - THE ENGINE (session 55k) ═════════════════════════════════════════
+   The author's four ways to draft, as rules and nothing else: no DOM, no
+   network, no timers. What a draft IS lives here; how it looks and how it
+   travels is cat_draftui.js. Kept apart so the rules can be driven by node
+   (tools/verify/checkdraft.js) without a browser.
+
+   A DRAFT DECK is not a deck to play. It is the pool - a card list somebody
+   made so that others can draft from it. Every card in every section of it is
+   in the pool EXCEPT Essence: Arena brings its own (unlimited Core, three of
+   each Dual), so Essence is never drafted (the author, session 55k).
+
+   What each player drafts becomes their pool for an ARENA deck of exactly 30.
+
+     standard    Default Draft. Four packs of fifteen each. Pick one, pass the
+                 rest - left, then right, then left, then right, one direction
+                 per pack.
+     vault       120 cards each. No picking: build from what you were dealt.
+     hex         Two players. 180 cards in six face-down piles of 30 around a
+                 hexagon, the top card of each face up. The player picking
+                 first takes the top card of two side-by-side piles; the other
+                 takes two side-by-side piles of the four left; the last two
+                 top cards are removed. Who picks first swaps every round.
+                 Thirty rounds, sixty cards each.
+     winchester  Two to four players. 110 cards for two, 55 more for each
+                 player after. One card face up on each of four piles; take a
+                 whole pile; one more card goes on each pile; the next player
+                 takes one. When the stack runs short, what is left is dealt,
+                 and picking goes on until every pile is empty.
+
+   ⚠ A SHORT POOL IS DEALT WHOLE FIRST (the author's rule): every card in it
+   goes out once before anything repeats, and only the shortfall is made up of
+   repeats - drawn at random, so a card the list holds three copies of comes
+   back three times as often as a card it holds once.
+
+   ⚠ THE STATE IS PLAIN DATA. JSON in, JSON out, nothing hidden in a closure -
+   the host of an online draft holds it and sends each player a view of it.
+   The random numbers are used to deal and to choose who goes first, and not
+   after; a pick is a pure function of the state and the move.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+var DRAFT_TYPES = {
+  standard:   {label:'Default Draft', short:'Default', min:2, max:4, packs:4, packSize:15},
+  vault:      {label:'Vault',         short:'Vault',   min:1, max:4, each:120},
+  hex:        {label:'Hex Draft',     short:'Hex',     min:2, max:2, piles:6, height:30},
+  winchester: {label:'Winchester',    short:'Winchester', min:2, max:4, piles:4, base:110, extra:55}
+};
+var DRAFT_ORDER = ['standard', 'vault', 'hex', 'winchester'];
+var DRAFT_DECK_SIZE = 30;
+
+/* How many cards a draft of this type deals, in all. */
+function draftNeed(type, seats){
+  var T = DRAFT_TYPES[type];
+  if(!T) return 0;
+  if(type === 'standard') return seats * T.packs * T.packSize;
+  if(type === 'vault') return seats * T.each;
+  if(type === 'hex') return T.piles * T.height;
+  if(type === 'winchester') return T.base + T.extra * Math.max(0, seats - 2);
+  return 0;
+}
+
+/* Seeded, so a test can replay a deal and so a draft can be described by its
+   seed. mulberry32 - small, fast, and good enough to shuffle cards with. */
+function draftRng(seed){
+  var a = (seed >>> 0) || 0x9e3779b9;
+  return function(){
+    a = (a + 0x6D2B79F5) >>> 0;
+    var t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function draftShuffle(arr, rnd){
+  for(var i = arr.length - 1; i > 0; i--){
+    var j = Math.floor(rnd() * (i + 1));
+    var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+  }
+  return arr;
+}
+
+/* The pool as one name per copy. `entries` is [{name, count}]; `skip(name)`
+   says a card is not drafted (Essence), and is counted rather than dropped
+   silently so the Deck tab can say how many were left out. */
+function draftPoolList(entries, skip){
+  var names = [], skipped = 0;
+  (entries || []).forEach(function(en){
+    var n = Math.max(0, en.count | 0);
+    if(!en.name || !n) return;
+    if(skip && skip(en.name)){ skipped += n; return; }
+    for(var i = 0; i < n; i++) names.push(en.name);
+  });
+  return {names:names, skipped:skipped};
+}
+
+/* `need` cards from the pool: the whole pool once, then repeats for whatever
+   is still missing, weighted by copies - and the lot shuffled together, so the
+   repeats are not all in the last pack. */
+function draftDeal(pool, need, rnd){
+  var out;
+  if(!pool.length || need <= 0) return [];
+  if(need <= pool.length){
+    out = draftShuffle(pool.slice(), rnd).slice(0, need);
+  } else {
+    out = pool.slice();
+    for(var i = pool.length; i < need; i++)
+      out.push(pool[Math.floor(rnd() * pool.length)]);
+  }
+  return draftShuffle(out, rnd);
+}
+
+/* A new draft. `pool` is the list draftPoolList made; `seats` is how many
+   players, bots included. Returns null when the type cannot seat that many or
+   there is nothing to draft. */
+function draftNew(type, pool, seats, seed){
+  var T = DRAFT_TYPES[type];
+  seats = seats | 0;
+  if(!T || seats < T.min || seats > T.max || !pool || !pool.length) return null;
+  var rnd = draftRng(seed == null ? (Math.random() * 4294967296) >>> 0 : seed);
+  var cards = draftDeal(pool, draftNeed(type, seats), rnd);
+  var st = {v:1, type:type, seats:seats, seq:0, done:false, picks:[]};
+  for(var s = 0; s < seats; s++) st.picks.push([]);
+
+  if(type === 'standard'){
+    st.rounds = T.packs; st.packSize = T.packSize; st.round = 0;
+    st.sealed = [];
+    for(s = 0; s < seats; s++){
+      var mine = [];
+      for(var r = 0; r < T.packs; r++){
+        var at = (s * T.packs + r) * T.packSize;
+        mine.push(cards.slice(at, at + T.packSize));
+      }
+      st.sealed.push(mine);
+    }
+    st.queue = [];
+    for(s = 0; s < seats; s++) st.queue.push([]);
+    draftOpenPacks(st);
+  } else if(type === 'vault'){
+    for(s = 0; s < seats; s++) st.picks[s] = cards.slice(s * T.each, (s + 1) * T.each);
+    st.done = true;
+  } else if(type === 'hex'){
+    /* The END of each array is the top of the pile. */
+    st.piles = [];
+    for(var p = 0; p < T.piles; p++) st.piles.push(cards.slice(p * T.height, (p + 1) * T.height));
+    st.rounds = T.height; st.round = 0;
+    st.starter = Math.floor(rnd() * 2);
+    st.turn = st.starter; st.stage = 0; st.taken = {};
+    st.last = null;
+  } else if(type === 'winchester'){
+    st.stack = cards;                    /* dealt from the end */
+    st.piles = [[], [], [], []];
+    draftWinDeal(st);
+    st.turn = Math.floor(rnd() * seats);
+    st.total = cards.length;
+  }
+  return st;
+}
+
+/* ── DEFAULT DRAFT ───────────────────────────────────────────────────────────
+   Each seat has a queue of packs in front of it. Picking takes from the pack
+   at the front and passes what is left to the neighbour - so nobody waits on
+   the slowest player until there is nothing in front of them to pick from,
+   which is how a table drafts. Left is the next seat round, right the one
+   before. */
+function draftDir(st){ return (st.round % 2 === 0) ? 1 : -1; }
+function draftOpenPacks(st){
+  for(var s = 0; s < st.seats; s++)
+    st.queue[s].push({id:'r' + st.round + 's' + s, cards:st.sealed[s][st.round].slice()});
+}
+
+function draftWinDeal(st){
+  for(var i = 0; i < st.piles.length; i++)
+    if(st.stack.length) st.piles[i].push(st.stack.pop());
+}
+
+/* Hex adjacency: pile a and the pile after it, round the ring. */
+function draftHexPair(a){ return [a % 6, (a + 1) % 6]; }
+
+/* Every move this seat may make now - [] when it is not theirs to make. */
+function draftLegal(st, seat){
+  if(!st || st.done || seat < 0 || seat >= st.seats) return [];
+  var out = [], i;
+  if(st.type === 'standard'){
+    var head = st.queue[seat][0];
+    if(!head) return [];
+    for(i = 0; i < head.cards.length; i++) out.push({pack:head.id, i:i, name:head.cards[i]});
+    return out;
+  }
+  if(st.type === 'hex'){
+    if(seat !== st.turn) return [];
+    for(i = 0; i < 6; i++){
+      var pr = draftHexPair(i);
+      if(st.taken[pr[0]] != null || st.taken[pr[1]] != null) continue;
+      if(!st.piles[pr[0]].length || !st.piles[pr[1]].length) continue;
+      out.push({a:i});
+    }
+    return out;
+  }
+  if(st.type === 'winchester'){
+    if(seat !== st.turn) return [];
+    for(i = 0; i < st.piles.length; i++) if(st.piles[i].length) out.push({p:i});
+    return out;
+  }
+  return [];
+}
+function draftCanMove(st, seat){ return draftLegal(st, seat).length > 0; }
+
+/* Which seats have a decision in front of them right now. */
+function draftWaitingOn(st){
+  var out = [];
+  if(!st || st.done) return out;
+  for(var s = 0; s < st.seats; s++) if(draftCanMove(st, s)) out.push(s);
+  return out;
+}
+
+/* Apply one move. Returns true if it was legal and happened; the state is
+   changed in place and its seq goes up by one. */
+function draftApply(st, seat, m){
+  if(!st || st.done || !m) return false;
+  if(st.type === 'standard'){
+    var head = st.queue[seat] && st.queue[seat][0];
+    if(!head || (m.pack && m.pack !== head.id)) return false;
+    var i = m.i | 0;
+    if(i < 0 || i >= head.cards.length) return false;
+    /* A name that does not match is a view that went stale - refused rather
+       than handing over a different card from the one that was clicked. */
+    if(m.name && head.cards[i] !== m.name) return false;
+    st.picks[seat].push(head.cards.splice(i, 1)[0]);
+    st.queue[seat].shift();
+    if(head.cards.length){
+      var to = (seat + draftDir(st) + st.seats) % st.seats;
+      st.queue[to].push(head);
+    }
+    var empty = st.queue.every(function(q){ return !q.length; });
+    if(empty){
+      st.round++;
+      if(st.round >= st.rounds) st.done = true;
+      else draftOpenPacks(st);
+    }
+    st.seq++;
+    return true;
+  }
+  if(st.type === 'hex'){
+    if(seat !== st.turn) return false;
+    var ok = draftLegal(st, seat).some(function(x){ return x.a === (m.a | 0); });
+    if(!ok) return false;
+    var pr = draftHexPair(m.a | 0);
+    var got = [st.piles[pr[0]].pop(), st.piles[pr[1]].pop()];
+    got.forEach(function(n){ st.picks[seat].push(n); });
+    st.taken[pr[0]] = seat; st.taken[pr[1]] = seat;
+    if(!st.lastRound) st.lastRound = {picks:[], gone:[]};
+    st.lastRound.picks.push({seat:seat, piles:pr, cards:got});
+    if(st.stage === 0){
+      st.stage = 1;
+      st.turn = 1 - seat;
+    } else {
+      /* The two nobody took leave the game. */
+      var gone = [];
+      for(var p = 0; p < 6; p++)
+        if(st.taken[p] == null && st.piles[p].length) gone.push({pile:p, card:st.piles[p].pop()});
+      st.lastRound.gone = gone;
+      st.last = st.lastRound; st.lastRound = null;
+      st.taken = {}; st.stage = 0;
+      st.round++;
+      st.starter = 1 - st.starter;
+      st.turn = st.starter;
+      if(st.round >= st.rounds || st.piles.every(function(x){ return !x.length; })) st.done = true;
+    }
+    st.seq++;
+    return true;
+  }
+  if(st.type === 'winchester'){
+    if(seat !== st.turn) return false;
+    var k = m.p | 0;
+    if(!st.piles[k] || !st.piles[k].length) return false;
+    st.picks[seat] = st.picks[seat].concat(st.piles[k]);
+    st.last = {seat:seat, pile:k, cards:st.piles[k].slice()};
+    st.piles[k] = [];
+    draftWinDeal(st);
+    if(!st.stack.length && st.piles.every(function(x){ return !x.length; })) st.done = true;
+    else st.turn = (seat + 1) % st.seats;
+    st.seq++;
+    return true;
+  }
+  return false;
+}
+
+/* A bot, or a player whose time ran out: any legal move, at random. */
+function draftRandomMove(st, seat, rnd){
+  var ms = draftLegal(st, seat);
+  if(!ms.length) return null;
+  return ms[Math.floor((rnd || Math.random)() * ms.length)];
+}
+
+/* ── WHAT ONE PLAYER SEES ────────────────────────────────────────────────────
+   Their own picks and their own pack; for everyone else, a count. Hex and
+   Winchester are played face up on the table, so the piles and everybody's
+   picks are in every view - that is the game, not a leak. */
+function draftView(st, seat){
+  if(!st) return null;
+  var v = {type:st.type, seat:seat, seats:st.seats, seq:st.seq, done:!!st.done,
+           picks:(st.picks[seat] || []).slice(),
+           counts:st.picks.map(function(p){ return p.length; })};
+  if(st.type === 'standard'){
+    var head = st.queue[seat] && st.queue[seat][0];
+    v.round = st.round; v.rounds = st.rounds; v.dir = draftDir(st);
+    v.pack = head ? {id:head.id, cards:head.cards.slice()} : null;
+    v.queued = st.queue.map(function(q){ return q.length; });
+    /* Which pick of this pack it is, counted from the pack's size. */
+    v.pick = head ? (st.packSize - head.cards.length + 1) : 0;
+  } else if(st.type === 'hex'){
+    v.round = st.round; v.rounds = st.rounds; v.turn = st.turn; v.stage = st.stage;
+    v.starter = st.starter;
+    v.tops = st.piles.map(function(p){ return p.length ? p[p.length - 1] : null; });
+    v.heights = st.piles.map(function(p){ return p.length; });
+    v.taken = {};
+    Object.keys(st.taken || {}).forEach(function(k){ v.taken[k] = st.taken[k]; });
+    v.last = st.last || null;
+    v.now = st.lastRound || null;
+    v.all = st.picks.map(function(p){ return p.slice(); });
+  } else if(st.type === 'winchester'){
+    v.turn = st.turn; v.stack = st.stack.length; v.total = st.total;
+    v.piles = st.piles.map(function(p){ return p.slice(); });
+    v.last = st.last || null;
+    v.all = st.picks.map(function(p){ return p.slice(); });
+  }
+  v.legal = draftLegal(st, seat);
+  return v;
+}
+
+/* Names with counts, most first then by name - how a pool is written down. */
+function draftTally(names){
+  var m = {};
+  (names || []).forEach(function(n){ m[n] = (m[n] || 0) + 1; });
+  return Object.keys(m).sort(function(a, b){ return m[b] - m[a] || (a < b ? -1 : a > b ? 1 : 0); })
+    .map(function(n){ return {name:n, count:m[n]}; });
+}
+function draftLines(names){
+  return draftTally(names).map(function(t){ return t.count + 'x ' + t.name; }).join('\n');
+}
+
+if(typeof module !== 'undefined' && module.exports)
+  module.exports = {DRAFT_TYPES:DRAFT_TYPES, DRAFT_ORDER:DRAFT_ORDER, DRAFT_DECK_SIZE:DRAFT_DECK_SIZE,
+    draftNeed:draftNeed, draftRng:draftRng, draftShuffle:draftShuffle, draftPoolList:draftPoolList,
+    draftDeal:draftDeal, draftNew:draftNew, draftLegal:draftLegal, draftCanMove:draftCanMove,
+    draftWaitingOn:draftWaitingOn, draftApply:draftApply, draftRandomMove:draftRandomMove,
+    draftView:draftView, draftTally:draftTally, draftLines:draftLines, draftHexPair:draftHexPair};
+/* ═══ DRAFT - THE SCREENS, AND THE TABLE (session 55k) ═════════════════════════
+   The rules are cat_draft.js. This is everything a person sees and everything
+   that crosses the wire:
+
+     setup   From Deck Lists (the Draft button on a Draft Deck) or the Deck tab:
+             which Draft Deck, which draft, how many players, the pick timer.
+             The chairs you do not fill are bots, who pick at random.
+     pick    One screen per draft: the pack in front of you (Default), six
+             piles round a hexagon (Hex), four piles on the table (Winchester).
+             Vault has no picking and goes straight to building.
+     build   Everything you drafted on the left, the deck on the right; thirty
+             cards is an Arena deck, and Save writes it to your saved decks.
+
+   ⚠ ONLINE, THE HOST DEALS. The host's machine holds the draft and every other
+   player's machine is sent a view of it - its own pack and nothing else -
+   addressed to that player alone (`to`, which the relay honours; see
+   relay/PROTOCOL.md). Picks go back to the host, who checks them against the
+   rules and sends everyone their new view. It is not cheat-proof and is not
+   meant to be (the author, session 55k): the host's machine knows every pack.
+
+   ⚠ A DRAFT RUNS IN THE WAITING ROOM. The relay's table stays 'waiting' the
+   whole time, so nothing about starting the game changes: once everyone has
+   built and saved, their drafted deck is the one picked in their chair, and
+   the host presses Start Game as for any Arena table.
+
+   ⚠ THE AUTHOR'S STANDING RULES (HANDOFF 12.1): Close ✕ in red and no
+   Cancel; headings in the normal text colour; no reminder text - labels,
+   choices, buttons and state lines only.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+var DR = {
+  open:false,          /* the draft window is on screen */
+  mode:'',             /* '' | solo | host | guest */
+  type:'standard',
+  from:'',             /* the Draft Deck's name */
+  seats:[],            /* [{name, side, id, bot, away}] */
+  me:0,
+  st:null,             /* the draft itself - solo and host only */
+  view:null,           /* what this seat sees */
+  timer:0,             /* seconds a pick may take; 0 is no limit */
+  due:[], dueKey:[],   /* solo/host: when each seat's time runs out */
+  dueMine:0,           /* guest: when mine does, by this machine's clock */
+  hostId:'',           /* guest: who deals */
+  sel:null,            /* chosen, not yet taken */
+  phase:'',            /* pick | build | saved */
+  pool:[],             /* build: everything this seat drafted */
+  deck:{},             /* build: name -> copies in the deck */
+  savedAs:'',
+  rendered:'',
+  botTimer:null,
+  tick:null,
+  botDelay:{standard:380, hex:900, winchester:900}
+};
+var DR_OPTS_KEY = 'conjure_draft_opts';
+var DRS = {deck:'', type:'standard', seats:4, timer:0};   /* the setup's choices */
+var DR_TIMERS = [[0, 'Off'], [30, '30s'], [45, '45s'], [60, '60s'], [90, '90s']];
+
+(function(){
+  try{
+    var o = JSON.parse(localStorage.getItem(DR_OPTS_KEY) || '{}') || {};
+    ['deck', 'type', 'seats', 'timer'].forEach(function(k){ if(o[k] !== undefined) DRS[k] = o[k]; });
+  }catch(_){}
+  if(!DRAFT_TYPES[DRS.type]) DRS.type = 'standard';
+  DRS.seats = Math.max(2, Math.min(4, +DRS.seats || 4));
+  DRS.timer = +DRS.timer || 0;
+})();
+function drSaveOpts(){
+  try{ localStorage.setItem(DR_OPTS_KEY, JSON.stringify(DRS)); }catch(_){}
+}
+
+function drTypeLabel(t){ return (DRAFT_TYPES[t] || {}).label || String(t || ''); }
+function drShort(t){ return (DRAFT_TYPES[t] || {}).short || String(t || ''); }
+
+/* ── DRAFT DECKS ─────────────────────────────────────────────────────────────
+   A saved deck whose type is Draft Deck. Only the main game has them: Arena,
+   which a draft builds, is a main-game format. */
+function drIsDraftDeck(en){ return !!en && typeof en === 'object' && en.mode === 'draft'; }
+function drDraftDecks(){
+  var s = _savedLoad();
+  return Object.keys(s).filter(function(n){ return drIsDraftDeck(s[n]); }).sort();
+}
+/* '' is the Deck tab as it stands now. */
+function drDeckEntry(name){
+  if(!name){
+    var cur = {mode:_gameMode};
+    Object.keys(DECK_IDS).forEach(function(k){
+      var el = document.getElementById(DECK_IDS[k]);
+      cur[k] = el ? el.value : '';
+    });
+    return cur;
+  }
+  var en = _savedLoad()[name];
+  if(typeof en === 'string') en = {main:en};
+  return en || null;
+}
+var _drMap = {n:-1, map:null};
+function drCardMap(){
+  var cs = window.CARDS || [];
+  if(_drMap.n !== cs.length){
+    var m = {};
+    cs.forEach(function(c){ m[c.name] = c; });
+    _drMap = {n:cs.length, map:m};
+  }
+  return _drMap.map;
+}
+function drCard(name){ return drCardMap()[name] || null; }
+/* Every section of the list, less Essence and less any name this catalogue
+   does not have - a card nobody can see is not a card anyone can draft. */
+function drPoolOf(entry){
+  var map = drCardMap(), en = [], missing = 0;
+  ['main', 'essence', 'wish', 'armament'].forEach(function(k){
+    parseDeckLines((entry && entry[k]) || '').forEach(function(x){
+      if(!map[x.name]){ missing += x.count; return; }
+      en.push(x);
+    });
+  });
+  var p = draftPoolList(en, function(n){ return _isEssenceCard(map[n]); });
+  p.missing = missing;
+  return p;
+}
+/* The Deck tab's line for a Draft Deck: the pool, and what is left out. */
+function drPoolLineHTML(p){
+  var h = 'Draft pool &middot; <b>' + p.names.length + '</b> card' + (p.names.length === 1 ? '' : 's');
+  if(p.skipped) h += ' &middot; ' + p.skipped + ' Essence left out';
+  if(p.missing) h += ' &middot; ' + p.missing + ' not in catalog';
+  return h;
+}
+
+/* ── THE SETUP ───────────────────────────────────────────────────────────── */
+function drSegHTML(key, opts, cur){
+  return "<div class='tbl-seg' data-k='dr-" + key + "'>"
+    + opts.map(function(o){
+        var off = o[2] ? ' disabled' : '';
+        return "<button type='button' class='" + (String(o[0]) === String(cur) ? 'on' : '') + "'"
+          + " data-v='" + e(o[0]) + "'" + off + " onclick=\"drSetSeg('" + key + "','" + e(o[0]) + "')\">"
+          + e(o[1]) + "</button>";
+      }).join('')
+    + "</div>";
+}
+function drSetupOpen(name){
+  if(REBIRTH) return false;
+  drSetupClose();
+  var decks = drDraftDecks();
+  var curIsPool = _gameMode === 'draft';
+  if(name != null) DRS.deck = name;
+  if(DRS.deck && decks.indexOf(DRS.deck) < 0) DRS.deck = '';
+  if(!DRS.deck && !curIsPool && decks.length) DRS.deck = decks[0];
+  var ov = document.createElement('div');
+  ov.className = 'td-ov tbl-ov2 dr-setov';
+  ov.id = 'drSetOv';
+  ov.innerHTML = "<div class='ed2-modal tbl-dlg dr-setdlg' role='dialog' aria-label='Draft'>"
+    + "<div class='ed2-modal-head tbl-head'><b>Draft</b>" + tboGamePill('Arena')
+    + "<span class='sg-head-gap'></span>"
+    + "<button class='ed2-btn close-x' onclick='drSetupClose()'>Close &#10005;</button></div>"
+    + "<div class='ed2-modal-body dr-setbody' id='drSetBody'></div>"
+    + "<div class='dr-setfoot'><span class='dr-poolline' id='drPoolLine'></span><span class='tbl-gap'></span>"
+    + "<button class='ed2-btn tbl-green tbl-big' id='drStartBtn' onclick='drStartSolo()'>Start Draft</button></div>"
+    + "</div>";
+  document.body.appendChild(ov);
+  drSetupRender();
+  return true;
+}
+function drSetupClose(){
+  var o = document.getElementById('drSetOv');
+  if(o) o.remove();
+}
+function drSetupRender(){
+  var b = document.getElementById('drSetBody');
+  if(!b) return;
+  var decks = drDraftDecks();
+  var curIsPool = _gameMode === 'draft';
+  var T = DRAFT_TYPES[DRS.type];
+  var seats = drSetupSeats();
+  b.innerHTML = "<div class='tbl-hrow'><div class='tbl-il tbl-grow'><span class='tbl-lbl dr-lw'>Draft Deck</span>"
+      + "<select id='drDeckSel' class='tbl-select' onchange='drSetDeck(this.value)'>"
+      + (curIsPool ? "<option value=''" + (DRS.deck ? '' : ' selected') + ">Current deck</option>" : '')
+      + decks.map(function(n){
+          return "<option value='" + e(n) + "'" + (n === DRS.deck ? ' selected' : '') + ">" + e(n) + "</option>";
+        }).join('')
+      + "</select></div></div>"
+    + "<div class='tbl-hrow'><span class='tbl-lbl dr-lw'>Draft</span>"
+      + drSegHTML('type', DRAFT_ORDER.map(function(k){ return [k, drTypeLabel(k)]; }), DRS.type) + "</div>"
+    + (DRS.type === 'vault' ? '' :
+        "<div class='tbl-hrow'><span class='tbl-lbl dr-lw'>Players</span>"
+        + drSegHTML('seats', [2, 3, 4].map(function(n){
+            return [n, String(n), n < T.min || n > T.max];
+          }), seats)
+        + "<span class='tbl-lbl dr-lw dr-lw2'>Pick timer</span>"
+        + drSegHTML('timer', DR_TIMERS, DRS.timer) + "</div>");
+  var p = drPoolOf(drDeckEntry(DRS.deck));
+  var line = document.getElementById('drPoolLine');
+  if(line) line.innerHTML = (decks.length || curIsPool) ? drPoolLineHTML(p) : 'No Draft Decks saved';
+  var go = document.getElementById('drStartBtn');
+  if(go) go.disabled = !p.names.length;
+}
+/* The chairs a draft of this type can have: Hex is always two, Vault is you. */
+function drSetupSeats(){
+  var T = DRAFT_TYPES[DRS.type];
+  if(DRS.type === 'vault') return 1;
+  return Math.max(T.min, Math.min(T.max, DRS.seats));
+}
+function drSetDeck(v){ DRS.deck = v || ''; drSaveOpts(); drSetupRender(); }
+function drSetSeg(key, v){
+  if(key === 'type' && DRAFT_TYPES[v]) DRS.type = v;
+  else if(key === 'seats') DRS.seats = Math.max(2, Math.min(4, +v || 2));
+  else if(key === 'timer') DRS.timer = +v || 0;
+  drSaveOpts();
+  drSetupRender();
+}
+function drStartSolo(){
+  var entry = drDeckEntry(DRS.deck);
+  var p = drPoolOf(entry);
+  if(!p.names.length) return false;
+  var n = drSetupSeats();
+  var seats = [{name:(TBL && TBL.name) || 'You', side:'a'}];
+  for(var i = 1; i < n; i++) seats.push({name:'Bot ' + i, side:TD_SEATS[i] || '', bot:true});
+  var st = draftNew(DRS.type, p.names, n, (Math.random() * 4294967296) >>> 0);
+  if(!st) return false;
+  drSetupClose();
+  drBegin('solo', DRS.type, DRS.deck || 'Current deck', seats, 0, st, DRS.type === 'vault' ? 0 : DRS.timer);
+  return true;
+}
+
+/* ── ONE DRAFT, FROM START TO SAVED ───────────────────────────────────────── */
+function drBegin(mode, type, from, seats, me, st, timer){
+  drStopTimers();
+  DR.mode = mode; DR.type = type; DR.from = from; DR.seats = seats; DR.me = me;
+  DR.st = st; DR.view = null; DR.timer = timer || 0; DR.due = []; DR.dueKey = [];
+  DR.dueMine = 0; DR.sel = null; DR.phase = 'pick'; DR.pool = []; DR.deck = {};
+  DR.savedAs = ''; DR.rendered = '';
+  drShow();
+  if(st) drAfterChange();
+  else drRender();
+  DR.tick = setInterval(drTick, 250);
+  drRoomRefresh();
+}
+/* The waiting room under the draft says Drafting, and its buttons follow. */
+function drRoomRefresh(){
+  try{ if(typeof tboRoomRender === 'function' && tboDialogOpen() && TBO.view === 'room') tboRoomRender(); }catch(_){}
+}
+function drLocal(){ return DR.mode === 'solo' || DR.mode === 'host'; }
+function drIsBot(i){ var s = DR.seats[i]; return !!(s && (s.bot || s.away)); }
+function drRunning(){ return !!DR.mode && DR.phase === 'pick'; }
+
+/* After every change to the draft, on the machine that holds it. */
+function drAfterChange(){
+  if(!DR.st) return;
+  drArmTimers();
+  if(DR.mode === 'host') drBroadcast();
+  DR.view = draftView(DR.st, DR.me);
+  if(DR.st.done){ drFinish(); return; }
+  drKeepSel();
+  drRender();
+  drBots();
+}
+/* The bots, and anyone who has left an online draft: a legal move at random,
+   after a moment - long enough on the face-up drafts to see what they took. */
+function drBots(){
+  clearTimeout(DR.botTimer);
+  if(!DR.st || DR.st.done || !drLocal()) return;
+  var who = draftWaitingOn(DR.st).filter(drIsBot);
+  if(!who.length) return;
+  DR.botTimer = setTimeout(function(){
+    if(!DR.st || DR.st.done) return;
+    var moved = false;
+    draftWaitingOn(DR.st).filter(drIsBot).forEach(function(s){
+      if(!draftCanMove(DR.st, s)) return;
+      var m = draftRandomMove(DR.st, s);
+      if(m && draftApply(DR.st, s, m)) moved = true;
+    });
+    if(moved) drAfterChange();
+  }, DR.botDelay[DR.type] || 500);
+}
+/* What decision a seat is on - a new one restarts its clock. */
+function drDecisionKey(i){
+  var st = DR.st;
+  if(st.type === 'standard'){
+    var h = st.queue[i][0];
+    return h ? h.id + ':' + h.cards.length : '';
+  }
+  return st.seq + ':' + st.turn;
+}
+function drArmTimers(){
+  if(!DR.timer || !DR.st) return;
+  var now = Date.now();
+  for(var i = 0; i < DR.st.seats; i++){
+    if(!draftCanMove(DR.st, i)){ DR.due[i] = 0; DR.dueKey[i] = ''; continue; }
+    var k = drDecisionKey(i);
+    if(DR.dueKey[i] !== k){ DR.dueKey[i] = k; DR.due[i] = now + DR.timer * 1000; }
+  }
+}
+function drMsLeft(){
+  if(!DR.timer || DR.phase !== 'pick') return 0;
+  if(drLocal()) return DR.due[DR.me] ? Math.max(0, DR.due[DR.me] - Date.now()) : 0;
+  return DR.dueMine ? Math.max(0, DR.dueMine - Date.now()) : 0;
+}
+function drTick(){
+  if(!DR.mode){ drStopTimers(); return; }
+  /* Out of time: a legal move at random for whoever ran out, bots aside -
+     they are never slow. */
+  if(drLocal() && DR.timer && DR.st && !DR.st.done && DR.phase === 'pick'){
+    var now = Date.now(), moved = false;
+    for(var i = 0; i < DR.st.seats; i++){
+      if(drIsBot(i) || !DR.due[i] || now < DR.due[i] || !draftCanMove(DR.st, i)) continue;
+      var m = draftRandomMove(DR.st, i);
+      if(m && draftApply(DR.st, i, m)) moved = true;
+    }
+    if(moved){ DR.sel = null; drAfterChange(); }
+  }
+  drClock();
+}
+function drClock(){
+  var c = document.getElementById('drClock');
+  if(!c) return;
+  var ms = drMsLeft();
+  var mine = DR.view && DR.view.legal && DR.view.legal.length;
+  if(!DR.timer || DR.phase !== 'pick' || !mine){ c.textContent = ''; c.className = 'dr-clock'; return; }
+  var s = Math.ceil(ms / 1000);
+  c.textContent = Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2);
+  c.className = 'dr-clock' + (s <= 10 ? ' low' : '');
+}
+function drStopTimers(){
+  clearTimeout(DR.botTimer); DR.botTimer = null;
+  if(DR.tick){ clearInterval(DR.tick); DR.tick = null; }
+}
+
+/* Take what is chosen - from the button, or a double click. */
+function drGo(){
+  var m = drSelMove();
+  if(!m) return false;
+  return drPick(m);
+}
+function drPick(m){
+  if(DR.phase !== 'pick' || !DR.view) return false;
+  if(drLocal()){
+    if(!draftApply(DR.st, DR.me, m)) return false;
+    DR.sel = null;
+    drAfterChange();
+    return true;
+  }
+  /* A guest asks the host, and waits for the next view to see it happen. */
+  if(!tblSend({t:'dpick', to:DR.hostId, seq:DR.view.seq, m:m})) return false;
+  DR.sel = null;
+  DR.view.legal = [];
+  drRender();
+  return true;
+}
+
+/* ── THE DRAFT IS OVER: BUILD ────────────────────────────────────────────── */
+function drFinish(){
+  clearTimeout(DR.botTimer);
+  DR.phase = 'build';
+  DR.pool = ((DR.view && DR.view.picks) || []).slice();
+  DR.deck = {};
+  DR.sel = null;
+  DR.rendered = '';
+  if(DR.mode === 'guest' || DR.mode === 'host')
+    try{ tboChatSys('The draft is over'); }catch(_){}
+  if(!DR.open) drShow();
+  drRender();
+  drRoomRefresh();
+}
+function drPoolLeft(name){
+  var n = 0;
+  DR.pool.forEach(function(x){ if(x === name) n++; });
+  return n - (DR.deck[name] || 0);
+}
+function drDeckSize(){
+  return Object.keys(DR.deck).reduce(function(a, k){ return a + DR.deck[k]; }, 0);
+}
+/* Thirty, or the whole pool when it is smaller than that. */
+function drDeckGoal(){ return Math.min(DRAFT_DECK_SIZE, DR.pool.length); }
+function drAdd(name){
+  if(DR.phase !== 'build' || drPoolLeft(name) <= 0 || drDeckSize() >= drDeckGoal()) return false;
+  DR.deck[name] = (DR.deck[name] || 0) + 1;
+  drRender();
+  return true;
+}
+function drRemove(name){
+  if(DR.phase !== 'build' || !DR.deck[name]) return false;
+  if(!--DR.deck[name]) delete DR.deck[name];
+  drRender();
+  return true;
+}
+function drDefaultName(){
+  var d = new Date();
+  var mon = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+  var base = drShort(DR.type) + ' Draft · ' + mon + ' ' + d.getDate();
+  if(DR.type === 'standard') base = 'Draft · ' + mon + ' ' + d.getDate();
+  var s = _savedLoad(), name = base, n = 2;
+  while(s[name]) name = base + ' (' + (n++) + ')';
+  return name;
+}
+function drSave(){
+  if(DR.phase !== 'build' || drDeckSize() !== drDeckGoal() || !drDeckGoal()) return false;
+  var inp = document.getElementById('drName');
+  var name = ((inp && inp.value) || '').trim().slice(0, 60) || drDefaultName();
+  var d = _savedLoad();
+  if(d[name] && !confirm('"' + name + '" already exists. Overwrite?')) return false;
+  var main = Object.keys(DR.deck).sort().map(function(k){ return DR.deck[k] + 'x ' + k; }).join('\n');
+  d[name] = {main:main, essence:'', wish:'', mode:'arena',
+             draft:{type:DR.type, from:DR.from, at:Date.now(), pool:draftLines(DR.pool)}};
+  if(!_savedWrite(d)) return false;
+  DR.savedAs = name;
+  DR.phase = 'saved';
+  try{ renderSavedDecks(); }catch(_){}
+  try{ _dlDirty = true; _updateDLCount(); }catch(_){}
+  try{
+    var dlPane = document.getElementById('pane-decklists');
+    if(dlPane && dlPane.style.display !== 'none'){ _dlDirty = false; renderDeckLists(); }
+  }catch(_){}
+  if(typeof toast === 'function') toast('Saved “' + name + '”');
+  /* At a table, the deck you drafted is the deck in your chair. */
+  if(DR.mode === 'guest' || DR.mode === 'host'){
+    try{ tboPickDeck(name); }catch(_){}
+    drClose(true);
+    try{ tblOpenSetup('room'); }catch(_){}
+    return true;
+  }
+  drRender();
+  return true;
+}
+/* Solo, after saving: into the Deck tab, like opening it from Deck Lists. */
+function drOpenSaved(){
+  var name = DR.savedAs, en = name && _savedLoad()[name];
+  if(!en) return false;
+  Object.keys(DECK_IDS).forEach(function(k){
+    var el = document.getElementById(DECK_IDS[k]);
+    if(el) el.value = en[k] || '';
+  });
+  try{ setGameMode('arena'); }catch(_){}
+  try{ updCnt(); _hashSaveDeck(); }catch(_){}
+  drClose(true);
+  try{ showTab('deck'); }catch(_){}
+  return true;
+}
+
+/* ── THE WINDOW ──────────────────────────────────────────────────────────── */
+function drShow(){
+  var ov = document.getElementById('drOv');
+  if(!ov){
+    ov = document.createElement('div');
+    ov.id = 'drOv';
+    ov.className = 'td-ov dr-ov';
+    ov.innerHTML = "<div class='ed2-modal tbl-dlg dr-dlg' role='dialog' aria-label='Draft'>"
+      + "<div class='ed2-modal-head tbl-head dr-head'><b>Draft</b><span id='drPill'></span>"
+      + "<span class='dr-status' id='drStatus'></span><span class='sg-head-gap'></span>"
+      + "<span class='dr-clock' id='drClock'></span>"
+      + "<span id='drActs'></span>"
+      + "<button class='ed2-btn close-x' id='drCloseBtn' onclick='drClose()'>Close &#10005;</button></div>"
+      + "<div class='dr-body'><div class='dr-main' id='drMain'></div><div class='dr-side' id='drSide'></div></div>"
+      + "</div>";
+    document.body.appendChild(ov);
+    drBind(ov);
+  }
+  DR.open = true;
+  DR.rendered = '';
+  window.addEventListener('resize', drRefit);
+}
+function drRefit(){
+  var ov = document.getElementById('drOv');
+  if(ov && typeof tdFitFace === 'function') [].forEach.call(ov.querySelectorAll('.td-face'), tdFitFace);
+}
+/* Close ✕. Solo, a draft still being picked is thrown away - it asks first.
+   The host ending it ends it for everyone, and says so. A guest only puts the
+   window away: the draft goes on, and Open draft in the waiting room brings it
+   back. */
+function drClose(quiet){
+  if(!quiet && DR.mode){
+    if(DR.phase === 'pick' && DR.mode === 'solo' && !confirm('Leave the draft?')) return false;
+    if(DR.phase === 'pick' && DR.mode === 'host' && !confirm('End the draft for everyone?')) return false;
+    if(DR.phase === 'build' && DR.mode === 'solo' && DR.pool.length
+       && !confirm('Leave without saving a deck?')) return false;
+  }
+  var keep = !quiet && (DR.mode === 'guest' || (DR.mode === 'host' && DR.phase === 'build'));
+  if(!quiet && DR.mode === 'host' && DR.phase === 'pick'){
+    try{ tblSend({t:'dstop'}); }catch(_){}
+    try{ tboChatSys('The draft was ended'); }catch(_){}
+  }
+  var ov = document.getElementById('drOv');
+  if(ov) ov.remove();
+  DR.open = false;
+  window.removeEventListener('resize', drRefit);
+  if(!keep) drReset();
+  drRoomRefresh();
+  return true;
+}
+function drReset(){
+  drStopTimers();
+  DR.mode = ''; DR.st = null; DR.view = null; DR.phase = ''; DR.seats = [];
+  DR.pool = []; DR.deck = {}; DR.sel = null; DR.hostId = ''; DR.savedAs = '';
+}
+
+/* One listener each for the whole window; the tiles are redrawn freely. */
+function drBind(ov){
+  var main = ov.querySelector('#drMain'), side = ov.querySelector('#drSide');
+  main.addEventListener('click', function(ev){
+    var t = ev.target.closest('[data-dr]');
+    if(!t) return;
+    drTap(t.getAttribute('data-dr'), t.getAttribute('data-v'));
+  });
+  main.addEventListener('dblclick', function(ev){
+    var t = ev.target.closest('[data-dr]');
+    if(!t) return;
+    if(DR.phase === 'pick'){ drTap(t.getAttribute('data-dr'), t.getAttribute('data-v'), true); }
+  });
+  /* Right-click any card for the full card, as everywhere else. */
+  var peek = function(ev){
+    var f = ev.target.closest('[data-name]');
+    if(!f) return;
+    var c = drCard(f.getAttribute('data-name'));
+    if(!c) return;
+    ev.preventDefault();
+    try{ openMod(c); }catch(_){}
+  };
+  main.addEventListener('contextmenu', peek);
+  side.addEventListener('contextmenu', peek);
+  side.addEventListener('click', function(ev){
+    var t = ev.target.closest('[data-dr]');
+    if(!t) return;
+    drTap(t.getAttribute('data-dr'), t.getAttribute('data-v'));
+  });
+}
+function drTap(kind, v, go){
+  var V = DR.view;
+  if(kind === 'add') return drAdd(v);
+  if(kind === 'rem') return drRemove(v);
+  if(DR.phase !== 'pick' || !V || !V.legal || !V.legal.length) return;
+  if(kind === 'card'){
+    var i = +v;
+    DR.sel = (DR.sel && DR.sel.i === i && !go) ? null : {i:i};
+  } else if(kind === 'pile'){
+    var p = +v;
+    if(V.type === 'winchester'){
+      if(!V.legal.some(function(m){ return m.p === p; })) return;
+      DR.sel = (DR.sel && DR.sel.p === p && !go) ? null : {p:p};
+    } else if(V.type === 'hex'){
+      DR.sel = drHexTap(p, go);
+    }
+  }
+  if(go && drSelMove()){ drGo(); return; }
+  drRender();
+}
+/* Hex: the first pile, then a pile beside it. A pile that cannot pair with
+   the one chosen starts again from itself. */
+function drHexOk(a){ return DR.view.legal.some(function(m){ return m.a === a; }); }
+function drHexTap(p, go){
+  var s = DR.sel;
+  if(s && s.pair != null){
+    var pr = draftHexPair(s.pair);
+    if(pr.indexOf(p) >= 0 && !go) return null;
+    if(pr.indexOf(p) >= 0) return s;
+    s = null;
+  }
+  if(s && s.a != null){
+    if(s.a === p) return null;
+    if((s.a + 1) % 6 === p && drHexOk(s.a)) return {pair:s.a};
+    if((p + 1) % 6 === s.a && drHexOk(p)) return {pair:p};
+  }
+  var can = drHexOk(p) || drHexOk((p + 5) % 6);
+  return can ? {a:p} : null;
+}
+function drSelMove(){
+  var V = DR.view, s = DR.sel;
+  if(!V || !s || DR.phase !== 'pick') return null;
+  if(V.type === 'standard' && s.i != null && V.pack && V.pack.cards[s.i] != null)
+    return {pack:V.pack.id, i:s.i, name:V.pack.cards[s.i]};
+  if(V.type === 'hex' && s.pair != null && drHexOk(s.pair)) return {a:s.pair};
+  if(V.type === 'winchester' && s.p != null && V.legal.some(function(m){ return m.p === s.p; }))
+    return {p:s.p};
+  return null;
+}
+/* A new view can take away what was chosen - the pack moved on, the pile was
+   taken. Keep the choice only while it still means the same thing. */
+function drKeepSel(){
+  if(DR.sel && !drSelMove() && !(DR.view && DR.view.type === 'hex' && DR.sel.a != null)) DR.sel = null;
+}
+
+function drFaceHTML(name){
+  return "<div class='td-face' data-card='" + e(name) + "'></div>";
+}
+function drPaint(root){
+  if(!root) return;
+  if(typeof tdLazyFaces === 'function') tdLazyFaces(root);
+  else if(typeof tdPaintFaces === 'function') tdPaintFaces(root);
+}
+function drSeatName(i){
+  if(i === DR.me) return 'You';
+  var s = DR.seats[i];
+  return (s && s.name) || ('Seat ' + (i + 1));
+}
+
+function drRender(){
+  if(!DR.open) return;
+  var main = document.getElementById('drMain'), side = document.getElementById('drSide');
+  var st = document.getElementById('drStatus'), acts = document.getElementById('drActs');
+  var pill = document.getElementById('drPill');
+  if(!main) return;
+  var V = DR.view;
+  if(pill) pill.innerHTML = tboGamePill(drTypeLabel(DR.type));
+  if(DR.phase === 'build' || DR.phase === 'saved'){ drRenderBuild(main, side, st, acts); return; }
+  if(!V){
+    main.innerHTML = "<div class='dr-empty'>Dealing&hellip;</div>";
+    side.innerHTML = drSeatsHTML(null);
+    if(st) st.innerHTML = '';
+    if(acts) acts.innerHTML = '';
+    return;
+  }
+  var mine = V.legal && V.legal.length;
+  var key = drMainKey(V);
+  if(key !== DR.rendered){
+    DR.rendered = key;
+    if(V.type === 'standard') main.innerHTML = drPackHTML(V);
+    else if(V.type === 'hex') main.innerHTML = drHexHTML(V);
+    else if(V.type === 'winchester') main.innerHTML = drWinHTML(V);
+    drPaint(main);
+  }
+  drLightSel(main, V);
+  if(st) st.innerHTML = drStatusHTML(V);
+  if(acts) acts.innerHTML = "<button class='ed2-btn tbl-green' id='drGo' onclick='drGo()'"
+    + (mine && drSelMove() ? '' : ' disabled') + ">" + (V.type === 'standard' ? 'Pick' : 'Take') + "</button>";
+  side.innerHTML = drSeatsHTML(V) + drLastHTML(V) + drPicksHTML(V.picks, 'Your picks');
+  drClock();
+}
+/* The main area is redrawn only when what is on it changed, so a bot's pick
+   two seats away does not repaint your pack under the pointer. */
+function drMainKey(V){
+  var mine = V.legal && V.legal.length ? 1 : 0;
+  if(V.type === 'standard') return 'std|' + (V.pack ? V.pack.id + ':' + V.pack.cards.length : '-') + '|' + mine;
+  return V.type + '|' + V.seq + '|' + mine;
+}
+function drLightSel(main, V){
+  var s = DR.sel || {};
+  [].forEach.call(main.querySelectorAll('[data-dr]'), function(n){
+    var v = +n.getAttribute('data-v'), on = false, pair = false;
+    if(V.type === 'standard') on = s.i === v;
+    else if(V.type === 'winchester') on = s.p === v;
+    else if(V.type === 'hex'){
+      if(s.pair != null) on = draftHexPair(s.pair).indexOf(v) >= 0;
+      else if(s.a != null){
+        on = s.a === v;
+        pair = ((s.a + 1) % 6 === v && drHexOk(s.a)) || ((v + 1) % 6 === s.a && drHexOk(v));
+      }
+    }
+    n.classList.toggle('sel', on);
+    n.classList.toggle('pair', pair);
+  });
+}
+function drStatusHTML(V){
+  var mine = V.legal && V.legal.length;
+  if(V.type === 'standard'){
+    var h = 'Pack <b>' + (Math.min(V.round, V.rounds - 1) + 1) + '</b> of ' + V.rounds
+      + ' &middot; passing ' + (V.dir > 0 ? 'left' : 'right');
+    if(V.pack) h += ' &middot; pick <b>' + V.pick + '</b>';
+    var q = (V.queued || [])[V.seat] || 0;
+    if(q > 1) h += ' &middot; ' + (q - 1) + ' more waiting';
+    return h;
+  }
+  if(V.type === 'hex'){
+    return 'Round <b>' + (Math.min(V.round, V.rounds - 1) + 1) + '</b> of ' + V.rounds
+      + ' &middot; ' + (mine ? '<b>Your pick</b>' : e(drSeatName(V.turn)) + ' is picking');
+  }
+  if(V.type === 'winchester'){
+    return (mine ? '<b>Your pick</b>' : e(drSeatName(V.turn)) + ' is picking')
+      + ' &middot; ' + V.stack + ' left in the stack';
+  }
+  return '';
+}
+function drPackHTML(V){
+  if(!V.pack) return "<div class='dr-empty'>Waiting for the next pack</div>";
+  return "<div class='dr-grid'>" + V.pack.cards.map(function(n, i){
+    return "<div class='dr-card' data-dr='card' data-v='" + i + "' data-name='" + e(n) + "' title='" + e(n) + "'>"
+      + drFaceHTML(n) + "</div>";
+  }).join('') + "</div>";
+}
+/* Six piles round a hexagon, in ring order - a pile's neighbours on screen
+   are its neighbours in the rules. */
+var DR_HEX_AT = [[31, 20], [69, 20], [88, 50], [69, 80], [31, 80], [12, 50]];
+function drHexHTML(V){
+  var mine = V.legal && V.legal.length;
+  var h = "<div class='dr-hex'>";
+  for(var p = 0; p < 6; p++){
+    var top = V.tops[p], taken = V.taken[p];
+    var cls = 'dr-pile' + (taken != null ? ' taken' : '') + (!mine || taken != null || !top ? ' off' : '');
+    h += "<div class='" + cls + "' data-dr='pile' data-v='" + p + "'"
+      + (top ? " data-name='" + e(top) + "' title='" + e(top) + "'" : '')
+      + " style='left:" + DR_HEX_AT[p][0] + "%;top:" + DR_HEX_AT[p][1] + "%'>"
+      + "<div class='dr-top'>" + (top ? drFaceHTML(top) : "<div class='td-thumb-noart'></div>") + "</div>"
+      + "<span class='dr-h'>" + (taken != null ? 'Taken by ' + e(drSeatName(taken)) : V.heights[p] + ' left') + "</span>"
+      + "</div>";
+  }
+  h += "<div class='dr-hexmid'>Round <b>" + (Math.min(V.round, V.rounds - 1) + 1) + "</b> of " + V.rounds
+    + "<br>" + (mine ? '<b>Your pick</b>' : e(drSeatName(V.turn)) + ' is picking') + "</div>";
+  return h + "</div>";
+}
+function drWinHTML(V){
+  var mine = V.legal && V.legal.length;
+  var h = "<div class='dr-win'>";
+  V.piles.forEach(function(pile, p){
+    var off = !mine || !pile.length;
+    h += "<div class='dr-wpile" + (off ? ' off' : '') + "' data-dr='pile' data-v='" + p + "'>"
+      + "<span class='dr-h'>" + pile.length + (pile.length === 1 ? ' card' : ' cards') + "</span>"
+      + "<div class='dr-wstack'>" + pile.map(function(n){
+          return "<div class='dr-wcard' data-name='" + e(n) + "' title='" + e(n) + "'>" + drFaceHTML(n) + "</div>";
+        }).join('') + "</div></div>";
+  });
+  return h + "</div>";
+}
+function drSeatsHTML(V){
+  if(DR.seats.length < 2) return '';
+  var h = "<div class='dr-sideh'>Players</div><div class='dr-seats'>";
+  DR.seats.forEach(function(s, i){
+    var on = false, sub = '';
+    if(V){
+      if(V.type === 'standard'){
+        on = ((V.queued || [])[i] || 0) > 0;
+        sub = ((V.queued || [])[i] || 0) + ' waiting';
+      } else on = V.turn === i;
+      sub = (V.counts ? V.counts[i] : 0) + ' picked' + (V.type === 'standard' ? ' &middot; ' + sub : '');
+    }
+    h += "<div class='dr-seat" + (on ? ' on' : '') + "'>"
+      + "<span class='tbl-av dr-av tbl-seat-" + e(s.side || TD_SEATS[i] || 'a') + "'>"
+      + e((s.name || '?').charAt(0).toUpperCase()) + "</span>"
+      + "<span class='dr-sname'>" + e(i === DR.me && s.name && s.name !== 'You' ? s.name + ' (you)' : (s.name || '')) + "</span>"
+      + "<small>" + sub + "</small></div>";
+  });
+  return h + "</div>";
+}
+/* The face-up drafts: what everybody took last time round. */
+function drLastHTML(V){
+  var L = V && V.last;
+  if(!L) return '';
+  var name = function(n){ return "<b data-name='" + e(n) + "'>" + e(n) + "</b>"; };
+  if(V.type === 'hex'){
+    return "<div class='dr-sideh'>Last round</div><div class='dr-last'>"
+      + L.picks.map(function(x){ return e(drSeatName(x.seat)) + ': ' + x.cards.map(name).join(', '); }).join('<br>')
+      + (L.gone && L.gone.length ? '<br>Removed: ' + L.gone.map(function(g){ return name(g.card); }).join(', ') : '')
+      + "</div>";
+  }
+  if(V.type === 'winchester'){
+    return "<div class='dr-sideh'>Last pick</div><div class='dr-last'>" + e(drSeatName(L.seat)) + ': '
+      + L.cards.map(name).join(', ') + "</div>";
+  }
+  return '';
+}
+function drPicksHTML(names, title){
+  var t = draftTally(names || []);
+  return "<div class='dr-sideh'>" + e(title) + "<span class='dr-n'>" + (names || []).length + "</span></div>"
+    + "<div class='dr-plist'>" + t.map(function(x){
+        return "<div class='dr-prow' data-name='" + e(x.name) + "' title='" + e(x.name) + "'>"
+          + "<span class='dr-pc'>" + x.count + "</span><span class='dr-pn'>" + e(x.name) + "</span></div>";
+      }).join('') + "</div>";
+}
+
+/* The build screen: the pool as cards, the deck as a list. */
+function drCost(n){ var c = drCard(n); var v = c ? parseFloat(c.cmc) : NaN; return isNaN(v) ? 99 : v; }
+function drRenderBuild(main, side, st, acts){
+  var goal = drDeckGoal(), size = drDeckSize();
+  var t = draftTally(DR.pool).sort(function(a, b){
+    return drCost(a.name) - drCost(b.name) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+  });
+  var key = 'build|' + t.length;
+  if(DR.rendered !== key){
+    DR.rendered = key;
+    main.innerHTML = t.length ? "<div class='dr-grid'>" + t.map(function(x){
+      return "<div class='dr-card' data-dr='add' data-v='" + e(x.name) + "' data-name='" + e(x.name) + "' title='" + e(x.name) + "'>"
+        + drFaceHTML(x.name) + "<span class='dr-cnt'></span></div>";
+    }).join('') + "</div>" : "<div class='dr-empty'>Nothing drafted</div>";
+    drPaint(main);
+  }
+  [].forEach.call(main.querySelectorAll('.dr-card'), function(n){
+    var left = drPoolLeft(n.getAttribute('data-v'));
+    var cnt = n.querySelector('.dr-cnt');
+    if(cnt) cnt.textContent = '×' + left;
+    n.classList.toggle('out', left <= 0);
+  });
+  if(st) st.innerHTML = DR.phase === 'saved'
+    ? 'Saved as <b>' + e(DR.savedAs) + '</b>'
+    : 'Build &middot; <b>' + size + '</b> of ' + goal + ' &middot; ' + DR.pool.length + ' drafted';
+  if(acts) acts.innerHTML = DR.phase === 'saved' && DR.mode === 'solo'
+    ? "<button class='ed2-btn primary' id='drOpenDeck' onclick='drOpenSaved()'>Open in Deck tab</button>" : '';
+  var rows = Object.keys(DR.deck).sort(function(a, b){
+    return drCost(a) - drCost(b) || (a < b ? -1 : a > b ? 1 : 0);
+  }).map(function(n){
+    return "<div class='dr-prow' data-name='" + e(n) + "' title='" + e(n) + "'>"
+      + "<span class='dr-pc'>" + DR.deck[n] + "</span><span class='dr-pn'>" + e(n) + "</span>"
+      + (DR.phase === 'build' ? "<button type='button' class='ed2-btn tiny dr-minus' data-dr='rem' data-v='" + e(n) + "'>&minus;</button>" : '')
+      + "</div>";
+  }).join('');
+  var nameVal = (document.getElementById('drName') || {}).value;
+  side.innerHTML = "<div class='dr-sideh'>Arena Deck<span class='dr-n" + (size === goal ? ' ok' : '') + "'>"
+      + size + ' / ' + goal + "</span></div>"
+    + "<div class='dr-plist dr-deck'>" + (rows || "<div class='dr-none'>No cards yet</div>") + "</div>"
+    + (DR.phase === 'build'
+        ? "<div class='dr-save'><input id='drName' maxlength='60' value='" + e(nameVal || drDefaultName()) + "'>"
+          + "<button class='ed2-btn tbl-green tbl-big' id='drSave' onclick='drSave()'"
+          + (size === goal && goal ? '' : ' disabled') + ">Save Arena Deck</button></div>"
+        : '');
+}
+
+/* ═══ AT A TABLE ═══════════════════════════════════════════════════════════════
+   The host deals and holds the draft. Messages:
+     dstart  host -> everyone   a draft has begun: type, Draft Deck, chairs
+     dview   host -> one seat   (to) that seat's view, and its time left
+     dpick   seat -> host       (to) a move, and the view it was made from
+     dstop   host -> everyone   the host ended it
+   A player who drops keeps their chair: the host picks for them at random
+   while they are gone, and sends them their view the moment they are back. */
+function drTableIsDraft(){ return !!(TBL.table && TBL.table.mode === 'draft'); }
+function drHostStart(){
+  if(!tboIsHost() || TBL.phase !== 'waiting' || !drTableIsDraft() || drRunning()) return false;
+  var type = DRAFT_TYPES[TBL.table.dtype] ? TBL.table.dtype : 'standard';
+  var from = TBO.host.ddeck || drDraftDecks()[0] || '';
+  var entry = from ? drDeckEntry(from) : null;
+  var p = drPoolOf(entry);
+  if(!entry || !p.names.length){
+    if(typeof toast === 'function') toast('No Draft Deck chosen');
+    return false;
+  }
+  var cap = type === 'vault' ? tblSeated().length : (TBL.cap || 2);
+  if(type === 'hex') cap = 2;
+  var sides = type === 'vault' ? tblSeated().slice().sort() : TD_SEATS.slice(0, cap);
+  var seats = sides.map(function(side, i){
+    var s = (TBL.seats || {})[side];
+    return s ? {name:s.name || ('Seat ' + (i + 1)), side:side, id:s.id}
+             : {name:'Bot ' + (i + 1), side:side, bot:true};
+  });
+  var me = -1;
+  seats.forEach(function(s, i){ if(s.side === TD.side) me = i; });
+  if(me < 0) return false;
+  var st = draftNew(type, p.names, seats.length, (Math.random() * 4294967296) >>> 0);
+  if(!st) return false;
+  var timer = type === 'vault' ? 0 : (+TBO.host.dtimer || 0);
+  tblSend({t:'dstart', type:type, from:from, timer:timer, n:p.names.length,
+           seats:seats.map(function(s){ return {name:s.name, side:s.side, bot:!!s.bot}; })});
+  try{ tboChatSys('The draft has started'); }catch(_){}
+  drBegin('host', type, from, seats, me, st, timer);
+  return true;
+}
+function drSeatOfSide(side){
+  for(var i = 0; i < DR.seats.length; i++) if(DR.seats[i].side === side) return i;
+  return -1;
+}
+function drSendView(i){
+  var s = DR.seats[i];
+  if(!s || s.bot || i === DR.me || !DR.st) return;
+  var live = (TBL.seats || {})[s.side];
+  if(!live) return;
+  s.id = live.id;
+  tblSend({t:'dview', to:live.id, type:DR.type, from:DR.from, timer:DR.timer,
+           names:DR.seats.map(function(x){ return {name:x.name, side:x.side, bot:!!x.bot}; }),
+           v:draftView(DR.st, i),
+           left:(DR.timer && DR.due[i]) ? Math.max(0, DR.due[i] - Date.now()) : 0});
+}
+function drBroadcast(){
+  for(var i = 0; i < DR.seats.length; i++) drSendView(i);
+}
+
+/* Everything a draft sends arrives here first. True when it was ours. */
+function drOnMsg(msg, fromId){
+  var t = msg && msg.t;
+  if(t !== 'dstart' && t !== 'dview' && t !== 'dpick' && t !== 'dstop') return false;
+  if(TBL.watch) return true;                    /* spectators are not dealt in */
+  if(t === 'dpick'){
+    if(DR.mode !== 'host' || !DR.st || DR.phase !== 'pick') return true;
+    var i = drSeatOfSide(tblSideOf(fromId, null));
+    if(i < 0 || i === DR.me) return true;
+    if(draftApply(DR.st, i, msg.m)) drAfterChange();
+    else drSendView(i);                         /* stale - here is where it stands */
+    return true;
+  }
+  if(DR.mode === 'host') return true;           /* nobody else deals at this table */
+  if(t === 'dstop'){
+    if(DR.mode === 'guest' && DR.phase === 'pick'){
+      drClose(true);
+      try{ tboChatSys('The host ended the draft'); }catch(_){}
+      if(typeof toast === 'function') toast('The host ended the draft');
+    }
+    return true;
+  }
+  if(t === 'dstart'){
+    if(DR.mode === 'guest' && DR.phase === 'build') return true;   /* still building the last one */
+    DR.hostId = fromId;
+    drBegin('guest', DRAFT_TYPES[msg.type] ? msg.type : 'standard', String(msg.from || ''),
+            (msg.seats || []).map(function(s){ return {name:String(s.name || ''), side:s.side, bot:!!s.bot}; }),
+            0, null, +msg.timer || 0);
+    DR.me = Math.max(0, drSeatOfSide(TD.side));
+    try{ tboChatSys('The draft has started'); }catch(_){}
+    drRender();
+    return true;
+  }
+  if(t === 'dview'){
+    var v = msg.v;
+    if(!v) return true;
+    /* A view with no dstart before it - this machine reloaded mid-draft. */
+    if(DR.mode !== 'guest' || !DR.phase){
+      DR.hostId = fromId;
+      drBegin('guest', DRAFT_TYPES[msg.type] ? msg.type : v.type, String(msg.from || ''),
+              (msg.names || []).map(function(s){ return {name:String(s.name || ''), side:s.side, bot:!!s.bot}; }),
+              v.seat | 0, null, +msg.timer || 0);
+    }
+    if(DR.phase === 'build' || DR.phase === 'saved') return true;
+    DR.hostId = fromId;
+    if(msg.names && msg.names.length)
+      DR.seats = msg.names.map(function(s){ return {name:String(s.name || ''), side:s.side, bot:!!s.bot}; });
+    if(DR.view && v.seq < DR.view.seq) return true;
+    DR.me = v.seat | 0;
+    DR.view = v;
+    DR.dueMine = msg.left ? Date.now() + (+msg.left) : 0;
+    if(v.done){ drFinish(); return true; }
+    drKeepSel();
+    drRender();
+    return true;
+  }
+  return true;
+}
+/* Somebody asked for where things stand - a reconnect. The host sends them
+   their draft as well as their seat. */
+function drOnWant(fromId){
+  if(DR.mode !== 'host' || !DR.st) return;
+  var i = drSeatOfSide(tblSideOf(fromId, null));
+  if(i < 0) return;
+  DR.seats[i].away = false;
+  drSendView(i);
+}
+/* A chair emptied or filled while the host is dealing. */
+function drOnPeer(m){
+  if(DR.mode !== 'host' || !DR.st || m.watch) return;
+  var i = drSeatOfSide(m.side);
+  if(i < 0 || i === DR.me || DR.seats[i].bot) return;
+  DR.seats[i].away = !m.join;
+  if(m.join){ DR.seats[i].id = m.id; drSendView(i); }
+  drBots();
+  drRender();
+}
+/* The host changed: whoever was dealing is gone, and the draft with them. */
+function drOnHost(m){
+  if(DR.mode === 'guest' && DR.phase === 'pick' && m.id !== DR.hostId){
+    drClose(true);
+    try{ tboChatSys('The host left - the draft ended'); }catch(_){}
+    if(typeof toast === 'function') toast('The host left - the draft ended');
+  }
+}
+/* Leaving the table ends a draft still being picked. One being built stays:
+   the cards are yours, and the deck can still be saved. */
+function drOnLeave(){
+  if(!DR.mode || DR.mode === 'solo') return;
+  if(DR.phase === 'pick'){ drClose(true); return; }
+  DR.mode = 'solo';
 }
 /* ═══════════════════════════════════════════════════════════════════════════
    IMPORT AND EXPORT - ONE DOOR EACH
@@ -27304,6 +28852,12 @@ function renderDeckLists(){
 
     var legalClass = savedMode === 'none' ? 'none' : (legal ? 'ok' : 'err');
     var legalIcon = savedMode === 'none' ? '&#8212;' : (legal ? '&#10003;' : '&#10007;');
+    /* ⚠ A DRAFT DECK IS NOT JUDGED (session 55k) - it is a pool, and there is
+       nothing for it to be legal at. Its card says how big the pool is and
+       carries the button that drafts from it. */
+    var isDraft = savedMode === 'draft' && typeof drPoolOf === 'function';
+    var dpool = isDraft ? drPoolOf(entry) : null;
+    if(isDraft){ legalClass = 'none'; legalIcon = '&#8212;'; }
 
     var cardEl = document.createElement('div');
     cardEl.className = 'dl-card';
@@ -27315,12 +28869,19 @@ function renderDeckLists(){
       '<div class="dl-card-hero">'+(heroUrl ? '<img src="'+heroUrl+'" alt="" loading="lazy">' : '')+'<div class="dl-card-hero-grad"></div></div>'+
       '<div class="dl-card-top"><div class="dl-card-name-box"><span class="dl-card-name">'+e(name)+'</span></div><div style="display:flex;align-items:center;gap:4px"><div class="dl-card-mode-box"><span class="dl-card-mode">'+modeLabel+'</span></div><span class="dl-card-legal '+legalClass+'">'+legalIcon+'</span></div></div>'+
       '<div class="dl-card-body">'+
-        '<div class="dl-card-row">'+
-          '<span>Main: <strong>'+mainTotal+'</strong></span>'+
-          '<span>Essence: <strong>'+essTotal+'</strong></span>'+
-          '<span>Wish: <strong>'+wishTotal+'</strong></span>'+
-          '<span>Avg CMC: <strong>'+avgCmc+'</strong></span>'+
-        '</div>'+
+        (isDraft
+          ? '<div class="dl-card-row">'+
+              '<span>Pool: <strong>'+dpool.names.length+'</strong></span>'+
+              (dpool.skipped ? '<span>Essence left out: <strong>'+dpool.skipped+'</strong></span>' : '')+
+              '<span>Avg CMC: <strong>'+avgCmc+'</strong></span>'+
+              '<button class="ed2-btn tiny tbl-green dl-card-draft" data-dn="'+e(name)+'">Draft</button>'+
+            '</div>'
+          : '<div class="dl-card-row">'+
+              '<span>Main: <strong>'+mainTotal+'</strong></span>'+
+              '<span>Essence: <strong>'+essTotal+'</strong></span>'+
+              '<span>Wish: <strong>'+wishTotal+'</strong></span>'+
+              '<span>Avg CMC: <strong>'+avgCmc+'</strong></span>'+
+            '</div>')+
         '<div class="dl-card-bars">'+
           '<canvas class="dl-pip-canvas" style="display:block;width:100%"></canvas>'+
           (essTotal2 > 0 ? '<canvas class="dl-ess-canvas" style="display:block;width:100%;margin-top:3px"></canvas>' : '')+
@@ -27366,6 +28927,12 @@ function renderDeckLists(){
       }
       updCnt(); _hashSaveDeck();
       showTab('deck');
+    });
+
+    var drBtn = cardEl.querySelector('.dl-card-draft');
+    if(drBtn) drBtn.addEventListener('click', function(ev){
+      ev.stopPropagation();
+      drSetupOpen(this.dataset.dn);
     });
 
     cardEl.querySelector('.dl-card-del').addEventListener('click', function(ev){
@@ -27473,6 +29040,7 @@ var _SC_TIPS = [
   {title:'Saving Images / Print Options', desc:'"Images": Will download a .zip file of each card image of cards in your Decks. (Only 1x of each card)\n"Print": Generates a PDF of all the card images in your Deck, with the appropriate amount of each card matching your Deck list. (3 \u00d7 3 per page)\n"Playtest": Generates a PDF of all the cards in your Deck as text-only with symbols for the Mana Cost and Stats of the cards. (For a low ink alternative when wanting quick paper prototyping and playtesting.) (3 \u00d7 3 per page)'},
   {title:'Deck Saved via URL', desc:'Your Deck is saved to the page URL as you edit it. You can copy and share the URL as an alternative to copying the Deck list.'},
   {title:'Filter Persistence via URL', desc:'Browse filters (name search, color, type, CMC) are also saved to the URL. Share a filtered view by copying the URL after applying your filters. (For showing other people certain groups of cards of interest.)'},
+  {title:'Drafting', desc:'A "Draft Deck" (a Deck Type in the Deck tab) is a card list to draft from, not a Deck to play - every card in it is in the pool except Essence, which Arena provides. Press "Draft" on it in Deck Lists and choose:\n"Default Draft": four packs of 15 each - pick one, pass the rest (left, right, left, right).\n"Vault": 120 cards each, nothing to pick.\n"Hex Draft" (2 players): six piles of 30 round a hexagon - take the top card of two side-by-side piles; the other player takes two of the four left; the last two are removed.\n"Winchester" (2-4 players): four face-up piles - take a whole pile, then every pile gets one more card.\nChairs you do not fill are bots that pick at random. A short pool deals every card once before repeating any. When the draft ends, build an Arena Deck of exactly 30 from what you took and save it. At a table, the host picks Mode: Draft in Options and presses "Start Draft" in the waiting room.'},
   {title:'Tabletop Simulator', desc:'Use the "TTS" button to export your Deck as a single .json file you can copy and paste into Tabletop Simulator.'},
   {title:'Install Website', desc:'"Install Website" (top bar) installs Conjure as an app on playconjure.com - its own window and icon, and it opens even with no internet. The same panel downloads the whole catalog as one .html file to keep for yourself: open it from your computer and use it as a desktop Deck editing tool, and it keeps working if the website ever goes down. "Card art offline" saves every picture so art shows without the internet too.'}
 ];
