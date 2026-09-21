@@ -10,13 +10,13 @@
     "xf": {
      "z": 1,
      "x": 0,
-     "y": 0,
+     "y": 7.5,
      "r": 0,
      "f": 1
     }
    },
    "v": {
-    "fit": "contain",
+    "fit": "cover",
     "xf": {
      "z": 1,
      "x": 0,
@@ -93,9 +93,591 @@
    "h": "left",
    "v": "top"
   },
-  "kwStyles": {},
+  "kwStyles": {
+   "Absolute": {
+    "o": "#e8e8d9",
+    "oh": "#ff00f7",
+    "f": "#ebe6d5",
+    "fh": "#6feccd",
+    "t": "#302803",
+    "shape": "box",
+    "hl": "fiery",
+    "w": 1.5
+   },
+   "Shade": {
+    "o": "#2a2c21",
+    "oh": "#6a13ec",
+    "f": "#21234a",
+    "fh": "#49109d",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "voidhl",
+    "w": 3
+   },
+   "Firebreathing": {
+    "o": "#4d0000",
+    "oh": "#fedc34",
+    "f": "#ff0000",
+    "fh": "#ffdd00",
+    "t": "#ffffff",
+    "shape": "dpoint",
+    "hl": "fiery",
+    "w": 1.5
+   },
+   "Coalesce": {
+    "o": "#096761",
+    "oh": "#07f2c3",
+    "f": "#10935a",
+    "fh": "#b7fbfa",
+    "t": "#ffffff",
+    "shape": "point",
+    "hl": "elven",
+    "w": 1.5
+   },
+   "Desperation": {
+    "o": "#251818",
+    "oh": "#5d3c3c",
+    "f": "#211c1c",
+    "fh": "#a99898",
+    "t": "#ffffff",
+    "shape": "point",
+    "hl": "demonic",
+    "w": 3
+   },
+   "Airborne": {
+    "o": "#080f3f",
+    "oh": "#0d2b6e",
+    "f": "#566a99",
+    "fh": "#92509b",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "ghost",
+    "w": 1.5
+   },
+   "Amalgam": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#2b3242",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "box",
+    "hl": "prism",
+    "w": 1.5
+   },
+   "Amass": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#2b3242",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "box",
+    "hl": "prism",
+    "w": 1.5
+   },
+   "Amplify": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#2b3242",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "point",
+    "hl": "irid",
+    "w": 1.5
+   },
+   "Arrive": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#2b3242",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "point",
+    "hl": "gold",
+    "w": 1.5
+   },
+   "Barrier": {
+    "o": "#033468",
+    "oh": "#00eeff",
+    "f": "#66c8e1",
+    "fh": "#f3ffb8",
+    "t": "#ffffff",
+    "shape": "dpoint",
+    "hl": "esper",
+    "w": 2.5
+   },
+   "Battlecry": {
+    "o": "#865c4b",
+    "oh": "#6c5a3d",
+    "f": "#41382a",
+    "fh": "#f37e39",
+    "t": "#ffffff",
+    "shape": "point",
+    "hl": "bronze",
+    "w": 1.5
+   },
+   "Bloodlust": {
+    "o": "#4d0000",
+    "oh": "#ff7575",
+    "f": "#610505",
+    "fh": "#ff0000",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "blood",
+    "w": 1.5
+   },
+   "Decayed": {
+    "o": "#5f3c77",
+    "oh": "#c800ff",
+    "f": "#4f4252",
+    "fh": "#480ced",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "blood",
+    "w": 1.5
+   },
+   "Demise": {
+    "o": "#151923",
+    "oh": "#715656",
+    "f": "#2d3443",
+    "fh": "#758299",
+    "t": "#ffffff",
+    "shape": "point",
+    "hl": "ember",
+    "w": 3
+   },
+   "Depleted": {
+    "o": "#1c0029",
+    "oh": "#fb00ff",
+    "f": "#342d33",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "box",
+    "hl": "voidhl",
+    "w": 1.5
+   },
+   "Domain": {
+    "o": "#0f1513",
+    "oh": "#4e5656",
+    "f": "#2b3146",
+    "fh": "#f0ab5c",
+    "t": "#ffffff",
+    "shape": "point",
+    "hl": "verdigris",
+    "w": 3
+   },
+   "Dredge": {
+    "o": "#101d23",
+    "oh": "#00aaff",
+    "f": "#293d42",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "box",
+    "hl": "abyssal",
+    "w": 3
+   },
+   "Elevate": {
+    "o": "#413941",
+    "oh": "#b5d1e3",
+    "f": "#4c4b71",
+    "fh": "#4a5ce3",
+    "t": "#ffffff",
+    "shape": "box",
+    "hl": "platinum",
+    "w": 3
+   },
+   "Empower": {
+    "o": "#184e81",
+    "oh": "#0f8ddb",
+    "f": "#b1b4cd",
+    "fh": "#1e00ff",
+    "t": "#ffffff",
+    "shape": "point",
+    "hl": "prism",
+    "w": 1.5
+   },
+   "Enact": {
+    "o": "#811845",
+    "oh": "#db0f0f",
+    "f": "#cdb1b1",
+    "fh": "#ff0000",
+    "t": "#ffffff",
+    "shape": "point",
+    "hl": "prism",
+    "w": 1.5
+   },
+   "Envoy": {
+    "o": "#2d3300",
+    "oh": "#b9f042",
+    "f": "#b6c57c",
+    "fh": "#f3ffb8",
+    "t": "#ffffff",
+    "shape": "box",
+    "hl": "pearl",
+    "w": 2.5
+   },
+   "Flux": {
+    "o": "#767e11",
+    "oh": "#e1ff00",
+    "f": "#e1ff00",
+    "fh": "#00e1ff",
+    "t": "#ffffff",
+    "shape": "box",
+    "hl": "necro",
+    "w": 1.5
+   },
+   "Fortify": {
+    "o": "#524700",
+    "oh": "#ffd500",
+    "f": "#ffbb00",
+    "fh": "#f3ffb8",
+    "t": "#ffffff",
+    "shape": "dpoint",
+    "hl": "esper",
+    "w": 1.5
+   },
+   "Fury": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#2b3242",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "ember",
+    "w": 1.5
+   },
+   "Gouge": {
+    "o": "#331a4c",
+    "oh": "#f5e0ff",
+    "f": "#471976",
+    "fh": "#240330",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "esper",
+    "w": 2
+   },
+   "Guardian": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#2b3242",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "silver",
+    "w": 3
+   },
+   "Illusion": {
+    "o": "#7d0af0",
+    "oh": "#00ffee",
+    "f": "#b29cec",
+    "fh": "#1612e2",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "esper",
+    "w": 3
+   },
+   "Immune": {
+    "o": "#2a2c21",
+    "oh": "#6a13ec",
+    "f": "#21234a",
+    "fh": "#49109d",
+    "t": "#ffffff",
+    "shape": "point",
+    "hl": "arcane",
+    "w": 3
+   },
+   "Intimidate": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#2b3242",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "voidhl",
+    "w": 1.5
+   },
+   "Invulnerable": {
+    "o": "#2a2c21",
+    "oh": "#ec6a13",
+    "f": "#31214a",
+    "fh": "#5c03e2",
+    "t": "#ffffff",
+    "shape": "pill",
+    "hl": "holy",
+    "w": 3
+   },
+   "Lethal": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#404a45",
+    "fh": "#283e32",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "necro",
+    "w": 1.5
+   },
+   "Lucky": {
+    "o": "#341209",
+    "oh": "#7f4605",
+    "f": "#d6a800",
+    "fh": "#ffffff",
+    "t": "#ffffff",
+    "shape": "pill",
+    "hl": "gold",
+    "w": 3
+   },
+   "Mechanical": {
+    "o": "#413941",
+    "oh": "#b5d1e3",
+    "f": "#4c4b71",
+    "fh": "#4a5ce3",
+    "t": "#ffffff",
+    "shape": "point",
+    "hl": "bronze",
+    "w": 3
+   },
+   "Meditate": {
+    "o": "#122a97",
+    "oh": "#00b3ff",
+    "f": "#145bff",
+    "fh": "#b3ecff",
+    "t": "#ffffff",
+    "shape": "dpoint",
+    "hl": "frost",
+    "w": 1.5
+   },
+   "Miracle": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#2b3242",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "box",
+    "hl": "prism",
+    "w": 1.5
+   },
+   "Mutate": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#2b3242",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "pill",
+    "hl": "verdigris",
+    "w": 1.5
+   },
+   "Overwhelm": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#2b3242",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "earthen",
+    "w": 1.5
+   },
+   "Prismatic": {
+    "o": "#007036",
+    "oh": "#ffffff",
+    "f": "#94f3ff",
+    "fh": "#5286ff",
+    "t": "#ffffff",
+    "shape": "point",
+    "hl": "prism",
+    "w": 1.5
+   },
+   "Puppeteer": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#2b3242",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "point",
+    "hl": "esper",
+    "w": 1.5
+   },
+   "Raid": {
+    "o": "#a45656",
+    "oh": "#bb472a",
+    "f": "#6b271f",
+    "fh": "#986767",
+    "t": "#ffffff",
+    "shape": "point",
+    "hl": "copper",
+    "w": 1.5
+   },
+   "Seal": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#040f2a",
+    "fh": "#4e5d79",
+    "t": "#ffffff",
+    "shape": "dpoint",
+    "hl": "ghost",
+    "w": 2
+   },
+   "Sealed": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#040f2a",
+    "fh": "#4e5d79",
+    "t": "#ffffff",
+    "shape": "dpoint",
+    "hl": "ghost",
+    "w": 2
+   },
+   "Seance": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#301a51",
+    "fh": "#0958ec",
+    "t": "#ffffff",
+    "shape": "point",
+    "hl": "pearl",
+    "w": 2
+   },
+   "Snare": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#2b3242",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "elven",
+    "w": 3
+   },
+   "Sovereign": {
+    "o": "#36290d",
+    "oh": "#efeecc",
+    "f": "#fefa90",
+    "fh": "#5cffe4",
+    "t": "#ffffff",
+    "shape": "point",
+    "hl": "platinum",
+    "w": 1.5
+   },
+   "Steadfast": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#2b3242",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "silver",
+    "w": 1.5
+   },
+   "Sustain": {
+    "o": "#7b370a",
+    "oh": "#73b5f2",
+    "f": "#f5e594",
+    "fh": "#f0dd0a",
+    "t": "#fff1e0",
+    "shape": "slant",
+    "hl": "holy",
+    "w": 1.5
+   },
+   "Swift": {
+    "o": "#750000",
+    "oh": "#ffe0e0",
+    "f": "#d82222",
+    "fh": "#fef162",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "solar",
+    "w": 3
+   },
+   "Taunt": {
+    "o": "#2c302d",
+    "oh": "#c8cedb",
+    "f": "#5a8c5e",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "verdant",
+    "w": 1.5
+   },
+   "Thaumaturge": {
+    "o": "#1100ff",
+    "oh": "#ff00ff",
+    "f": "#0033ff",
+    "fh": "#d400ff",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "platinum",
+    "w": 3
+   },
+   "Toughened": {
+    "o": "#20242e",
+    "oh": "#c8cedb",
+    "f": "#2b3242",
+    "fh": "#6b7891",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "earthen",
+    "w": 1.5
+   },
+   "Unblockable": {
+    "o": "#080354",
+    "oh": "#fe10a7",
+    "f": "#512e52",
+    "fh": "#30216e",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "abyssal",
+    "w": 3
+   },
+   "Unique": {
+    "o": "#d9e8e8",
+    "oh": "#6600ff",
+    "f": "#d9eaed",
+    "fh": "#8bfe93",
+    "t": "#000000",
+    "shape": "box",
+    "hl": "lunar",
+    "w": 3
+   },
+   "Unlimited": {
+    "o": "#2d1f2c",
+    "oh": "#350dd3",
+    "f": "#382a41",
+    "fh": "#6a8690",
+    "t": "#ffffff",
+    "shape": "box",
+    "hl": "platinum",
+    "w": 1.5
+   },
+   "Volley": {
+    "o": "#471010",
+    "oh": "#6d5912",
+    "f": "#614838",
+    "fh": "#c1a276",
+    "t": "#ffffff",
+    "shape": "slant",
+    "hl": "fiery",
+    "w": 1.5
+   }
+  },
   "pillsOn": true,
-  "kwCustom": [],
+  "kwCustom": [
+   {
+    "id": "kwc_cmslxxzn1s5434",
+    "name": "Animate counter",
+    "mode": "counter",
+    "match": "Animate counter",
+    "matchAlt": "",
+    "param": "none",
+    "reminder": "Animate counter — An Object or Ongoing card with an Animate counter on it is a Character in addition to its other types and has Attack and Health equal to its Mana Cost.",
+    "reminderBare": "Animate counter —  An Object or Ongoing card with an Animate counter on it is a Character in addition to its other types and has Attack and Health equal to its Mana Cost."
+   },
+   {
+    "id": "kwc_cmtr9p43fa273g",
+    "name": "Flip a Coin",
+    "mode": "dice",
+    "match": "Flip a Coin",
+    "matchAlt": "flip a coin",
+    "param": "none",
+    "reminder": "Flip a coin to determine \"Heads or Tails\".",
+    "reminderBare": ""
+   }
+  ],
   "format": 1
  },
  "marks": []

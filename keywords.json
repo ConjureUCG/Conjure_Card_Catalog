@@ -540,12 +540,6 @@
   "reminder": "Each Onset — At the start of each turn, ..."
  },
  {
-  "name": "Flip a Coin",
-  "mode": "dice",
-  "match": "Flip a Coin",
-  "reminder": "Flip a Coin to determine \"Heads or Tails\"."
- },
- {
   "name": "flip a coin",
   "mode": "dice",
   "match": "flip a coin",
@@ -594,12 +588,6 @@
   "reminder": "Color counter — Color counters correspond to the colors of Conjure. Only existing colors may be chosen for Color counters (Red, Orange, Yellow, Green, Blue, Indigo, Violet). Color counters, on their own, don’t do anything innately."
  },
  {
-  "name": "Animate counter",
-  "mode": "counter",
-  "match": "Animate counter",
-  "reminder": "Animate counter - An Object or Ongoing card with an Animate counter on it is a Character in addition to its other types and has Attack and Health equal to its Mana Cost."
- },
- {
   "name": "Shield counter",
   "mode": "counter",
   "match": "Shield counter",
@@ -633,12 +621,43 @@
   "name": "+1 counter",
   "mode": "counter",
   "match": "+1 counter",
-  "reminder": "+1 counter — ..."
+  "reminder": ""
  },
  {
   "name": "-1 counter",
   "mode": "counter",
   "match": "-1 counter",
-  "reminder": "-1 counter — ..."
+  "reminder": ""
+ },
+ {
+  "name": "Animate counter",
+  "mode": "counter",
+  "match": "Animate counter",
+  "reminder": "Animate counter — An Object or Ongoing card with an Animate counter on it is a Character in addition to its other types and has Attack and Health equal to its Mana Cost.",
+  "reminderBare": "Animate counter —  An Object or Ongoing card with an Animate counter on it is a Character in addition to its other types and has Attack and Health equal to its Mana Cost.",
+  "param": "none",
+  "__custom": true,
+  "__id": "kwc_cmslxxzn1s5434"
+ },
+ {
+  "name": "Flip a Coin",
+  "mode": "dice",
+  "match": "Flip a Coin",
+  "reminder": "Flip a coin to determine \"Heads or Tails\".",
+  "reminderBare": "",
+  "param": "none",
+  "__custom": true,
+  "__id": "kwc_cmtr9p43fa273g"
+ },
+ {
+  "name": "Flip a Coin",
+  "mode": "dice",
+  "match": "flip a coin",
+  "reminder": "Flip a coin to determine \"Heads or Tails\".",
+  "reminderBare": "",
+  "param": "none",
+  "__custom": true,
+  "__id": "kwc_cmtr9p43fa273g",
+  "__alias": true
  }
 ]
