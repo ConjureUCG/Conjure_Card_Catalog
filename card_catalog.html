@@ -2276,11 +2276,26 @@ span.ed2-sagachip{cursor:default}
 /* ══ card popout header ═════════════════════════════════════════════════════
    Close was a 34px circle holding a bare glyph. It is now a labelled button,
    with Edit directly beneath it at the SAME width so the two read as a pair.
-   Both are absolutely positioned like the Download button beside them. */
-.mo .mcl{width:104px;height:34px;border-radius:0;gap:6px;font-family:'Cinzel',serif;
+   Both are absolutely positioned like the Download button beside them.
+
+   ⚠ DOWNLOAD IS THE THIRD BUTTON IN THE SAME STACK (the author, session
+   55j): Close ✕, then Edit, then Download, one under the other, all the same
+   width, all against the same right edge. It used to sit to the LEFT of Close
+   at a fixed offset - first ON Close by 57px (Close had grown from a 34px
+   circle into a 104px button and nothing moved Download), then placed from
+   Close's width, where on a narrower window it landed behind the card's own
+   details and could not be seen at all. A stack cannot collide with anything:
+   each button has the column to itself. */
+.mo{--m-ctlw:104px;--m-ctlgap:7px;--m-ctlright:11px;--m-ctlh:34px}
+.mo .mdn{top:calc(11px + (var(--m-ctlh) + var(--m-ctlgap)) * 2);right:var(--m-ctlright);
+  width:var(--m-ctlw);height:var(--m-ctlh);padding:0;justify-content:center;
+  border-width:2.5px;box-sizing:border-box}
+.mo .mdn-date{display:none}
+.mo.no-edit .mdn{top:calc(11px + var(--m-ctlh) + var(--m-ctlgap))}
+.mo .mcl{width:var(--m-ctlw);height:34px;border-radius:0;gap:6px;font-family:'Cinzel',serif;
   font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
-  white-space:nowrap;padding:0}
-.mo .medit{position:absolute;top:52px;right:11px;width:104px;height:34px;
+  white-space:nowrap;padding:0;right:var(--m-ctlright)}
+.mo .medit{position:absolute;top:52px;right:var(--m-ctlright);width:var(--m-ctlw);height:34px;
   background:rgba(92,158,110,.1);border:2.5px solid var(--gr);color:var(--gr);
   border-radius:0;display:flex;align-items:center;justify-content:center;gap:6px;
   cursor:pointer;font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;
@@ -2410,7 +2425,14 @@ span.ed2-sagachip{cursor:default}
 .ed2-sec{border:1px solid var(--b1);border-radius:8px;padding:7px 9px;
   background:rgba(255,255,255,.02);display:flex;flex-direction:column;gap:5px}
 .ed2-sec-h{font-family:'Cinzel',serif;font-size:.66rem;font-weight:700;
-  letter-spacing:.08em;text-transform:uppercase;color:var(--tx)}
+  letter-spacing:.08em;text-transform:uppercase;color:var(--tx);
+  display:flex;align-items:center;gap:8px}
+/* This section's own Individual switch, at the right of its heading. Shown
+   only while All Individual is off - see rulesEditorHTML. */
+.ed2-sec-id{display:flex;align-items:center;gap:5px;cursor:pointer;
+  margin-left:auto;color:#9aa4b6;font-size:11.5px;letter-spacing:.04em;
+  text-transform:none;font-family:'Crimson Pro',serif;white-space:nowrap}
+.ed2-sec-id input{accent-color:var(--go);cursor:pointer}
 /* Mana cost beside name, super beside sub - the same pairing the main card
    editor uses, so the two read the same way. */
 .ed2-sec-idrow{display:flex;gap:7px}
@@ -3577,6 +3599,23 @@ body:not(.mse-template) .mcard .m-rules-split.has-ident{
 body:not(.mse-template) .mcard .m-rules-split.has-ident .m-rsecs{gap:0}
 body:not(.mse-template) .mcard .m-rules-split.has-ident .m-rsec.ident{
   border-radius:0;margin:0}
+/* ⚠ A PLAIN SECTION IN A MIXED SPLIT KEEPS THE BOX IT WOULD HAVE HAD (the
+   author, session 55j). The rule above takes the parent's panel away the
+   moment ANY section is individual, on the old assumption that then they all
+   were. Once sections could be chosen one by one, a plain section beside an
+   individual one was left with no panel, no ring and nothing behind its text
+   but the bare frame - it read as a box that had vanished. It gets the card's
+   own rules panel back here: the card's colours (a plain section carries no
+   colour overrides of its own), the same ring, the same inset - the section
+   as it would look if Individual were not in use at all, in a row with the
+   ones that are. */
+body:not(.mse-template) .mcard .m-rules-split.has-ident .m-rsec:not(.ident){
+  border:3px solid transparent;border-radius:0;margin:0;background-origin:border-box;
+  background:linear-gradient(var(--m-panel),var(--m-panel)) padding-box,
+             var(--pin,var(--frame)) border-box;
+  box-shadow:0 0 0 1px var(--ink-dark,#141418),
+             inset 0 0 0 1px var(--ink-dark,#141418);
+  color:var(--m-ink);padding:3px 5px}
 
 /* ── THE CHOICE LINE ─────────────────────────────────────────────────────────
    One line across the top of a split rules box - "Choose 1", "Roll D4". Shown
@@ -5924,6 +5963,17 @@ body.light .tbl-dlg .ed2-btn.close-x:hover{color:#fff;background:rgba(128,48,48,
    gold frame is the shared one at the end of this file. */
 .tbl-box{display:flex;align-items:center;gap:12px;padding:12px 14px}
 .tbl-onerow{flex-wrap:nowrap}
+/* ⚠ THE HOST BOX IS A COLUMN NOW (session 55i): its one row, and under it
+   the options it unfolds. The row keeps the old .tbl-onerow behaviour; the box
+   stops being a row itself so the panel can sit beneath rather than beside. */
+.tbl-hostwrap{flex-direction:column;align-items:stretch;gap:0}
+.tbl-hostline{display:flex;align-items:center;gap:12px}
+.tbl-hostopts{border-top:1px solid rgba(42,47,69,.6);margin-top:10px}
+.tbl-hostopts[hidden]{display:none}
+/* Inside the box it needs no padding of its own on the sides - the box has it -
+   and the last row's rule would double the box's own edge. */
+.tbl-hostopts .tbl-hostbody{padding:2px 0 0}
+.tbl-hostopts .tbl-hrow:last-child{border-bottom:0;padding-bottom:2px}
 .tbl-box h5{margin:0;font-size:.92rem;white-space:nowrap}
 @media (max-width:760px){.tbl-onerow{flex-wrap:wrap}}
 
@@ -7943,6 +7993,12 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
         <div class='sg-bar sg-head'>
           <div class='fl fl-left sg-title'>Sagas</div>
           <button class='ed2-btn tiny' onclick='edOpenStats()'>Statistics</button>
+          <!-- USE DEFAULT LOOK (the author, session 55j): on by default, and
+               while it is on the official look.json is applied and kept current
+               with every sync. The state is filled in by ghRestoreOfficial once
+               the editor has read it; checked here so the first paint agrees
+               with the default. -->
+          <div class='info-toggle-wrap sg-look-tog'><span class='info-toggle-lbl'>Use Default Look</span><label class='hl-toggle' title='Use the official look, and keep it current'><input type='checkbox' id='sgUseLook' checked onchange='edSetUseDefaultLook(this.checked)'><span class='hl-slider'></span></label></div>
           <span class='sg-head-gap'></span>
           <!-- The two saga imports moved to the Import panel on the top row,
                which asks which saga rather than being a second place to look. -->
@@ -9926,8 +9982,12 @@ function catFilterPred(f){
     /* A card whose rules box is split into sections that carry their OWN name,
        type line and mana cost has to be findable by them - but it is still ONE
        card and still appears once, as itself. sf is null for every card that is
-       not split that way, and the c.splitIdent pre-check keeps the cost of that
-       to a single property read across the whole catalog.
+       not split that way, and the pre-check keeps the cost of that to a single
+       property read across the whole catalog for a card that is not split.
+
+       ⚠ ONE SECTION MAY BE INDIVIDUAL WHILE THE CARD-LEVEL SWITCH IS OFF
+       (session 55i), so the pre-check cannot be c.splitIdent alone any more -
+       edAnyIdent answers both, and still costs one read on a normal card.
 
        ⚠ RULE TEXT NEEDED SOMETHING HERE AFTER ALL. This used to read
        c.ruleText and say so in a comment: "a split card's ruleText is kept in
@@ -9935,7 +9995,8 @@ function catFilterPred(f){
        step BY THE EDITOR, on three code paths, and by nothing else - and never
        carrying the Choice line at all. cardRuleText asks the card what it
        says. */
-    var sf=c.splitIdent?((typeof window.edSplitFacets==='function')?window.edSplitFacets(c):null):null;
+    var _si=(typeof window.edAnyIdent==='function')?window.edAnyIdent(c):!!c.splitIdent;
+    var sf=_si?((typeof window.edSplitFacets==='function')?window.edSplitFacets(c):null):null;
     /* ⚠ FOUR MORE FIELDS READ BARE, AND ANY ONE OF THEM BLANKED THE PAGE.
        The note on (c.colors||[]) below already records this failure and why it
        matters - a thrown filter callback is not an error anybody sees, the grid
@@ -10699,9 +10760,13 @@ function openMod(card){
   /* ⚠ NO EDIT BUTTON ON A CARD THAT CANNOT BE EDITED (the author, session
      55g). Official cards open read-only for everyone but whoever holds the
      official repository's token - see edCardLocked in the editor. */
+  var _locked=(typeof window.edCardLocked==='function' && window.edCardLocked(card));
   var _med=document.querySelector('.mo .medit');
-  if(_med) _med.style.display =
-    (typeof window.edCardLocked==='function' && window.edCardLocked(card)) ? 'none' : '';
+  if(_med) _med.style.display = _locked ? 'none' : '';
+  /* With no Edit, Download moves up into its place in the stack rather than
+     leaving a button-sized hole under Close (session 55j). */
+  var _mo=document.querySelector('.mo');
+  if(_mo) _mo.classList.toggle('no-edit', !!_locked);
   var _mdi=document.getElementById('mdi');
   /* Hand the CARD to the editor and let it draw the real face. This used to go
      the long way round - write an <img data-cname>, wait 10ms, have the editor
@@ -23359,9 +23424,22 @@ window.tblSyncHeaderBtn = tblSyncHeaderBtn;
    a dialog's head is no place for a text field that brings its own hint. */
 /* ⚠ THE LABEL IS ON THE FIELD'S OWN ROW, to its left (the author, session
    55g). */
+/* ⚠ THE FIELD IS FILLED IN, NOT LEFT BLANK (the author, session 55i).
+   It used to come up empty whenever the built-in relay was the one in use, on
+   the reasoning that there was nothing to type. What a new player actually saw
+   was an empty box asking for an address they had never heard of, with the
+   answer sitting in the app the whole time. It shows the address it is
+   ACTUALLY using now - the built-in one, or your own - and typing over it is
+   still how you point somewhere else.
+
+   ⚠ IF THIS IS EMPTY ON THE LIVE SITE, THE ADDRESS WAS NEVER BAKED IN.
+   TBL_DEFAULT_RELAY is written by tools/set_relay.py (Deploy-Relay.bat runs it
+   for you); until it is, there is no default to fill in and the box is a
+   question, as it always was. */
 function tblRelayAddrHTML(){
+  var shown = TBL.url || TBL_DEFAULT_RELAY || '';
   return "<label class='tbl-f tbl-urlrow'><span>Relay address</span>"
-    + "<input id='tblUrl' onchange='tboRelayChanged()' value='" + e(TBL_DEFAULT_RELAY && tblOnDefault() ? '' : TBL.url) + "'"
+    + "<input id='tblUrl' onchange='tboRelayChanged()' value='" + e(shown) + "'"
     + " placeholder='" + (TBL_DEFAULT_RELAY ? 'ws://192.168.1.24:8790'
                                             : 'wss://conjure-relay.example.workers.dev')
     + "'></label>";
@@ -24787,12 +24865,16 @@ function tboHubHTML(){
     + "</div>"
     + "<div class='ed2-modal-body tbl-body'>"
       + tblRelayBoxHTML()
-      + "<div class='tbl-box tbl-onerow' id='tblHostBox'><h5>Host a table</h5>"
-        + tboSegHTML('seats', [['2', '2'], ['3', '3'], ['4', '4']], h.seats)
-        + tboPPHTML('host', h.pub)
-        + "<span class='tbl-gap'></span>"
-        + "<button class='ed2-btn' id='tblOptBtn' onclick='tboOpenHost()'>Options</button>"
-        + "<button class='ed2-btn primary' id='tblHostBtn' onclick='tblHostNew()'>Host</button>"
+      + "<div class='tbl-box tbl-hostwrap' id='tblHostBox'>"
+        + "<div class='tbl-onerow tbl-hostline'><h5>Host a table</h5>"
+          + tboSegHTML('seats', [['2', '2'], ['3', '3'], ['4', '4']], h.seats)
+          + tboPPHTML('host', h.pub)
+          + "<span class='tbl-gap'></span>"
+          + "<button class='ed2-btn' id='tblOptBtn' onclick='tboOpenHost()'>Options</button>"
+          + "<button class='ed2-btn primary' id='tblHostBtn' onclick='tblHostNew()'>Host</button>"
+        + "</div>"
+        /* Unfolded by Options, in the box rather than over it. */
+        + "<div class='tbl-hostopts' id='tblHostOpts' hidden></div>"
       + "</div>"
       + "<div class='tbl-box tbl-onerow' id='tblCodeBox'><h5>Use Code</h5>"
         + tboCodeHTML(TBO.prefill)
@@ -24818,6 +24900,10 @@ function tboOnlineHTML(){
    it instead (tboSync), and a refusal turns it back into the hub with the
    reason showing. */
 function tblHostNew(){
+  /* ⚠ THE OPTIONS PANEL MAY BE OPEN UNDER THIS BUTTON (session 55i), with a
+     table name typed into it and never blurred. Read it before hosting or the
+     table goes up called something else. */
+  tboReadHostFields();
   tblReadSetup();
   tboHost();
 }
@@ -25079,16 +25165,14 @@ function tboFilter(kind, v){
 /* ═══ OPTIONS - EVERYTHING A HOST CAN SET ═════════════════════════════════════
    Over the hub, not instead of it. Everything has a default, so Host table can
    be pressed the moment it opens. */
-function tboOpenHost(){
-  var n = document.getElementById('tblName');
-  if(n && n.value.trim()) TBL.name = n.value.trim().slice(0, 40);
-  var ov = document.getElementById('tblHostOv');
-  if(!ov){
-    ov = document.createElement('div');
-    ov.id = 'tblHostOv'; ov.className = 'td-ov tbl-ov tbl-ov2';
-    document.body.appendChild(ov);
-    ov.addEventListener('click', function(ev){ if(ev.target === ov) tboCloseHost(); });
-  }
+/* ⚠ INSIDE THE HOST A TABLE BOX, NOT A WINDOW OVER IT (the author,
+   session 55i). It was a dialog of its own on top of the hub, which meant a
+   second thing to close to get back to the one thing you were doing. Options
+   unfolds the box it belongs to now: the same three rows, under the row that
+   opened them, with the hub still in front of you. The Options button becomes
+   the Close for what it opened (HANDOFF 12.1 A), and Host is the button that
+   was always there. */
+function tboHostOptsHTML(){
   var h = TBO.host, fmt = tboHostFormat();
   var saved = _savedLoad();
   if(h.deck && !saved[h.deck]) h.deck = '';
@@ -25099,15 +25183,12 @@ function tboOpenHost(){
        row 3  [Deck Restrictions On/Off] - [Spectators On/Off] - Notes
      Asked for in that order: what the table asks of a deck, then who may look
      on, then the line everyone reads in the list. */
-  ov.innerHTML = "<div class='ed2-modal tbl-dlg tbl-hostdlg' role='dialog' aria-label='Host a table'>"
-    + "<div class='ed2-modal-head tbl-head'>"
-      + "<button class='ed2-btn primary tbl-big' id='tblHostGo' onclick='tboHostGo()'>Host table</button>"
-      + tboGamePill() + "<span class='sg-head-gap'></span>"
-      + "<button class='ed2-btn close-x' onclick='tboCloseHost()'>Close &#10005;</button></div>"
-    + "<div class='ed2-modal-body tbl-hostbody'>"
+  /* ⚠ NO SECOND PLAYERS AND NO SECOND PUBLIC/PRIVATE. Both are on the box's
+     own line, six inches above this one now that the panel is inside the box
+     (session 55i) - two switches showing one state, side by side, is a bug
+     waiting to be reported. */
+  return "<div class='tbl-hostbody'>"
       + "<div class='tbl-hrow'>"
-        + "<div class='tbl-il'><span class='tbl-lbl'>Players</span>"
-          + tboSegHTML('seats', [['2', '2'], ['3', '3'], ['4', '4']], h.seats) + "</div>"
         + "<div class='tbl-il tbl-grow'><span class='tbl-lbl'>Table name</span>"
           + "<input id='tblTName' maxlength='40' value='" + e(h.name || '') + "'"
           + " placeholder='" + e(tboDefaultName()) + "'></div>"
@@ -25124,7 +25205,6 @@ function tboOpenHost(){
           + tboDeckSelectHTML('tblHDeck', h.deck, "tboHostDeck(this.value)")
           + "<span class='tbl-dcount' id='tblHDeckN'></span>"
           + "<span class='tbl-lmark' id='tblHDeckMark'></span></div>"
-        + tboPPHTML('host', h.pub)
       + "</div>"
       + "<div class='tbl-hrow'>"
         + tboOptHTML('strict', 'Deck Restrictions')
@@ -25133,18 +25213,42 @@ function tboOpenHost(){
           + "<input id='tblTNote' maxlength='80' value='" + e(h.note || '') + "'"
           + " placeholder='New players welcome'></div>"
       + "</div>"
-    + "</div></div>";
-  tboHostDeckMark();
+    + "</div>";
 }
-function tboCloseHost(){
-  var ov = document.getElementById('tblHostOv');
-  if(!ov) return;
+/* Open, fold, or toggle - all three are this one function, because the button
+   that opens it is the button that folds it. */
+function tboOpenHost(on){
+  var box = document.getElementById('tblHostOpts');
+  var btn = document.getElementById('tblOptBtn');
+  if(!box) return;                       /* the hub is not on screen */
+  var n = document.getElementById('tblName');
+  if(n && n.value.trim()) TBL.name = n.value.trim().slice(0, 40);
+  var open = (on === undefined) ? box.hidden : !!on;
+  if(open){
+    box.innerHTML = tboHostOptsHTML();
+    box.hidden = false;
+    tboHostDeckMark();
+  } else {
+    tboReadHostFields();
+    box.hidden = true;
+    box.innerHTML = '';
+  }
+  if(btn){
+    /* A toggle in its closing state reads Close ✕ and is red - HANDOFF 12.1 A. */
+    btn.innerHTML = open ? 'Close &#10005;' : 'Options';
+    btn.className = open ? 'ed2-btn close-x' : 'ed2-btn';
+    btn.id = 'tblOptBtn';
+  }
+}
+/* What the fields say, back into the record. Called when the panel folds and
+   before hosting, so a name typed and never blurred is not lost. */
+function tboReadHostFields(){
   var nm = document.getElementById('tblTName'), nt = document.getElementById('tblTNote');
   if(nm) TBO.host.name = nm.value.trim().slice(0, 40);
   if(nt) TBO.host.note = nt.value.trim().slice(0, 80);
   tboSaveHost();
-  ov.remove();
 }
+function tboCloseHost(){ tboOpenHost(false); }
 function tboSetFormat(v){
   if(!tboFmtOk(v)) return;
   TBO.host.format = v;
@@ -25162,6 +25266,8 @@ function tboHostDeckMark(){
   if(n) n.textContent = j.counts;
   if(m) m.outerHTML = tboMarkHTML(j.legal, 'tblHDeckMark');
 }
+/* Kept because things outside this file still call it: fold the panel, then
+   host. The button it used to belong to is gone - the box's own Host does it. */
 function tboHostGo(){
   tboCloseHost();
   if(!tboDialogOpen()) tblOpenSetup('hub');
@@ -29577,24 +29683,54 @@ function rulesSplitOf(c){
   var n=c&&parseInt(c.rulesSplit,10);
   return (n===2||n===3||n===4)?n:0;
 }
+/* ALL INDIVIDUAL: every section of this card is individual, whatever each one
+   says for itself. The card field is still `splitIdent`, so every card written
+   before section-by-section existed keeps working untouched - which is the
+   point of leaving it a card field (the author, session 55i). */
 function splitIdentOf(c){ return !!(c&&c.splitIdent&&rulesSplitOf(c)); }
-/* ⚠ Individual is per SECTION, not per card. The toggle turns the fields ON;
-   whether a given section actually WEARS an identity depends on it having been
-   given one. A section with no name, no cost and no types has nothing to print,
-   and printing an empty name line and an empty type line above its text is
-   three blank rows in a box that is already only a quarter of a card tall - so
-   that section falls back to plain rules text and its siblings keep theirs. */
+/* ⚠ ONE SECTION MAY BE INDIVIDUAL AND THE NEXT PLAIN (the author, session
+   55i). A card asks in this order:
+
+     All Individual on   -> every section is individual
+     otherwise           -> the section's own `ident` flag decides
+
+   so a card can mix the two: a name-and-cost section beside a plain block of
+   rules text, in one split. Nothing had to change on an existing card: those
+   carry splitIdent and answer true at the first line. */
+function sectionIdentOn(c,s){
+  if(!rulesSplitOf(c))return false;
+  return splitIdentOf(c) || !!(s&&s.ident);
+}
+/* ⚠ AND WEARING ONE IS NOT THE SAME AS BEING ALLOWED ONE. A section turned
+   individual but given no name, no cost and no types has nothing to print, and
+   printing an empty name line and an empty type line above its text is three
+   blank rows in a box that is already only a quarter of a card tall - so that
+   section falls back to plain rules text and its siblings keep theirs. */
 function sectionHasIdent(s){
   return !!(s && (s.name || s.manaCost
     || (s.superTypes && s.superTypes.length)
     || (s.subTypes && s.subTypes.length)));
 }
+/* The one question the drawing code asks: does THIS section print as itself? */
+function sectionShowsIdent(c,s){ return sectionIdentOn(c,s)&&sectionHasIdent(s); }
 /* Whether ANY section wears one, which is what decides if the parent box gives
    up its own panel and lets the sections run to the edges. */
 function anySectionIdent(c){
-  if(!splitIdentOf(c))return false;
-  return (cardSections(c)||[]).some(sectionHasIdent);
+  if(!rulesSplitOf(c))return false;
+  return (cardSections(c)||[]).some(function(s){ return sectionShowsIdent(c,s); });
 }
+/* Cheap enough to run across the whole catalogue on every keystroke: one
+   property read on a card that is not split. The catalog's filter uses it to
+   decide whether to ask for splitFacets at all. */
+function anyIdentFlag(c){
+  if(!c)return false;
+  if(c.splitIdent)return true;
+  var src=c.sections;
+  if(!Array.isArray(src))return false;
+  for(var i=0;i<src.length;i++) if(src[i]&&src[i].ident)return true;
+  return false;
+}
+window.edAnyIdent=function(c){ return anyIdentFlag(c); };
 /* The Choice line: one line of text across the top of a split rules box, for
    "Choose 1", "Choose 2", "Roll D4". Independent of splitIdent - a plain split
    can carry one too - but meaningless without a split, so it is gated on one
@@ -29628,6 +29764,10 @@ function cardSections(c){
     out.push({text:String(s.text||''),
               name:String(s.name||''),
               manaCost:String(s.manaCost||''),
+              /* The section's own Individual flag. Absent on every card
+                 written before session 55i, which is exactly right: those
+                 cards say All Individual or nothing. */
+              ident:s.ident===true,
               superTypes:Array.isArray(s.superTypes)?s.superTypes.slice():[],
               subTypes:Array.isArray(s.subTypes)?s.subTypes.slice():[]});
   }
@@ -29643,9 +29783,12 @@ function splitFacets(c){
      allocate five throwaway arrays for each of 1601 cards to say "nothing".
      The caller pre-checks c.splitIdent, so a normal card costs one property
      read. */
-  if(!splitIdentOf(c))return null;
+  if(!anyIdentFlag(c))return null;
   var out={names:[],superTypes:[],subTypes:[],colors:[],costs:[]};
   (cardSections(c)||[]).forEach(function(s){
+    /* Only the sections that are individual: a plain block of rules text in a
+       mixed split is part of the main card and adds nothing to find it by. */
+    if(!sectionIdentOn(c,s))return;
     if(s.name)out.names.push(s.name);
     s.superTypes.forEach(function(t){ if(t)out.superTypes.push(t); });
     s.subTypes.forEach(function(t){ if(t)out.subTypes.push(t); });
@@ -32509,14 +32652,15 @@ function rulesAreaHTML(c,rulesAlign,rules,flavor){
      a layout anyone asked for, and it was explicitly ruled out. An Essence card
      that happens to carry rulesSplit renders as one box. */
   if(!secs||isEssenceCard(c))return rulesBoxHTML(c,rulesAlign,rules,flavor);
-  var ident=splitIdentOf(c);
-  /* Per SECTION, not per card: a section given no name, cost or types has no
-     identity to print and renders as plain rules text, however the card-level
-     toggle is set. anySectionIdent decides whether the parent box steps aside. */
+  /* ⚠ PER SECTION, BOTH WAYS. A section is individual when All Individual is
+     on OR when it says so itself (session 55i), and it only WEARS an identity
+     when it has one to print - a section given no name, cost or types renders
+     as plain rules text whatever the switches say. anySectionIdent decides
+     whether the parent box steps aside for them. */
   var anyIdent=anySectionIdent(c);
   var choice=splitChoiceOf(c);
   var body=secs.map(function(s,i){
-    var mine=ident&&sectionHasIdent(s);
+    var mine=sectionShowsIdent(c,s);
     var vars='';
     if(mine){
       var cols=colorsFromMana(s.manaCost);
@@ -33153,6 +33297,9 @@ function fitPickerHTML(c){
    14.3 records after an unescaped apostrophe renamed cards. */
 function rulesEditorHTML(c){
   var n=rulesSplitOf(c), ident=splitIdentOf(c);
+  /* All Individual turns every section on at once; each section can also be
+     turned on by itself. The card-level box is the one that was always here,
+     under the name it always had a claim to. */
   /* ⚠ THE SPLIT CONTROL COMES FIRST, BESIDE THE WORDS. It is a statement
      about what the rules box IS - one box or three - and B / I / U are things
      you do to the text inside whichever box you get. Reading order now matches
@@ -33165,11 +33312,12 @@ function rulesEditorHTML(c){
           return "<option value='"+k+"'"+(k===n?' selected':'')+">"
             +(k?('Split '+k):'No split')+"</option>"; }).join('')
       +"</select>"
-      +(n?("<label class='ed2-split-id' title='Each section gets its own name, "
-        +"type line and mana cost, and is drawn in its own colours'>"
+      +(n?("<label class='ed2-split-id' title='Every section gets its own name, "
+        +"type line and mana cost, and is drawn in its own colours. Leave it off "
+        +"to choose section by section.'>"
         +"<input type='checkbox'"+(ident?' checked':'')
         +" onchange='edSetSplitIdent(this.checked)'>"
-        +"<span>Individual</span></label>"
+        +"<span>All Individual</span></label>"
         +"<label class='ed2-split-id' title='One line of text across the top of "
         +"the rules box, above the sections'>"
         +"<input type='checkbox'"+(splitChoiceOf(c)?' checked':'')
@@ -33192,7 +33340,16 @@ function rulesEditorHTML(c){
       +e(c.ruleText)+"</textarea></div>";
   }
   var rows=(cardSections(c)||[]).map(function(s,i){
-    var idf=ident?("<div class='ed2-sec-idrow'>"
+    /* This section's own switch. Hidden while All Individual is on - it is
+       already answered for, and a checkbox that cannot change anything is a
+       worse lie than no checkbox. */
+    var own=sectionIdentOn(c,s);
+    var sw=ident?'':("<label class='ed2-sec-id' title='Give this section its own "
+        +"name, type line and mana cost'>"
+        +"<input type='checkbox'"+(s.ident?' checked':'')
+        +" onchange='edSetSectionIdent("+i+",this.checked)'>"
+        +"<span>Individual</span></label>");
+    var idf=own?("<div class='ed2-sec-idrow'>"
         +"<input class='ed2-input' placeholder='Mana cost' value='"+e(s.manaCost)
           +"' oninput=\"edSetSection("+i+",'manaCost',this.value)\">"
         +"<input class='ed2-input' placeholder='Name' value='"+e(s.name)
@@ -33206,7 +33363,7 @@ function rulesEditorHTML(c){
           +"' oninput=\"edSetSection("+i+",'subTypes',this.value)\">"
       +"</div>"):'';
     return "<div class='ed2-sec'>"
-      +"<div class='ed2-sec-h'>Section "+(i+1)+"</div>"+idf
+      +"<div class='ed2-sec-h'>Section "+(i+1)+sw+"</div>"+idf
       +"<textarea class='ed2-textarea ed2-sec-ta' "
       +"oninput=\"edSetSection("+i+",'text',this.value)\">"+e(s.text)+"</textarea>"
       +"</div>";
@@ -33297,6 +33454,21 @@ window.edSetRulesSplit=function(v){
 window.edSetSplitIdent=function(on){
   var c=curCard(); if(!c)return;
   if(on)c.splitIdent=true; else delete c.splitIdent;
+  markDirty(c); persistCard(c);
+  renderFields(); renderPreview(c); try{ scheduleFace(); }catch(_){}
+};
+/* ⚠ ONE SECTION AT A TIME (the author, session 55i). Turning All Individual
+   OFF does not clear these and turning it ON does not set them: the two
+   answers are kept apart, so a card that had every section individual through
+   the card-level box can be dropped to a mix by unticking the box and ticking
+   the sections that should keep theirs - without retyping any of them. */
+window.edSetSectionIdent=function(i,on){
+  var c=curCard(); if(!c)return;
+  var secs=cardSections(c); if(!secs||!secs[i])return;
+  if(!Array.isArray(c.sections))c.sections=[];
+  while(c.sections.length<secs.length)
+    c.sections.push({text:'',name:'',manaCost:'',superTypes:[],subTypes:[]});
+  if(on)c.sections[i].ident=true; else delete c.sections[i].ident;
   markDirty(c); persistCard(c);
   renderFields(); renderPreview(c); try{ scheduleFace(); }catch(_){}
 };
@@ -39074,6 +39246,7 @@ function ghLoadSettings(){
       ghSettingsFrom({src:v[0],owner:v[1],repo:v[2],token:v[3],autoCheck:v[4]});
       GH_WEEKLY=(v[5]!=null)?!!v[5]:true;
       GH_WEEKLY_LAST=v[6]||'';
+      return ghRestoreOfficial();
     });
 }
 window.edGhSetWeekly=function(on){
@@ -39200,7 +39373,7 @@ window.edGhCheck=function(){
   }).catch(function(err){
     _ghState={err:(err&&err.message)||String(err)};
     edRenderOwnerSync();
-  });
+  }).then(function(){ return ghSyncOfficialExtras(false); });
 };
 
 /* Owner mode: keep every local art pointer. The published catalog points at the
@@ -39259,6 +39432,7 @@ window.edGhApply=function(){
       applyToCatalog();
       toast('Updated '+(d.added+d.changed)+' card(s) from the source');
       edRenderOwnerSync();
+      return ghSyncOfficialExtras(false);
     });
   }).catch(function(err){ alert('Update failed: '+((err&&err.message)||err)); });
 };
@@ -39605,6 +39779,177 @@ function ghFetchLook(src){
       return {look:j.look||null,marks:Array.isArray(j.marks)?j.marks:[]};
     },function(){ return null; });
   },function(){ return null; });
+}
+
+/* ── USE DEFAULT LOOK, AND THE OFFICIAL KEYWORDS ─────────────────────────────
+   The author, session 55j: "by default users will use my look.json unless they
+   toggle it off for themselves, and as long as it's on it will auto-update with
+   any other syncing the user does. But ALWAYS have keywords.json sync with the
+   official saga syncs."
+
+   Before this, BOTH halves were stranded. keywords.json was published and read
+   by nothing at all - Apply update applied cards and only cards - and look.json
+   (the pill formats, custom keyword styling, template frames, watermarks, the
+   alignment table, the art defaults) reached a player only if they pressed
+   "Apply the set's look" and typed LOOK into a danger gate. Nobody did.
+
+   So every sync of any kind - the check on open, Check now, Apply update, the
+   weekly run, Sync All Sagas - now finishes with ghSyncOfficialExtras():
+
+     keywords.json  ALWAYS. It becomes this machine's built-in keyword list.
+                    Your own entries (KWCUSTOM) still sit on top of it by name,
+                    exactly as they sat on top of the baked list, so nothing of
+                    yours is overwritten by it.
+     look.json      only while Use Default Look is ON (the default), and only
+                    when it has CHANGED since it was last applied here - so a
+                    tweak made while it is on survives until the author
+                    publishes a new look.
+
+   ⚠ BOTH COME FROM THE OFFICIAL SOURCE, whatever GH_SOURCE says - "my
+   look.json", in the author's words, and "the official saga syncs".
+
+   ⚠ NEVER ON THE OWNER'S OWN MACHINE. Whoever holds the official
+   repository's token is where the look and the keywords come FROM; pulling the
+   published copy back over them would throw away whatever they have not
+   published yet. edOwnerUnlocked() is the test - the same one the card lock
+   uses.
+
+   ⚠ THE FIRST AUTOMATIC APPLY KEEPS A COPY OF WHAT IT REPLACED. On a
+   machine where someone built a look of their own, it is saved once as the
+   template pack "My look (before Default Look)" before anything is changed,
+   so switching this on by default costs nobody their work. */
+var GH_USE_DEFAULT_LOOK=true;   /* absent from the store = on */
+var GH_LOOK_APPLIED='';         /* fingerprint of the official look last applied here */
+
+function ghOfficialSrc(){ return GH_SOURCES[ghMode()]||''; }
+function ghKwUrl(src){
+  var u=String(src||'');
+  return /cards\.json(\?.*)?$/i.test(u) ? u.replace(/cards\.json(\?.*)?$/i,'keywords.json')
+       : u.replace(/\/[^\/]*$/,'/keywords.json');
+}
+function ghFetchKeywords(src){
+  var url=ghKwUrl(src);
+  if(!url||syncBlockedReason(url))return Promise.resolve(null);
+  return fetch(url,{cache:'no-store'}).then(function(r){
+    if(!r.ok)return null;
+    return r.json().then(function(j){
+      return (Array.isArray(j)&&j.length)?j:null;
+    },function(){ return null; });
+  },function(){ return null; });
+}
+/* A short fingerprint, so "has the official look changed" is one string
+   compare rather than holding a copy of a megabyte of template art. */
+function ghFingerprint(s){
+  var h=5381, i=0, n=s.length;
+  for(;i<n;i++){ h=((h<<5)+h+s.charCodeAt(i))|0; }
+  return n+':'+(h>>>0).toString(36);
+}
+function ghKwRefresh(){
+  edApplyCustomEntries();
+  try{ scheduleFace(); }catch(_){}
+  try{ var c=curCard(); if(c)renderPreview(c); }catch(_){}
+  try{ if(typeof window.edRenderKwPage==='function'&&document.getElementById('kwPageBody'))window.edRenderKwPage(); }catch(_){}
+  try{ edKwManageRefresh(); }catch(_){}
+  try{ edKwPanelRefresh(); }catch(_){}
+  try{ applyToCatalog(); }catch(_){}
+}
+function ghApplyOfficialKeywords(list){
+  if(!Array.isArray(list)||!list.length)return false;
+  if(edOwnerUnlocked())return false;
+  var next=JSON.parse(JSON.stringify(list));
+  if(JSON.stringify(next)===JSON.stringify(KW_BAKED||[]))return false;
+  KW_BAKED=next;
+  setMetaSafe('kwOfficial',KW_BAKED,'the official keywords');
+  ghKwRefresh();
+  return true;
+}
+/* Whether this machine holds a look somebody MADE - uploaded frames, or pill
+   formats that are not simply the ones baked into this build. Only then is
+   there anything worth keeping a copy of. */
+function ghHasOwnLook(){
+  if(Object.keys(TPL||{}).length)return true;
+  var baked=(LOOK_BAKED&&LOOK_BAKED.kwStyles)||{};
+  return JSON.stringify(KWSTYLE||{})!==JSON.stringify(baked);
+}
+function ghBackupOwnLookOnce(){
+  return getMeta('ghLookBackedUp').then(function(done){
+    if(done)return;
+    if(!ghHasOwnLook()){ setMetaSafe('ghLookBackedUp',1); return; }
+    var rec=Object.assign({name:'My look (before Default Look)',
+                           saved:new Date().toISOString()},currentPackBody());
+    return put('packs',rec).then(function(){
+      setMetaSafe('ghLookBackedUp',1);
+      try{ packsRefresh(); }catch(_){}
+    });
+  }).catch(function(){});
+}
+function ghApplyDefaultLook(pkg,force){
+  if(!GH_USE_DEFAULT_LOOK||!pkg||!pkg.look)return Promise.resolve(false);
+  if(edOwnerUnlocked())return Promise.resolve(false);
+  var fp=ghFingerprint(JSON.stringify(pkg.look)
+    +'|'+JSON.stringify((pkg.marks||[]).map(function(m){ return m&&m.name; })));
+  if(!force&&fp===GH_LOOK_APPLIED)return Promise.resolve(false);
+  return ghBackupOwnLookOnce().then(function(){
+    return applyPackBody(pkg.look);
+  }).then(function(){
+    /* Watermarks are additive, by name: a card points at one, so dropping
+       a local one would leave that card pointing at nothing. */
+    var have={}; (MARKS||[]).forEach(function(m){ have[m&&m.name]=1; });
+    var add=(pkg.marks||[]).filter(function(m){ return m&&m.name&&!have[m.name]; });
+    return add.reduce(function(p,m){ return p.then(function(){ return put('marks',m); }); },
+                      Promise.resolve())
+      .then(function(){ return marksAll().then(function(all){ MARKS=all||[]; }); });
+  }).then(function(){
+    GH_LOOK_APPLIED=fp; setMetaSafe('ghLookApplied',fp);
+    ghKwRefresh();
+    return true;
+  }).catch(function(){ return false; });
+}
+/* The tail of every sync. Never throws, never gates, never blocks the sync it
+   follows. */
+/* One at a time: the check on open and the weekly run both end here within a
+   second of each other, and two applies of the same look racing each other is
+   two sets of template writes for one change. A second call while one is in
+   flight gets the one in flight - unless it is a forced apply, which waits for
+   it and then runs. */
+var _ghExtras=null;
+function ghSyncOfficialExtras(forceLook){
+  if(_ghExtras&&!forceLook)return _ghExtras;
+  var prev=_ghExtras||Promise.resolve();
+  var src=ghOfficialSrc();
+  if(!src||syncBlockedReason(src))return Promise.resolve();
+  var p=prev.then(function(){
+    return Promise.all([ghFetchKeywords(src),ghFetchLook(src)]);
+  }).then(function(v){
+    ghApplyOfficialKeywords(v[0]);
+    return ghApplyDefaultLook(v[1],forceLook);
+  }).catch(function(){}).then(function(){ if(_ghExtras===p)_ghExtras=null; });
+  _ghExtras=p;
+  return p;
+}
+window.edSyncOfficialExtras=function(){ return ghSyncOfficialExtras(false); };
+window.edUseDefaultLook=function(){ return GH_USE_DEFAULT_LOOK; };
+window.edSetUseDefaultLook=function(on){
+  GH_USE_DEFAULT_LOOK=!!on;
+  setMetaSafe('useDefaultLook',GH_USE_DEFAULT_LOOK);
+  var t=document.getElementById('sgUseLook'); if(t)t.checked=GH_USE_DEFAULT_LOOK;
+  /* Switched on: take the official look now, not at the next sync. Switched
+     off: nothing changes - the look on screen becomes yours to edit. */
+  if(GH_USE_DEFAULT_LOOK)return ghSyncOfficialExtras(true);
+};
+/* Called once the settings are loaded: the stored official keywords go in
+   place of the baked list before the check on open fetches fresh ones, so a
+   reload does not flash back to whatever this build was baked with. */
+function ghRestoreOfficial(){
+  return Promise.all([getMeta('useDefaultLook'),getMeta('ghLookApplied'),getMeta('kwOfficial')])
+    .then(function(v){
+      GH_USE_DEFAULT_LOOK=(v[0]!=null)?!!v[0]:true;
+      GH_LOOK_APPLIED=v[1]||'';
+      var t=document.getElementById('sgUseLook'); if(t)t.checked=GH_USE_DEFAULT_LOOK;
+      if(Array.isArray(v[2])&&v[2].length&&!edOwnerUnlocked()){
+        KW_BAKED=v[2]; ghKwRefresh();
+      }
+    }).catch(function(){});
 }
 
 /* ⚠ APPLYING A LOOK IS ITS OWN, SEPARATE PRESS.
@@ -40305,7 +40650,8 @@ function ghWeeklyRun(){
     }
     if(held)ghBadge({added:0,changed:held});
     try{ if(typeof window.edRenderSagaPage==='function')window.edRenderSagaPage(); }catch(_){}
-    return {added:added,held:held,failed:failed,checked:targets.length};
+    var res={added:added,held:held,failed:failed,checked:targets.length};
+    return ghSyncOfficialExtras(false).then(function(){ return res; });
   });
 }
 /* ═══════════════════════════════════════════════════════════════════════
