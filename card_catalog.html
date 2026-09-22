@@ -1796,6 +1796,16 @@ body.pin-none  .mcard{--pin:linear-gradient(transparent,transparent)!important}
    by comparing their tops. */
 .ed2-btnbox .ed2-btn{font-size:1em;padding:6px .92em;flex:0 0 auto;min-width:0;
   align-self:stretch;display:inline-flex;align-items:center;justify-content:center}
+/* == THE TOOLBAR AS ONE GRID (the author, session 55l) =======================
+   Six equal columns, every button the width of its column, so the two rows
+   line up instead of being two runs of different-sized buttons. Back to
+   catalog is two columns wide, so Save and New card sit together under it;
+   Watermarks is the last column of row one, beside Save All. The type size is
+   edFitBtnRows's (ed2_face.js): the largest at which every label fits its
+   cell. overflow:hidden is the fallback should that ever not run. */
+.ed2-btngrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;font-size:.78rem}
+.ed2-btngrid .ed2-bg-back{grid-column:span 2}
+.ed2-btnbox .ed2-btngrid .ed2-btn{width:100%;padding:6px .35em;white-space:nowrap;overflow:hidden}
 
 /* Purple, for Keywords. .primary is green, .info blue, .warn red - there was no
    purple, and it is the colour the app already uses for keyword counters on the
@@ -2080,6 +2090,13 @@ body.light .sg-row{--sg-face:var(--s1)}
    row is open - an editor squeezed into half the width is not an editor. */
 .kwp-body{padding:14px 16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
   gap:10px;align-items:start}
+/* ⚠ TWO COLUMNS ONLY WHERE A ROW STILL HAS ROOM FOR ITS ONE LINE (session
+   55l). Each row is now pill and reminder on the left and every formatting
+   control on the right, with the reminder on one line fitted to what is left
+   - about 750px of controls. At half of an ordinary window that leaves the
+   reminder a sliver and its type too small to read, so a row takes the full
+   width until two can each have 1150px. */
+.kwp-body{grid-template-columns:repeat(auto-fill,minmax(min(1150px,100%),1fr))}
 .kwp-body > .kwp-head,.kwp-body > .kwp-row.kwp-open{grid-column:1/-1}
 /* One column again when two would each be too narrow to read. */
 @media (max-width:1100px){.kwp-body{grid-template-columns:minmax(0,1fr)}}
@@ -2104,6 +2121,10 @@ body.light .sg-row{--sg-face:var(--s1)}
    wide and read as broken. The controls drop to a line of their own instead,
    and the reminder keeps a width it can be read at. */
 .kwp-main{display:flex;align-items:center;gap:14px;flex-wrap:wrap;text-align:left}
+/* Session 55l: the left part (pill, then the reminder) and the controls on
+   the right, one line. */
+.kwp-main{flex-wrap:nowrap}
+.kwp-lead{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:14px}
 /* The pill hugs its own width so the reminder starts IMMEDIATELY after it,
    rather than after a fixed-width column's worth of empty space. */
 .kwp-pill{flex:0 0 auto;min-width:0;word-break:break-word;font-size:1.2rem}
@@ -2114,6 +2135,21 @@ body.light .sg-row{--sg-face:var(--s1)}
 .kwp-rem{flex:1 1 200px;min-width:180px;font-family:'Crimson Pro',serif;font-size:1.04rem;
   line-height:1.4;color:var(--td);text-align:left}
 .kwp-rem p{margin:0 0 4px}
+/* ⚠ THE TEXT NEVER MAKES THE ROW TALLER (the author, session 55l). The
+   reminder's text is out of flow - absolutely placed inside .kwp-rem, which
+   stretches to the height the row already has from its controls - so it
+   wraps within that room and the row does not grow to fit it. kwFitRems
+   (ed2_tools.js) shrinks the type only when the wrapped text would be taller
+   than the room; overflow:hidden is the fallback should that not run. Mana
+   symbols are sized in em so they shrink with the words beside them. */
+.kwp-main{min-height:78px}
+.kwp-lead{align-self:stretch}
+.kwp-lead .kwp-rem{flex:1 1 auto;min-width:0;align-self:stretch;position:relative;overflow:hidden}
+.kwp-lead .kwp-rem-t{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);
+  line-height:1.3}
+.kwp-lead .kwp-rem-t p{margin:0 0 2px}
+.kwp-lead .kwp-rem-t p:last-child{margin-bottom:0}
+.kwp-lead .kwp-rem-t img{width:1em!important;height:1em!important;vertical-align:-.12em}
 /* Edit sits above the Font swatch inside the leftmost stack; on a row with no
    pill controls it stands alone in the same place. */
 .kwp-acts{flex:0 0 auto;display:flex;flex-direction:column;gap:4px;align-items:stretch}
@@ -2121,6 +2157,17 @@ body.light .sg-row{--sg-face:var(--s1)}
 /* The colour boxes run ACROSS, not down: three stacks side by side - Edit over
    Font, Outline over its glow, Fill over its glow - then width/shape/extra. */
 .kwp-ctl{flex:1 1 100%;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.kwp-main > .kwp-ctl,.kwp-main > .kwp-acts{flex:0 0 auto;flex-wrap:nowrap;margin-left:auto}
+/* As narrow as the controls can be, so the reminder has the room: each stack
+   is a little grid whose label column is as wide as ITS longest label (Font
+   needs far less than Outline Glow), rather than one 92px column for all. */
+.kwp-main > .kwp-ctl .kwp-cstack{display:grid;grid-template-columns:max-content auto auto;
+  align-items:center;gap:4px 6px}
+.kwp-main > .kwp-ctl .kwp-cstack > .kwp-acts{grid-column:1/-1}
+.kwp-main > .kwp-ctl .kwp-col{display:contents}
+.kwp-main > .kwp-ctl .kwp-col>span{text-align:right}
+.kwp-main > .kwp-ctl .kwp-num>span{flex:0 0 auto;min-width:44px}
+.kwp-main > .kwp-ctl .kwp-num .ed2-in{width:96px}
 .kwp-cstack{display:flex;flex-direction:column;gap:4px}
 /* label +25% and bold; the fixed-width right-aligned label is what puts the two
    swatches in a stack on the same x */
@@ -2140,10 +2187,26 @@ body.light .sg-row{--sg-face:var(--s1)}
 .kwp-num>span{flex:0 0 56px;text-align:right}
 .kwp-num .ed2-in{width:104px}
 .kwp-edit{margin-top:10px;padding-top:10px;border-top:1px solid var(--b1)}
+/* The editing panel (session 55l): three rows, every label to the LEFT of its
+   field on the same line - Name, Parameter, Mode / Match, Also match /
+   Reminder, Reminder with no value. */
+.kwe-form{display:flex;flex-direction:column;gap:8px}
+.kwe-row{display:flex;gap:18px;align-items:center}
+.kwm-form label.kwe-f{flex:1 1 0;min-width:0;flex-direction:row;align-items:center;gap:8px;
+  font-size:12.5px;font-weight:700}
+.kwm-form label.kwe-f > span{flex:0 0 auto;white-space:nowrap}
+.kwm-form label.kwe-f > span i{font-weight:400}
+.kwm-form label.kwe-f .ed2-in{flex:1 1 auto;min-width:0;width:auto}
+.kwm-form label.kwe-sel{flex:0 0 auto}
+.kwm-form label.kwe-sel .ed2-in{width:130px;flex:0 0 auto}
 
 @media(max-width:1200px){
   .kwp-main{flex-wrap:wrap}
   .kwp-ctl{flex:1 1 100%;justify-content:flex-start}
+  .kwp-main > .kwp-ctl{margin-left:0}
+  /* Under 1200px the controls go under the text, and the text is in flow:
+     there is no row height to fit it to, so it wraps as ordinary text. */
+  .kwp-lead .kwp-rem-t{position:static;transform:none}
 }
 
 /* variant picker in the art column */
@@ -2250,9 +2313,19 @@ span.ed2-sagachip{cursor:default}
 .stat-row.on{background:#222c3f}
 .stat-lbl{flex:0 0 190px;max-width:190px;overflow:hidden;text-overflow:ellipsis;
   white-space:nowrap;color:var(--tx);font-size:12px}
-.stat-track{flex:1 1 auto;min-width:0;height:15px;background:#141821;border-radius:3px;overflow:hidden}
-.stat-bar{display:block;height:100%;border-radius:3px}
-.stat-n{flex:0 0 52px;text-align:right;color:#e8ecf5;font-size:12px;font-weight:600}
+/* Session 55l (the author): the count on the LEFT of its bar, in a dark grey
+   metal box, and every bar metal - the bar's own background is painted by
+   statBarBg() in ed2_stats.js; this adds only its edge and depth. */
+.stat-track{flex:1 1 auto;min-width:0;height:17px;background:#10131a;border-radius:4px;overflow:hidden;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.6)}
+.stat-bar{display:block;height:100%;border-radius:4px;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.35)}
+.stat-n{flex:0 0 auto;min-width:40px;box-sizing:border-box;padding:1px 7px;text-align:center;
+  color:#f0f2f6;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;
+  text-shadow:0 1px 1px rgba(0,0,0,.7);border-radius:4px;border:1px solid #20232a;
+  background:linear-gradient(180deg,#5d616b 0%,#3c3f47 24%,#747882 46%,#44474f 58%,#2c2f36 82%,#1f2126 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 1px 2px rgba(0,0,0,.5)}
+.stat-title{margin:14px 0 4px;color:var(--tx);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
 .stat-cards{margin-top:12px}
 .stat-cards h4{margin:0 0 6px;color:var(--tx);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
 /* four across, scrolling, showing every card in the bar */
@@ -2527,6 +2600,37 @@ span.ed2-sagachip{cursor:default}
 .ed2-ovr{grid-column:1/-1;flex:1 1 100%;min-width:0;
   display:flex;align-items:center;justify-content:flex-start;
   gap:1px;flex-wrap:wrap;margin-top:3px}
+/* ⚠ SESSION 55m, AND IT SUPERSEDES EVERYTHING ABOVE (the author): Colour,
+   the eight swatches and Clear on ONE row, fitted to that row - never a
+   second one - and the frame NO WIDER than the Image / Watermark box above
+   it. That box is .ed2-group's 50% of the art column; this frame takes the
+   same 50%, so the two edges line up whatever the column does.
+
+   How it fits, at any width: the frame is a size container, so the label and
+   Clear are sized in cqw - a share of the frame's own width - and grow and
+   shrink with it. The swatches are flex items with no width of their own:
+   they split whatever the label and Clear leave, exactly, kept square by
+   aspect-ratio and never past 34px. Nothing is measured and nothing is
+   refitted afterwards, so there is no width at which the row can spill. */
+/* ⚠ NO FLOOR ON THE LABEL AND CLEAR THAT THE SWATCHES WOULD PAY FOR. With
+   the words held at a readable minimum, a narrower window took every pixel
+   they refused to give out of the swatches - 5px dots at 1100px wide. Both
+   words scale with the frame all the way down (6px is only there so they
+   never reach nothing), so the row shrinks as one picture instead. The gaps
+   are as small as they go for the same reason: every one of them is a pixel
+   the swatches do not get. */
+.ed2-artcol > .ed2-hl-ovr{width:50%;box-sizing:border-box;margin-top:8px;flex-wrap:nowrap;
+  align-items:center;gap:3px;padding:5px 4px;container-type:inline-size}
+.ed2-artcol > .ed2-hl-ovr .ed2-hl-h{font-size:clamp(6px,3.9cqw,.8rem);letter-spacing:.02em;
+  line-height:1;white-space:nowrap}
+.ed2-artcol > .ed2-hl-ovr .ed2-ovr{flex:1 1 0;min-width:0;margin-top:0;gap:0;flex-wrap:nowrap}
+.ed2-artcol > .ed2-hl-ovr .ed2-ovr-b{flex:1 1 0;min-width:0;max-width:34px;width:auto;height:auto;
+  aspect-ratio:1/1;border-width:clamp(1.5px,.9cqw,3px)}
+.ed2-artcol > .ed2-hl-ovr .ed2-ovr-b img,
+.ed2-artcol > .ed2-hl-ovr .ed2-ovr-dot{width:90%;height:auto;aspect-ratio:1/1}
+.ed2-artcol > .ed2-hl-ovr .ed2-ovr-sep{align-self:stretch;height:auto;margin:3px 1px}
+.ed2-artcol > .ed2-hl-ovr .ed2-ovr-clr{flex:0 0 auto;align-self:stretch;height:auto;
+  margin:0;padding:0 .4em;border-radius:999px;font-size:clamp(6px,4.4cqw,1.1rem)}
 .ed2-ovr-b{width:20px;height:20px;padding:0;border:2px solid transparent;
   border-radius:50%;background:none;cursor:pointer;flex:0 0 auto;
   display:flex;align-items:center;justify-content:center;
@@ -6106,7 +6210,8 @@ body.light .tbl-dlg .ed2-btn.close-x:hover{color:#fff;background:rgba(128,48,48,
 .tbl-tstate .w{color:#5fcf8a}
 .tbl-tstate .g{color:#e0a040}
 .tbl-acts{display:flex;gap:6px;justify-content:flex-end;white-space:nowrap}
-.tbl-lfoot{display:flex;align-items:center;gap:10px;margin:0 0 10px;font-size:.88rem;color:var(--td)}
+.tbl-lfoot{display:inline-flex;align-items:center;gap:8px;margin:0 0 0 6px;font-size:.88rem;color:var(--td);
+  white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .tbl-empty{border:1px dashed var(--b2);border-radius:10px;padding:22px;text-align:center}
 .tbl-seat-a{background:var(--seat-a)}
 .tbl-seat-b{background:var(--seat-b)}
@@ -25054,8 +25159,9 @@ function tboHubHTML(){
       + "<div class='tbl-box tbl-onerow' id='tblCodeBox'><h5>Use Code</h5>"
         + tboCodeHTML(TBO.prefill)
         + "<span class='tbl-gap'></span>"
-        + "<button class='ed2-btn primary' id='tblJoinBtn' onclick='tblJoinTyped()'>Join</button>"
+        /* Spectate, then Join - the author's order (session 55l). */
         + "<button class='ed2-btn spect tbl-watchbtn' onclick='tblWatchTyped()'>Spectate</button>"
+        + "<button class='ed2-btn primary' id='tblJoinBtn' onclick='tblJoinTyped()'>Join</button>"
       + "</div>"
       /* ⚠ IN THE DIALOG, NOT ONLY ON THE STRIP. A join refused before it
          starts (no address, ws:// from https) leaves this dialog open, and
@@ -25252,9 +25358,13 @@ function tboLobbyHTML(){
   var busy = shown.filter(function(t){
     return t.room !== mine && !(t.status === 'waiting' && tboOpenSeat(t)); });
 
+  /* ⚠ BESIDE THE HEADING (the author, session 55l): the status line - tables,
+     players online, how fresh - sits to the right of "Open tables", on the
+     heading's own row, where it was a line of its own above it. */
   var body = "<div class='tbl-lmain'>"
-    + "<div class='tbl-lfoot' id='tblLobbyStat'>" + tboLobbyStatHTML() + "</div>"
-    + "<div class='tbl-ltop'><span class='tbl-lh'>Open tables</span><span class='tbl-gap'></span>"
+    + "<div class='tbl-ltop'><span class='tbl-lh'>Open tables</span>"
+    + "<span class='tbl-lfoot' id='tblLobbyStat'>" + tboLobbyStatHTML() + "</span>"
+    + "<span class='tbl-gap'></span>"
     + tboSegHTML('sort', [['new', 'Newest'], ['long', 'Waiting longest'], ['most', 'Most players']],
                  TBO.sort, true)
     + "</div>";
@@ -25265,7 +25375,7 @@ function tboLobbyHTML(){
     if(open.length) body += open.map(function(t){ return tboRowHTML(t, set); }).join('');
     if(busy.length) body += "<div class='tbl-lgroup'>In progress &mdash; <span class='spect-ink'>spectate</span></div>" + busy.map(function(t){ return tboRowHTML(t, set); }).join('');
   } else if(TBO.lobbyState === 'on'){
-    body += "<div class='tbl-empty'><button class='ed2-btn tbl-gold' onclick='tboOpenHost()'>+ Host a table</button></div>";
+    body += "<div class='tbl-empty'><button class='ed2-btn tbl-green' onclick='tboOpenHost()'>+ Host a table</button></div>";
   }
   body += "</div>";
   return side + body;
@@ -29041,8 +29151,8 @@ var _SC_TIPS = [
   {title:'Deck Saved via URL', desc:'Your Deck is saved to the page URL as you edit it. You can copy and share the URL as an alternative to copying the Deck list.'},
   {title:'Filter Persistence via URL', desc:'Browse filters (name search, color, type, CMC) are also saved to the URL. Share a filtered view by copying the URL after applying your filters. (For showing other people certain groups of cards of interest.)'},
   {title:'Drafting', desc:'A "Draft Deck" (a Deck Type in the Deck tab) is a card list to draft from, not a Deck to play - every card in it is in the pool except Essence, which Arena provides. Press "Draft" on it in Deck Lists and choose:\n"Default Draft": four packs of 15 each - pick one, pass the rest (left, right, left, right).\n"Vault": 120 cards each, nothing to pick.\n"Hex Draft" (2 players): six piles of 30 round a hexagon - take the top card of two side-by-side piles; the other player takes two of the four left; the last two are removed.\n"Winchester" (2-4 players): four face-up piles - take a whole pile, then every pile gets one more card.\nChairs you do not fill are bots that pick at random. A short pool deals every card once before repeating any. When the draft ends, build an Arena Deck of exactly 30 from what you took and save it. At a table, the host picks Mode: Draft in Options and presses "Start Draft" in the waiting room.'},
-  {title:'Tabletop Simulator', desc:'Use the "TTS" button to export your Deck as a single .json file you can copy and paste into Tabletop Simulator.'},
-  {title:'Install Website', desc:'"Install Website" (top bar) installs Conjure as an app on playconjure.com - its own window and icon, and it opens even with no internet. The same panel downloads the whole catalog as one .html file to keep for yourself: open it from your computer and use it as a desktop Deck editing tool, and it keeps working if the website ever goes down. "Card art offline" saves every picture so art shows without the internet too.'}
+  {title:'Install Website', desc:'"Install Website" (top bar) installs Conjure as an app on playconjure.com - its own window and icon, and it opens even with no internet. The same panel downloads the whole catalog as one .html file to keep for yourself: open it from your computer and use it as a desktop Deck editing tool, and it keeps working if the website ever goes down. "Card art offline" saves every picture so art shows without the internet too.'},
+  {title:'Tabletop Simulator', desc:'Use the "TTS" button to export your Deck as a single .json file you can copy and paste into Tabletop Simulator.'}
 ];
 var _scMode = 'keys';
 function switchScTab(mode){
@@ -35220,11 +35330,14 @@ function holoSectionHTML(c){
       +" oninput=\"edSetHolo('"+k+"','a',this.value)\">"
     +"</div>";
   }).join('');
+  /* ⚠ THE COLOUR PICKER IS ITS OWN FRAME, UNDER THIS BOX AND EXACTLY AS
+     WIDE AS IT (the author, sessions 55l and 55m): Colour, the swatches and
+     Clear on one row, fitted to it. */
   return "<div class='ed2-group ed2-hlbox'>"+rows
     +"<div class='ed2-hl-row ed2-hl-mark'><label class='ed2-hl-h'>Watermark</label>"
       +"<select class='ed2-input' id='f-mark' onchange='edSetCardMark(this.value)'></select></div>"
-    +"<div class='ed2-hl-row ed2-hl-ovr' id='edOvrRow'>"+frameOvrRowHTML(c)+"</div>"
-  +"</div>";
+  +"</div>"
+  +"<div class='ed2-hl-ovr' id='edOvrRow'>"+frameOvrRowHTML(c)+"</div>";
 }
 /* ⚠ ANY NUMBER, ANY COMBINATION, AND PRESSING ONE AGAIN TAKES IT OUT. There is
    no separate Off button and no limit: a card can be printed in as many of
@@ -35237,6 +35350,7 @@ function holoSectionHTML(c){
    onclick carries no user text (HANDOFF 14.3). */
 function frameOvrRowHTML(c){
   var cur=frameOvrSetOf(c);
+  var clearBtn=frameOvrClearHTML(cur);
   var only=(cur.length===1);
   var one=function(col,label,extra){
     var on=(cur.indexOf(col)>=0);
@@ -35251,6 +35365,11 @@ function frameOvrRowHTML(c){
            :"<span class='ed2-ovr-dot'></span>")
     +"</button>";
   };
+  /* ⚠ ONE ROW, FITTED TO IT, AND NO WIDER THAN THE BOX ABOVE (the author,
+     session 55m): Colour, the eight swatches, then Clear - never a second
+     row. The frame is exactly as wide as the Image / Watermark box over it;
+     how everything fits in that is in the note on .ed2-hl-ovr in
+     ed2_style.css. */
   return "<label class='ed2-hl-h' title='Print this card as other colours —"
       +" pick as many as you like. What the card IS does not change, only how"
       +" it is drawn.'>Colour</label>"
@@ -35260,6 +35379,11 @@ function frameOvrRowHTML(c){
       }).join('')
       +"<span class='ed2-ovr-sep'></span>"
       +one('grey', 'Object', ' ed2-ovr-obj')
+    +"</span>"
+    +clearBtn;
+}
+function frameOvrClearHTML(cur){
+  return ""
       /* ⚠ CLEARING A SET IS NOT CLEARING A COLOUR. With one colour picked,
          pressing it again lets go and that is the whole gesture. With five
          picked it is five presses, so there is one button that drops the lot.
@@ -35274,8 +35398,7 @@ function frameOvrRowHTML(c){
         +" onclick='edClearFrameColor()'"
         +" title='"+(cur.length
             ? 'Print this card in its own colours again'
-            : 'This card is already printed in its own colours')+"'>Clear</button>"
-    +"</span>";
+            : 'This card is already printed in its own colours')+"'>Clear</button>";
 }
 window.edFrameOvrRowHTML=function(c){ return frameOvrRowHTML(c); };
 window.edSetFrameColor=function(col){
@@ -36161,13 +36284,16 @@ function renderFields(){
        column; hard-coding 572px here would have matched today's layout and
        drifted the first time that column changed. */
     "<div class='ed2-group ed2-btnbox'>"
-    /* Row 1: leaving, the copy of what you are looking at, and the file doors.
-       ⚠ SAVE ALL IS ON THIS ROW AND Save IS ON THE OTHER, which is not an
-       accident of where there was room. Save is one of the four things done TO
-       this card, beside Duplicate's old neighbours; Save All is about the whole
-       session and belongs with the doors. */
-    +"<div class='ed2-btnrow'>"
-      +"<button class='ed2-btn info' onclick='edCloseEditor()'>&larr; Back to catalog</button>"
+    /* ⚠ ONE GRID, NOT TWO ROWS (the author, session 55l): every button the
+       same width, in columns that line up, except that Back to catalog is two
+       columns wide so Save and New card sit together under it. Six columns:
+       row one is Back (two), Duplicate, Fix, Save All and Watermarks - which
+       sits beside Save All rather than pushed to the far edge; row two is
+       Save, New card, Keywords, Templates and Delete card. Save All is on row
+       one because it is about the whole session; Save leads row two because it
+       is the thing you press most and that row is about THIS card. */
+    +"<div class='ed2-btngrid'>"
+      +"<button class='ed2-btn info ed2-bg-back' onclick='edCloseEditor()'>&larr; Back to catalog</button>"
       +"<button class='ed2-btn ed2-btn-pur' onclick='edDuplicate()'>Duplicate</button>"
       /* ⚠ IMPORT AND EXPORT ARE GONE FROM HERE (the author, session 55h).
          They are catalogue-wide and live on the app's top row, reachable from
@@ -36177,14 +36303,8 @@ function renderFields(){
       +"<button class='ed2-btn' onclick='edOpenFix()'>⚙ Fix</button>"
       +"<button class='ed2-btn primary' id='edSaveAllBtn' onclick='edSaveAll()'>"
         +"Save All</button>"
-      +"<button class='ed2-btn ed2-btn-right' onclick='edOpenMarks()'>◈ Watermarks</button>"
-    +"</div>"
-    /* Row 2: the three global panels, then the four things done TO this card.
-       The art buttons moved out of here and down beside Reset framing, where
-       the rest of the art controls already live. */
-    +"<div class='ed2-btnrow ed2-btnrow2'>"
-      /* Save leads this row (the author, session 55h): it is the thing you
-         press most and the row is about THIS card. */
+      +"<button class='ed2-btn' onclick='edOpenMarks()'>◈ Watermarks</button>"
+      /* Row 2: Save, then the global panels, then Delete. */
       +"<button class='ed2-btn primary' id='edSaveBtn' onclick='edSave()'>Save</button>"
       +"<button class='ed2-btn primary' onclick='edNewCard()'>➕ New card</button>"
       +"<button class='ed2-btn ed2-btn-pur' onclick=\"showTab('keywords')\">▬ Keywords</button>"
@@ -36392,8 +36512,43 @@ function edFitRowSize(row){
   return Math.max(ED_BTN_FS_MIN,
          Math.min(ED_BTN_FS_MAX, cur * (room / scales)));
 }
+/* ⚠ THE GRID (session 55l). The toolbar is one grid of equal columns now, so
+   a button's width is its column's and says nothing about its label. What has
+   to fit is each label in its own cell: the text's own width, read off a Range
+   over the button's contents (which is the laid-out text whatever the cell
+   does), plus the padding, which is in em and scales with it. The smallest
+   room-over-need across the buttons is the factor - the same one-read,
+   one-write arithmetic as edFitRowSize, for the same reason. */
+function edFitGridSize(grid){
+  var kids = grid && grid.children, n = kids ? kids.length : 0;
+  if(!n) return ED_BTN_FS_MAX;
+  var cur = parseFloat(getComputedStyle(kids[0]).fontSize) || ED_BTN_FS_MAX;
+  var scale = (grid.offsetWidth > 0)
+    ? (grid.getBoundingClientRect().width / grid.offsetWidth) : 1;
+  if(!(scale > 0)) scale = 1;
+  var f = Infinity;
+  for(var i = 0; i < n; i++){
+    var b = kids[i], k = getComputedStyle(b);
+    var pad = (parseFloat(k.paddingLeft) || 0) + (parseFloat(k.paddingRight) || 0);
+    var rg = document.createRange();
+    rg.selectNodeContents(b);
+    var tw = rg.getBoundingClientRect().width / scale;
+    if(!(tw > 0)) continue;
+    f = Math.min(f, (b.clientWidth - 1) / (tw + pad));
+  }
+  if(!isFinite(f)) return ED_BTN_FS_MAX;
+  return Math.max(ED_BTN_FS_MIN, Math.min(ED_BTN_FS_MAX, cur * f));
+}
 var _edBtnFitW = -1;
 function edFitBtnRows(){
+  var grid = document.querySelector('.ed2-btnbox .ed2-btngrid');
+  if(grid){
+    /* Nothing to measure in a box with no width yet - see below. */
+    if(grid.clientWidth < 40) return;
+    grid.style.fontSize = edFitGridSize(grid).toFixed(2) + 'px';
+    _edBtnFitW = grid.clientWidth;
+    return;
+  }
   var rows = [].slice.call(document.querySelectorAll('.ed2-btnbox .ed2-btnrow'));
   if(!rows.length) return;
   /* ⚠ A HIDDEN BOX HAS NO WIDTH, AND NOTHING FITS IN ZERO. renderFields
@@ -36430,7 +36585,7 @@ function edWatchBtnBox(){
   var box = document.querySelector('.ed2-btnbox');
   if(!box || typeof ResizeObserver !== 'function') return;
   if(!_edBtnRO) _edBtnRO = new ResizeObserver(function(){
-    var rows = document.querySelectorAll('.ed2-btnbox .ed2-btnrow');
+    var rows = document.querySelectorAll('.ed2-btnbox .ed2-btngrid, .ed2-btnbox .ed2-btnrow');
     if(!rows.length || rows[0].clientWidth === _edBtnFitW) return;
     try{ edFitBtnRows(); }catch(_){}
   });
@@ -37625,27 +37780,37 @@ function kwPageCtlHTML(n,actsHTML){
 function kwPageEditHTML(k,cu){
   var c=cu||{name:k.name,mode:k.mode||'keyword',match:k.match||k.name,
              matchAlt:'',param:'none',reminder:k.reminder||'',reminderBare:''};
-  var fld=function(f,label,ph,wide){
-    return "<label"+(wide?" class='kwm-wide'":"")+">"+label
+  /* ⚠ EVERY LABEL ON ITS FIELD'S ROW, TO ITS LEFT (the author, session 55l),
+     and three rows: Name, then Parameter to the left of Mode; Match with Also
+     match to its right; Reminder with Reminder with no value to its right.
+     Save is green. */
+  var fld=function(f,label,ph){
+    return "<label class='kwe-f'><span>"+label+"</span>"
       +"<input class='ed2-in' data-kwe='"+f+"' value='"+e(c[f]||'')+"' placeholder='"+e(ph||'')+"'></label>";
   };
-  return "<div class='kwp-edit'><div class='kwm-form'>"
-    +fld('name','Name')
-    +"<label>Mode<select class='ed2-in' data-kwe='mode'>"
-      +['keyword','keyterm','counter','dice'].map(function(m){
-        return "<option value='"+m+"'"+((c.mode||'keyword')===m?' selected':'')+">"+m+"</option>";}).join('')
-    +"</select></label>"
-    +fld('match','Match','defaults to the name')
-    +"<label class='kwm-wide'>Also match <i>(comma separated)</i>"
-      +"<input class='ed2-in' data-kwe='matchAlt' value='"+e(c.matchAlt||'')+"' placeholder='Grinds, Grinding'></label>"
-    +"<label>Parameter<select class='ed2-in' data-kwe='param'>"
-      +['none','number','cost','text'].map(function(m){
-        return "<option value='"+m+"'"+((c.param||'none')===m?' selected':'')+">"+m+"</option>";}).join('')
-    +"</select></label>"
-    +fld('reminder','Reminder','use {value} for the parameter',true)
-    +fld('reminderBare','Reminder with no value','optional',true)
+  var sel=function(f,label,opts,cur){
+    return "<label class='kwe-f kwe-sel'><span>"+label+"</span><select class='ed2-in' data-kwe='"+f+"'>"
+      +opts.map(function(m){
+        return "<option value='"+m+"'"+(cur===m?' selected':'')+">"+m+"</option>";}).join('')
+      +"</select></label>";
+  };
+  return "<div class='kwp-edit'><div class='kwm-form kwe-form'>"
+    +"<div class='kwe-row'>"
+      +fld('name','Name')
+      +sel('param','Parameter',['none','number','cost','text'],c.param||'none')
+      +sel('mode','Mode',['keyword','keyterm','counter','dice'],c.mode||'keyword')
+    +"</div>"
+    +"<div class='kwe-row'>"
+      +fld('match','Match','defaults to the name')
+      +"<label class='kwe-f'><span>Also match <i>(comma separated)</i></span>"
+        +"<input class='ed2-in' data-kwe='matchAlt' value='"+e(c.matchAlt||'')+"' placeholder='Grinds, Grinding'></label>"
+    +"</div>"
+    +"<div class='kwe-row'>"
+      +fld('reminder','Reminder','use {value} for the parameter')
+      +fld('reminderBare','Reminder with no value','optional')
+    +"</div>"
   +"</div><div class='tpl-opts'>"
-    +"<button class='ed2-btn tiny on' data-kwact='save'>Save</button>"
+    +"<button class='ed2-btn tiny primary' data-kwact='save'>Save</button>"
   +"</div></div>";
 }
 function kwPageRowHTML(k){
@@ -37657,6 +37822,7 @@ function kwPageRowHTML(k){
     ? window.edKwReminderSplit(k.name,k.reminder) : null;
   var rem=(typeof fmtRuleNoLinks==='function')
     ? fmtRuleNoLinks(split?split.rest:(k.reminder||'')) : e(k.reminder||'');
+
   var acts="<div class='kwp-acts'>"
     +"<button class='ed2-btn tiny "+(_kwPageOpen===key?'close-x':'primary')+"' data-kwact='edit'>"
       +(_kwPageOpen===key?'Close &#10005;':'Edit')+"</button>"
@@ -37676,9 +37842,16 @@ function kwPageRowHTML(k){
        The actions ride INSIDE the controls on a pillable row - Edit sits above
        the Font swatch in the leftmost stack. A row with no pill has no controls
        to sit in, so they stand alone there instead. */
+    /* ⚠ PILL AND REMINDER ON THE LEFT, EVERY FORMATTING CONTROL ON THE RIGHT
+       (the author, session 55l). The reminder wraps inside the room the row
+       already has and never makes the row taller: .kwp-rem-t is out of flow,
+       so the row is as tall as its controls, and kwFitRems fits the type to
+       the box. */
     +"<div class='kwp-main'>"
-      +"<div class='kwp-pill'>"+head+"</div>"
-      +"<div class='kwp-rem'>"+rem+"</div>"
+      +"<div class='kwp-lead'>"
+        +"<div class='kwp-pill'>"+head+"</div>"
+        +"<div class='kwp-rem'><div class='kwp-rem-t'>"+rem+"</div></div>"
+      +"</div>"
       +(pill?kwPageCtlHTML(k.name,acts):acts)
     +"</div>"
     +(_kwPageOpen===key?kwPageEditHTML(k,cu):"")
@@ -37709,7 +37882,61 @@ window.edRenderKwPage=function(){
   }).join('');
   kwPageBind();
   try{ _kwFilter(); }catch(_){}
+  kwFitRems();
+  kwWatchBody();
 };
+/* ── EVERY REMINDER INSIDE ITS OWN BOX (the author, session 55l) ─────────────
+   "It can wrap down rows - the BOX as a whole shouldn't have to expand to fit
+   the text." The row is as tall as its controls (the text is out of flow, see
+   .kwp-rem-t), and the reminder wraps inside the room between the pill and
+   the controls; the type is the stylesheet's size, or the largest smaller
+   size at which every line fits that room's height.
+
+   A search per reminder, but only for the few that need it - most fit at the
+   stylesheet's size and cost one read. The size is written on the text box
+   itself and read back from the same element, so there is no stale child to
+   wait on (the trap edFitRowSize describes is a size written on a PARENT). */
+function kwRemBase(){
+  return (parseFloat(getComputedStyle(document.documentElement).fontSize)||16)*1.04;
+}
+function kwFitRems(){
+  var body=document.getElementById('kwPageBody');
+  if(!body||body.clientWidth<40)return;
+  var base=kwRemBase();
+  [].forEach.call(body.querySelectorAll('.kwp-rem'),function(r){
+    var t=r.querySelector('.kwp-rem-t');
+    if(!t)return;
+    t.style.fontSize='';
+    var room=r.clientHeight;
+    if(!room)return;                              /* hidden by the search */
+    /* in flow (a narrow window, controls under the text): it simply wraps */
+    if(getComputedStyle(t).position!=='absolute')return;
+    if(t.offsetHeight<=room)return;
+    var lo=5, hi=base;
+    for(var i=0;i<10;i++){
+      var mid=(lo+hi)/2;
+      t.style.fontSize=mid.toFixed(2)+'px';
+      if(t.offsetHeight<=room)lo=mid; else hi=mid;
+    }
+    t.style.fontSize=lo.toFixed(2)+'px';
+  });
+}
+window.edKwFitRems=kwFitRems;
+/* Again whenever the page's width changes - including from nothing, when it
+   was drawn while another tab was showing. */
+var _kwRO=null,_kwROw=-1;
+function kwWatchBody(){
+  var body=document.getElementById('kwPageBody');
+  if(!body||typeof ResizeObserver!=='function')return;
+  if(!_kwRO)_kwRO=new ResizeObserver(function(){
+    var b=document.getElementById('kwPageBody');
+    if(!b||b.clientWidth===_kwROw)return;
+    _kwROw=b.clientWidth;
+    kwFitRems();
+  });
+  _kwRO.disconnect(); _kwROw=-1;
+  _kwRO.observe(body);
+}
 /* Listeners, bound after innerHTML - see the escaping note at the top. */
 function kwPageBind(){
   var bar=document.getElementById('kwPageBar'), body=document.getElementById('kwPageBody');
@@ -37738,7 +37965,7 @@ function kwPageBind(){
       });
     });
     var s=document.getElementById('kwSearch');
-    if(s)s.addEventListener('input',function(){ try{ _kwFilter(); }catch(_){} });
+    if(s)s.addEventListener('input',function(){ try{ _kwFilter(); }catch(_){} kwFitRems(); });
   }
   if(!body)return;
   body.querySelectorAll('.kwp-row').forEach(function(row){
@@ -40473,6 +40700,47 @@ function bucketBy(cards,keyFn){
   return order.map(function(k){ return {label:k,cards:map[k]}; });
 }
 function sortByCount(b){ return b.slice().sort(function(x,y){ return y.cards.length-x.cards.length; }); }
+
+/* ── HOW A BAR IS PAINTED (the author, session 55l) ──────────────────────────
+   Every bar is metal. A bar that stands for colours keeps them - the pips, the
+   colour combinations, the four stats in their orb colours, the sub-types and
+   keywords in the mix of pips their cards carry - with a bevel of light laid
+   over it; every other bar is the app's own gold.
+
+   STAT_METAL is only light and shade (white and black at low alpha), so it
+   sits over any colour without changing it. */
+var STAT_METAL='linear-gradient(180deg,rgba(255,255,255,.62) 0%,rgba(255,255,255,.22) 30%,'
+  +'rgba(0,0,0,.10) 48%,rgba(255,255,255,.12) 72%,rgba(0,0,0,.30) 100%)';
+var STAT_GOLD='linear-gradient(180deg,#4a3818 0%,#7a6030 12%,#f5ecd0 36%,#e8c96a 50%,'
+  +'#c9a84c 64%,#7a6030 88%,#4a3818 100%)';
+/* Colours across a bar in proportion: [{hex, w}] -> a left-to-right gradient
+   whose every colour is at its purest in the middle of its own share, so one
+   colour holding 70% of a bar holds 70% of its length. */
+function statSpread(parts){
+  parts=(parts||[]).filter(function(p){ return p&&p.w>0; });
+  if(!parts.length)return STAT_HEX.Grey;
+  if(parts.length===1)return parts[0].hex;
+  var tot=parts.reduce(function(n,p){ return n+p.w; },0), at=0;
+  return 'linear-gradient(90deg,'+parts.map(function(p){
+    var mid=(at+p.w/2)/tot*100; at+=p.w;
+    return p.hex+' '+mid.toFixed(1)+'%';
+  }).join(',')+')';
+}
+/* The pips a bar's cards carry between them, as the parts of a spread. */
+function statPipMix(cards){
+  var sum={};
+  cards.forEach(function(c){
+    var p=costPips(c.manaCost);
+    Object.keys(p).forEach(function(k){ sum[k]=(sum[k]||0)+p[k]; });
+  });
+  return STAT_COLORS.map(function(p){ return {hex:STAT_HEX[p[1]],w:sum[p[1]]||0}; });
+}
+function statBarBg(b){
+  var base=b.fill||b.color;
+  return base?(STAT_METAL+','+base):STAT_GOLD;
+}
+function statOrb(k){ return (typeof ORB_FILL!=='undefined'&&ORB_FILL[k])||STAT_HEX.Grey; }
+function statTint(buckets,hex){ buckets.forEach(function(b){ b.color=hex; }); return buckets; }
 /* numeric buckets in numeric order, with everything at or above `cap` folded
    into one "N+" bar */
 function numericBuckets(cards,valFn,cap){
@@ -40489,10 +40757,16 @@ function numericBuckets(cards,valFn,cap){
 
 var STAT_GRAPHS=[
   {id:'colorcombo', name:'Colour combinations', single:true, build:function(cards){
-    return sortByCount(bucketBy(cards,function(c){
+    var b=sortByCount(bucketBy(cards,function(c){
       var cs=(c.colors||[]).slice().sort();
       return cs.length?cs.map(function(x){return x.charAt(0).toUpperCase()+x.slice(1);}).join(' + '):'Colourless';
     }));
+    /* Each bar in the colours it names, an equal share each. */
+    b.forEach(function(x){
+      x.fill=statSpread(x.label.split(' + ').map(function(n){
+        return {hex:STAT_HEX[n]||STAT_HEX.Grey,w:1}; }));
+    });
+    return b;
   }},
   {id:'colorcount', name:'Number of colours', single:true, build:function(cards){
     /* 4+ rather than 4: two cards carry five colours and dropping them would
@@ -40529,21 +40803,24 @@ var STAT_GRAPHS=[
   {id:'cmc', name:'Mana value', single:true, build:function(cards){
     return numericBuckets(cards,function(c){ return statNum(c.cmc); },10);
   }},
+  /* The four stats wear their orbs' colours (ORB_FILL, the card face's own). */
   {id:'attack', name:'Attack', single:true, build:function(cards){
-    return numericBuckets(cards,function(c){ return statNum(c.attack); },10);
+    return statTint(numericBuckets(cards,function(c){ return statNum(c.attack); },10),statOrb('atk'));
   }},
   {id:'health', name:'Health', single:true, build:function(cards){
-    return numericBuckets(cards,function(c){ return statNum(c.health); },10);
+    return statTint(numericBuckets(cards,function(c){ return statNum(c.health); },10),statOrb('hp'));
   }},
   {id:'arcane', name:'Arcane', single:true, build:function(cards){
-    return numericBuckets(cards,function(c){ return statNum(c.arcane); },10);
+    return statTint(numericBuckets(cards,function(c){ return statNum(c.arcane); },10),statOrb('arc'));
   }},
   /* Rebirth's fourth stat. Same shape as the three above; c.range is kept in
      step with the orbs by syncLegacyStats. */
   {id:'range', name:'Range', single:true, rebirth:true, build:function(cards){
-    return numericBuckets(cards,function(c){ return statNum(c.range); },10);
+    return statTint(numericBuckets(cards,function(c){ return statNum(c.range); },10),statOrb('rng'));
   }},
-  {id:'arclink', name:'Arcane linked', single:true, build:function(cards){
+  /* ⚠ UNDER ARCANE, NOT A BUTTON OF ITS OWN (the author, session 55l): still
+     its own graph, drawn beneath the Arcane graph on the same page. */
+  {id:'arclink', name:'Arcane linked', single:true, under:'arcane', build:function(cards){
     /* hasFusedStat reads BOTH representations - the legacy "4A" suffix and the
        4-orb type - so a card touched in the editor is not missed */
     var fused=function(c,k){
@@ -40557,13 +40834,20 @@ var STAT_GRAPHS=[
       else if(fused(c,'H'))b[1].cards.push(c);
       else b[2].cards.push(c);
     });
+    /* The two orbs a linked stat joins, half each; unlinked is plain grey. */
+    b[0].fill=statSpread([{hex:statOrb('atk'),w:1},{hex:statOrb('arc'),w:1}]);
+    b[1].fill=statSpread([{hex:statOrb('hp'),w:1},{hex:statOrb('arc'),w:1}]);
+    b[2].color=STAT_HEX.Grey;
     return b.filter(function(x){ return x.cards.length; });
   }},
   {id:'super', name:'Super-type', build:function(cards){
     return sortByCount(bucketBy(cards,function(c){ return (c.superTypes||[]).slice(); }));
   }},
+  /* Sub-types and keywords in the mix of pips their cards carry. */
   {id:'sub', name:'Sub-type', build:function(cards){
-    return sortByCount(bucketBy(cards,function(c){ return (c.subTypes||[]).slice(); }));
+    var b=sortByCount(bucketBy(cards,function(c){ return (c.subTypes||[]).slice(); }));
+    b.forEach(function(x){ x.fill=statSpread(statPipMix(x.cards)); });
+    return b;
   }},
   {id:'keywords', name:'Keywords', build:function(cards){
     var kws=(window.KW_MATCHES||[]).filter(function(k){return (k.mode||'keyword')==='keyword';});
@@ -40574,7 +40858,7 @@ var STAT_GRAPHS=[
       var pat=String(k.match||k.name).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
       var re=new RegExp('(?<![\\w-])'+pat+'(?![\\w-])','i');
       var hit=cards.filter(function(c){ return re.test(String(c.ruleText||'')); });
-      if(hit.length)out.push({label:k.name,cards:hit});
+      if(hit.length)out.push({label:k.name,cards:hit,fill:statSpread(statPipMix(hit))});
     });
     return sortByCount(out);
   }},
@@ -40588,7 +40872,7 @@ var STAT_GRAPHS=[
   }}
 ];
 
-var _statGraph=null,_statBuckets=null,_statBucket=null;
+var _statGraph=null,_statBuckets={},_statBucket=null;   /* _statBucket: {g, i} */
 
 window.edOpenStats=function(){
   var ov=document.getElementById('edStatsOverlay');
@@ -40607,10 +40891,15 @@ window.edCloseStats=function(){
   var ov=document.getElementById('edStatsOverlay'); if(ov)ov.style.display='none';
 };
 window.edStatsPick=function(id){ _statGraph=id; _statBucket=null; edStatsRefresh(); };
-window.edStatsBucket=function(i){ _statBucket=(_statBucket===i)?null:i; edStatsRefresh(); };
+/* A bar is named by its graph as well as its place, now that one page can
+   hold two graphs (Arcane, with Arcane linked beneath it). */
+window.edStatsBucket=function(g,i){
+  _statBucket=(_statBucket&&_statBucket.g===g&&_statBucket.i===i)?null:{g:g,i:i};
+  edStatsRefresh();
+};
 /* the popout every other view uses - not a second card renderer */
-window.edStatsCard=function(bi,ci){
-  var b=_statBuckets&&_statBuckets[bi]; if(!b)return;
+window.edStatsCard=function(g,bi,ci){
+  var b=_statBuckets[g]&&_statBuckets[g][bi]; if(!b)return;
   var c=b.cards[ci]; if(!c)return;
   if(typeof window.openMod==='function')window.openMod(c);
 };
@@ -40618,53 +40907,64 @@ window.edStatsCard=function(bi,ci){
 function edStatsRefresh(){
   var host=document.getElementById('edStatsBody'); if(!host)return;
   var cards=statsCards();
-  var h="<i class='tpl-hint'>Covering the <b>"+cards.length+"</b> card(s) in the sagas you "
-    +"have enabled. Pick a graph, then click a bar to list its cards.</i>";
-  /* a graph flagged rebirth:true is only offered in that mode */
+  var h="<div class='stat-sum stat-cover'><b>"+cards.length+"</b> card(s) in the sagas you have enabled</div>";
+  /* a graph flagged rebirth:true is only offered in that mode; one flagged
+     `under` is drawn beneath another and has no button of its own */
+  var offered=function(g){ return !g.rebirth || window.REBIRTH; };
   h+="<div class='stat-pick'>"+STAT_GRAPHS.filter(function(g){
-      return !g.rebirth || window.REBIRTH; }).map(function(g){
+      return offered(g) && !g.under; }).map(function(g){
       return "<button class='ed2-btn tiny"+(_statGraph===g.id?' on':'')+"' onclick=\"edStatsPick('"
         +g.id+"')\">"+e(g.name)+"</button>"; }).join('')+"</div>";
 
   var g=STAT_GRAPHS.filter(function(x){return x.id===_statGraph;})[0];
   if(!g){ host.innerHTML=h+"<i class='tpl-hint'>No graph selected.</i>"; return; }
+  var page=[g].concat(STAT_GRAPHS.filter(function(x){ return x.under===g.id && offered(x); }));
+  _statBuckets={};
+  page.forEach(function(pg){
+    h+=statChartHTML(pg,cards,page.length>1);
+  });
+  host.innerHTML=h;
+}
 
+/* One graph: its line of totals, its bars, and - when one of its bars was
+   clicked - every card in that bar. */
+function statChartHTML(g,cards,titled){
+  var h=titled?"<h4 class='stat-title'>"+e(g.name)+"</h4>":'';
   var buckets=[];
   try{ buckets=g.build(cards)||[]; }
-  catch(err){ host.innerHTML=h+"<i class='tpl-hint warn'>Could not build that graph: "
-    +e(err&&err.message||err)+"</i>"; return; }
-  _statBuckets=buckets;
+  catch(err){ return h+"<i class='tpl-hint warn'>Could not build that graph: "
+    +e(err&&err.message||err)+"</i>"; }
+  _statBuckets[g.id]=buckets;
 
   var total=buckets.reduce(function(n,b){ return n+b.cards.length; },0);
   var max=buckets.reduce(function(n,b){ return Math.max(n,b.cards.length); },0)||1;
-  /* Say where the numbers went. On a single-membership graph the bars should
-     add up to the card count, so any shortfall is cards that HAVE no value -
-     35 Essences have no mana cost - and it is named rather than left as an
-     unexplained gap. On a multi-membership graph the total is expected to
-     exceed the card count, and that is said too. */
+  /* Where the numbers went. On a single-membership graph the bars should add
+     up to the card count, so any shortfall is cards that HAVE no value - 35
+     Essences have no mana cost - and it is counted rather than left as an
+     unexplained gap. */
   var note='';
   if(g.single){
     var missing=cards.length-total;
     note=missing>0?(" · <i>"+missing+" not counted (no value)</i>"):" · <i>every card counted once</i>";
-  } else if(total!==cards.length){
-    note=" · <i>a card counts once per bar it belongs to</i>";
   }
   h+="<div class='stat-sum'>"+buckets.length+" bars · "+total+" card entries"+note+"</div>";
 
+  /* ⚠ THE NUMBER ON THE LEFT OF ITS BAR, in a dark metal box, and every bar
+     metal (the author, session 55l) - see statBarBg. */
+  var sel=(_statBucket&&_statBucket.g===g.id)?_statBucket.i:null;
   h+="<div class='stat-chart'>"+buckets.map(function(b,i){
       var pct=Math.round(b.cards.length/max*100);
-      var col=b.color||'#7b9cda';
-      return "<div class='stat-row"+(_statBucket===i?' on':'')+"' onclick='edStatsBucket("+i+")'>"
+      return "<div class='stat-row"+(sel===i?' on':'')+"' onclick=\"edStatsBucket('"+g.id+"',"+i+")\">"
         +"<span class='stat-lbl' title=\""+e(b.label)+"\">"+e(b.label)+"</span>"
-        +"<span class='stat-track'><span class='stat-bar' style='width:"+Math.max(pct,1)+"%;"
-          +"background:"+col+"'></span></span>"
         +"<span class='stat-n'>"+b.cards.length+"</span>"
+        +"<span class='stat-track'><span class='stat-bar' style=\"width:"+Math.max(pct,1)+"%;"
+          +"background:"+statBarBg(b)+"\"></span></span>"
       +"</div>"; }).join('')+"</div>";
 
-  if(_statBucket!=null&&buckets[_statBucket]){
+  if(sel!=null&&buckets[sel]){
     /* EVERY card in the bar, four across, in a list that scrolls rather than
        one that is cut off - the point of clicking a bar is to see all of it. */
-    var b=buckets[_statBucket];
+    var b=buckets[sel];
     h+="<div class='stat-cards'><h4>"+e(b.label)+" — "+b.cards.length+" card(s)</h4>"
       +"<div class='stat-grid'>"
       +b.cards.map(function(c,ci){
@@ -40674,14 +40974,14 @@ function edStatsRefresh(){
            it does on the card */
         var cost=(typeof window.renderManaCost==='function'&&c.manaCost)
                  ?window.renderManaCost(c.manaCost,13):e(c.manaCost||'');
-        return "<button class='stat-card' onclick='edStatsCard("+_statBucket+","+ci+")'>"
+        return "<button class='stat-card' onclick=\"edStatsCard('"+g.id+"',"+sel+","+ci+")\">"
           +"<span class='sc-name'>"+e(c.name)+"</span>"
           +"<span class='sc-cost'>"+cost+"</span>"
           +"<span class='sc-type'>"+e(tl||'—')+"</span>"
         +"</button>"; }).join('')
       +"</div></div>";
   }
-  host.innerHTML=h;
+  return h;
 }
 /* ═══════════════════════════════════════════════════════════════════════════
    OWNER SYNC - pull updates from a published set, push your own up to GitHub.

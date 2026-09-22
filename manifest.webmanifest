@@ -1,7 +1,7 @@
 {
   "name": "Conjure — Card Catalog",
   "short_name": "Conjure",
-  "description": "Catalog, deck builder and playtest table for Conjure.",
+  "description": "Catalog, deck builder and digital tabletop for Conjure.",
   "id": "./card_catalog.html",
   "start_url": "./card_catalog.html",
   "scope": "./",
