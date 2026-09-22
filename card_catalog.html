@@ -128,6 +128,26 @@ body.light.rebirth{
   --hdr-ink:#8a2408; --hdr-ink-dim:#a46a48;
   --hdr-tint:rgba(194,80,12,.12); --hdr-glow:rgba(194,80,12,.30)}
 
+/* ── THE TOP ROW, ALIVE (the author, session 55m) ─────────────────────────
+   A very quiet light and sparks behind the row (cat_fx.js makes both). The
+   light is a band straight across the whole row: down from the top edge in
+   Main, where the sparks fall, and up from the bottom edge in Rebirth, where
+   they rise. Hovering any button on the row (header.hdr-hot) brings it up.
+   z-index -1 puts both behind every button but above the row's own wash,
+   inside the stacking context the sticky header makes. */
+.hdr-glow{position:absolute;left:0;right:0;top:0;bottom:4px;pointer-events:none;z-index:-1;
+  opacity:.45;transition:opacity .5s ease;
+  background:linear-gradient(180deg,rgba(150,205,255,.20) 0%,rgba(150,205,255,.07) 45%,rgba(150,205,255,0) 90%)}
+body.rebirth .hdr-glow{
+  background:linear-gradient(0deg,rgba(255,170,60,.22) 0%,rgba(255,90,30,.08) 45%,rgba(255,90,30,0) 90%)}
+body.light .hdr-glow{
+  background:linear-gradient(180deg,rgba(47,111,208,.16) 0%,rgba(47,111,208,.05) 45%,rgba(47,111,208,0) 90%)}
+body.light.rebirth .hdr-glow{
+  background:linear-gradient(0deg,rgba(194,80,12,.16) 0%,rgba(194,80,12,.05) 45%,rgba(194,80,12,0) 90%)}
+header.hdr-hot .hdr-glow{opacity:1}
+.hdr-fx{position:absolute;left:0;top:0;width:100%;height:calc(100% - 4px);
+  pointer-events:none;z-index:-1}
+
 /* THE LINK GROUP. Was an inline style on the div; it needs a class now that
    the buttons inside it are themed and it holds one more button. */
 .hdr-links{display:flex;align-items:center;gap:5px;margin-left:auto;min-width:0}
@@ -136,9 +156,13 @@ body.light.rebirth{
 header .tab-link-btn{padding:5px 10px;font-size:.8rem;font-weight:700;gap:4px;
   color:var(--hdr-ink);background:var(--hdr-tint);
   border:2px solid;border-image:var(--hdr-metal) 1;white-space:nowrap}
+/* ⚠ A HARDER GLOW THAN ANY OTHER BUTTON ON THE ROW (the author, session
+   55m): these are the ones in the row's own livery, so under the pointer
+   they light up in it - a wide halo and a tight one in --hdr-glow. Still a
+   lift and never a repaint (HANDOFF 12.1 G). */
 header .tab-link-btn:hover{color:var(--hdr-ink);background:var(--hdr-fill);
   border:2px solid;border-image:var(--hdr-metal) 1;
-  box-shadow:0 0 10px var(--hdr-glow)}
+  box-shadow:0 0 16px 3px var(--hdr-glow),0 0 5px 1px var(--hdr-glow)}
 header .tab-link-btn svg{width:15px;height:15px;flex:0 0 auto}
 /* Narrow windows: the glyph alone, with the title attribute still carrying
    the name. Measured with Cinzel and Crimson Pro actually loaded, not
@@ -2303,7 +2327,19 @@ span.ed2-sagachip{cursor:default}
 
 /* ══ statistics ═════════════════════════════════════════════════════════════
    Bars are HTML so each one is clickable without coordinate maths. */
-.stat-pick{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px}
+.stat-pick{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 12px}
+/* Session 55m (the author): the card count straight after the last graph
+   button, and the toggle and Close pushed to the right end of the same row -
+   there is no heading row any more. */
+/* ⚠ A SMALL BASIS AND ROOM TO GROW, so a narrower window wraps the words of
+   the count onto two lines rather than sending Close to a row of its own. */
+.stat-pick .stat-cover{flex:1 1 120px;min-width:120px;margin:0 0 0 6px;line-height:1.2}
+.stat-end{margin-left:auto;display:flex;align-items:center;gap:6px}
+/* The Horizontal / Vertical toggle, in the app's purple. It is one button
+   whose word changes; nothing else about it does. */
+.ed2-btn.stat-orient{min-width:92px;color:var(--spect-ink);border-color:var(--spect)}
+.ed2-btn.stat-orient:hover{background:var(--spect-fill);color:var(--spect-ink);
+  border-color:var(--spect);box-shadow:0 0 8px var(--spect-glow)}
 .stat-sum{color:#8b95a8;font-size:11.5px;margin-bottom:8px}
 .stat-sum i{color:#7a8396}
 .stat-chart{max-height:44vh;overflow:auto;padding-right:4px;
@@ -2311,14 +2347,21 @@ span.ed2-sagachip{cursor:default}
 .stat-row{display:flex;align-items:center;gap:8px;padding:3px 4px;cursor:pointer;border-radius:5px}
 .stat-row:hover{background:#1b2130}
 .stat-row.on{background:#222c3f}
-.stat-lbl{flex:0 0 190px;max-width:190px;overflow:hidden;text-overflow:ellipsis;
+.stat-lbl{flex:0 0 190px;max-width:190px;overflow:hidden;display:flex;align-items:center;gap:6px;
   white-space:nowrap;color:var(--tx);font-size:12px}
+/* A row's words, cut short with an ellipsis; its pips, when it has any,
+   before them and never cut (session 55m). */
+.stat-lbl-t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stat-pips{flex:0 0 auto;display:inline-flex;align-items:center}
+.stat-pips .mana-s{display:inline-flex;align-items:center;gap:1px}
+.stat-more{margin-left:2px;color:var(--tx);font-size:13px;font-weight:700;line-height:1}
+.stat-cards h4 .stat-pips,.stat-cards h4 .stat-lbl-t{vertical-align:middle}
 /* Session 55l (the author): the count on the LEFT of its bar, in a dark grey
    metal box, and every bar metal - the bar's own background is painted by
    statBarBg() in ed2_stats.js; this adds only its edge and depth. */
 .stat-track{flex:1 1 auto;min-width:0;height:17px;background:#10131a;border-radius:4px;overflow:hidden;
   box-shadow:inset 0 1px 3px rgba(0,0,0,.6)}
-.stat-bar{display:block;height:100%;border-radius:4px;
+.stat-bar{display:block;width:var(--p);height:100%;border-radius:4px;
   box-shadow:inset 0 0 0 1px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.35)}
 .stat-n{flex:0 0 auto;min-width:40px;box-sizing:border-box;padding:1px 7px;text-align:center;
   color:#f0f2f6;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;
@@ -2345,6 +2388,29 @@ span.ed2-sagachip{cursor:default}
 .sc-type{flex:0 1 auto;min-width:0;font-size:11.5px;color:#8b95a8;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .stat-card:hover .sc-name{color:#7fb0dc}
+/* None (session 55m): not a bar - it would dwarf the rest - but a button that
+   lists its cards, the way clicking any bar does. */
+.stat-track.stat-none{background:none;box-shadow:none;overflow:visible;height:auto;
+  display:flex;align-items:center}
+.ed2-btn.stat-view{padding:1px 10px}
+/* ⚠ STANDING UP (session 55m). The same rows turned on end: the count on top,
+   the bar rising from the bottom of its track, the name running down under
+   it. --p is the bar's height here instead of its width; its paint is the
+   same. Wide graphs scroll sideways. */
+.stat-chart.vert{display:flex;align-items:flex-start;gap:3px;max-height:none;
+  overflow-x:auto;overflow-y:hidden;padding:8px 4px 6px}
+.stat-chart.vert .stat-row{flex:0 0 auto;width:46px;flex-direction:column;align-items:center;
+  gap:5px;padding:4px 2px}
+.stat-chart.vert .stat-n{order:0;min-width:38px;padding:1px 3px}
+.stat-chart.vert .stat-track{order:1;flex:0 0 auto;width:22px;height:200px;
+  display:flex;align-items:flex-end}
+.stat-chart.vert .stat-bar{width:100%;height:var(--p)}
+.stat-chart.vert .stat-lbl{order:2;flex:0 0 auto;max-width:none;max-height:150px;
+  writing-mode:vertical-rl;gap:4px}
+.stat-chart.vert .stat-lbl-t{min-height:0}
+.stat-chart.vert .stat-track.stat-none{width:auto;height:200px;justify-content:center;
+  align-items:flex-end}
+.stat-chart.vert .stat-view{writing-mode:vertical-rl;padding:8px 1px}
 
 /* The card popout is z-index 1000 while every ed2 overlay is 9000, so opening a
    card from Statistics would have put it BEHIND the stats panel. The popout is
@@ -28019,6 +28085,167 @@ window.pwaSaveArt = function(){
   });
 };
 /* ═══════════════════════════════════════════════════════════════════════════
+   THE TOP ROW, ALIVE (the author, session 55m)
+   A very quiet version of the front page's glow and sparks, in the header -
+   the row that wears the live game's livery. Main's light comes down from the
+   top edge and its sparks fall; Rebirth's comes up from the bottom edge and
+   its sparks rise. The light is a band straight across the whole row, not a
+   circle from its middle.
+
+   Hovering (or tabbing onto) any button on the row brings the light up and
+   the sparks out faster and brighter - the front page's hover, here. The
+   buttons in the row's own livery also glow harder under the pointer; that
+   part is catalog.css (header .tab-link-btn:hover).
+
+   Both layers are placed BEHIND the row's contents (z-index -1 inside the
+   header's own stacking context) and take no pointer events, so nothing here
+   can get between a person and a button. With reduced motion asked for, the
+   light stays and the sparks do not run. requestAnimationFrame stops the
+   whole thing while the tab is hidden.
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function(){
+  var hdr = document.querySelector('header');
+  if(!hdr) return;
+
+  var glow = document.createElement('div');
+  glow.className = 'hdr-glow';
+  glow.setAttribute('aria-hidden', 'true');
+  hdr.insertBefore(glow, hdr.firstChild);
+
+  /* The hover boost, wanted or not. Anything you can press on the row counts,
+     whatever its colours. */
+  var FX = {hot:0, want:0};
+  var SEL = 'button, a, .rb-toggle, .thdot';
+  function want(on){
+    FX.want = on ? 1 : 0;
+    hdr.classList.toggle('hdr-hot', !!on);
+  }
+  hdr.addEventListener('pointerover', function(ev){
+    var t = ev.target;
+    want(!!(t && t.closest && t.closest(SEL)));
+  });
+  hdr.addEventListener('pointerleave', function(){ want(false); });
+  hdr.addEventListener('focusin', function(ev){
+    if(ev.target && ev.target.closest && ev.target.closest(SEL)) want(true);
+  });
+  hdr.addEventListener('focusout', function(){ want(false); });
+
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var cv = document.createElement('canvas');
+  cv.className = 'hdr-fx';
+  cv.setAttribute('aria-hidden', 'true');
+  hdr.insertBefore(cv, glow.nextSibling);
+  var cx = cv.getContext && cv.getContext('2d');
+  if(!cx) return;
+
+  var W = 0, H = 0;
+  function size(){
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = hdr.clientWidth;
+    H = Math.max(1, hdr.clientHeight - 4);     /* above the 4px metal bar */
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  size();
+  if(window.ResizeObserver) new ResizeObserver(size).observe(hdr);
+  else addEventListener('resize', size);
+
+  /* One soft dot per colour, drawn once and stamped - the front page's. */
+  function dot(rgb){
+    var s = document.createElement('canvas'); s.width = s.height = 32;
+    var g = s.getContext('2d'), gr = g.createRadialGradient(16, 16, 0, 16, 16, 16);
+    gr.addColorStop(0, 'rgba(' + rgb + ',1)');
+    gr.addColorStop(.28, 'rgba(' + rgb + ',.8)');
+    gr.addColorStop(1, 'rgba(' + rgb + ',0)');
+    g.fillStyle = gr; g.fillRect(0, 0, 32, 32);
+    return s;
+  }
+  /* The front page's two palettes on the dark row; deeper inks on the cream
+     one, where light added to light would be nothing. */
+  var PAL = {
+    mainD: ['175,228,255', '140,205,255', '214,255,232', '232,242,255'],
+    rbD:   ['255,72,44', '255,120,40', '255,214,72', '255,236,140'],
+    mainL: ['47,111,208', '30,80,170', '40,130,150'],
+    rbL:   ['194,80,12', '170,40,10', '210,120,20']
+  };
+  var SPR = {};
+  Object.keys(PAL).forEach(function(k){ SPR[k] = PAL[k].map(dot); });
+
+  var P = [], MAX = 320;
+  function spawn(){
+    var b = document.body.classList;
+    var rb = b.contains('rebirth'), lt = b.contains('light');
+    var pal = SPR[(rb ? 'rb' : 'main') + (lt ? 'L' : 'D')];
+    var sp = (0.18 + Math.random() * 0.32) * (1 + FX.hot * 0.7);
+    P.push({x:Math.random() * W, y:rb ? H + 2 : -2,
+            vx:(Math.random() - 0.5) * 0.12, vy:rb ? -sp : sp,
+            r:0.45 + Math.random() * 0.9 + FX.hot * 0.25,
+            img:pal[(Math.random() * pal.length) | 0],
+            rb:rb, lt:lt, life:0, ph:Math.random() * 6.283});
+  }
+
+  /* The pointer stirs the sparks it passes through, as on the front page. */
+  var M = {x:-1e4, y:-1e4, vx:0, vy:0, t:0};
+  hdr.addEventListener('pointermove', function(ev){
+    var r = hdr.getBoundingClientRect(), now = performance.now();
+    var x = ev.clientX - r.left, y = ev.clientY - r.top;
+    if(M.t){
+      var dt = Math.max(8, now - M.t);
+      M.vx = (x - M.x) / dt * 16; M.vy = (y - M.y) / dt * 16;
+    }
+    M.x = x; M.y = y; M.t = now;
+  }, {passive:true});
+  hdr.addEventListener('pointerleave', function(){ M.x = M.y = -1e4; M.t = 0; });
+
+  var R = 40, acc = 0, last = 0;
+  function frame(t){
+    var f = last ? Math.min(3, (t - last) / 16.667) : 1;
+    last = t;
+    FX.hot += (FX.want - FX.hot) * Math.min(1, 0.08 * f);
+    M.vx *= Math.pow(0.85, f); M.vy *= Math.pow(0.85, f);
+    acc += (W / 1400) * (0.22 + FX.hot * 0.9) * f;
+    while(acc >= 1 && P.length < MAX){ spawn(); acc -= 1; }
+    if(acc > 3) acc = 3;
+    cx.clearRect(0, 0, W, H);
+    var bc = document.body.classList, nowRb = bc.contains('rebirth'), nowLt = bc.contains('light');
+    var mode = '';
+    for(var i = P.length - 1; i >= 0; i--){
+      var p = P[i];
+      p.life += f;
+      /* ⚠ SPARKS FROM THE OTHER GAME GO AT ONCE. Flip the switch and the row
+         turns fiery in a moment; blue sparks still drifting down through it
+         for the five seconds the slowest take to cross would be the old game
+         hanging about in the new one. The same for the light / dark switch. */
+      if(p.rb !== nowRb || p.lt !== nowLt){
+        p.out = (p.out == null ? 1 : p.out) - 0.06 * f;
+        if(p.out <= 0){ P.splice(i, 1); continue; }
+      }
+      var dx = p.x - M.x, dy = p.y - M.y, d2 = dx * dx + dy * dy;
+      if(d2 < R * R){
+        var d = Math.sqrt(d2) || 1, g = 1 - d / R;
+        p.x += (M.vx * 0.06 + dx / d * 0.35) * g * f;
+      }
+      p.x += (p.vx + Math.sin(p.ph + p.life * 0.06) * (p.rb ? 0.16 : 0.09)) * f;
+      p.y += p.vy * f;
+      /* how far along its way across the row, 0 at the edge it came from */
+      var gone = p.rb ? (H - p.y) / H : p.y / H;
+      if(gone > 1.05 || p.x < -6 || p.x > W + 6){ P.splice(i, 1); continue; }
+      var a = Math.min(1, p.life / 10) * Math.max(0, 1 - gone) * (0.32 + FX.hot * 0.53)
+            * (p.out == null ? 1 : p.out);
+      if(a <= 0.01) continue;
+      var m = p.lt ? 'source-over' : 'lighter';
+      if(m !== mode){ cx.globalCompositeOperation = m; mode = m; }
+      var sz = p.r * 2.6;
+      cx.globalAlpha = p.lt ? a * 0.8 : a;
+      cx.drawImage(p.img, p.x - sz, p.y - sz, sz * 2, sz * 2);
+    }
+    cx.globalAlpha = 1;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+/* ═══════════════════════════════════════════════════════════════════════════
    BROWSE SORT
    _sortPrimary {key,dir} is the "Sort by" dropdown in the page bar. It is the
    PRIMARY sort and is the only one reachable in grid and details view — the
@@ -40701,6 +40928,85 @@ function bucketBy(cards,keyFn){
 }
 function sortByCount(b){ return b.slice().sort(function(x,y){ return y.cards.length-x.cards.length; }); }
 
+/* ── WHAT A CARD'S STAT IS (the author, session 55m) ─────────────────────────
+   Read from its ORBS, which are what the card face draws. The flat attack /
+   health / arcane fields beside them are only a copy - and on 111 of the
+   built-in cards a copy made by POSITION rather than by type: Bases of
+   Stability's one orb, its linked Health / Arcane of 10, sits in "attack", so
+   reading the flat fields put it in the Attack graph at 10+ and nowhere else.
+   A card with no orbs at all (an old record) falls back to the flat fields,
+   with arcane's A / H suffix taken off.
+
+   Three answers: null - the card has no such stat; '*' - it has one and it
+   is a star; or a number. A linked orb is both of its stats. */
+var STAT_ORBS={attack:['attack','attack and arcane'],health:['health','health and arcane'],
+  arcane:['arcane','attack and arcane','health and arcane'],range:['range']};
+function statRead(c,k){
+  var raw=null, orbs=c&&c.orbs;
+  if(Array.isArray(orbs)&&orbs.length){
+    for(var i=0;i<orbs.length;i++){
+      var o=orbs[i], v=o?String(o.value==null?'':o.value).trim():'';
+      if(o&&STAT_ORBS[k].indexOf(o.type)>=0&&v!==''){ raw=v; break; }
+    }
+  } else {
+    var f=String(c&&c[k]!=null?c[k]:'').trim();
+    if(k==='arcane')f=f.replace(/[AH]$/i,'');
+    if(f!=='')raw=f;
+  }
+  if(raw==null)return null;
+  if(raw.indexOf('*')>=0)return '*';
+  var n=statNum(raw);
+  return n==null?'*':n;
+}
+/* Which linked orb a card carries, 'A' or 'H' - from the orbs first, for the
+   reason above; the flat arcane suffix only for a card with no orbs. */
+function statLinked(c){
+  var orbs=c&&c.orbs;
+  if(Array.isArray(orbs)&&orbs.length){
+    for(var i=0;i<orbs.length;i++){
+      var t=orbs[i]&&orbs[i].type;
+      if(t==='attack and arcane')return 'A';
+      if(t==='health and arcane')return 'H';
+    }
+    return '';
+  }
+  var m=/([AH])$/i.exec(String(c&&c.arcane||''));
+  return m?m[1].toUpperCase():'';
+}
+/* A card that has stats at all: every Character, and anything else with at
+   least one. "None" is only asked of these - a spell with no Arcane is not a
+   Character missing one, and counting all of them would bury the answer. */
+function statCarrier(c){
+  if((c.superTypes||[]).some(function(t){ return /^character$/i.test(String(t)); }))return true;
+  return ['attack','health','arcane','range'].some(function(k){ return statRead(c,k)!=null; });
+}
+/* One stat's graph: 0 up to 10+, then a * bar for the stars, then None - the
+   cards that carry stats but not this one. None is NOT a bar (the author): it
+   would dwarf the rest, so it is a row with a button that lists its cards,
+   and it is left out of the scale every bar is drawn against. */
+function statGraph(cards,k,hex){
+  var b=statTint(numericBuckets(cards,function(c){
+    var v=statRead(c,k); return (typeof v==='number')?v:null; },10),hex);
+  var star=cards.filter(function(c){ return statRead(c,k)==='*'; });
+  if(star.length)b.push({label:'*',cards:star,color:hex});
+  var none=cards.filter(function(c){ return statRead(c,k)==null && statCarrier(c); });
+  if(none.length)b.push({label:'None',cards:none,nobar:true});
+  return b;
+}
+/* The seven colours a card is, in their own order. Grey is not one of them
+   (the author, session 55m) - it is the Object frame, not a colour of mana. */
+function statColoursOf(c){
+  var have={};
+  (c.colors||[]).forEach(function(x){ have[String(x).toLowerCase()]=1; });
+  return STAT_COLORS.filter(function(p){ return have[p[1].toLowerCase()]; });
+}
+/* The mana pips a row stands for, drawn by the catalog's own renderer so they
+   are the same pips the cards wear. */
+function statPipsHTML(letters,sz){
+  if(!letters||typeof window.renderManaCost!=='function')return '';
+  return window.renderManaCost(letters,sz||14);
+}
+
 /* ── HOW A BAR IS PAINTED (the author, session 55l) ──────────────────────────
    Every bar is metal. A bar that stands for colours keeps them - the pips, the
    colour combinations, the four stats in their orb colours, the sub-types and
@@ -40756,15 +41062,20 @@ function numericBuckets(cards,valFn,cap){
 }
 
 var STAT_GRAPHS=[
+  /* The seven colours only, in their own order, with the row's pips beside
+     its name (the author, session 55m). */
   {id:'colorcombo', name:'Colour combinations', single:true, build:function(cards){
     var b=sortByCount(bucketBy(cards,function(c){
-      var cs=(c.colors||[]).slice().sort();
-      return cs.length?cs.map(function(x){return x.charAt(0).toUpperCase()+x.slice(1);}).join(' + '):'Colourless';
+      var cs=statColoursOf(c);
+      return cs.length?cs.map(function(p){ return p[1]; }).join(' + '):'Colourless';
     }));
     /* Each bar in the colours it names, an equal share each. */
     b.forEach(function(x){
-      x.fill=statSpread(x.label.split(' + ').map(function(n){
-        return {hex:STAT_HEX[n]||STAT_HEX.Grey,w:1}; }));
+      if(x.label==='Colourless'){ x.color=STAT_HEX.Grey; return; }
+      var names=x.label.split(' + ');
+      x.pips=names.map(function(n){
+        return (STAT_COLORS.filter(function(p){ return p[1]===n; })[0]||[''])[0]; }).join('');
+      x.fill=statSpread(names.map(function(n){ return {hex:STAT_HEX[n],w:1}; }));
     });
     return b;
   }},
@@ -40772,7 +41083,7 @@ var STAT_GRAPHS=[
     /* 4+ rather than 4: two cards carry five colours and dropping them would
        make the bars stop summing to the card total */
     var b=bucketBy(cards,function(c){
-      var n=(c.colors||[]).length;
+      var n=statColoursOf(c).length;
       return n===0?'Colourless':(n>=4?'4+ colours':(n+(n===1?' colour':' colours')));
     });
     var ord=['Colourless','1 colour','2 colours','3 colours','4+ colours'];
@@ -40781,16 +41092,19 @@ var STAT_GRAPHS=[
   {id:'pips', name:'Pip count', build:function(cards){
     /* NOT cumulative: a card with exactly two red pips is in RR and nowhere
        else, so each colour's four bars sum to the cards containing it. */
+    /* ⚠ DRAWN AS PIPS ONLY (the author, session 55m): three red pips, not
+       "RRR"; four and a + for 4+. The words stay on the row as its title. */
     var out=[];
     STAT_COLORS.forEach(function(p){
       var letter=p[0], name=p[1];
       for(var n=1;n<=4;n++){
-        var lbl=new Array(n+1).join(letter)+(n===4?'+':'');
+        var lbl=(n===4?'4+':n)+' '+name+(n===1?' pip':' pips');
         var hit=cards.filter(function(c){
           var k=costPips(c.manaCost)[name];
           return n<4?(k===n):(k>=4);
         });
-        if(hit.length)out.push({label:lbl,cards:hit,color:STAT_HEX[name]});
+        if(hit.length)out.push({label:lbl,cards:hit,color:STAT_HEX[name],
+          pips:new Array(n+1).join(letter),more:n===4,pipsOnly:true});
       }
     });
     return out;
@@ -40804,40 +41118,37 @@ var STAT_GRAPHS=[
     return numericBuckets(cards,function(c){ return statNum(c.cmc); },10);
   }},
   /* The four stats wear their orbs' colours (ORB_FILL, the card face's own). */
-  {id:'attack', name:'Attack', single:true, build:function(cards){
-    return statTint(numericBuckets(cards,function(c){ return statNum(c.attack); },10),statOrb('atk'));
+  {id:'attack', name:'Attack', single:true, why:'no stats at all', build:function(cards){
+    return statGraph(cards,'attack',statOrb('atk'));
   }},
-  {id:'health', name:'Health', single:true, build:function(cards){
-    return statTint(numericBuckets(cards,function(c){ return statNum(c.health); },10),statOrb('hp'));
+  {id:'health', name:'Health', single:true, why:'no stats at all', build:function(cards){
+    return statGraph(cards,'health',statOrb('hp'));
   }},
-  {id:'arcane', name:'Arcane', single:true, build:function(cards){
-    return statTint(numericBuckets(cards,function(c){ return statNum(c.arcane); },10),statOrb('arc'));
+  {id:'arcane', name:'Arcane', single:true, why:'no stats at all', build:function(cards){
+    return statGraph(cards,'arcane',statOrb('arc'));
   }},
-  /* Rebirth's fourth stat. Same shape as the three above; c.range is kept in
-     step with the orbs by syncLegacyStats. */
-  {id:'range', name:'Range', single:true, rebirth:true, build:function(cards){
-    return statTint(numericBuckets(cards,function(c){ return statNum(c.range); },10),statOrb('rng'));
+  /* Rebirth's fourth stat. Same shape as the three above. */
+  {id:'range', name:'Range', single:true, rebirth:true, why:'no stats at all', build:function(cards){
+    return statGraph(cards,'range',statOrb('rng'));
   }},
   /* ⚠ UNDER ARCANE, NOT A BUTTON OF ITS OWN (the author, session 55l): still
      its own graph, drawn beneath the Arcane graph on the same page. */
-  {id:'arclink', name:'Arcane linked', single:true, under:'arcane', build:function(cards){
-    /* hasFusedStat reads BOTH representations - the legacy "4A" suffix and the
-       4-orb type - so a card touched in the editor is not missed */
-    var fused=function(c,k){
-      if(typeof window.hasFusedStat==='function')return window.hasFusedStat(c,k);
-      var arc=String(c.arcane||'').toUpperCase();
-      return arc.charAt(arc.length-1)===k;
-    };
-    var b=[{label:'Attack / Arcane',cards:[]},{label:'Health / Arcane',cards:[]},{label:'None',cards:[]}];
+  {id:'arclink', name:'Arcane linked', single:true, under:'arcane', why:'no stats at all', build:function(cards){
+    /* statLinked reads the orbs first and the legacy "4A" suffix only for a
+       card with none, the same rule as statRead. None - the cards with stats
+       and no linked orb - is a row with a button, not a bar, exactly as on
+       the stat graphs (the author, session 55m). */
+    var b=[{label:'Attack / Arcane',cards:[]},{label:'Health / Arcane',cards:[]},
+           {label:'None',cards:[],nobar:true}];
     cards.forEach(function(c){
-      if(fused(c,'A'))b[0].cards.push(c);
-      else if(fused(c,'H'))b[1].cards.push(c);
-      else b[2].cards.push(c);
+      var l=statLinked(c);
+      if(l==='A')b[0].cards.push(c);
+      else if(l==='H')b[1].cards.push(c);
+      else if(statCarrier(c))b[2].cards.push(c);
     });
-    /* The two orbs a linked stat joins, half each; unlinked is plain grey. */
+    /* The two orbs a linked stat joins, half each. */
     b[0].fill=statSpread([{hex:statOrb('atk'),w:1},{hex:statOrb('arc'),w:1}]);
     b[1].fill=statSpread([{hex:statOrb('hp'),w:1},{hex:statOrb('arc'),w:1}]);
-    b[2].color=STAT_HEX.Grey;
     return b.filter(function(x){ return x.cards.length; });
   }},
   {id:'super', name:'Super-type', build:function(cards){
@@ -40873,13 +41184,19 @@ var STAT_GRAPHS=[
 ];
 
 var _statGraph=null,_statBuckets={},_statBucket=null;   /* _statBucket: {g, i} */
+/* Bars across (the default) or standing up. Remembered in this browser - a
+   convenience, so a storage that throws or comes back empty costs nothing. */
+var _statVert=false;
+try{ _statVert=(localStorage.getItem('conjure.statsVertical')==='1'); }catch(_){}
 
+/* ⚠ NO HEADING ROW (the author, session 55m). The word "Statistics" is gone,
+   and Close lives on the row of graph buttons, at its right end - see
+   edStatsRefresh. */
 window.edOpenStats=function(){
   var ov=document.getElementById('edStatsOverlay');
   if(!ov){
     ov=document.createElement('div'); ov.id='edStatsOverlay'; ov.className='ed2-overlay';
-    ov.innerHTML="<div class='ed2-modal ed2-modal-wide'><div class='ed2-modal-head'>"
-      +"<b>Statistics</b><button class='ed2-btn tiny close-x' onclick='edCloseStats()'>Close &#10005;</button></div>"
+    ov.innerHTML="<div class='ed2-modal ed2-modal-wide'>"
       +"<div id='edStatsBody' class='ed2-modal-body'></div></div>";
     document.body.appendChild(ov);
     ov.addEventListener('click',function(ev){ if(ev.target===ov)window.edCloseStats(); });
@@ -40891,6 +41208,12 @@ window.edCloseStats=function(){
   var ov=document.getElementById('edStatsOverlay'); if(ov)ov.style.display='none';
 };
 window.edStatsPick=function(id){ _statGraph=id; _statBucket=null; edStatsRefresh(); };
+/* The purple toggle: its word is the way the bars run now. */
+window.edStatsOrient=function(){
+  _statVert=!_statVert;
+  try{ localStorage.setItem('conjure.statsVertical',_statVert?'1':'0'); }catch(_){}
+  edStatsRefresh();
+};
 /* A bar is named by its graph as well as its place, now that one page can
    hold two graphs (Arcane, with Arcane linked beneath it). */
 window.edStatsBucket=function(g,i){
@@ -40907,14 +41230,23 @@ window.edStatsCard=function(g,bi,ci){
 function edStatsRefresh(){
   var host=document.getElementById('edStatsBody'); if(!host)return;
   var cards=statsCards();
-  var h="<div class='stat-sum stat-cover'><b>"+cards.length+"</b> card(s) in the sagas you have enabled</div>";
   /* a graph flagged rebirth:true is only offered in that mode; one flagged
      `under` is drawn beneath another and has no button of its own */
   var offered=function(g){ return !g.rebirth || window.REBIRTH; };
-  h+="<div class='stat-pick'>"+STAT_GRAPHS.filter(function(g){
+  /* ⚠ ONE ROW (the author, session 55m): the graph buttons, the card count
+     straight after the last of them, then - pushed to the right end - the
+     Horizontal / Vertical toggle and Close. */
+  var h="<div class='stat-pick'>"+STAT_GRAPHS.filter(function(g){
       return offered(g) && !g.under; }).map(function(g){
       return "<button class='ed2-btn tiny"+(_statGraph===g.id?' on':'')+"' onclick=\"edStatsPick('"
-        +g.id+"')\">"+e(g.name)+"</button>"; }).join('')+"</div>";
+        +g.id+"')\">"+e(g.name)+"</button>"; }).join('')
+    +"<span class='stat-sum stat-cover'><b>"+cards.length+"</b> card(s) in the sagas you have enabled</span>"
+    +"<span class='stat-end'>"
+      +"<button class='ed2-btn tiny stat-orient' id='edStatsOrient' onclick='edStatsOrient()'"
+        +" title='"+(_statVert?'The bars stand up - click to lay them across':'The bars run across - click to stand them up')+"'>"
+        +(_statVert?'Vertical':'Horizontal')+"</button>"
+      +"<button class='ed2-btn tiny close-x' onclick='edCloseStats()'>Close &#10005;</button>"
+    +"</span></div>";
 
   var g=STAT_GRAPHS.filter(function(x){return x.id===_statGraph;})[0];
   if(!g){ host.innerHTML=h+"<i class='tpl-hint'>No graph selected.</i>"; return; }
@@ -40937,7 +41269,10 @@ function statChartHTML(g,cards,titled){
   _statBuckets[g.id]=buckets;
 
   var total=buckets.reduce(function(n,b){ return n+b.cards.length; },0);
-  var max=buckets.reduce(function(n,b){ return Math.max(n,b.cards.length); },0)||1;
+  /* ⚠ None is left out of the scale - it is not a bar, and letting it set the
+     longest one would flatten every bar that is. */
+  var max=buckets.reduce(function(n,b){ return b.nobar?n:Math.max(n,b.cards.length); },0)||1;
+  var bars=buckets.filter(function(b){ return !b.nobar; }).length;
   /* Where the numbers went. On a single-membership graph the bars should add
      up to the card count, so any shortfall is cards that HAVE no value - 35
      Essences have no mana cost - and it is counted rather than left as an
@@ -40945,27 +41280,36 @@ function statChartHTML(g,cards,titled){
   var note='';
   if(g.single){
     var missing=cards.length-total;
-    note=missing>0?(" · <i>"+missing+" not counted (no value)</i>"):" · <i>every card counted once</i>";
+    note=missing>0?(" · <i>"+missing+" not counted ("+(g.why||'no value')+")</i>"):" · <i>every card counted once</i>";
   }
-  h+="<div class='stat-sum'>"+buckets.length+" bars · "+total+" card entries"+note+"</div>";
+  h+="<div class='stat-sum'>"+bars+" bars · "+total+" card entries"+note+"</div>";
 
   /* ⚠ THE NUMBER ON THE LEFT OF ITS BAR, in a dark metal box, and every bar
      metal (the author, session 55l) - see statBarBg. */
   var sel=(_statBucket&&_statBucket.g===g.id)?_statBucket.i:null;
-  h+="<div class='stat-chart'>"+buckets.map(function(b,i){
+  /* --p is the bar's share: its width when the bars run across, its height
+     when they stand up. Nothing else about a bar changes with the toggle. */
+  h+="<div class='stat-chart"+(_statVert?' vert':'')+"'>"+buckets.map(function(b,i){
       var pct=Math.round(b.cards.length/max*100);
-      return "<div class='stat-row"+(sel===i?' on':'')+"' onclick=\"edStatsBucket('"+g.id+"',"+i+")\">"
-        +"<span class='stat-lbl' title=\""+e(b.label)+"\">"+e(b.label)+"</span>"
+      var track=b.nobar
+        /* None: a button that lists its cards, the same as clicking a bar */
+        ? "<span class='stat-track stat-none'><button type='button' class='ed2-btn tiny stat-view'>"
+            +(sel===i?'Hide cards':'Show cards')+"</button></span>"
+        : "<span class='stat-track'><span class='stat-bar' style=\"--p:"+Math.max(pct,1)+"%;"
+            +"background:"+statBarBg(b)+"\"></span></span>";
+      return "<div class='stat-row"+(b.nobar?' stat-row-none':'')+(sel===i?' on':'')
+          +"' onclick=\"edStatsBucket('"+g.id+"',"+i+")\">"
+        +"<span class='stat-lbl"+(b.pipsOnly?' stat-lbl-pips':'')+"' title=\""+e(b.label)+"\">"
+          +statLabelHTML(b,14)+"</span>"
         +"<span class='stat-n'>"+b.cards.length+"</span>"
-        +"<span class='stat-track'><span class='stat-bar' style=\"width:"+Math.max(pct,1)+"%;"
-          +"background:"+statBarBg(b)+"\"></span></span>"
+        +track
       +"</div>"; }).join('')+"</div>";
 
   if(sel!=null&&buckets[sel]){
     /* EVERY card in the bar, four across, in a list that scrolls rather than
        one that is cut off - the point of clicking a bar is to see all of it. */
     var b=buckets[sel];
-    h+="<div class='stat-cards'><h4>"+e(b.label)+" — "+b.cards.length+" card(s)</h4>"
+    h+="<div class='stat-cards'><h4>"+statLabelHTML(b,13)+" — "+b.cards.length+" card(s)</h4>"
       +"<div class='stat-grid'>"
       +b.cards.map(function(c,ci){
         var sup=(c.superTypes||[]).join(' '), sub=(c.subTypes||[]).join(' ');
@@ -40982,6 +41326,13 @@ function statChartHTML(g,cards,titled){
       +"</div></div>";
   }
   return h;
+}
+/* A row's name: its pips, when it has any, then its words - or, on the Pip
+   count graph, the pips alone and a + for 4+. */
+function statLabelHTML(b,sz){
+  var pips=b.pips?"<span class='stat-pips'>"+statPipsHTML(b.pips,sz)+(b.more?"<b class='stat-more'>+</b>":'')+"</span>":'';
+  if(b.pipsOnly&&pips)return pips;
+  return pips+"<span class='stat-lbl-t'>"+e(b.label)+"</span>";
 }
 /* ═══════════════════════════════════════════════════════════════════════════
    OWNER SYNC - pull updates from a published set, push your own up to GitHub.
