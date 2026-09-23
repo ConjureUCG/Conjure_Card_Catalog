@@ -477,7 +477,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -495,7 +495,10 @@
    "variant": "v1",
    "sagaId": "Beginnings",
    "id": "cms66imo2xtfjq",
-   "_src": "mse"
+   "_src": "mse",
+   "kwReminders": [
+    "Gouge"
+   ]
   },
   {
    "name": "Corpus Fracture",
@@ -3027,17 +3030,18 @@
    "flavor": "\"Wild elementals are quiet the sight.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1220.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1220.webp",
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -3980,6 +3984,7 @@
     "Character"
    ],
    "subTypes": [
+    "Pyro",
     "Dragon"
    ],
    "orbs": [
@@ -4007,11 +4012,11 @@
    "flavor": "\"Even as much damage as that thing causes, it's still only a baby.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -4025,7 +4030,8 @@
       "r": 0,
       "f": -1
      },
-     "fit": "contain"
+     "fit": "contain",
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -4035,7 +4041,7 @@
    "kwReminders": [
     "Firebreathing"
    ],
-   "flavorRows": 1.5
+   "flavorRows": 1
   },
   {
    "name": "Barbaric Carver",
@@ -4961,17 +4967,18 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1110.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1110.webp",
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -6085,17 +6092,18 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-08-22",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1380.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1380.webp",
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -6599,11 +6607,11 @@
    "flavor": "\"Wild magic requires both sound body and mind.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -6617,7 +6625,8 @@
       "r": 0,
       "f": 1
      },
-     "fit": "contain"
+     "fit": "contain",
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -7764,23 +7773,25 @@
    "flavor": "\"He has few thoughts, but he still wants to see the world.\" — Idrig",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1475.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1475.webp",
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
    "sagaId": "Beginnings",
    "id": "cms66imo3rmwls",
-   "_src": "mse"
+   "_src": "mse",
+   "flavorRows": 1
   },
   {
    "name": "Celestial Colonnade",
@@ -9937,7 +9948,7 @@
   {
    "name": "X Marks the Spot",
    "manaCost": "V/OV/O",
-   "cmc": "4",
+   "cmc": "2",
    "colors": [
     "orange",
     "violet"
@@ -15275,7 +15286,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-08",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -18224,11 +18235,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -19076,11 +19087,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -19155,11 +19166,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -19220,11 +19231,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -19285,11 +19296,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -19350,11 +19361,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -19429,11 +19440,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -19494,11 +19505,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -19559,11 +19570,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -19624,11 +19635,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -19689,11 +19700,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -19754,11 +19765,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -19819,11 +19830,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -19884,11 +19895,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -19949,11 +19960,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -20014,11 +20025,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -20079,11 +20090,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -20144,11 +20155,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -20209,11 +20220,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -20274,11 +20285,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -20339,11 +20350,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -26392,7 +26403,7 @@
   {
    "name": "Whisper of Power",
    "manaCost": "V/Y",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "yellow",
     "violet"
@@ -26426,11 +26437,11 @@
    "flavor": "\"Be weary of those around you.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -26444,7 +26455,8 @@
       "r": 0,
       "f": 1
      },
-     "fit": "contain"
+     "fit": "contain",
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -26677,21 +26689,22 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Objects you play gain\n\"Amplify: {O} — Put a +1 counter on this card.\"",
+   "ruleText": "Objects you play gain \"Amplify: {O} — Put a +1 counter on this card.\"",
    "flavor": "\"It fits!... Well enough.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_17.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_17.webp",
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -31636,15 +31649,15 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Switch 1 card in your Hand with 1 card you’ve Crystallized.\nCrystallize: Dual Vig Essence, it arrives locked.",
-   "flavor": "\"If we stop them at this point, we might be able to cut off their supplies...\"",
+   "ruleText": "",
+   "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -31747,15 +31760,15 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Switch 1 card in your Hand with 1 card you’ve Crystallized.\nCrystallize: Dual Vig Essence, it arrives locked.",
-   "flavor": "\"If we stop them at this point, we might be able to cut off their supplies...\"",
+   "ruleText": "",
+   "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -31858,15 +31871,15 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Switch 1 card in your Hand with 1 card you’ve Crystallized.\nCrystallize: Dual Vig Essence, it arrives locked.",
-   "flavor": "\"If we stop them at this point, we might be able to cut off their supplies...\"",
+   "ruleText": "",
+   "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -31969,15 +31982,15 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Switch 1 card in your Hand with 1 card you’ve Crystallized.\nCrystallize: Dual Vig Essence, it arrives locked.",
-   "flavor": "\"If we stop them at this point, we might be able to cut off their supplies...\"",
+   "ruleText": "",
+   "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -32152,15 +32165,15 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Switch 1 card in your Hand with 1 card you’ve Crystallized.\nCrystallize: Dual Vig Essence, it arrives locked.",
-   "flavor": "\"If we stop them at this point, we might be able to cut off their supplies...\"",
+   "ruleText": "",
+   "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -32263,15 +32276,15 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Switch 1 card in your Hand with 1 card you’ve Crystallized.\nCrystallize: Dual Vig Essence, it arrives locked.",
-   "flavor": "\"If we stop them at this point, we might be able to cut off their supplies...\"",
+   "ruleText": "",
+   "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -32374,15 +32387,15 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Switch 1 card in your Hand with 1 card you’ve Crystallized.\nCrystallize: Dual Vig Essence, it arrives locked.",
-   "flavor": "\"If we stop them at this point, we might be able to cut off their supplies...\"",
+   "ruleText": "",
+   "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-08-11",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -33051,11 +33064,11 @@
    "flavor": "\"Outcasts from druid covens will find a home in much more sinister places.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -33069,7 +33082,8 @@
       "r": 0,
       "f": 1
      },
-     "fit": "contain"
+     "fit": "contain",
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -33174,11 +33188,11 @@
    "flavor": "\"It bores through wood and skin to lay its eggs.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -33192,7 +33206,8 @@
       "r": 0,
       "f": 1
      },
-     "fit": "contain"
+     "fit": "contain",
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -33303,15 +33318,15 @@
    "attack": "4",
    "health": "3",
    "arcane": "1",
-   "ruleText": "Lethal\nWhenever an opponent Grinds, this card gains Airborne this turn.",
+   "ruleText": "Lethal, Gouge\nWhenever an opponent Grinds, this card gains Airborne this turn.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -33325,7 +33340,8 @@
       "r": 0,
       "f": 1
      },
-     "fit": "contain"
+     "fit": "contain",
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -36879,6 +36895,7 @@
     "yellow"
    ],
    "superTypes": [
+    "Quick",
     "Ongoing",
     "Spell"
    ],
@@ -36908,7 +36925,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Imbue Armament\nArrive — Deal 1 damage to\neach opponent.\nThe Imbued card gains\n\"Armed Character gains\nSwift and Barrier.\"",
+   "ruleText": "Imbue Armament\nThe Imbued card gains \"Armed Character gains Swift and Barrier.\"",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -36916,7 +36933,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -40096,23 +40113,27 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image138.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image138.webp",
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
    "sagaId": "Beginnings",
    "id": "cms47zh8e7bd5s",
-   "_src": "mse"
+   "_src": "mse",
+   "kwReminders": [
+    "Fury"
+   ]
   },
   {
    "name": "Ante’s Will",
@@ -52465,7 +52486,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Characters you control with\nAttack and Health 1 or less gain Invulnerable.",
+   "ruleText": "Characters you control with Attack and Health 1 or less gain Invulnerable.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -52473,7 +52494,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -52687,7 +52708,7 @@
    "sagaId": "Infinite",
    "id": "cms5ftx0leysuz",
    "_src": "mse",
-   "flavorRows": 1.5
+   "flavorRows": ""
   },
   {
    "name": "Academic Familiar",
@@ -66570,7 +66591,7 @@
    "_src": "mse"
   },
   {
-   "name": "Wooden Outlaw",
+   "name": "Woodland Outlaw",
    "manaCost": "GV1",
    "cmc": "3",
    "colors": [
@@ -71752,7 +71773,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -71764,7 +71785,11 @@
    "variant": "v1",
    "sagaId": "Beginnings",
    "id": "cms47zh8jrdpn6",
-   "_src": "mse"
+   "_src": "mse",
+   "kwReminders": [
+    "Airborne"
+   ],
+   "flavorRows": 1
   },
   {
    "name": "Zealous Tide Sprite",
@@ -71810,7 +71835,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -71822,7 +71847,10 @@
    "variant": "v1",
    "sagaId": "Beginnings",
    "id": "cms66imoa2x752",
-   "_src": "mse"
+   "_src": "mse",
+   "kwReminders": [
+    "Empower"
+   ]
   },
   {
    "name": "Burled War Councelor",
@@ -73387,11 +73415,11 @@
    "flavor": "\"My spear may be broken, but as long as the land stands, the fight will go on.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -73405,7 +73433,8 @@
       "r": 0,
       "f": 1
      },
-     "fit": "contain"
+     "fit": "contain",
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -77366,7 +77395,7 @@
   {
    "name": "Whsiper of Wings",
    "manaCost": "B/I3",
-   "cmc": "5",
+   "cmc": "4",
    "colors": [
     "blue",
     "indigo"
@@ -78913,15 +78942,15 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Unique\n{L}, Sacrifice a Character:\nCreate {VV}.",
+   "ruleText": "Unique\n{L}, Sacrifice a Character: \nCreate {VV}.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -78934,7 +78963,8 @@
       "y": 1.5,
       "r": 0,
       "f": 1
-     }
+     },
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -79608,11 +79638,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -79625,7 +79655,8 @@
       "y": 2.5,
       "r": 0,
       "f": 1
-     }
+     },
+     "mark": "wm_cmudw0ix3xj34z"
     },
     {
      "id": "v2",
@@ -79935,11 +79966,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -79952,7 +79983,8 @@
       "y": 2,
       "r": 0,
       "f": 1
-     }
+     },
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -80145,11 +80177,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -80162,7 +80194,8 @@
       "y": 2.5,
       "r": 0,
       "f": 1
-     }
+     },
+     "mark": "wm_cmudw0ix3xj34z"
     },
     {
      "id": "v2",
@@ -80899,11 +80932,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -80916,7 +80949,8 @@
       "y": 0.5,
       "r": 0,
       "f": 1
-     }
+     },
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -81388,11 +81422,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -81405,7 +81439,8 @@
       "y": 4.5,
       "r": 0,
       "f": 1
-     }
+     },
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -82359,15 +82394,15 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Unique\n{L}: Create {R} equal to the number of Non-Ongoing Actions and\nNon-Ongoing Spells played this turn.",
+   "ruleText": "Unique\n{L}: Create {R} equal to the number of Non-Ongoing Actions and Non-Ongoing Spells played this turn.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -82380,7 +82415,8 @@
       "y": 3,
       "r": 0,
       "f": 1
-     }
+     },
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -83464,7 +83500,7 @@
   {
    "name": "Will to War",
    "manaCost": "RRO/G1",
-   "cmc": "5",
+   "cmc": "4",
    "colors": [
     "red",
     "orange",
@@ -83629,11 +83665,11 @@
    "flavor": "\"When the wind howls, others hear chaos. I hear a council of voices, ancient and unseen.\nI am their translator.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-08-22",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -83647,7 +83683,8 @@
       "y": 0,
       "r": 0,
       "f": 1
-     }
+     },
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -83692,15 +83729,15 @@
    "attack": "2",
    "health": "2",
    "arcane": "2",
-   "ruleText": "Gouge\nArrive — Put a Gouge counter on another target Character.",
+   "ruleText": "Gouge\nArrive — Put a Gouge or Taunt counter on another target Character.",
    "flavor": "\"Look at his chubby little rolls. You just want to squeeze them don’t you? You’d never think he’s one of the most poisonous gloads in the world.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -83714,7 +83751,8 @@
       "r": 0,
       "f": 1
      },
-     "fit": "contain"
+     "fit": "contain",
+     "mark": "wm_cmudw0ix3xj34z"
     },
     {
      "id": "v2",
@@ -83726,7 +83764,8 @@
    "variant": "v1",
    "sagaId": "Beginnings",
    "id": "cms66imobspm3e",
-   "_src": "mse"
+   "_src": "mse",
+   "flavorRows": 2
   },
   {
    "name": "Joe’s Demand",
@@ -83795,7 +83834,7 @@
   {
    "name": "A Hero Never Dies",
    "manaCost": "O/YY1",
-   "cmc": "4",
+   "cmc": "3",
    "colors": [
     "orange",
     "yellow"
@@ -83835,18 +83874,19 @@
    "flavor": "\"Long, long, I trust, to grasp th' immortal prize,\nFor he, who lives a Hero, never dies!\"\n— Hero of the North: An Historical Play",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-08-24",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image10.webp",
-     "fit": "contain"
+     "fit": "contain",
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -93531,11 +93571,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-08-22",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -93549,7 +93589,8 @@
       "r": 0,
       "f": 1
      },
-     "fit": "contain"
+     "fit": "contain",
+     "mark": "wm_cmudw0ix3xj34z"
     }
    ],
    "variant": "v1",
@@ -93557,8 +93598,7 @@
    "id": "cms66imocreaad",
    "_src": "mse",
    "kwReminders": [
-    "Airborne",
-    "Gouge"
+    "Dredge"
    ]
   },
   {
@@ -99737,7 +99777,7 @@
    "attack": "2",
    "health": "1",
    "arcane": "2",
-   "ruleText": "Empower — Discard 1, Draw 1.\n{BBB3}, Crystallize: Intellect,\nit Arrives Locked.\n{RRR2}, Crystallize: Spontaneity,\nit Arrives Locked.",
+   "ruleText": "Empower — Discard 1, Draw 1.\n{BBB3}, Crystallize: [[Intellect]], it Arrives Locked.\n{RRR2}, Crystallize: [[Spontaneity]], it Arrives Locked.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -99745,7 +99785,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
