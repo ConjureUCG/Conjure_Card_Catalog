@@ -4026,7 +4026,7 @@
      "artXf": {
       "z": 1,
       "x": -0.5,
-      "y": 4.5,
+      "y": 3.5,
       "r": 0,
       "f": -1
      },
@@ -4502,7 +4502,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -4510,9 +4510,9 @@
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1191.webp",
      "artXf": {
-      "z": 1,
+      "z": 1.02,
       "x": 0,
-      "y": 8.5,
+      "y": 6,
       "r": 0,
       "f": 1
      },
@@ -6619,9 +6619,9 @@
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1190.webp",
      "artXf": {
-      "z": 1,
+      "z": 1.05,
       "x": 0.5,
-      "y": 9,
+      "y": 7.5,
       "r": 0,
       "f": 1
      },
@@ -8034,14 +8034,13 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1710.webp",
-     "fit": "contain"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1710.webp"
     }
    ],
    "variant": "v1",
@@ -13936,7 +13935,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -20491,21 +20490,13 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-08-26",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1585.webp",
-     "fit": "contain",
-     "artXf": {
-      "z": 1.44,
-      "x": -6.5,
-      "y": 13,
-      "r": 0,
-      "f": 1
-     },
      "holo": {
       "image": {
        "set": "lunar",
@@ -20527,6 +20518,13 @@
        "a": 1,
        "blend": "overlay"
       }
+     },
+     "artXf": {
+      "z": 1,
+      "x": 0,
+      "y": 10,
+      "r": 0,
+      "f": 1
      }
     }
    ],
@@ -26019,7 +26017,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -26027,9 +26025,9 @@
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1467.webp",
      "artXf": {
-      "z": 1,
+      "z": 1.1,
       "x": 0,
-      "y": 6.5,
+      "y": 6,
       "r": 0,
       "f": 1
      },
@@ -26449,14 +26447,14 @@
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1462.webp",
      "artXf": {
-      "z": 1,
+      "z": 1.05,
       "x": 0,
-      "y": 6.5,
+      "y": 4,
       "r": 0,
       "f": 1
      },
-     "fit": "contain",
-     "mark": "wm_cmudw0ix3xj34z"
+     "mark": "wm_cmudw0ix3xj34z",
+     "fit": "contain"
     }
    ],
    "variant": "v1",
@@ -26638,14 +26636,6 @@
      "label": "Default",
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1107.webp",
-     "artXf": {
-      "z": 1,
-      "x": 0.5,
-      "y": 2,
-      "r": 0,
-      "f": 1
-     },
-     "fit": "contain",
      "mark": "wm_cmudw0ix3xj34z"
     }
    ],
@@ -26869,7 +26859,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -26881,7 +26871,8 @@
    "variant": "v1",
    "sagaId": "Beginnings",
    "id": "cms66imo4bwqhy",
-   "_src": "mse"
+   "_src": "mse",
+   "flavorRows": 1
   },
   {
    "name": "Void’s Wisdom",
@@ -33076,14 +33067,14 @@
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_14.webp",
      "artXf": {
-      "z": 1,
+      "z": 1.11,
       "x": -0.5,
       "y": 6,
       "r": 0,
       "f": 1
      },
-     "fit": "contain",
-     "mark": "wm_cmudw0ix3xj34z"
+     "mark": "wm_cmudw0ix3xj34z",
+     "fit": "contain"
     }
    ],
    "variant": "v1",
@@ -33200,14 +33191,14 @@
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image16.webp",
      "artXf": {
-      "z": 1,
+      "z": 1.08,
       "x": -0.5,
-      "y": 9,
+      "y": 7.5,
       "r": 0,
       "f": 1
      },
-     "fit": "contain",
-     "mark": "wm_cmudw0ix3xj34z"
+     "mark": "wm_cmudw0ix3xj34z",
+     "fit": "contain"
     }
    ],
    "variant": "v1",
@@ -33336,11 +33327,10 @@
      "artXf": {
       "z": 1,
       "x": -1,
-      "y": 5,
+      "y": 4.5,
       "r": 0,
       "f": 1
      },
-     "fit": "contain",
      "mark": "wm_cmudw0ix3xj34z"
     }
    ],
@@ -39984,7 +39974,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-08-22",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -39994,11 +39984,10 @@
      "artXf": {
       "z": 1,
       "x": 0,
-      "y": 3.5,
+      "y": 2,
       "r": 0,
       "f": 1
-     },
-     "fit": "contain"
+     }
     },
     {
      "id": "v2",
@@ -40056,14 +40045,13 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image137.webp",
-     "fit": "contain"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image137.webp"
     }
    ],
    "variant": "v1",
@@ -45267,7 +45255,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-08",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -52554,7 +52542,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-08-22",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -52564,11 +52552,10 @@
      "artXf": {
       "z": 1,
       "x": 1,
-      "y": 4.5,
+      "y": 7,
       "r": 0,
       "f": 1
-     },
-     "fit": "contain"
+     }
     }
    ],
    "variant": "v1",
@@ -52622,21 +52609,13 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image330.webp",
-     "artXf": {
-      "z": 1,
-      "x": 0,
-      "y": 9,
-      "r": 0,
-      "f": 1
-     },
-     "fit": "contain"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image330.webp"
     }
    ],
    "variant": "v1",
@@ -52708,7 +52687,7 @@
    "sagaId": "Infinite",
    "id": "cms5ftx0leysuz",
    "_src": "mse",
-   "flavorRows": ""
+   "flavorRows": 1.5
   },
   {
    "name": "Academic Familiar",
@@ -66261,7 +66240,15 @@
      "label": "Default",
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image561.webp",
-     "mark": "wm_cmudw0ix3xj34z"
+     "mark": "wm_cmudw0ix3xj34z",
+     "fit": "contain",
+     "artXf": {
+      "z": 1.15,
+      "x": 0,
+      "y": 5.5,
+      "r": 0,
+      "f": 1
+     }
     },
     {
      "id": "v2",
@@ -66461,7 +66448,6 @@
      "label": "Default",
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image564.webp",
-     "fit": "contain",
      "mark": "wm_cmudw0ix3xj34z"
     }
    ],
@@ -66522,7 +66508,6 @@
      "label": "Default",
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_183.webp",
-     "fit": "contain",
      "mark": "wm_cmudw0ix3xj34z"
     }
    ],
@@ -66589,75 +66574,6 @@
    "sagaId": "Infinite",
    "id": "cms47zh8ibcb45",
    "_src": "mse"
-  },
-  {
-   "name": "Woodland Outlaw",
-   "manaCost": "GV1",
-   "cmc": "3",
-   "colors": [
-    "green",
-    "violet"
-   ],
-   "superTypes": [
-    "Character"
-   ],
-   "subTypes": [
-    "Druid",
-    "Rogue",
-    "Outlaw"
-   ],
-   "orbs": [
-    {
-     "type": "attack",
-     "value": "3"
-    },
-    {
-     "type": "health",
-     "value": "3"
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "attack": "3",
-   "health": "3",
-   "arcane": "",
-   "ruleText": "{L}: Put a -1 counter on this card and another target Character.\nCrystallize: Dual Arch Gris Essence, it Arrives Locked.",
-   "flavor": "\"You take from the forest, now it’s my turn to take from you.\"",
-   "imageUrl": "",
-   "art": "",
-   "saga": "Infinite",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
-   "variants": [
-    {
-     "id": "v1",
-     "label": "Default",
-     "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image568.webp",
-     "artXf": {
-      "z": 1,
-      "x": 0.5,
-      "y": 8.5,
-      "r": 0,
-      "f": 1
-     },
-     "fit": "contain",
-     "mark": "wm_cmudw0ix3xj34z"
-    }
-   ],
-   "variant": "v1",
-   "sagaId": "Infinite",
-   "id": "cms66imo9ysnbh",
-   "_src": "mse",
-   "flavorRows": 1
   },
   {
    "name": "Workshop Gyro",
@@ -71707,21 +71623,13 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image634.webp",
-     "artXf": {
-      "z": 1,
-      "x": 0,
-      "y": 10.5,
-      "r": 0,
-      "f": 1
-     },
-     "fit": "contain"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image634.webp"
     }
    ],
    "variant": "v1",
@@ -73426,14 +73334,6 @@
      "label": "Default",
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image661.webp",
-     "artXf": {
-      "z": 1,
-      "x": -0.5,
-      "y": 11,
-      "r": 0,
-      "f": 1
-     },
-     "fit": "contain",
      "mark": "wm_cmudw0ix3xj34z"
     }
    ],
@@ -77437,14 +77337,13 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image730.webp",
-     "fit": "contain"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image730.webp"
     }
    ],
    "variant": "v1",
@@ -77496,14 +77395,20 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image732.webp",
-     "fit": "contain"
+     "artXf": {
+      "z": 1,
+      "x": 0,
+      "y": 4.5,
+      "r": 0,
+      "f": 1
+     }
     }
    ],
    "variant": "v1",
@@ -77557,7 +77462,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
@@ -77567,11 +77472,10 @@
      "artXf": {
       "z": 1,
       "x": 0.5,
-      "y": 7.5,
+      "y": 9.5,
       "r": 0,
       "f": 1
-     },
-     "fit": "contain"
+     }
     }
    ],
    "variant": "v1",
@@ -83542,14 +83446,13 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image828.webp",
-     "fit": "contain"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image828.webp"
     }
    ],
    "variant": "v1",
@@ -83602,21 +83505,13 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-08-22",
+   "lastUpdated": "2026-09-23",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image829.webp",
-     "artXf": {
-      "z": 1,
-      "x": 0,
-      "y": 4.5,
-      "r": 0,
-      "f": 1
-     },
-     "fit": "contain"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image829.webp"
     }
    ],
    "variant": "v1",
@@ -83676,7 +83571,6 @@
      "label": "Default",
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image830.webp",
-     "fit": "contain",
      "artXf": {
       "z": 1.25,
       "x": 0,
@@ -83684,7 +83578,8 @@
       "r": 0,
       "f": 1
      },
-     "mark": "wm_cmudw0ix3xj34z"
+     "mark": "wm_cmudw0ix3xj34z",
+     "fit": "contain"
     }
    ],
    "variant": "v1",
@@ -83745,14 +83640,14 @@
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image831.webp",
      "artXf": {
-      "z": 1,
+      "z": 1.16,
       "x": -0.5,
       "y": 6.5,
       "r": 0,
       "f": 1
      },
-     "fit": "contain",
-     "mark": "wm_cmudw0ix3xj34z"
+     "mark": "wm_cmudw0ix3xj34z",
+     "fit": "contain"
     },
     {
      "id": "v2",
@@ -83885,7 +83780,6 @@
      "label": "Default",
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image10.webp",
-     "fit": "contain",
      "mark": "wm_cmudw0ix3xj34z"
     }
    ],
@@ -101232,6 +101126,74 @@
     "f": 1
    },
    "fit": "contain"
+  },
+  {
+   "name": "Woodland Outlaw",
+   "manaCost": "GV1",
+   "cmc": "3",
+   "colors": [
+    "green",
+    "violet"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Druid",
+    "Rogue",
+    "Outlaw"
+   ],
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "3"
+    },
+    {
+     "type": "health",
+     "value": "3"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "attack": "3",
+   "health": "3",
+   "arcane": "",
+   "ruleText": "{L}: Put a -1 counter on this card and another target Character.\nCrystallize: Dual Arch Gris Essence, it Arrives Locked.",
+   "flavor": "\"You take from the forest, now it’s my turn to take from you.\"",
+   "imageUrl": "",
+   "art": "",
+   "saga": "Infinite",
+   "revision": "Rev 1.0",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "lastUpdated": "2026-09-23",
+   "variants": [
+    {
+     "id": "v1",
+     "label": "Default",
+     "art": "",
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image568.webp",
+     "mark": "wm_cmudw0ix3xj34z",
+     "artXf": {
+      "z": 1,
+      "x": 0,
+      "y": 9.5,
+      "r": 0,
+      "f": 1
+     }
+    }
+   ],
+   "variant": "v1",
+   "sagaId": "Infinite",
+   "id": "cms66imo9ysnbh",
+   "_src": "mse",
+   "flavorRows": 1
   },
   {
    "id": "cmtup123b1g75c",
