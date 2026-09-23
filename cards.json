@@ -9947,7 +9947,7 @@
   {
    "name": "X Marks the Spot",
    "manaCost": "V/OV/O",
-   "cmc": "2",
+   "cmc": "4",
    "colors": [
     "orange",
     "violet"
