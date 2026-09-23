@@ -5,7 +5,7 @@
   "author": "Conjure UCG LLC",
   "version": "1.0",
   "description": "",
-  "cardCount": 1327
+  "cardCount": 1335
  },
  {
   "id": "Creators",
@@ -21,6 +21,14 @@
   "author": "",
   "version": "1.0",
   "description": "",
-  "cardCount": 270
+  "cardCount": 272
+ },
+ {
+  "id": "Test",
+  "name": "Test",
+  "author": "",
+  "version": "1.0",
+  "description": "",
+  "cardCount": 1
  }
 ]
