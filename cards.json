@@ -84647,7 +84647,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-27",
    "variants": [
     {
      "id": "v1",
@@ -84666,7 +84666,8 @@
    "variant": "v1",
    "sagaId": "Beginnings",
    "id": "cms5ftx0r6bpu3",
-   "_src": "mse"
+   "_src": "mse",
+   "flavorRows": 2.5
   },
   {
    "name": "Anorexic Vitae",
