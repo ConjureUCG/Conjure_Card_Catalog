@@ -52665,7 +52665,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-09-25",
    "variants": [
     {
      "id": "v1",
@@ -52687,7 +52687,7 @@
    "sagaId": "Infinite",
    "id": "cms5ftx0leysuz",
    "_src": "mse",
-   "flavorRows": 1.5
+   "flavorRows": ""
   },
   {
    "name": "Academic Familiar",
@@ -83773,7 +83773,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-09-25",
    "variants": [
     {
      "id": "v1",
@@ -101288,11 +101288,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Infinite",
+   "saga": "Test",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-09-25",
    "variants": [
     {
      "id": "v1",
