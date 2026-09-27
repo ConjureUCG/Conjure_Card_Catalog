@@ -1550,6 +1550,19 @@ body.pin-none  .mcard{--pin:linear-gradient(transparent,transparent)!important}
 .dup-row{display:flex;align-items:center;gap:8px;padding:3px 0;color:#cfd7e6;font-size:12.5px;
   flex-wrap:wrap}
 .dup-row b{color:#e8ecf5;font-weight:600}
+/* Same shape, different name (session 55o): the card's name opens it, the
+   rules line is there to be skimmed - one line, cut where it runs out. */
+.shp-name{flex:0 0 auto;max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  background:none;border:0;padding:0;cursor:pointer;text-align:left;
+  font-family:'Crimson Pro',serif;font-size:12.5px;font-weight:600;color:#e8ecf5}
+/* underline only: a hover that repaints a button's ink is what HANDOFF 12.1 G
+   rules out, and check_cli fails on it */
+.shp-name:hover{text-decoration:underline}
+.shp-rules{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:#7a8396;font-size:11.5px;font-style:italic}
+.shp-cost{display:inline-flex;align-items:center;gap:2px;flex:0 0 auto}
+.shp-cost img{width:13px;height:13px}
+.shp-stats{color:#8b95a8;font-size:11.5px}
 .dup-row i{color:#8b95a8;font-size:11.5px;font-style:normal}
 .dup-tag{flex:none;min-width:52px;text-align:center;padding:1px 6px;border-radius:8px;
   background:#2b3242;color:var(--tx);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase}
@@ -32365,11 +32378,18 @@ window.edOpenMarks=function(){
   ov.style.display='flex'; marksRefresh().then(edMarkPanelRefresh);
 };
 window.edCloseMarks=function(){ var ov=document.getElementById('edMarkOverlay'); if(ov)ov.style.display='none'; };
+/* ⚠ DRAWN NOW, SAVED AFTER (the author, session 55o). These three used to
+   redraw the page when the WRITE came back, which is a moment later and not
+   one anybody can predict: press "+ New watermark" and start typing, and the
+   panel rebuilt itself under the caret when the disk answered. The list is
+   already correct in memory, so it is drawn straight away and the store
+   catches up behind it. */
 window.edMarkNew=function(){
   var rec={id:'wm_'+uid(),name:'New watermark',src:'',xf:{z:1,x:0,y:0,r:0},a:0.35};
   MARKS.push(rec); _markOpen=rec.id;
   _marksSeq++;                              /* see marksRefresh */
-  put('marks',rec).then(marksChanged);
+  edMarkPanelRefresh(); refreshMarkPicker();
+  put('marks',rec).catch(function(){});
 };
 window.edMarkSelect=function(id){ _markOpen=id; edMarkPanelRefresh(); };
 window.edMarkDelete=function(id){
@@ -32379,7 +32399,9 @@ window.edMarkDelete=function(id){
   MARKS=MARKS.filter(function(x){return x.id!==id;});
   used.forEach(function(c){ markDropFrom(c,id); markDirty(c); persistCard(c); });
   if(_markOpen===id)_markOpen=null;
-  del('marks',id).then(marksChanged);
+  _marksSeq++;
+  marksChanged();                           /* gone from the page at once */
+  del('marks',id).catch(function(){});
 };
 /* ⚠ NOT A REBUILD ON EVERY KEYSTROKE (the author, session 55n). Every control
    on this page was oninput -> put() -> marksChanged() -> host.innerHTML=…,
@@ -32442,11 +32464,27 @@ window.edMarkUpload=function(input){
   /* kept as a data URL rather than a Blob: watermarks are small, shared by
      reference, and this keeps them inside the JSON backup for free. PNG alpha
      survives untouched, which matters - most watermarks are partial images. */
-  rd.onload=function(ev){ m.src=ev.target.result; put('marks',m).then(marksChanged); };
+  rd.onload=function(ev){
+    m.src=ev.target.result;
+    _marksSeq++;
+    edMarkPanelRefresh();                   /* the picture, at once */
+    put('marks',m).then(function(){
+      refreshMarkPicker();
+      try{ scheduleFace(); }catch(_){}
+      var c=curCard(); if(c)renderPreview(c);
+    });
+  };
   rd.readAsDataURL(file);
 };
 window.edMarkPanelRefresh=function(){
   var host=document.getElementById('edMarkBody'); if(!host)return;
+  /* ⚠ NEVER UNDER THE CARET (the author, session 55o). A read of the store
+     that set off before this panel opened can land in the middle of somebody
+     typing in it, and a rebuild then throws the focus out - the same guard
+     the online table's list rebuild uses. Nothing is lost by skipping it:
+     markLiveSync keeps what is on screen in step with the record. */
+  var a=document.activeElement;
+  if(a&&host.contains(a)&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))return;
   var m=markById(_markOpen);
   var list=MARKS.slice().sort(function(a,b){return String(a.name).localeCompare(String(b.name));})
     .map(function(x){
@@ -34191,6 +34229,137 @@ window.edMergeDuplicates=function(){
   });
 };
 
+/* ── THE SAME CARD UNDER TWO NAMES (the author, session 55o) ────────────────
+   Cards whose MANA COST, TYPE LINE and STATS are identical, whatever they are
+   called. The duplicate check above can only see matching names, so a card
+   added twice under two names is invisible to it; this is the other half of
+   that question.
+
+   ⚠ IT IS A REPORT AND NOTHING ELSE, deliberately. Two cards can share a
+   shape and be entirely different cards - four one-mana Quick Actions with no
+   stats are four real cards - so nothing here merges, renames or deletes
+   anything. The rules text is NOT part of the match (a copy made under a
+   second name usually has the text edited), but a group whose rules also
+   agree is called out, because that is the pair most likely to be a mistake.
+
+   The name is out of the signature and everything else in it is normalised
+   the same way shareSig does it, so the two reports cannot disagree about
+   what "identical" means. */
+function shapeSig(c){
+  var orbs=[];
+  try{
+    orbs=(cardOrbs(c)||[]).filter(function(o){
+        return o&&o.type&&o.type!=='hidden'&&o.type!=='blank'; })
+      .map(function(o){ return String(o.type)+':'+String(o.value==null?'':o.value); }).sort();
+  }catch(_){
+    orbs=[String(c.attack||''),String(c.health||''),String(c.arcane||'')];
+  }
+  var tl='';
+  try{ tl=typeLine(c); }
+  catch(_){ tl=(c.superTypes||[]).join(' ')+' '+(c.subTypes||[]).join(' '); }
+  /* built, never written as an escape - see the note in shareSig */
+  var SEP=String.fromCharCode(1);
+  return [normText(tl),normText(c.manaCost),orbs.join(',')].join(SEP);
+}
+/* What a card's stats say, in words, for the report line. */
+function shapeStats(c){
+  var out=[];
+  try{
+    (cardOrbs(c)||[]).forEach(function(o){
+      if(!o||!o.type||o.type==='hidden'||o.type==='blank')return;
+      out.push(String(o.type).replace(' and ','+')+' '
+        +(o.value===''||o.value==null?'\u2013':o.value));
+    });
+  }catch(_){}
+  if(!out.length){
+    ['attack','health','arcane','range'].forEach(function(k){
+      if(c[k])out.push(k+' '+String(c[k]).replace(/[AH]$/i,''));
+    });
+  }
+  return out.length?out.join(' \u00b7 '):'no stats';
+}
+var _shapeLast=[];
+function shapeGroups(){
+  var map={}, order=[];
+  (window.CARDS||[]).forEach(function(c){
+    if(!c||!c.name)return;
+    var k=shapeSig(c);
+    if(!map[k]){ map[k]=[]; order.push(k); }
+    map[k].push(c);
+  });
+  var out=[];
+  order.forEach(function(k){
+    var list=map[k];
+    if(list.length<2)return;
+    /* two records of the SAME name are the Duplicate cards report above */
+    var names={}; list.forEach(function(c){ names[normName(c.name||'')]=1; });
+    if(Object.keys(names).length<2)return;
+    var rules={}; list.forEach(function(c){ rules[normText(c.ruleText||'')]=1; });
+    out.push({cards:list.slice(),sameRules:Object.keys(rules).length===1});
+  });
+  /* the ones whose rules agree as well come first - those are the pairs most
+     likely to be one card written twice - then the biggest groups */
+  out.sort(function(a,b){
+    if(a.sameRules!==b.sameRules)return a.sameRules?-1:1;
+    return b.cards.length-a.cards.length;
+  });
+  _shapeLast=out;
+  return out;
+}
+/* For the checks, and for anyone who wants the list without the page. */
+window.edShapeGroups=function(){
+  return shapeGroups().map(function(g){
+    return {sameRules:g.sameRules,names:g.cards.map(function(c){ return c.name; })};
+  });
+};
+/* Opening a card from the report: by its place in the list, never by a name
+   written into an inline onclick (HANDOFF 14.3). */
+window.edShapeOpen=function(gi,ci){
+  var g=_shapeLast[gi]; if(!g)return;
+  var c=g.cards[ci]; if(!c)return;
+  try{ if(typeof window.openMod==='function')window.openMod(c); }catch(_){}
+};
+window.edScanShapes=function(){
+  var groups=shapeGroups();
+  var host=document.getElementById('edShapeBody');
+  if(!host)return groups;
+  if(!groups.length){
+    host.innerHTML="<i class='tpl-hint'>No two cards share a mana cost, type line and "
+      +"stats under different names.</i>";
+    return groups;
+  }
+  var cards=groups.reduce(function(n,g){ return n+g.cards.length; },0);
+  var same=groups.filter(function(g){ return g.sameRules; }).length;
+  var h="<i class='tpl-hint'><b>"+groups.length+"</b> group(s), <b>"+cards+"</b> card(s), "
+    +"share a mana cost, a type line and stats under different names"
+    +(same?(" \u2014 <b>"+same+"</b> of them print the same rules text as well"):"")
+    +". Nothing here has been changed: some of these are simply different cards "
+    +"built the same way.</i><div class='dup-list'>";
+  groups.slice(0,80).forEach(function(g,gi){
+    var first=g.cards[0];
+    var cost=(typeof window.renderManaCost==='function'&&first.manaCost)
+      ? window.renderManaCost(first.manaCost,13) : e(first.manaCost||'\u2014');
+    var tl=''; try{ tl=typeLine(first); }catch(_){ tl=''; }
+    h+="<div class='dup-grp'><div class='shr-head'><span class='shp-cost'>"+cost+"</span>"
+      +"<b>"+e(tl||'(no type line)')+"</b>"
+      +"<span class='shp-stats'>\u00b7 "+e(shapeStats(first))+"</span>"
+      +(g.sameRules?"<span class='dup-tag in-deck'>same rules</span>":"")
+      +"</div>";
+    g.cards.forEach(function(c,ci){
+      var txt=String(c.ruleText||'').replace(/\s+/g,' ').trim();
+      h+="<div class='dup-row'>"
+        +"<button type='button' class='shp-name' onclick='edShapeOpen("+gi+","+ci+")'>"
+          +e(c.name)+"</button>"
+        +"<i>"+e(c.saga||sagaIdOf(c))+"</i>"
+        +"<span class='shp-rules'>"+e(txt?(txt.length>90?txt.slice(0,90)+'\u2026':txt):'no rules text')+"</span>"
+      +"</div>";
+    });
+    h+="</div>";
+  });
+  if(groups.length>80)h+="<i class='tpl-hint'>\u2026and "+(groups.length-80)+" more.</i>";
+  host.innerHTML=h+"</div>";
+  return groups;
+};
 window.edScanShared=function(){
   var groups=sharedGroups(), coll=nameCollisions();
   var host=document.getElementById('edSharedBody'); if(!host)return groups;
@@ -39076,6 +39245,21 @@ window.edOpenFix=function(){
             +"<button class='ed2-btn tiny warn' onclick='edMergeDuplicates()'>Merge duplicates…</button>"
           +"</div>"
           +"<div id='edDupBody'></div></div>"
+        /* ⚠ THE OTHER HALF OF "DUPLICATE CARDS" (the author, session 55o):
+           that one matches on the NAME, so a card added twice under two names
+           is invisible to it. This one matches on the shape - cost, type line
+           and stats - and only reports. */
+        +"<div class='tpl-sec'><h4>Same shape, different name</h4>"
+          +"<i class='tpl-hint'>Cards whose <b>mana cost, type line and stats</b> are "
+          +"identical, whatever they are called \u2014 which is how a card added twice "
+          +"under two names shows up. The rules text is not part of the match, but a group "
+          +"that prints the same rules too is marked, and those come first. "
+          +"<b>This changes nothing</b>: some of these are simply different cards built the "
+          +"same way. Press a name to look at the card.</i>"
+          +"<div class='tpl-opts'>"
+            +"<button class='ed2-btn tiny' onclick='edScanShapes()'>Check look-alikes</button>"
+          +"</div>"
+          +"<div id='edShapeBody'></div></div>"
         +"<div class='tpl-sec'><h4>Same card in several sagas</h4>"
           +"<i class='tpl-hint'>A card that is <b>identical</b> across sagas — same name, "
           +"type line, rules, mana cost and stats — should be <b>one record shared by "
@@ -39111,6 +39295,7 @@ window.edOpenFix=function(){
   try{ frScan(); edFrRefresh(); }catch(_){}
   try{ window.edRenderOrphans(); }catch(_){}
   try{ window.edScanShared(); }catch(_){}
+  try{ window.edScanShapes(); }catch(_){}
 };
 window.edCloseFix=function(){var ov=document.getElementById('edFixOverlay');if(ov)ov.style.display='none';};
 
