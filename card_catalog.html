@@ -32556,6 +32556,121 @@ function sagaIdOf(c){ return (c&&(c.sagaId||c.saga))||BUILTIN_SAGA; }
 function mergeKey(c){ return sagaIdOf(c)+'::'+normName(c.name||''); }
 function sagaById(id){ return SAGAS.filter(function(s){return s.id===id;})[0]||null; }
 
+/* ── THE CARD'S OWN ID (the author, session 55p) ─────────────────────────────
+   A card's identity has always been its saga plus its name (mergeKey above),
+   and that is what makes the saga load-bearing: move a card to another saga
+   and its key moves with it, so the boot merge finds nothing under the new
+   key and the built-in card comes back under the old one as a second copy.
+   The same trap catches a rename. `cid` is the way out: an id that belongs to
+   the CARD and never moves.
+
+   ⚠ IT IS DERIVED, NOT INVENTED, and that is the whole reason this can be
+   rolled out to a site whose users each hold their own copy of the data. The
+   id is a hash of the identity the card has RIGHT NOW - saga and name - so
+   every machine, mine, yours and a stranger's, works out the same id for the
+   same card with nothing published and nothing coordinated. From the moment
+   it is written down it is frozen, and the card can be renamed or re-homed
+   without it changing.
+
+   ⚠ NOTHING IS REMOVED. sagaId, saga and the tombstones are still written
+   and still read; the id is an extra field beside them. An older copy of the
+   app - one somebody downloaded, or a tab that has not reloaded - reads a
+   migrated store exactly as it did before and ignores the field it does not
+   know. That is what makes this safe to publish before anything is built on
+   top of it.
+
+   Two 32-bit hashes, base-36, so the string is short enough to read in a
+   report and wide enough that 1601 cards will not collide. */
+function cidHash(s){
+  var h1=5381, h2=52711, i=0, n=s.length;
+  for(;i<n;i++){
+    var ch=s.charCodeAt(i);
+    h1=((h1<<5)+h1+ch)|0;
+    h2=((h2<<5)-h2+ch)|0;
+  }
+  var a=('000000'+(h1>>>0).toString(36)).slice(-7);
+  var b=('000000'+(h2>>>0).toString(36)).slice(-7);
+  return a+b;
+}
+function cardCid(c){
+  if(c&&c.cid)return c.cid;
+  return 'c'+cidHash(mergeKey(c||{}));
+}
+function stampCid(c){ if(c&&!c.cid)c.cid=cardCid(c); return c; }
+window.edCardCid=function(c){ return cardCid(c); };
+/* The one pass, run from boot() before the stored records are merged. It adds
+   the id to every record that has none and touches nothing else, in ONE
+   transaction - this can be sixteen hundred records on a catalogue whose
+   owner has saved every card. Running it twice does nothing. */
+function cidStampStored(stored){
+  var todo=[];
+  (stored||[]).forEach(function(r){ if(r&&!r.cid){ r.cid=cardCid(r); todo.push(r); } });
+  if(!todo.length)return 0;
+  try{
+    var st=tx('cards','readwrite');
+    todo.forEach(function(r){ try{ st.put(r); }catch(_){} });
+  }catch(_){ return 0; }
+  setMetaSafe('idModel',2);
+  setMetaSafe('idModelAt',new Date().toISOString());
+  return todo.length;
+}
+/* What the Fix page reports: how many cards there are, how many carry a
+   written id, whether any two share one, and whether any stored record now
+   points at no card at all. */
+window.edCidReport=function(){
+  var cards=(window.CARDS||[]);
+  var live={}, dupLive=[];
+  cards.forEach(function(c){
+    var id=cardCid(c);
+    if(live[id])dupLive.push({a:live[id],b:c.name,id:id}); else live[id]=c.name;
+  });
+  return new Promise(function(res){
+    var out={cards:cards.length, dupLive:dupLive, stored:0, withCid:0,
+             dupStored:[], orphans:[], when:''};
+    var done=function(){ res(out); };
+    getMeta('idModelAt').then(function(w){
+      out.when=w||'';
+      var r;
+      try{ r=tx('cards','readonly').getAll(); }catch(_){ done(); return; }
+      r.onerror=done;
+      r.onsuccess=function(){
+        var seen={};
+        (r.result||[]).forEach(function(x){
+          if(!x)return;
+          out.stored++;
+          if(!x.cid)return;
+          out.withCid++;
+          if(seen[x.cid])out.dupStored.push({a:seen[x.cid],b:x.name,id:x.cid});
+          else seen[x.cid]=x.name;
+          if(!x.__deleted&&!live[x.cid])out.orphans.push({name:x.name,id:x.cid});
+        });
+        done();
+      };
+    },done);
+  });
+};
+/* The way back. The migration only ADDED a field, so undoing it is taking
+   that field away again - no snapshot needed and nothing else to put back. */
+window.edCidUndo=function(){
+  return new Promise(function(res){
+    var r;
+    try{ r=tx('cards','readonly').getAll(); }catch(_){ res(0); return; }
+    r.onerror=function(){ res(0); };
+    r.onsuccess=function(){
+      var list=(r.result||[]).filter(function(x){ return x&&x.cid; });
+      if(list.length){
+        try{
+          var st=tx('cards','readwrite');
+          list.forEach(function(x){ delete x.cid; try{ st.put(x); }catch(_){} });
+        }catch(_){ res(0); return; }
+      }
+      (window.CARDS||[]).forEach(function(c){ delete c.cid; });
+      setMetaSafe('idModel',0);
+      res(list.length);
+    };
+  });
+};
+
 /* ── SAGA GROUPS ─────────────────────────────────────────────────────────────
    A group is one SOURCE - one repository, one link - holding one or more sagas.
    It is derived from `source.url` rather than stored on the saga, so nothing
@@ -36696,7 +36811,12 @@ window.edRenderPreview=renderPreview;   // used by the face; kept on window
    ═══════════════════════════════════════════════════════════════════════ */
 function curCard(){ if(!curId)return null; return (window.CARDS||[]).find(function(c){return c.__id===curId;})||null; }
 /* ensure every card has a stable editor id (__id) */
-function ensureIds(){ (window.CARDS||[]).forEach(function(c){ if(!c.__id)c.__id=uid(); }); }
+/* __id is this session's handle on a card and is minted fresh every load; cid
+   is the card's own id and is written down (session 55p). */
+function ensureIds(){ (window.CARDS||[]).forEach(function(c){
+  if(!c.__id)c.__id=uid();
+  if(!c.cid){ try{ c.cid=window.edCardCid(c); }catch(_){} }
+}); }
 
 /* SVG stat icons matching the catalog filter panel */
 var STAT_ICON={
@@ -39276,6 +39396,20 @@ window.edOpenFix=function(){
             +"<button class='ed2-btn tiny warn' onclick='edMergeShared()'>Share identical cards…</button>"
           +"</div>"
           +"<div id='edSharedBody'></div></div>"
+        /* ⚠ THE REPORT FOR THE ID MIGRATION (the author, session 55p). It
+           runs by itself at load and only ever ADDS a field, so there is
+           nothing to press - this says what it did, and offers the way back. */
+        +"<div class='tpl-sec'><h4>Card ids</h4>"
+          +"<i class='tpl-hint'>Every card now carries an id of its own, worked out from "
+          +"its saga and name the first time it is seen and frozen from then on. It is what "
+          +"lets a card be renamed or re-homed without the app losing track of which card it "
+          +"is. Nothing else about a card was changed, and an older copy of the app reads "
+          +"this store exactly as it did before.</i>"
+          +"<div class='tpl-opts'>"
+            +"<button class='ed2-btn tiny' onclick='edCidRefresh()'>Check card ids</button>"
+            +"<button class='ed2-btn tiny warn' onclick='edCidRollback()'>Undo the id pass…</button>"
+          +"</div>"
+          +"<div id='edCidBody'></div></div>"
         +"<div class='tpl-sec'><h4>Orphaned cards</h4>"
           +"<i class='tpl-hint'>Cards their saga's source no longer lists. A sync never "
           +"deletes — acting on a remote file is how a truncated download becomes data "
@@ -39296,6 +39430,56 @@ window.edOpenFix=function(){
   try{ window.edRenderOrphans(); }catch(_){}
   try{ window.edScanShared(); }catch(_){}
   try{ window.edScanShapes(); }catch(_){}
+  try{ window.edCidRefresh(); }catch(_){}
+};
+/* The Card ids report. Read-only; the button beside it is the way back. */
+window.edCidRefresh=function(){
+  var host=document.getElementById('edCidBody'); if(!host)return;
+  host.innerHTML="<i class='tpl-hint'>Reading the store\u2026</i>";
+  return window.edCidReport().then(function(r){
+    var ok=!r.dupLive.length&&!r.dupStored.length&&!r.orphans.length;
+    var h="<div class='tpl-opts'><b>"+r.cards+"</b> card(s) \u00b7 <b>"+r.withCid+"</b> of "
+      +r.stored+" stored record(s) carry an id"
+      +(r.when?(" \u00b7 written "+e(String(r.when).slice(0,10))):'')+"</div>";
+    if(ok){
+      h+="<i class='tpl-hint'>Every card has an id of its own, no two share one, and every "
+        +"stored record still points at a card.</i>";
+    } else {
+      if(r.dupLive.length)h+="<div class='shr-warn'><b>"+r.dupLive.length
+        +" pair(s) of cards share an id.</b> That means two cards the app cannot tell "
+        +"apart \u2014 same saga and same name. They are listed in Duplicate cards above.</div>";
+      if(r.dupStored.length)h+="<div class='shr-warn'><b>"+r.dupStored.length
+        +" stored record(s) share an id with another.</b></div>";
+      if(r.orphans.length)h+="<div class='shr-warn'><b>"+r.orphans.length
+        +" stored record(s) point at no card.</b> Saved edits for cards that are not in "
+        +"the catalogue any more \u2014 nothing is lost, they are simply not in use.</div>";
+      var list=r.dupLive.concat(r.dupStored).slice(0,12);
+      if(list.length)h+="<div class='dup-list'>"+list.map(function(x){
+        return "<div class='dup-row'><b>"+e(x.a)+"</b><i>and</i><b>"+e(x.b)+"</b>"
+          +"<span class='shp-rules'>"+e(x.id)+"</span></div>"; }).join('')+"</div>";
+    }
+    host.innerHTML=h;
+    return r;
+  }).catch(function(err){
+    host.innerHTML="<i class='tpl-hint warn'>Could not read the store: "
+      +e((err&&err.message)||err)+"</i>";
+  });
+};
+window.edCidRollback=function(){
+  return edDangerGate({
+    title:'Undo the card id pass',
+    lose:['The id on every stored card - the field itself, nothing else',
+          'Cards go back to being known by their saga and name, as before',
+          'Nothing about a card\u2019s text, stats, art or sagas changes'],
+    phrase:'UNDO',
+    proceedLabel:'Take the ids off again'
+  }).then(function(ok){
+    if(!ok){ toast('Cancelled - nothing was changed'); return; }
+    return window.edCidUndo().then(function(n){
+      toast('Took the id off '+n+' record(s)');
+      window.edCidRefresh();
+    });
+  });
 };
 window.edCloseFix=function(){var ov=document.getElementById('edFixOverlay');if(ov)ov.style.display='none';};
 
@@ -43712,6 +43896,11 @@ function boot(){ if(_inited)return; _inited=true;
          shares its orbs, variants and sections arrays with the snapshot. */
       if(_origCatalog===null)_origCatalog=JSON.parse(JSON.stringify(window.CARDS||[]));
       if(cards&&cards.length){
+        /* ⚠ THE ID PASS, BEFORE THE MERGE (the author, session 55p). Every
+           stored record that has no cid gets one, derived from the identity
+           it has now, in one transaction. Nothing else about the record is
+           touched - see the note on cardCid in ed2_sagas.js. */
+        try{ cidStampStored(cards); }catch(_){}
         /* MERGE, never replace. This used to be window.CARDS = cards, which
            meant importing a 50-card .mse-set silently destroyed the built-in
            1335-card catalog for every future session - the stored set became
@@ -43724,11 +43913,17 @@ function boot(){ if(_inited)return; _inited=true;
         var base=_origCatalog.map(function(c){return JSON.parse(JSON.stringify(c));});
         /* Keyed on saga + name, not name alone: two sagas may each contain a
            card called "Lightning Bolt" and both must survive. */
-        var idx={}; base.forEach(function(c,i){ idx[mergeKey(c)]=i; });
+        var idx={}, byCid={};
+        base.forEach(function(c,i){ idx[mergeKey(c)]=i; byCid[cardCid(c)]=i; });
         var drop={}, folded=[], renamed=[];
         cards.forEach(function(sc){
           if(!sc.__id)sc.__id=uid();
-          var k=mergeKey(sc), i=idx[k];
+          var k=mergeKey(sc);
+          /* ⚠ THE ID FIRST, THE OLD KEY AS THE FALLBACK (session 55p). A
+             record that carries a cid lands on the card with that cid even if
+             its saga or its name has moved since it was saved; a record from
+             before the id existed is matched the way it always was. */
+          var i=(sc.cid&&byCid[sc.cid]!=null)?byCid[sc.cid]:idx[k];
           /* the card still exists under a new name - follow it, so the edit
              lands on the right card instead of resurrecting the old name */
           if(i==null && RENAMED_CARDS[k]){
@@ -43739,7 +43934,7 @@ function boot(){ if(_inited)return; _inited=true;
           /* see MERGED_ALT_ART: this card is now a variant of another one, so
              re-adding it would recreate a duplicate. Reported, never deleted. */
           if(i==null && MERGED_ALT_ART[k]){ folded.push(sc.name+' -> '+MERGED_ALT_ART[k]); return; }
-          if(i==null){ base.push(sc); idx[k]=base.length-1; }
+          if(i==null){ base.push(sc); idx[k]=base.length-1; byCid[cardCid(sc)]=base.length-1; }
           else base[i]=Object.assign(base[i],sc);
         });
         if(folded.length){
