@@ -2,7 +2,7 @@
  "manifest": {
   "name": "Conjure UCG",
   "format": 2,
-  "cardCount": 1611,
+  "cardCount": 1609,
   "keywordCount": 108,
   "lookSlots": 0,
   "markCount": 1,
@@ -10648,7 +10648,7 @@
    "attack": "3",
    "health": "3",
    "arcane": "",
-   "ruleText": "Unique\nThis card can’t be played from your Hand.\nYou may play Soldier Characters from your Grave. If you do, they Arrive with an\nOblivion counter.\nDemise — Lose 3 Life.\nRevive: {VVY}",
+   "ruleText": "Unique\nThis card can’t be played from your Hand.\nYou may play Soldier Characters from your Grave. If you do, they Arrive with an Oblivion counter.\nDemise — Lose 3 Life.\nRevive: {VVY}",
    "flavor": "",
    "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1206.webp",
    "art": "",
@@ -10656,7 +10656,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-06-12",
+   "lastUpdated": "2026-09-27",
    "variants": [
     {
      "id": "v1",
@@ -10668,11 +10668,29 @@
      "id": "v2",
      "label": "Art 2",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1709.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1709.webp",
+     "artXf": {
+      "z": 1.79,
+      "x": 0,
+      "y": 22.5,
+      "r": 0,
+      "f": 1
+     },
+     "fit": "contain"
     }
    ],
-   "variant": "v1",
-   "sagaId": "Beginnings"
+   "variant": "v2",
+   "sagaId": "Beginnings",
+   "sagaIds": [
+    "Beginnings",
+    "Creators"
+   ],
+   "sagaFields": {
+    "Creators": {
+     "artist": "John Espiritu"
+    }
+   },
+   "id": "cmuk4kxoet2xuu"
   },
   {
    "name": "Cael Skymarch",
@@ -14255,7 +14273,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-09-27",
    "variants": [
     {
      "id": "v1",
@@ -14274,7 +14292,15 @@
      "id": "v2",
      "label": "Art 2",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1257.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1257.webp",
+     "fit": "contain",
+     "artXf": {
+      "z": 1.48,
+      "x": 0,
+      "y": 13,
+      "r": 0,
+      "f": 1
+     }
     },
     {
      "id": "v3",
@@ -14283,10 +14309,20 @@
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image165.webp"
     }
    ],
-   "variant": "v1",
+   "variant": "v2",
    "sagaId": "Beginnings",
    "flavorRows": 1,
-   "id": "cmtrwhiozx6vgk"
+   "id": "cmtrwhiozx6vgk",
+   "sagaIds": [
+    "Beginnings",
+    "Creators"
+   ],
+   "sagaFields": {
+    "Creators": {
+     "flavor": "\"This spell is nice, I’ll make better use of it.\"",
+     "artist": "Lain Lines"
+    }
+   }
   },
   {
    "name": "Casted to Eternity",
@@ -39593,7 +39629,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-09-27",
    "variants": [
     {
      "id": "v1",
@@ -39604,8 +39640,8 @@
      "artXf": {
       "z": 4,
       "x": 59.5,
-      "y": 0,
-      "r": 0,
+      "y": -1.5,
+      "r": -4,
       "f": 1
      }
     }
@@ -94455,8 +94491,7 @@
    "subTypes": [
     "Trick",
     "Armament",
-    "Ranger",
-    "Construct"
+    "Ranger"
    ],
    "orbs": [
     {
@@ -94479,7 +94514,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Trick: {O} — A Character with Attack or Health 2 or less is attacking you.\nArmed Character can't Attack or Block.\nOnce per turn, you may Arm this card to a card attacking you. If you do, this card loses this ability.",
+   "ruleText": "Trick: {O} — A Character with Attack or Health 2 or less is attacking you.\nArmed Character can't attack or Block.\nOnce per turn, you may Arm this card to a card attacking you. If you do, this card loses this ability.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -94487,18 +94522,19 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-09-27",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image116.webp",
+     "fit": "contain",
      "artXf": {
-      "z": 1,
-      "x": 0,
-      "y": 6,
-      "r": 0,
+      "z": 2.36,
+      "x": 0.5,
+      "y": 0,
+      "r": 90,
       "f": 1
      }
     }
@@ -94506,7 +94542,8 @@
    "variant": "v1",
    "sagaId": "Beginnings",
    "id": "cms5ftx0tagt87",
-   "_src": "mse"
+   "_src": "mse",
+   "frame": "vr"
   },
   {
    "name": "Boisterous Noise",
@@ -100356,7 +100393,8 @@
    "colors": [
     "red",
     "orange",
-    "blue"
+    "blue",
+    "grey"
    ],
    "superTypes": [
     "Mythic",
@@ -100378,7 +100416,26 @@
    "designer": "Conjure UCG LLC 2026",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
-   "sagaId": "Beginnings"
+   "sagaId": "Beginnings",
+   "flavor": "",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ]
   },
   {
    "name": "Mind Dominance",
@@ -100848,64 +100905,6 @@
    "_src": "mse"
   },
   {
-   "id": "cms5ftx0fi7wmg",
-   "name": "Cael, Ever Marching",
-   "manaCost": "VVY",
-   "cmc": "3",
-   "colors": [
-    "yellow",
-    "violet"
-   ],
-   "superTypes": [
-    "Mythic",
-    "Character"
-   ],
-   "subTypes": [
-    "Undead",
-    "Soldier",
-    "Hero"
-   ],
-   "orbs": [
-    {
-     "type": "attack",
-     "value": "3"
-    },
-    {
-     "type": "health",
-     "value": "3"
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "attack": "3",
-   "health": "3",
-   "arcane": "",
-   "ruleText": "Unique\nThis card can’t be played from your Hand.\nYou may play Soldier Characters from your Grave. If you do, they Arrive with an Oblivion counter.\nDemise — Lose 3 Life.\nRevive: {VVY}",
-   "flavor": "",
-   "imageUrl": "",
-   "art": "",
-   "saga": "Creators",
-   "revision": "Rev 1.0",
-   "artist": "John Espiritu",
-   "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
-   "_src": "mse",
-   "artXf": {
-    "z": 1.77,
-    "x": 0,
-    "y": 18.5,
-    "r": 0,
-    "f": 1
-   },
-   "fit": "contain"
-  },
-  {
    "id": "cms5g01qyuptf4",
    "name": "Guiding Light",
    "manaCost": "Y",
@@ -101009,64 +101008,6 @@
    "sagaId": "Infinite",
    "id": "cms5g5x6yunnlo",
    "_src": "mse"
-  },
-  {
-   "id": "cms66fm9d92ha3",
-   "name": "Seagrid, Platinum Vandyke",
-   "manaCost": "OYB1",
-   "cmc": "4",
-   "colors": [
-    "orange",
-    "yellow",
-    "blue"
-   ],
-   "superTypes": [
-    "Mythic",
-    "Character"
-   ],
-   "subTypes": [
-    "Wizard",
-    "Hero"
-   ],
-   "orbs": [
-    {
-     "type": "attack",
-     "value": "1"
-    },
-    {
-     "type": "health",
-     "value": "3"
-    },
-    {
-     "type": "arcane",
-     "value": "3"
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "attack": "1",
-   "health": "3",
-   "arcane": "3",
-   "ruleText": "Thaumaturge\nIf an Impede counter would be put on this card, instead put your choice of a Barrier {2}, Shield, or +1 counter on this card.",
-   "flavor": "\"This spell is nice, I’ll make better use of it.\"",
-   "imageUrl": "",
-   "art": "",
-   "saga": "Creators",
-   "revision": "Rev 1.0",
-   "artist": "Lain Lines",
-   "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
-   "_src": "mse",
-   "flavorRows": 1,
-   "artXf": {
-    "z": 1,
-    "x": 0,
-    "y": 10,
-    "r": 0,
-    "f": 1
-   }
   },
   {
    "id": "cms66imo35mdd1",
