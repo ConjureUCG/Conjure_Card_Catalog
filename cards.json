@@ -4525,7 +4525,7 @@
    "_src": "mse"
   },
   {
-   "name": "Adept Firebolt",
+   "name": "Whelming Firewave",
    "manaCost": "RR",
    "cmc": "2",
    "colors": [
@@ -4559,7 +4559,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Deal 3 damage to any target.\nIf you've played another Pyro card this turn, instead deal 4 damage.",
+   "ruleText": "Overwhelm\nDeal 3 damage to any target.\nIf you've played another Pyro card this turn, instead deal 4 damage.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -4567,7 +4567,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-08-29",
+   "lastUpdated": "2026-09-27",
    "variants": [
     {
      "id": "v1",
@@ -4698,7 +4698,7 @@
    "_src": "mse"
   },
   {
-   "name": "Furiadept Mage",
+   "name": "Scarlet Mage",
    "manaCost": "RR1",
    "cmc": "3",
    "colors": [
@@ -4740,7 +4740,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-09-27",
    "variants": [
     {
      "id": "v1",
@@ -100337,7 +100337,7 @@
    "arcane": "",
    "ruleText": "This card gains +1 Health for each Shield Armed to it.",
    "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_2085.webp",
-   "lastUpdated": "2026-08-24",
+   "lastUpdated": "2026-09-27",
    "art": "",
    "saga": "Beginnings",
    "designer": "Conjure UCG LLC 2026",
@@ -100371,7 +100371,11 @@
     "f": 1
    },
    "id": "cmt46rteuw5ya4",
-   "fit": "contain"
+   "fit": "contain",
+   "sagaIds": [
+    "Beginnings",
+    "Infinite"
+   ]
   },
   {
    "name": "Druid Ascendency",
