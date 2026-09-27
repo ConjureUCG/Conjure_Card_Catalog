@@ -2,7 +2,7 @@
  "manifest": {
   "name": "Conjure UCG",
   "format": 2,
-  "cardCount": 1602,
+  "cardCount": 1604,
   "keywordCount": 108,
   "lookSlots": 0,
   "markCount": 1,
@@ -4525,7 +4525,7 @@
    "_src": "mse"
   },
   {
-   "name": "Whelming Firewave",
+   "name": "Adept Firebolt",
    "manaCost": "RR",
    "cmc": "2",
    "colors": [
@@ -4559,15 +4559,15 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Overwhelm\nDeal 3 damage to any target.\nIf you've played another Pyro card this turn, instead deal 4 damage.",
+   "ruleText": "Deal 3 damage to any target.\nIf you've played another Pyro card this turn, instead deal 4 damage.",
    "flavor": "",
-   "imageUrl": "",
+   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_154.webp",
    "art": "",
    "saga": "Beginnings",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-27",
+   "lastUpdated": "2026-03-29",
    "variants": [
     {
      "id": "v1",
@@ -4577,9 +4577,7 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
-   "id": "cms47zh88cteuj",
-   "_src": "mse"
+   "sagaId": "Beginnings"
   },
   {
    "name": "Giant Fireblast",
@@ -4698,7 +4696,7 @@
    "_src": "mse"
   },
   {
-   "name": "Scarlet Mage",
+   "name": "Furiadept Mage",
    "manaCost": "RR1",
    "cmc": "3",
    "colors": [
@@ -4734,13 +4732,13 @@
    "arcane": "2",
    "ruleText": "Whenever you play a Pyro Spell, deal 1 damage to target player.",
    "flavor": "\"Fire mages are as old as magic itself. Learning how the world burms in so many beautiful ways. But all that aside, some just want to watch the world burn.\"",
-   "imageUrl": "",
+   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1146.webp",
    "art": "",
    "saga": "Beginnings",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-27",
+   "lastUpdated": "2026-03-29",
    "variants": [
     {
      "id": "v1",
@@ -4750,9 +4748,7 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
-   "id": "cms47zh88e691v",
-   "_src": "mse"
+   "sagaId": "Beginnings"
   },
   {
    "name": "Reckless Cohort",
@@ -100540,6 +100536,120 @@
    "id": "cmrvgfuv5ug8ad",
    "_src": "mse",
    "flavorRows": 1
+  },
+  {
+   "name": "Whelming Firewave",
+   "manaCost": "RR",
+   "cmc": "2",
+   "colors": [
+    "red"
+   ],
+   "superTypes": [
+    "Quick",
+    "Spell"
+   ],
+   "subTypes": [
+    "Pyro"
+   ],
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Overwhelm\nDeal 3 damage to any target.\nIf you've played another Pyro card this turn, instead deal 4 damage.",
+   "flavor": "",
+   "imageUrl": "",
+   "art": "",
+   "saga": "Beginnings",
+   "revision": "Rev 1.0",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "lastUpdated": "2026-09-27",
+   "variants": [
+    {
+     "id": "v1",
+     "label": "Default",
+     "art": "",
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_154.webp"
+    }
+   ],
+   "variant": "v1",
+   "sagaId": "Beginnings",
+   "id": "cms47zh88cteuj",
+   "_src": "mse"
+  },
+  {
+   "name": "Scarlet Mage",
+   "manaCost": "RR1",
+   "cmc": "3",
+   "colors": [
+    "red"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Pyro",
+    "Wizard"
+   ],
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "1"
+    },
+    {
+     "type": "health",
+     "value": "1"
+    },
+    {
+     "type": "arcane",
+     "value": "2"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "attack": "1",
+   "health": "1",
+   "arcane": "2",
+   "ruleText": "Whenever you play a Pyro Spell, deal 1 damage to target player.",
+   "flavor": "\"Fire mages are as old as magic itself. Learning how the world burms in so many beautiful ways. But all that aside, some just want to watch the world burn.\"",
+   "imageUrl": "",
+   "art": "",
+   "saga": "Beginnings",
+   "revision": "Rev 1.0",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "lastUpdated": "2026-09-27",
+   "variants": [
+    {
+     "id": "v1",
+     "label": "Default",
+     "art": "",
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1146.webp"
+    }
+   ],
+   "variant": "v1",
+   "sagaId": "Beginnings",
+   "id": "cms47zh88e691v",
+   "_src": "mse"
   },
   {
    "name": "Ember Tending Druid",
