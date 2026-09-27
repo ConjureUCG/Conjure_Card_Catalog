@@ -2,7 +2,7 @@
  "manifest": {
   "name": "Conjure UCG",
   "format": 2,
-  "cardCount": 1609,
+  "cardCount": 1602,
   "keywordCount": 108,
   "lookSlots": 0,
   "markCount": 1,
@@ -81445,69 +81445,6 @@
    "_src": "mse"
   },
   {
-   "name": "Rond, Titan’s Smoke",
-   "manaCost": "RRR4",
-   "cmc": "7",
-   "colors": [
-    "red"
-   ],
-   "superTypes": [
-    "Mythic",
-    "Character"
-   ],
-   "subTypes": [
-    "Giant",
-    "Pyro",
-    "God"
-   ],
-   "orbs": [
-    {
-     "type": "attack",
-     "value": "8"
-    },
-    {
-     "type": "health",
-     "value": "5"
-    },
-    {
-     "type": "arcane",
-     "value": "6"
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "attack": "8",
-   "health": "5",
-   "arcane": "6",
-   "ruleText": "Firebreathing\nIf you control 6 or more Characters with Firebreathing, this card gains Volley.\nSlow — {1}: Target Character gains Swift or Firebreathing this turn.",
-   "flavor": "\"A valley felled with a single swing.\"",
-   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1212.webp",
-   "art": "",
-   "saga": "Beginnings",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-06-27",
-   "variants": [
-    {
-     "id": "v1",
-     "label": "Default",
-     "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1212.webp"
-    },
-    {
-     "id": "v2",
-     "label": "Art 2",
-     "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_2129.webp"
-    }
-   ],
-   "variant": "v1",
-   "sagaId": "Beginnings"
-  },
-  {
    "name": "Scaly Cleric",
    "manaCost": "Y1",
    "cmc": "2",
@@ -87376,7 +87313,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-09-27",
    "variants": [
     {
      "id": "v1",
@@ -100175,130 +100112,6 @@
    "sagaId": "Beginnings"
   },
   {
-   "name": "Frost Fire Cyclone",
-   "manaCost": "BBBRRR",
-   "cmc": "6",
-   "colors": [
-    "red",
-    "blue"
-   ],
-   "superTypes": [
-    "Mythic",
-    "Character"
-   ],
-   "subTypes": [
-    "Ancient",
-    "Pyro",
-    "Cryo",
-    "Elemental"
-   ],
-   "attack": "6",
-   "health": "5",
-   "arcane": "6A",
-   "ruleText": "Firebreathing, Overwhelm, Thaumaturge\n Amass Pyro, Cryo or Elemental Characters",
-   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_2012.webp",
-   "lastUpdated": "2026-06-13",
-   "art": "",
-   "saga": "Beginnings",
-   "designer": "Conjure UCG LLC 2026",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "sagaId": "Beginnings"
-  },
-  {
-   "name": "Abyssal Vortex",
-   "manaCost": "BBIIVV",
-   "cmc": "6",
-   "colors": [
-    "blue",
-    "indigo",
-    "violet"
-   ],
-   "superTypes": [
-    "Mythic",
-    "Character"
-   ],
-   "subTypes": [
-    "Ancient",
-    "Void",
-    "Elemental"
-   ],
-   "attack": "2",
-   "health": "6",
-   "arcane": "6",
-   "ruleText": "Barrier — Grind 6\nIntimidate, Gouge 5, Lethal",
-   "imageUrl": "https://files.catbox.moe/y5nzfz.png",
-   "lastUpdated": "2026-09-07",
-   "art": "",
-   "saga": "",
-   "designer": "Conjure UCG LLC 2026",
-   "revision": "",
-   "artist": "Midjourney",
-   "sagaId": "Beginnings",
-   "id": "cms6mwtojkfo4h",
-   "flavor": "",
-   "orbs": [
-    {
-     "type": "attack",
-     "value": "2"
-    },
-    {
-     "type": "health and arcane",
-     "value": "6"
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "kwReminders": [
-    "Gouge"
-   ],
-   "artXf": {
-    "z": 2.09,
-    "x": 0.5,
-    "y": 33,
-    "r": 0,
-    "f": 1
-   },
-   "fit": "contain"
-  },
-  {
-   "name": "Northern Flame",
-   "manaCost": "RRRGGG",
-   "cmc": "6",
-   "colors": [
-    "red",
-    "green"
-   ],
-   "superTypes": [
-    "Mythic",
-    "Character"
-   ],
-   "subTypes": [
-    "Ancient",
-    "Wild",
-    "Pyro",
-    "Elemental"
-   ],
-   "attack": "5",
-   "health": "5",
-   "arcane": "5A",
-   "ruleText": "Overwhelm, Firebreathing\n Sacrifice an Essence: Create {R}.\n Sacrifice an Elemental Character: This turn, this card gains all abilities of the sacrificed card’s and gains +X Attack where X is the sacrificed card’s Attack.",
-   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_2014.webp",
-   "lastUpdated": "2026-06-13",
-   "art": "",
-   "saga": "Beginnings",
-   "designer": "Conjure UCG LLC 2026",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "sagaId": "Beginnings"
-  },
-  {
    "name": "Southern Glacier",
    "manaCost": "GGGBBB",
    "cmc": "6",
@@ -100385,57 +100198,6 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "sagaId": "Beginnings"
-  },
-  {
-   "name": "The Scarlett Heart",
-   "manaCost": "BRO",
-   "cmc": "3",
-   "colors": [
-    "red",
-    "orange",
-    "blue",
-    "grey"
-   ],
-   "superTypes": [
-    "Mythic",
-    "Object"
-   ],
-   "subTypes": [
-    "Armament",
-    "Sword",
-    "Focus"
-   ],
-   "attack": "",
-   "health": "",
-   "arcane": "",
-   "ruleText": "Armed Character gains Firebreathing, Meditate, and +1 Base Arcane.\n Empower — Armed Character gains +1 this turn.\n Arm: {2}",
-   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_2053.webp",
-   "lastUpdated": "2026-06-13",
-   "art": "",
-   "saga": "Beginnings",
-   "designer": "Conjure UCG LLC 2026",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "sagaId": "Beginnings",
-   "flavor": "",
-   "orbs": [
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ]
   },
   {
    "name": "Mind Dominance",
@@ -100838,73 +100600,6 @@
    "range": ""
   },
   {
-   "name": "Brandy the Direkit",
-   "manaCost": "VVRR",
-   "cmc": "4",
-   "colors": [
-    "red",
-    "violet"
-   ],
-   "superTypes": [
-    "Mythic",
-    "Character"
-   ],
-   "subTypes": [
-    "Rouge",
-    "Warrior",
-    "Outlaw"
-   ],
-   "orbs": [
-    {
-     "type": "attack",
-     "value": "4"
-    },
-    {
-     "type": "health",
-     "value": "3"
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "attack": "4",
-   "health": "3",
-   "arcane": "",
-   "ruleText": "Rouge, Warrior, and Outlaw Characters you control Armed with a Knife, and Rouge, Warrior, Outlaw, and Knife Non-Ongoing Actions you control deal damage in the form of Wound counters.\n(The damage isn't dealt, instead they get that many Wound counters.)",
-   "flavor": "",
-   "imageUrl": "",
-   "art": "",
-   "saga": "Beginnings",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-07",
-   "variants": [
-    {
-     "id": "v1",
-     "label": "Default",
-     "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image854.webp",
-     "artXf": {
-      "z": 1,
-      "x": 0,
-      "y": 4.5,
-      "r": 0,
-      "f": 1
-     }
-    }
-   ],
-   "variant": "v1",
-   "sagaId": "Beginnings",
-   "id": "cms47zh8lflbl8",
-   "_src": "mse"
-  },
-  {
    "id": "cms5g01qyuptf4",
    "name": "Guiding Light",
    "manaCost": "Y",
@@ -100949,64 +100644,6 @@
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
    "lastUpdated": "2026-07-29",
-   "_src": "mse"
-  },
-  {
-   "name": "Nature",
-   "manaCost": "GG1",
-   "cmc": "3",
-   "colors": [
-    "green"
-   ],
-   "superTypes": [
-    "Ongoing",
-    "Action"
-   ],
-   "subTypes": [
-    "Wild"
-   ],
-   "orbs": [
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "attack": "",
-   "health": "",
-   "arcane": "",
-   "ruleText": "Your Onset — If you control the Character with the greatest combined Attack and Health, Draw 1.",
-   "flavor": "\"You must be brave and bold to survive in the wild.\"",
-   "imageUrl": "",
-   "art": "",
-   "saga": "Infinite",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
-   "variants": [
-    {
-     "id": "v1",
-     "label": "Default",
-     "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image481.webp",
-     "mark": "wm_cmudw0ix3xj34z"
-    }
-   ],
-   "variant": "v1",
-   "sagaId": "Infinite",
-   "id": "cms5g5x6yunnlo",
    "_src": "mse"
   },
   {
@@ -101234,7 +100871,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-25",
+   "lastUpdated": "2026-09-27",
    "variants": [
     {
      "id": "v1",
