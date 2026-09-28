@@ -8497,6 +8497,17 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
       </div>
       <iframe class='doc-iframe' id='docFrame_rules' title='Rules'></iframe>
     </div>
+  </div>
+</div>
+<!-- ⚠ THE RULES OVERLAY IS CLOSED HERE, IN THE FILE THAT OPENS IT.
+     These two tags used to live at the TOP of markup_tail_b.html - the file
+     opened an overlay and the next slice closed it - and when that file was
+     rewritten in session 55t they went with it. Nothing complained: the build
+     was valid HTML, every check passed, and the browser simply nested the
+     other three overlays INSIDE this one. Which is hidden. So Design,
+     Rebirth Rules and Rebirth Design each fetched their document, built their
+     contents list, and rendered it all in a box 0 pixels tall.
+     A slice closes what it opens. -->
 <!-- ═══ THE DOCUMENTS ═════════════════════════════════════════════════════
      Design, Rebirth Rules and Rebirth Design. The Rules overlay is in
      markup_tail_a.html, above the keyword island; the four are otherwise
