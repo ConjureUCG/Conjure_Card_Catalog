@@ -140,16 +140,15 @@ CATALOG_FILE = 'card_catalog.html'
 # move the site. Not staging it means it lands in `kept` and is left alone,
 # which is the correct behaviour for a file this tool does not own.
 #
-# THE INSTALLER (session 55). sw.js is what lets an installed Conjure open with
-# no internet; it must sit at the domain root, because a service worker only
-# looks after pages at or below its own address. The manifest and the icons are
-# built by tools/make_pwa.py. Same rules as the two above: published only to
-# the website, never owned, nagged about when missing - a site with no sw.js
-# still works, it just stops working offline, and nothing else would say so.
-SITE_FILES = ('index.html', '.nojekyll',
-              'sw.js', 'manifest.webmanifest',
-              'pwa/icon-192.png', 'pwa/icon-512.png',
-              'pwa/icon-maskable-512.png', 'pwa/apple-touch-icon.png')
+# THE INSTALLER IS GONE (session 55s). sw.js, manifest.webmanifest and the four
+# pwa/ icons were published here until the author removed Install Website;
+# they are in Archive/INSTALL_WEBSITE_removed_55s.md with the rest of it.
+# ⚠ THEY ARE NOT DELETED FROM A REPOSITORY THAT ALREADY HAS THEM, because this
+# tool only ever deletes what it OWNS and these were never owned. A live site
+# therefore keeps serving an sw.js nobody registers any more, which is exactly
+# why the app unregisters the worker itself (see cat_core.js). Remove them from
+# the repository by hand, or leave them: a worker nothing registers is inert.
+SITE_FILES = ('index.html', '.nojekyll')
 
 # THE SET DISTRIBUTION KIT (session 55g). The publisher itself, published beside
 # the app: the Owner Sync page hands people a zip of it (baked in by
