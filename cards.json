@@ -2,7 +2,7 @@
  "manifest": {
   "name": "Conjure UCG",
   "format": 2,
-  "cardCount": 1604,
+  "cardCount": 1598,
   "keywordCount": 108,
   "lookSlots": 0,
   "markCount": 1,
@@ -4599,63 +4599,6 @@
    "cid": "c11sai181hovfve"
   },
   {
-   "name": "Adept Firebolt",
-   "manaCost": "RR",
-   "cmc": "2",
-   "colors": [
-    "red"
-   ],
-   "superTypes": [
-    "Quick",
-    "Spell"
-   ],
-   "subTypes": [
-    "Pyro"
-   ],
-   "orbs": [
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "attack": "",
-   "health": "",
-   "arcane": "",
-   "ruleText": "Deal 3 damage to any target.\nIf you've played another Pyro card this turn, instead deal 4 damage.",
-   "flavor": "",
-   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_154.webp",
-   "art": "",
-   "saga": "Beginnings",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-03-29",
-   "variants": [
-    {
-     "id": "v1",
-     "label": "Default",
-     "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_154.webp"
-    }
-   ],
-   "variant": "v1",
-   "sagaId": "Beginnings",
-   "cid": "c0p6w8o20ywbkg2",
-   "id": "cmum242zfnjl8r"
-  },
-  {
    "name": "Giant Fireblast",
    "manaCost": "RR3",
    "cmc": "5",
@@ -4772,63 +4715,6 @@
    "id": "cms47zh88hkuhd",
    "_src": "mse",
    "cid": "c0tjjs4p0335c6r"
-  },
-  {
-   "name": "Furiadept Mage",
-   "manaCost": "RR1",
-   "cmc": "3",
-   "colors": [
-    "red"
-   ],
-   "superTypes": [
-    "Character"
-   ],
-   "subTypes": [
-    "Pyro",
-    "Wizard"
-   ],
-   "orbs": [
-    {
-     "type": "attack",
-     "value": "1"
-    },
-    {
-     "type": "health",
-     "value": "1"
-    },
-    {
-     "type": "arcane",
-     "value": "2"
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "attack": "1",
-   "health": "1",
-   "arcane": "2",
-   "ruleText": "Whenever you play a Pyro Spell, deal 1 damage to target player.",
-   "flavor": "\"Fire mages are as old as magic itself. Learning how the world burms in so many beautiful ways. But all that aside, some just want to watch the world burn.\"",
-   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1146.webp",
-   "art": "",
-   "saga": "Beginnings",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-03-29",
-   "variants": [
-    {
-     "id": "v1",
-     "label": "Default",
-     "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1146.webp"
-    }
-   ],
-   "variant": "v1",
-   "sagaId": "Beginnings",
-   "cid": "c0vl6qu30p2hgof",
-   "id": "cmum242zfzf7si"
   },
   {
    "name": "Reckless Cohort",
@@ -58539,7 +58425,7 @@
    "cid": "c1vo57tt0opgyvv"
   },
   {
-   "name": "Ember Wood Tender",
+   "name": "Ember Tending Druid",
    "manaCost": "RYG",
    "cmc": "3",
    "colors": [
@@ -58557,24 +58443,24 @@
    "orbs": [
     {
      "type": "attack",
-     "value": "3"
+     "value": "4"
     },
     {
      "type": "health",
-     "value": "3"
+     "value": "4"
     },
     {
      "type": "arcane",
-     "value": "3"
+     "value": "4"
     },
     {
      "type": "hidden",
      "value": ""
     }
    ],
-   "attack": "3",
-   "health": "3",
-   "arcane": "3",
+   "attack": "4",
+   "health": "4",
+   "arcane": "4",
    "ruleText": "You may Crystallize Ignited cards.",
    "flavor": "\"Only through fire can the forest breathe again.\"",
    "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image415.webp",
@@ -58583,7 +58469,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-03-29",
+   "lastUpdated": "2026-09-29",
    "variants": [
     {
      "id": "v1",
@@ -58595,7 +58481,9 @@
    "variant": "v1",
    "sagaId": "Infinite",
    "cid": "c1awha5x06qxkfn",
-   "id": "cmum242zfee9y9"
+   "id": "cmum242zfee9y9",
+   "mark": "wm_cmudw0ix3xj34z",
+   "range": ""
   },
   {
    "name": "Emerald Geod Golem",
@@ -101670,39 +101558,6 @@
    "cid": "c10y8y1e1wj2z90"
   },
   {
-   "name": "Sorech, the Light",
-   "manaCost": "RRYYGG1",
-   "cmc": "7",
-   "colors": [
-    "red",
-    "yellow",
-    "green"
-   ],
-   "superTypes": [
-    "Mythic",
-    "Character"
-   ],
-   "subTypes": [
-    "Ancient",
-    "Divine",
-    "Dragon"
-   ],
-   "attack": "7",
-   "health": "6",
-   "arcane": "8",
-   "ruleText": "Lucky, Airborne\n Battlecry — You may pay {7}. If you do, this card deals 7 damage to any target and you gain 7 Life. If you target this card with this ability Draw 7 then Discard 7.",
-   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_2011.webp",
-   "lastUpdated": "2026-06-13",
-   "art": "",
-   "saga": "Beginnings",
-   "designer": "Conjure UCG LLC 2026",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "sagaId": "Beginnings",
-   "cid": "c1p7tp7q05n56oy",
-   "id": "cmum242zfwwzi7"
-  },
-  {
    "name": "Southern Glacier",
    "manaCost": "GGGBBB",
    "cmc": "6",
@@ -101761,37 +101616,6 @@
     "f": 1
    },
    "cid": "c0brxfkc022bssg"
-  },
-  {
-   "name": "Unor, Mountain Terror",
-   "manaCost": "RRGG2",
-   "cmc": "6",
-   "colors": [
-    "red",
-    "green"
-   ],
-   "superTypes": [
-    "Mythic",
-    "Character"
-   ],
-   "subTypes": [
-    "Wild",
-    "Dragon"
-   ],
-   "attack": "6",
-   "health": "4",
-   "arcane": "2",
-   "ruleText": "Airborne, Overwhelm\n {RRGG1}: This card gains all abilities of target Wild Beast Character this turn.\n Wild Beasts you control gain \"Battlecry — This card gains Volley this turn.\"",
-   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_2040.webp",
-   "lastUpdated": "2026-06-13",
-   "art": "",
-   "saga": "Beginnings",
-   "designer": "Conjure UCG LLC 2026",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "sagaId": "Beginnings",
-   "cid": "c0ypqonq087jpq2",
-   "id": "cmum242zf20to4"
   },
   {
    "name": "Mind Dominance",
@@ -101883,39 +101707,6 @@
     "f": 1
    },
    "cid": "c1ry1bnm0rrro6a"
-  },
-  {
-   "name": "Scion of Swords",
-   "manaCost": "BRO2",
-   "cmc": "5",
-   "colors": [
-    "red",
-    "orange",
-    "blue"
-   ],
-   "superTypes": [
-    "Mythic",
-    "Character"
-   ],
-   "subTypes": [
-    "Wizard",
-    "Warrior",
-    "Hero"
-   ],
-   "attack": "5",
-   "health": "5",
-   "arcane": "5",
-   "ruleText": "If this card is your Lord, you may ignore color restrictions for Sword cards.\n Arm costs of Swords you control that target this card cost {0}.",
-   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_2074.webp",
-   "lastUpdated": "2026-06-13",
-   "art": "",
-   "saga": "Beginnings",
-   "designer": "Conjure UCG LLC 2026",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "sagaId": "Beginnings",
-   "cid": "c1c8mkgg01k3c3e",
-   "id": "cmum242zfhqyy6"
   },
   {
    "name": "Aegis Adept",
@@ -102182,11 +101973,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-27",
+   "lastUpdated": "2026-09-29",
    "variants": [
     {
      "id": "v1",
@@ -102196,10 +101987,14 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms47zh88cteuj",
    "_src": "mse",
-   "cid": "c1mpfl0x0crnix1"
+   "cid": "c1mpfl0x0crnix1",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Scarlet Mage",
@@ -102258,69 +102053,6 @@
    "id": "cms47zh88e691v",
    "_src": "mse",
    "cid": "c0jt2z0l07pq9cl"
-  },
-  {
-   "name": "Ember Tending Druid",
-   "manaCost": "RYG",
-   "cmc": "3",
-   "colors": [
-    "red",
-    "yellow",
-    "green"
-   ],
-   "superTypes": [
-    "Character"
-   ],
-   "subTypes": [
-    "Giant",
-    "Pyro",
-    "Druid"
-   ],
-   "orbs": [
-    {
-     "type": "attack",
-     "value": "4"
-    },
-    {
-     "type": "health",
-     "value": "4"
-    },
-    {
-     "type": "arcane",
-     "value": "4"
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "attack": "4",
-   "health": "4",
-   "arcane": "4",
-   "ruleText": "You may Crystallize Ignited cards.",
-   "flavor": "\"Only through fire can the forest breathe again.\"",
-   "imageUrl": "",
-   "art": "",
-   "saga": "Infinite",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
-   "variants": [
-    {
-     "id": "v1",
-     "label": "Default",
-     "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image415.webp",
-     "mark": "wm_cmudw0ix3xj34z"
-    }
-   ],
-   "variant": "v1",
-   "sagaId": "Infinite",
-   "id": "cms47zh8hwe7ok",
-   "_src": "mse",
-   "range": "",
-   "cid": "c0k068aj0pgj9s9"
   },
   {
    "id": "cms5g01qyuptf4",
