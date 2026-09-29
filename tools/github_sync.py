@@ -237,6 +237,23 @@ def art_bearers(card):
     return [card] + list(card.get('variants') or [])
 
 
+ART_EXT = ('.png', '.jpg', '.jpeg', '.webp', '.gif')
+
+
+def folder_art():
+    """Every picture in art/, shaped like referenced_art() so the rest of
+    main() cannot tell the difference. What publishes when nothing is baked."""
+    refs = {}
+    try:
+        names = sorted(os.listdir(ARTDIR))
+    except OSError:
+        return refs
+    for name in names:
+        if name.lower().endswith(ART_EXT) and os.path.isfile(os.path.join(ARTDIR, name)):
+            refs[name] = [('(art folder)', {}, 'art')]
+    return refs
+
+
 def referenced_art(cards):
     """{basename: [(card_name, bearer, field), ...]} for every local reference."""
     refs = {}
@@ -679,6 +696,10 @@ def main():
                          'every per-card art framing, fit, holo and watermark. '
                          'Use it to seed a brand-new repository, then publish '
                          'card data from the app.')
+    ap.add_argument('--allow-art-deletes', action='store_true',
+                    help='let one run delete more than 20 published pictures '
+                         'and more than a tenth of them. Off by default: a short '
+                         'art list reads exactly like "delete these".')
     args = ap.parse_args()
 
     # A full encode is minutes long. Unbuffered so progress arrives as it
@@ -700,9 +721,29 @@ def main():
 
     text = load_islands()
     cards = island(text, 'jdata')
-    refs = referenced_art(cards)
-    print('cards       : %d' % len(cards))
-    print('art referenced by the catalog: %d distinct file(s)' % len(refs))
+    # ⚠ THE CATALOGUE IS NO LONGER BAKED (session 56). The author's rule: the
+    # cards are whatever the official repo publishes, so #jdata ships empty.
+    # This tool used to learn WHICH pictures to publish from that island - and
+    # art/ is an owned directory, deleted by omission. An empty island read the
+    # old way would have staged no art at all, and on a clean stage every
+    # published picture would have been deleted from the site. With no baked
+    # cards, the art/ folder itself is the list.
+    if cards:
+        refs = referenced_art(cards)
+        print('cards       : %d' % len(cards))
+        print('art referenced by the catalog: %d distinct file(s)' % len(refs))
+    else:
+        if args.data:
+            sys.exit('refusing --data: the built-in island holds no cards, so it '
+                     'would publish an EMPTY catalogue over the real one. Card '
+                     'data is published from the app (Help -> Owner Sync -> Publish).')
+        refs = folder_art()
+        print('cards       : none baked - the catalogue lives in the official repo')
+        print('art in %s: %d file(s)' % (ARTDIR, len(refs)))
+    if not refs:
+        sys.exit('refusing to publish: no art to publish. art/ is deleted from the '
+                 'repository by omission, so an empty list here would remove every '
+                 'published picture.')
 
     print('\n[1/4] encoding art to webp %dpx q%d' % (WIDTH, QUALITY))
     cache = load_cache()
@@ -889,6 +930,20 @@ def main():
         print('      - %s' % p)
     if len(delete) > 8:
         print('      ...and %d more' % (len(delete) - 8))
+
+    # ⚠ A RUN THAT WOULD TAKE AWAY A LOT OF THE PUBLISHED ART IS STOPPED
+    # (session 56). Deletion is by omission, so anything that makes the staged
+    # list come up short - an art/ folder that is not where it should be, a
+    # list built from the wrong place - reads exactly like "delete these".
+    # More than 20 pictures AND more than a tenth of what is published is a
+    # mistake until someone says otherwise, with --allow-art-deletes.
+    art_del = [p for p in delete if p.startswith('art/')]
+    art_remote = sum(1 for p in remote if p.startswith('art/'))
+    if (len(art_del) > 20 and len(art_del) > art_remote * 0.1
+            and not args.allow_art_deletes):
+        sys.exit('\nrefusing to publish: this run would delete %d of the %d published '
+                 'pictures. If that is really intended, run again with '
+                 '--allow-art-deletes.' % (len(art_del), art_remote))
 
     if args.dry_run:
         print('\ndry run - nothing uploaded')

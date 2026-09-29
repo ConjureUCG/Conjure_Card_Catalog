@@ -32,11 +32,16 @@ https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/
 ## Just want to browse the cards?
 
 Download `card_catalog.html` and open it. That is the whole install: browsing,
-searching, filtering, deck building, the full rules document and a card editor,
-in one file, with no account.
+searching, filtering, deck building and a card editor, in one file, with no
+account.
 
 Card art loads straight from this repository's CDN, so the cards have pictures
 the moment you open it. Nothing to set up and nothing to sync first.
+
+The Rules and Design documents are read from their Google Docs when you open
+them, rather than being built into the file - so they are never out of date,
+and they need the internet. A document you have opened before is kept, and is
+shown with the date on it if it cannot be reached.
 
 ---
 
@@ -51,10 +56,14 @@ https://raw.githubusercontent.com/ConjureUCG/Conjure_Card_Catalog/main/cards.jso
 It shows up as "Official" on the Sagas page with no setup, and the link is shown
 there but cannot be edited - so you can always see where your cards came from.
 
-When new cards or a whole new saga are published here, the app tells you and you
-click to take them. New cards can arrive on their own once a week; changes to
-cards you already have always wait for you to approve them, because applying an
-update overwrites your own edits to any field the source also sets.
+When new cards or a whole new saga are published here, the app takes them as it
+opens - there is nothing to press. It stops and asks first in one case only:
+when the update would overwrite a card **you** are allowed to edit, because
+applying it replaces your own work in any field the source also sets. On an
+ordinary copy the official cards are read-only, so that never comes up.
+
+You can switch this off on the Owner Sync page ("Enable Automatic Updates on
+Open"), and it never runs by itself in owner mode.
 
 Each set has its own on/off switch, and each repository has a master switch, so
 you can exclude a whole source without losing which individual sets you had
