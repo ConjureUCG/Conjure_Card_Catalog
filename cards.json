@@ -4652,7 +4652,8 @@
    ],
    "variant": "v1",
    "sagaId": "Beginnings",
-   "cid": "c0p6w8o20ywbkg2"
+   "cid": "c0p6w8o20ywbkg2",
+   "id": "cmum242zfnjl8r"
   },
   {
    "name": "Giant Fireblast",
@@ -4826,7 +4827,8 @@
    ],
    "variant": "v1",
    "sagaId": "Beginnings",
-   "cid": "c0vl6qu30p2hgof"
+   "cid": "c0vl6qu30p2hgof",
+   "id": "cmum242zfzf7si"
   },
   {
    "name": "Reckless Cohort",
@@ -58592,7 +58594,8 @@
    ],
    "variant": "v1",
    "sagaId": "Infinite",
-   "cid": "c1awha5x06qxkfn"
+   "cid": "c1awha5x06qxkfn",
+   "id": "cmum242zfee9y9"
   },
   {
    "name": "Emerald Geod Golem",
@@ -101696,7 +101699,8 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "sagaId": "Beginnings",
-   "cid": "c1p7tp7q05n56oy"
+   "cid": "c1p7tp7q05n56oy",
+   "id": "cmum242zfwwzi7"
   },
   {
    "name": "Southern Glacier",
@@ -101786,7 +101790,8 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "sagaId": "Beginnings",
-   "cid": "c0ypqonq087jpq2"
+   "cid": "c0ypqonq087jpq2",
+   "id": "cmum242zf20to4"
   },
   {
    "name": "Mind Dominance",
@@ -101909,7 +101914,8 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "sagaId": "Beginnings",
-   "cid": "c1c8mkgg01k3c3e"
+   "cid": "c1c8mkgg01k3c3e",
+   "id": "cmum242zfhqyy6"
   },
   {
    "name": "Aegis Adept",
