@@ -2374,11 +2374,11 @@
    "flavor": "\"It doesn’t feed, don’t these things feed on your fears or something? It’s unrelenting, never resting, never stopping, where did it come from? WHAT IS THAT?\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -2395,10 +2395,14 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cmrvgfuv57u63r",
    "_src": "mse",
-   "cid": "c0v04krz0pjznb3"
+   "cid": "c0v04krz0pjznb3",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Megaflora Hopper",
@@ -3035,7 +3039,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -5581,11 +5585,11 @@
    "flavor": "\"Archers where always a good for hired hands, it was much more convenient to get a job done from a distance.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -5602,10 +5606,14 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms47zh89pb89e",
    "_src": "mse",
-   "cid": "c0rspv5e1czrp9u"
+   "cid": "c0rspv5e1czrp9u",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Bottled Lightning",
@@ -6714,7 +6722,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -16312,12 +16320,13 @@
   },
   {
    "name": "After Image",
-   "manaCost": "R1",
-   "cmc": "2",
+   "manaCost": "R2",
+   "cmc": "3",
    "colors": [
     "red"
    ],
    "superTypes": [
+    "Quick",
     "Action"
    ],
    "subTypes": [],
@@ -16350,7 +16359,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -23393,11 +23402,11 @@
    "flavor": "\"Don’t resist, you’ll only make it take longer.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -23414,11 +23423,15 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms47zh8lcs21e",
    "_src": "mse",
    "flavorRows": 1,
-   "cid": "c161wjke0dczomc"
+   "cid": "c161wjke0dczomc",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Assassin’s Guidebook",
@@ -27147,11 +27160,11 @@
    "flavor": "\"I feel like I’m being watched.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -27174,10 +27187,14 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0d6pj6x",
    "_src": "mse",
-   "cid": "c0hex5we0ci8qge"
+   "cid": "c0hex5we0ci8qge",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Chilling Cloudform",
@@ -28109,7 +28126,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -28554,8 +28571,8 @@
   },
   {
    "name": "Animation Core",
-   "manaCost": "OO1",
-   "cmc": "3",
+   "manaCost": "OO",
+   "cmc": "2",
    "colors": [
     "orange",
     "grey"
@@ -28593,11 +28610,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -28615,11 +28632,15 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0f1ur0j",
    "_src": "mse",
    "frame": "vr",
-   "cid": "c06upo5i08fpaig"
+   "cid": "c06upo5i08fpaig",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Bioluminous Brew",
@@ -32612,11 +32633,11 @@
    "flavor": "\"Safety first!\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -32640,11 +32661,15 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0ir8buv",
    "_src": "mse",
    "frame": "vr",
-   "cid": "c07wlc290g02bvl"
+   "cid": "c07wlc290g02bvl",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Chains of Guilt",
@@ -33082,11 +33107,11 @@
    "flavor": "\"I’ve never seen such an innovative design. It’s a mystery how this thing is older than any technology I’ve ever seen.\" — Eniv",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -33103,11 +33128,15 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0j7fm0w",
    "_src": "mse",
    "flavorRows": 3,
-   "cid": "c116cwvt02xvx0j"
+   "cid": "c116cwvt02xvx0j",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Corrording Curse",
@@ -33270,11 +33299,11 @@
    "flavor": "\"Each day of sailing adds experience to the crew.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -33292,10 +33321,14 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0jg372l",
    "_src": "mse",
-   "cid": "c06p82jw03sglzy"
+   "cid": "c06p82jw03sglzy",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Colosifying Code",
@@ -33982,7 +34015,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass name— Aqua\nCancel target card.\nAt your next Onset create {B} equal to the Mana Cost of the Canceled card. Only use this mana on Aqua and Spell cards.",
+   "ruleText": "Amass — Aqua Characters\nCancel target card.\nAt your next Onset create {B} equal to the Mana Cost of the Canceled card. Only use this mana on Aqua and Spell cards.",
    "flavor": "\"The sea has protected me, now I must protect the sea!\"",
    "imageUrl": "",
    "art": "",
@@ -33990,7 +34023,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -34010,7 +34043,8 @@
    "sagaId": "Beginnings",
    "id": "cms5ftx0k26kw0",
    "_src": "mse",
-   "cid": "c1unk7320za0zo4"
+   "cid": "c1unk7320za0zo4",
+   "flavorRows": 1
   },
   {
    "name": "Bow Bound Ormick",
@@ -34670,11 +34704,11 @@
    "flavor": "\"Sinew of Earth stretch and split, giving shape to it’s own. It walks along the Earth. With the Earth...\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -34691,10 +34725,14 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0kre6u4",
    "_src": "mse",
-   "cid": "c0xdybaw0l7qr4m"
+   "cid": "c0xdybaw0l7qr4m",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Acolyte of Elder Sight",
@@ -35576,7 +35614,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -37005,7 +37043,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -37026,7 +37064,7 @@
    "sagaId": "Infinite",
    "id": "cms5ftx0mv3co8",
    "_src": "mse",
-   "flavorRows": 1,
+   "flavorRows": 2,
    "cid": "c16xk1s008mh7lc"
   },
   {
@@ -38927,11 +38965,11 @@
    "flavor": "\"You! Give me your money!\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -38948,11 +38986,15 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0oj1ifx",
    "_src": "mse",
    "flavorRows": "",
-   "cid": "c0wpfowi1mbu4qu"
+   "cid": "c0wpfowi1mbu4qu",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Abyssal Archives",
@@ -40760,14 +40802,14 @@
    "health": "*",
    "arcane": "",
    "ruleText": "Overwhelm\n* is equal to the number of +1 counters among Characters your control.\nRaid — Put a +1 counter on any number of Characters with +1 counters.",
-   "flavor": "\"Each time it charges, it seems to just grow and grow.\"",
+   "flavor": "",
    "imageUrl": "",
    "art": "",
    "saga": "Beginnings",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -40787,7 +40829,7 @@
    "sagaId": "Beginnings",
    "id": "cms5ftx0qdypnp",
    "_src": "mse",
-   "flavorRows": 1,
+   "flavorRows": "",
    "cid": "c0q0zlrn1xd0b39"
   },
   {
@@ -41676,11 +41718,11 @@
    "flavor": "\"The opposite of Reason.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -41697,11 +41739,15 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0r4jhwf",
    "_src": "mse",
    "flavorRows": "",
-   "cid": "c1wlitb00ivzii0"
+   "cid": "c1wlitb00ivzii0",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Ancient of Woes",
@@ -41744,11 +41790,11 @@
    "flavor": "\"Life lost all luster when I peered upon the mass bloating over the horizon. Its millions of eyes peered down on me, the irises of my loved ones looked down in disgust as I gave up. I knew they were right to do so.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-27",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -41765,11 +41811,15 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0r6bpu3",
    "_src": "mse",
    "flavorRows": 2.5,
-   "cid": "c146k50212r66qy"
+   "cid": "c146k50212r66qy",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Ancient of the Dragons",
@@ -41812,11 +41862,11 @@
    "flavor": "\"Sinew of the first dragon seeped into the soil, giving life more than life itself. The primordial call of change.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -41833,10 +41883,14 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0r72uj4",
    "_src": "mse",
-   "cid": "c0h8rxab0b660kt"
+   "cid": "c0h8rxab0b660kt",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Azriel the Turning Radius",
@@ -42052,11 +42106,11 @@
    "flavor": "\"I will read to you, from the annuls of history.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -42073,11 +42127,15 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0r9kx0t",
    "_src": "mse",
    "flavorRows": 1,
-   "cid": "c0xbypct0l67819"
+   "cid": "c0xbypct0l67819",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Archmage’s Cantrip",
@@ -42383,11 +42441,11 @@
    "flavor": "\"My roots will always remember the way home.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-28",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -42404,11 +42462,15 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0ri2lxq",
    "_src": "mse",
    "flavorRows": 1,
-   "cid": "c0vujwlj0f462vv"
+   "cid": "c0vujwlj0f462vv",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Arianrhod Crest",
@@ -42520,11 +42582,11 @@
    "flavor": "\"It will claw out of death just as you claw away from it.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-13",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -42541,11 +42603,15 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0rjtwnq",
    "_src": "mse",
    "flavorRows": 1,
-   "cid": "c0xbypa20l677yo"
+   "cid": "c0xbypa20l677yo",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Ancient of the Faiths",
@@ -42588,11 +42654,11 @@
    "flavor": "\"I will continue.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -42609,11 +42675,15 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0roy6p8",
    "_src": "mse",
-   "flavorRows": 1,
-   "cid": "c0p5yius0a7tch0"
+   "flavorRows": "",
+   "cid": "c0p5yius0a7tch0",
+   "mark": "wm_cmudw0ix3xj34z",
+   "sagaIds": [
+    "Infinite"
+   ]
   },
   {
    "name": "Ampoulilify",
@@ -42654,11 +42724,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -42675,10 +42745,14 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0rtaody",
    "_src": "mse",
-   "cid": "c0sip1go0tsgeca"
+   "cid": "c0sip1go0tsgeca",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Aoife, Braids of Filoshine",
@@ -44530,11 +44604,11 @@
    "flavor": "\"Just another sip and you’ll be done.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-09-30",
    "variants": [
     {
      "id": "v1",
@@ -44552,10 +44626,14 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0tx9wan",
    "_src": "mse",
-   "cid": "c1ww6mj90mmu44r"
+   "cid": "c1ww6mj90mmu44r",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Grave Colossus",
@@ -101442,13 +101520,13 @@
    "arcane": "",
    "ruleText": "This card gains +1 Health for each Shield Armed to it.",
    "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_2085.webp",
-   "lastUpdated": "2026-09-27",
+   "lastUpdated": "2026-09-30",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "designer": "Conjure UCG LLC 2026",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "flavor": "",
    "orbs": [
     {
@@ -101478,10 +101556,10 @@
    "id": "cmt46rteuw5ya4",
    "fit": "contain",
    "sagaIds": [
-    "Beginnings",
     "Infinite"
    ],
-   "cid": "c0om6hx00fdu1na"
+   "cid": "c0om6hx00fdu1na",
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Astasia, Ichor Web",
