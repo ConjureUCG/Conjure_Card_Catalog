@@ -2,7 +2,7 @@
  "manifest": {
   "name": "Conjure UCG",
   "format": 2,
-  "cardCount": 1598,
+  "cardCount": 1599,
   "keywordCount": 108,
   "lookSlots": 0,
   "markCount": 1,
@@ -1334,7 +1334,7 @@
    ],
    "subTypes": [
     "Esper",
-    "Artificier",
+    "Artificer",
     "Wizard"
    ],
    "orbs": [
@@ -1366,7 +1366,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -5915,7 +5915,7 @@
    "subTypes": [
     "Clawed",
     "Bard",
-    "Rouge",
+    "Rogue",
     "Outlaw"
    ],
    "orbs": [
@@ -5947,7 +5947,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -16396,7 +16396,7 @@
    ],
    "subTypes": [
     "Pyro",
-    "Artificier"
+    "Artificer"
    ],
    "orbs": [
     {
@@ -16427,7 +16427,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -20214,7 +20214,7 @@
    "subTypes": [
     "Clawed",
     "Bard",
-    "Rouge"
+    "Rogue"
    ],
    "orbs": [
     {
@@ -20245,7 +20245,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -23446,7 +23446,7 @@
     "Object"
    ],
    "subTypes": [
-    "Rouge",
+    "Rogue",
     "Warrior",
     "Outlaw",
     "Relic"
@@ -23480,7 +23480,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -25285,7 +25285,7 @@
   {
    "name": "Trapper’s Guidebook",
    "manaCost": "V/R/O",
-   "cmc": "3",
+   "cmc": "1",
    "colors": [
     "red",
     "orange",
@@ -25297,7 +25297,7 @@
    ],
    "subTypes": [
     "Ranger",
-    "Rouge",
+    "Rogue",
     "Relic"
    ],
    "orbs": [
@@ -25329,7 +25329,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -26381,7 +26381,7 @@
    ],
    "subTypes": [
     "Demonic",
-    "Rouge",
+    "Rogue",
     "Warrior"
    ],
    "orbs": [
@@ -26413,7 +26413,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -33469,7 +33469,7 @@
     "Character"
    ],
    "subTypes": [
-    "Artificier"
+    "Artificer"
    ],
    "orbs": [
     {
@@ -33500,7 +33500,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -43065,7 +43065,7 @@
    ],
    "subTypes": [
     "Vampire",
-    "Rouge"
+    "Rogue"
    ],
    "orbs": [
     {
@@ -43096,7 +43096,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -43335,7 +43335,8 @@
    "subTypes": [
     "Giant",
     "Void",
-    "Demon"
+    "Demonic",
+    "Horror"
    ],
    "orbs": [
     {
@@ -43366,7 +43367,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -49084,7 +49085,7 @@
    ],
    "subTypes": [
     "Artificer",
-    "Rouge"
+    "Rogue"
    ],
    "orbs": [
     {
@@ -49115,7 +49116,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -51589,7 +51590,7 @@
    ],
    "subTypes": [
     "Ranger",
-    "Rouge"
+    "Rogue"
    ],
    "orbs": [
     {
@@ -51620,7 +51621,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -53361,7 +53362,7 @@
    ],
    "subTypes": [
     "Artificer",
-    "Rouge"
+    "Rogue"
    ],
    "orbs": [
     {
@@ -53392,7 +53393,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -54446,7 +54447,7 @@
     "Character"
    ],
    "subTypes": [
-    "Artificier",
+    "Artificer",
     "Alchemist"
    ],
    "orbs": [
@@ -54478,7 +54479,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -55304,9 +55305,9 @@
     "Action"
    ],
    "subTypes": [
-    "Artificier",
     "Ranger",
-    "Rouge"
+    "Rogue",
+    "Artificer"
    ],
    "orbs": [
     {
@@ -55337,7 +55338,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -56194,7 +56195,7 @@
    "subTypes": [
     "Vampire",
     "Shaman",
-    "Rouge"
+    "Rogue"
    ],
    "orbs": [
     {
@@ -56225,7 +56226,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -56762,7 +56763,7 @@
    ],
    "subTypes": [
     "Armament",
-    "Rouge",
+    "Rogue",
     "Knife"
    ],
    "orbs": [
@@ -56794,7 +56795,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -57898,7 +57899,7 @@
    ],
    "subTypes": [
     "Armament",
-    "Rouge",
+    "Rogue",
     "Knife"
    ],
    "orbs": [
@@ -57930,7 +57931,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -64913,7 +64914,7 @@
    ],
    "subTypes": [
     "Artificer",
-    "Rouge"
+    "Rogue"
    ],
    "orbs": [
     {
@@ -64944,7 +64945,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -64997,7 +64998,7 @@
    ],
    "subTypes": [
     "Bard",
-    "Artificier"
+    "Artificer"
    ],
    "orbs": [
     {
@@ -65021,14 +65022,14 @@
    "health": "2",
    "arcane": "",
    "ruleText": "{L}: Heal target Construct Character.",
-   "flavor": "\"Her creations dance with lifelike grace, but their strings tug at something far deeper than wood.\"",
+   "flavor": "\"The strings of his work tug at something far deeper than wood.\"",
    "imageUrl": "",
    "art": "",
    "saga": "Beginnings",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -65041,7 +65042,11 @@
    "sagaId": "Beginnings",
    "id": "cms5g5x6vqj34y",
    "_src": "mse",
-   "cid": "c1h7ulkg068os38"
+   "cid": "c1h7ulkg068os38",
+   "flavorRows": 1,
+   "kwReminders": [
+    "Heal"
+   ]
   },
   {
    "name": "Old Poet",
@@ -69551,7 +69556,7 @@
    "subTypes": [
     "Horned",
     "Ranger",
-    "Rouge",
+    "Rogue",
     "Hero"
    ],
    "orbs": [
@@ -69583,7 +69588,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -71177,7 +71182,7 @@
    ],
    "subTypes": [
     "Vampire",
-    "Rouge"
+    "Rogue"
    ],
    "orbs": [
     {
@@ -71208,7 +71213,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -72328,7 +72333,7 @@
    "subTypes": [
     "Undead",
     "Shaman",
-    "Aavatar"
+    "Avatar"
    ],
    "orbs": [
     {
@@ -72359,7 +72364,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -76719,7 +76724,7 @@
    ],
    "subTypes": [
     "Artificer",
-    "Rouge"
+    "Rogue"
    ],
    "orbs": [
     {
@@ -76750,7 +76755,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -79211,7 +79216,7 @@
    "subTypes": [
     "Soldier",
     "Ranger",
-    "Rouge"
+    "Rogue"
    ],
    "orbs": [
     {
@@ -79242,7 +79247,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -79483,7 +79488,7 @@
    ],
    "subTypes": [
     "Zephyr",
-    "Artificier"
+    "Artificer"
    ],
    "orbs": [
     {
@@ -79514,7 +79519,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -79661,7 +79666,7 @@
     "Character"
    ],
    "subTypes": [
-    "Artificier"
+    "Artificer"
    ],
    "orbs": [
     {
@@ -79684,7 +79689,7 @@
    "attack": "2",
    "health": "2",
    "arcane": "",
-   "ruleText": "Rune cards you play cost {1} less.\nIf this card is Armed, it gains +1.",
+   "ruleText": "Rune cards you play cost {1} less.\n{L}: This turn, target Character gains +1 for each Armament Armed to it.",
    "flavor": "\"Rune carving lets mana flow through objects, imbueing them with power and the Arcane.\"",
    "imageUrl": "",
    "art": "",
@@ -79692,7 +79697,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -79705,7 +79710,8 @@
    "sagaId": "Beginnings",
    "id": "cms66fm9hilc6p",
    "_src": "mse",
-   "cid": "c11pncb91nk2djr"
+   "cid": "c11pncb91nk2djr",
+   "flavorRows": ""
   },
   {
    "name": "Souvenirs",
@@ -81298,7 +81304,7 @@
   {
    "name": "Quick Reflexes",
    "manaCost": "O/G",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "orange",
     "green"
@@ -81309,7 +81315,7 @@
    ],
    "subTypes": [
     "Ranger",
-    "Rouge"
+    "Rogue"
    ],
    "orbs": [
     {
@@ -81340,7 +81346,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -88773,7 +88779,7 @@
   {
    "name": "Survialist’s Guidebook",
    "manaCost": "O/Y/G",
-   "cmc": "3",
+   "cmc": "1",
    "colors": [
     "orange",
     "yellow",
@@ -88786,7 +88792,7 @@
    "subTypes": [
     "Soldier",
     "Ranger",
-    "Rouge",
+    "Rogue",
     "Relic"
    ],
    "orbs": [
@@ -88818,7 +88824,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -89215,8 +89221,7 @@
     "Spell"
    ],
    "subTypes": [
-    "Divine",
-    "Angel"
+    "Divine"
    ],
    "orbs": [
     {
@@ -89247,7 +89252,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -99635,7 +99640,7 @@
    "subTypes": [
     "Zephyr",
     "Monk",
-    "Cleic",
+    "Cleric",
     "Hero"
    ],
    "orbs": [
@@ -99667,7 +99672,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -100549,7 +100554,7 @@
    ],
    "subTypes": [
     "Necro",
-    "Gesit",
+    "Geist",
     "Spirit"
    ],
    "orbs": [
@@ -100581,7 +100586,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-08",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -101576,16 +101581,16 @@
     "Character"
    ],
    "subTypes": [
+    "Demonic",
     "Fanged",
-    "Insect",
-    "Demon"
+    "Insect"
    ],
    "attack": "2",
    "health": "5",
    "arcane": "3",
    "ruleText": "Fury, Lethal, Snare\n Insect Characters you control gain Snare and Gouge.\n Whenever a Character you don’t control dies,  Suspend it with a Web counter and lose 1 Life.\n Slow — Banish a card Suspended with a Web counter: Put a +1 counter on this card.",
    "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_2060.webp",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-01",
    "art": "",
    "saga": "Beginnings",
    "designer": "Conjure UCG LLC 2026",
@@ -101933,7 +101938,7 @@
     "Character"
    ],
    "subTypes": [
-    "Rouge",
+    "Rogue",
     "Warrior",
     "Outlaw"
    ],
@@ -101966,7 +101971,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-08",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -101989,7 +101994,7 @@
   },
   {
    "id": "cmtup123b1g75c",
-   "name": "_New Card",
+   "name": "AAA New Card",
    "manaCost": "GBI5",
    "cmc": "8",
    "colors": [
@@ -102037,7 +102042,7 @@
     }
    ],
    "range": "",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-01",
    "cid": "c1fhd70c1xt2dpy"
   },
   {
@@ -102220,7 +102225,7 @@
    "cid": "c0cl3yq619qse9g"
   },
   {
-   "name": "_Hardened Steel",
+   "name": "AAA Hardened Steel",
    "manaCost": "OY",
    "cmc": "2",
    "colors": [
@@ -102233,7 +102238,7 @@
    ],
    "subTypes": [
     "Pyro",
-    "Artificier"
+    "Artificer"
    ],
    "orbs": [
     {
@@ -102264,13 +102269,13 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-27",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image317.webp",
+     "imageUrl": "",
      "mark": "wm_cmudw0ix3xj34z"
     }
    ],
@@ -102423,6 +102428,58 @@
    "id": "cmum242zfee9y9",
    "mark": "wm_cmudw0ix3xj34z",
    "range": ""
+  },
+  {
+   "id": "cmupb7khvhp5by",
+   "name": "New Card",
+   "manaCost": "",
+   "cmc": 0,
+   "colors": [],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "local": 1,
+   "cid": "c1jkis4h1iysx71",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "sagaIds": [
+    "Beginnings"
+   ],
+   "sagaId": "Beginnings",
+   "range": "",
+   "lastUpdated": "2026-10-01",
+   "kwReminders": [
+    "Ignite"
+   ],
+   "flavorRows": 2
   }
  ],
  "look": null,
