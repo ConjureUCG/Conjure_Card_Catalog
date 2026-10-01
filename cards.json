@@ -4510,24 +4510,37 @@
    "flavor": "\"A simple fire bolt for him is a devastating fire blast for you.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1251.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1251.webp",
+     "artXf": {
+      "z": 1.22,
+      "x": 0,
+      "y": 8.5,
+      "r": 0,
+      "f": 1
+     },
+     "fit": "contain"
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms47zh893ed9g",
    "_src": "mse",
-   "cid": "c0uvw99t1d8929v"
+   "cid": "c0uvw99t1d8929v",
+   "flavorRows": "",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Dragon Speaker Aesidi",
@@ -6014,7 +6027,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -6034,7 +6047,7 @@
    "sagaId": "Beginnings",
    "id": "cms47zh89y9k72",
    "_src": "mse",
-   "flavorRows": 1.5,
+   "flavorRows": 1,
    "cid": "c0sr15ui0pf5sxg"
   },
   {
@@ -11765,7 +11778,7 @@
    "attack": "4",
    "health": "4",
    "arcane": "4",
-   "ruleText": "Characters you control Armed with an Armament Imbued with a Red Rune gain Firebreathing, the same is true for Yellow Runes and Fortify, and Blue Runes and Meditate.\nYou may pay {1} to activate Firebreathing, Fortify, and Meditate abilities of cards you control.",
+   "ruleText": "Characters you control Armed with a Red Armament, or Armament Imbued with a Red Rune gain Firebreathing, the same is true for Yellow and Fortify, and Blue and Meditate.\nYou may pay {1} to activate Firebreathing, Fortify, and Meditate abilities of cards you control.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -11773,7 +11786,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -17373,7 +17386,7 @@
    "attack": "2",
    "health": "1",
    "arcane": "2",
-   "ruleText": "Firebreathing, Meditate,\nBarrier {1}\nCrystallize: Dual Ire Yune Essence, it Arrives Locked.",
+   "ruleText": "Firebreathing, Meditate, Barrier {1}\nCrystallize: Dual Ire Yune Essence, it Arrives Locked.",
    "flavor": "\"Temper your will, as your will tempers the elements.\"",
    "imageUrl": "",
    "art": "",
@@ -17381,7 +17394,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -19738,15 +19751,15 @@
    "attack": "2",
    "health": "1",
    "arcane": "",
-   "ruleText": "Arrive — Ignite 1.\nWhenever you play an Action card, this card gains +1 Attack this turn.",
-   "flavor": "",
+   "ruleText": "Arrive — Ignite 1.\nEnact — This card gains +1 Attack this turn.",
+   "flavor": "\"Just outrun the fire.\"",
    "imageUrl": "",
    "art": "",
    "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -31157,7 +31170,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Sacrifice a Character, create X{mana in any combination of B} or {V} where X is the sacrificed Character’s Arcane.\nCrystallize: Dual Yune Gris Essence, it Arrives Locked.",
+   "ruleText": "Sacrifice a Character, create X mana in any combination of {B} or {V} where X is the sacrificed Character’s Arcane.\nCrystallize: Dual Yune Gris Essence, it Arrives Locked.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -31165,7 +31178,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -31707,7 +31720,7 @@
   },
   {
    "name": "Cold Steel Caster",
-   "manaCost": "YYBB",
+   "manaCost": "YB2",
    "cmc": "4",
    "colors": [
     "yellow",
@@ -31745,11 +31758,11 @@
    "flavor": "\"Far from home, he’s had to adapt and lean magic long not used by his people.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -31759,10 +31772,14 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0hn3htx",
    "_src": "mse",
-   "cid": "c0jtdddq1kpd8g0"
+   "cid": "c0jtdddq1kpd8g0",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Cyclic Funnel",
@@ -39726,11 +39743,11 @@
    "flavor": "\"Veins of stary night and skin made of the space between.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -39747,10 +39764,14 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5ftx0pfh6y5",
    "_src": "mse",
-   "cid": "c0w77jj607garb4"
+   "cid": "c0w77jj607garb4",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Cristata Umbra",
@@ -63743,7 +63764,7 @@
    "attack": "1",
    "health": "3",
    "arcane": "3",
-   "ruleText": "Illusion Characters you control gain \"Battlecry — Foretell.\" and \"Raid — Draw 1.\".",
+   "ruleText": "Illusion Characters you control gain \n\"Battlecry — Foretell.\" and  \"Raid — Draw 1.\".",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -63751,7 +63772,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -69097,7 +69118,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -69110,7 +69131,8 @@
    "sagaId": "Beginnings",
    "id": "cms5g5x6z9e5fe",
    "_src": "mse",
-   "cid": "c03j1pxt1kna3mf"
+   "cid": "c03j1pxt1kna3mf",
+   "flavorRows": 1
   },
   {
    "name": "Obscura Dusk Phage",
@@ -74656,11 +74678,11 @@
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -74670,10 +74692,14 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms66fm9cc4sqz",
    "_src": "mse",
-   "cid": "c0o64loc1cpq4z8"
+   "cid": "c0o64loc1cpq4z8",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Skewed Vision",
