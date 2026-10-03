@@ -1185,8 +1185,6 @@ body.light .dl-card-hero-grad{background:linear-gradient(to right,var(--s1) 25%,
 .ed2-navrow>.ed2-btn{flex:0 0 auto;min-width:34px}
 .ed2-navpos{flex:1 1 auto;text-align:center;font-family:'Crimson Pro',serif;
   font-size:.78rem;color:var(--tm);letter-spacing:.04em;white-space:nowrap}
-.ed2-preview-title{font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;letter-spacing:.07em;
-  text-transform:uppercase;color:var(--tx);align-self:flex-start;margin-bottom:12px;flex:0 0 auto}
 #edPvHost{display:flex;align-items:center;justify-content:center;width:100%;flex:1 1 auto;min-height:0}
 
 /* ── RIGHT: fields column ───────────────────────────────────────────── */
@@ -1197,6 +1195,18 @@ body.light .dl-card-hero-grad{background:linear-gradient(to right,var(--s1) 25%,
 
 .ed2-field label{display:block;font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;
   letter-spacing:.05em;text-transform:uppercase;color:var(--tx);margin-bottom:3px}
+/* ⚠ A LABEL ON ITS FIELD'S ROW (the author, session 59): Mana Cost, Name,
+   Super-Type and Sub-Type sit beside their boxes instead of on a line above
+   them. The label keeps its look - only its place changes - and the box takes
+   whatever the row has left. */
+.ed2-inl{display:flex;align-items:center;gap:7px;min-width:0}
+.ed2-field.ed2-inl>label,.ed2-field .ed2-inl>label{margin:0;flex:0 0 auto;white-space:nowrap}
+.ed2-inl>.ed2-input,.ed2-inl>.ed2-combo{flex:1 1 0;min-width:0}
+.ed2-inl>.ed2-rev-date{flex:0 0 auto;white-space:nowrap;margin-left:0}
+/* Flavor Text: its label at the left with the two words stacked, then the
+   lines box, then the text - one row, the shape the Choice line has. */
+.ed2-field.ed2-flavor-row{display:flex;align-items:flex-start;gap:8px}
+.ed2-field.ed2-flavor-row>.ed2-stack-lbl{margin:0;flex:0 0 auto;line-height:1.3;padding-top:3px}
 .ed2-input,.ed2-select,.ed2-textarea{width:100%;background:var(--s2);border:1px solid var(--b1);
   border-radius:0;color:var(--tx);font-family:'Crimson Pro',serif;font-size:.98rem;padding:6px 8px;box-sizing:border-box}
 .ed2-input:focus,.ed2-select:focus,.ed2-textarea:focus{outline:none;border-color:var(--go)}
@@ -1856,7 +1866,11 @@ body.pin-none  .mcard{--pin:linear-gradient(transparent,transparent)!important}
    neither can drift as the row's contents change. Back to catalog takes the
    first three. Save and Save All share one cell, half each. */
 .ed2-btngrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;font-size:.78rem}
-.ed2-btngrid .ed2-bg-back{grid-column:span 3}
+/* two columns since session 59 - Duplicate has the third, beside it */
+.ed2-btngrid .ed2-bg-back{grid-column:span 2}
+/* the Test toggle, lit amber while the card is a Test card */
+.ed2-btngrid .ed2-bg-test.on{background:#4a3608;border-color:#e0a020;color:#ffd77a;
+  box-shadow:inset 0 0 0 1px rgba(224,160,32,.35)}
 .ed2-btngrid .ed2-bg-fix{grid-column:5;grid-row:1}
 .ed2-btngrid .ed2-bg-del{grid-column:5;grid-row:2}
 .ed2-btngrid .ed2-bg-pair{display:flex;gap:4px;min-width:0}
@@ -1894,6 +1908,13 @@ body.pin-none  .mcard{--pin:linear-gradient(transparent,transparent)!important}
 .ed2-group .ed2-mn-row{display:flex;gap:12px}
 .ed2-group .ed2-mn-row .f-mana-wrap{flex:0 0 190px}
 .ed2-group .ed2-mn-row .f-name-wrap{flex:1 1 auto;min-width:0}
+/* ⚠ NAME TAKES WHAT IS LEFT (session 59). With its label beside it the Name
+   field's natural width is label + box + date, and the row's flex-wrap sent
+   it onto a line of its own at any width. A 220px basis keeps it beside Mana
+   Cost until the column is too narrow to hold a usable box there. */
+.ed2-group .ed2-mn-row .f-name-wrap.ed2-inl{flex:1 1 220px}
+/* the two type boxes line up whatever chips sit above either one */
+.ed2-group .ed2-row2{align-items:flex-end}
 .ed2-group .ed2-mn-row .ed2-input{width:100%;box-sizing:border-box}
 .ed2-group .ed2-meta{display:flex;gap:12px}
 .ed2-group .ed2-meta>.ed2-field{flex:1 1 0;min-width:0}
@@ -1945,7 +1966,10 @@ body.pin-none  .mcard{--pin:linear-gradient(transparent,transparent)!important}
    `flex:1 1 auto;min-width:0` above. This is the rule that WINS for
    .f-mana-wrap: the 120px at the top of this file and the 190px in the group
    block are both overridden from here, so this is the only one to change. */
-.ed2-group .ed2-mn-row .f-mana-wrap{flex:0 0 220px}
+/* Since session 59 the label shares the row, so the wrapper is as wide as its
+   label and a 120px box - room for a hybrid - and Name takes everything else. */
+.ed2-group .ed2-mn-row .f-mana-wrap{flex:0 0 auto;width:auto}
+.ed2-group .ed2-mn-row .f-mana-wrap .ed2-input{flex:0 0 120px;width:120px}
 
 /* Stats: their own group, laid out in a ROW, each box only as wide as it needs
    to be for its preview + fields. Deliberately not stretched. */
@@ -2057,8 +2081,6 @@ body.pin-none  .mcard{--pin:linear-gradient(transparent,transparent)!important}
   border-radius:4px;width:22px;height:19px;line-height:1;padding:0;cursor:pointer;
   font-family:'Crimson Pro',serif;font-size:.8rem}
 .ed2-fmtbtn:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
-.ed2-lbl-row{display:flex;align-items:baseline}
-.ed2-lbl-row .ed2-rev-date{margin-left:auto}
 
 /* ── watermark editor page ─────────────────────────────────────────────────── */
 .wm-wrap{display:flex;gap:16px;align-items:flex-start}
@@ -2824,6 +2846,15 @@ span.ed2-sagachip{cursor:default}
 .ed2-cl-sep{padding:6px 7px 2px;font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;
   color:var(--tx);border-top:1px solid var(--b2);margin-top:4px}
 .ed2-cl-none{padding:8px 7px;font-size:.72rem;color:var(--tm)}
+
+/* ── A TEST CARD'S TAG (session 59) ───────────────────────────────────────────
+   On the face itself, so it is there in the editor, on the tile and in the
+   popout. Absolutely positioned over the top edge of the frame and deaf to the
+   pointer: it moves nothing and covers nothing anyone has to click. */
+.mcard .mcard-test{position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:40;
+  pointer-events:none;background:#e0a020;color:#1a1206;font:700 10px/1 'Cinzel',serif;
+  letter-spacing:.16em;padding:3px 9px 3px 10px;border-radius:0 0 7px 7px;
+  box-shadow:0 2px 6px rgba(0,0,0,.45)}
 /* ═══════════════════════════════════════════════════════════════════════════
    CONJURE UCG — CLASSIC CARD FACE LAYOUT  (standalone / default look)
    ---------------------------------------------------------------------------
@@ -8350,7 +8381,6 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
     <div id='pane-editor' style='display:none'>
       <div class='ed2-wrap'>
         <div class='ed2-preview'>
-          <div class='ed2-preview-title'>Live Preview</div>
           <!-- Step through the cards the catalog is currently showing, in the
                order it is showing them. The arrow KEYS do the same thing when
                no field has focus - see edNavStep() in ed2_tools.js. -->
@@ -9191,6 +9221,12 @@ function sortCmp(av, bv, dir, numeric, inner){
    render happens before it exists, so an unresolved fall-back is required
    rather than optional. */
 function _artSrc(card){
+  /* the picture the card's face shows - its chosen variant's, since most cards
+     keep it there (session 59) - and the old reading only if the editor half
+     is not loaded yet */
+  if(typeof window.edCardArtSrc==='function'){
+    try{ var v=window.edCardArtSrc(card); if(v)return v; }catch(_){}
+  }
   if(typeof window.edArtSrcOf==='function'){
     try{ return window.edArtSrcOf(card)||''; }catch(_){}
   }
@@ -11828,22 +11864,26 @@ function _savedWrite(data){
      - Total Unique across all decks: max 10
 ═══════════════════════════════════════════════════════════════════════════ */
 var GAME_MODES = {
+  /* \u26a0 EXACTLY 50 / 15 / 12 (the author, session 59) - the rule text AND the
+     checker, the Kingdoms pattern below, so the Deck Rules page, the Deck tab
+     and the Deck Lists tick can never disagree. It was 50-200 main, essence up
+     to a third of it and wish up to a quarter.
+     The "Unlimited Cards", "Core Essence" and "Dual Essence" rows are gone from
+     all three formats by the author's choice - the copy limits they described
+     are still enforced exactly as before (getCopyLimit, deckLegality). */
   constructed: {
     label: 'Constructed',
-    mainMin: 50, mainMax: 200,
-    essMax: function(main){ return Math.floor(main/3); },
-    wishMax: function(main){ return Math.floor(main/4); },
+    mainMin: 50, mainMax: 50,
+    essMax: function(){ return 15; }, essMin: function(){ return 15; },
+    wishMax: function(){ return 12; }, wishMin: function(){ return 12; },
     rules: [
       {title:'Additional', text:''},
-      {title:'Main Deck', text:'50 to 200 cards.'},
-      {title:'Essence Deck', text:'The maximum is 1/3rd the number of cards in your Main Deck, always rounded down. No minimum.'},
-      {title:'Wish Deck', text:'The maximum is 1/4th the number of cards in your Main Deck, always rounded down. No minimum.'},
+      {title:'Main Deck', text:'Exactly 50 cards.'},
+      {title:'Essence Deck', text:'Exactly 15 cards.'},
+      {title:'Wish Deck', text:'Exactly 12 cards.'},
       {title:'Copy Limit', text:'Maximum 3x copies of any card across Main + Wish combined.'},
       {title:'Starting Life', text:'20 Life'},
-      {title:'Unique Cards', text:'Only 1 copy of a Unique card allowed across the Main + Wish Deck combined.'},
-      {title:'Unlimited Cards', text:'Cards with the Unlimited keyword have no copy limit.'},
-      {title:'Core Essence', text:'Unlimited copies allowed \u2014 no copy limit.'},
-      {title:'Dual Essence', text:'Subject to the standard 3x copy limit.'}
+      {title:'Unique Cards', text:'Only 1 copy of a Unique card allowed across the Main + Wish Deck combined.'}
     ]
   },
   kingdoms: {
@@ -11863,10 +11903,7 @@ var GAME_MODES = {
       {title:'Wish Deck', text:'Exactly 25 cards.'},
       {title:'Copy Limit', text:'Main + Wish decks may only contain 1 copy of any card.'},
       {title:'Starting Life', text:'30 Life'},
-      {title:'Unique Cards', text:'If your Lord has Unique then none of your decks may have any Unique cards. If not, your Main + Wish + Essence decks may only contain 10 Unique cards combined.'},
-      {title:'Unlimited Cards', text:'Cards with the Unlimited keyword have no copy limit.'},
-      {title:'Core Essence', text:'Unlimited copies allowed \u2014 no copy limit.'},
-      {title:'Dual Essence', text:'3x copies of any Dual Essence allowed.'}
+      {title:'Unique Cards', text:'If your Lord has Unique then none of your decks may have any Unique cards. If not, your Main + Wish + Essence decks may only contain 10 Unique cards combined.'}
     ]
   },
   arena: {
@@ -11881,10 +11918,7 @@ var GAME_MODES = {
       {title:'Wish Deck', text:'None'},
       {title:'Copy Limit', text:'No copy limit of any card.'},
       {title:'Starting Life', text:'15 Life'},
-      {title:'Unique Cards', text:'The "Unique" rule is ignored for Arena.'},
-      {title:'Unlimited Cards', text:'\u2014'},
-      {title:'Core Essence', text:'Unlimited Core Essence of each type are always available.'},
-      {title:'Dual Essence', text:'3x of each Dual Essence are always available.'}
+      {title:'Unique Cards', text:'The "Unique" rule is ignored for Arena.'}
     ]
   },
 
@@ -12173,7 +12207,13 @@ function populateEssence(){
   var mainEntries = parseDeckIn(DECK_IDS.main);
 
   var totalMainCards = mainEntries.reduce(function(a,b){return a+b.count;},0);
-  var essenceSlots = Math.floor(totalMainCards / 3);
+  /* ⚠ THE FORMAT'S OWN NUMBER WHEN IT HAS ONE (session 59): Constructed is
+     exactly 15 now and Kingdoms exactly 33, so filling a third of the Main
+     Deck would hand over a deck its own rules fail. A format with no minimum
+     (Arena) keeps the third. */
+  var _gmE = (typeof GAME_MODES !== 'undefined') ? GAME_MODES[_gameMode] : null;
+  var essenceSlots = (_gmE && typeof _gmE.essMin === 'function')
+    ? _gmE.essMin(totalMainCards) : Math.floor(totalMainCards / 3);
   if(essenceSlots < 1){ alert('Not enough cards in Main Deck (need at least 3).'); return; }
 
   // Tally mana pips per colour through the one counter every screen uses.
@@ -29347,10 +29387,14 @@ function renderDeckLists(){
               armament:parseDeckLines((entry && typeof entry === 'object' && entry.armament) || '')}});
     var legal = verdict.legal;
 
+    /* ⚠ THE CARD'S PICTURE, NOT ITS imageUrl (session 59). This read
+       heroCard.imageUrl, and 1586 of the 1599 published cards keep their
+       picture on an alternate-art variant with imageUrl "" - so the boxes went
+       blank. _artSrc asks what the card's face shows. */
     var heroUrl = '';
     if(mainDeck.length){
       var heroCard = cardMap[mainDeck[0].name];
-      if(heroCard && heroCard.imageUrl) heroUrl = heroCard.imageUrl;
+      if(heroCard) heroUrl = _artSrc(heroCard);
     }
 
     var legalClass = savedMode === 'none' ? 'none' : (legal ? 'ok' : 'err');
@@ -29369,7 +29413,7 @@ function renderDeckLists(){
     cardEl.dataset.pipcolors = pipLabels.join(',');
     cardEl.innerHTML =
       '<button class="dl-card-dup" title="Duplicate" data-dn="'+e(name)+'">&#128190;</button><button class="dl-card-del" title="Delete" data-dn="'+e(name)+'">&times;</button>'+
-      '<div class="dl-card-hero">'+(heroUrl ? '<img src="'+heroUrl+'" alt="" loading="lazy">' : '')+'<div class="dl-card-hero-grad"></div></div>'+
+      '<div class="dl-card-hero">'+(heroUrl ? '<img src="'+e(heroUrl)+'" alt="" loading="lazy">' : '')+'<div class="dl-card-hero-grad"></div></div>'+
       '<div class="dl-card-top"><div class="dl-card-name-box"><span class="dl-card-name">'+e(name)+'</span></div><div style="display:flex;align-items:center;gap:4px"><div class="dl-card-mode-box"><span class="dl-card-mode">'+modeLabel+'</span></div><span class="dl-card-legal '+legalClass+'">'+legalIcon+'</span></div></div>'+
       '<div class="dl-card-body">'+
         (isDraft
@@ -33991,6 +34035,8 @@ window.edMassRefresh=function(){
     +"<option value='filtered'"+(scope==='filtered'?' selected':'')+">Current filtered results</option>"
     +SAGAS.map(function(s){return "<option value='"+e(s.id)+"'"+(scope===s.id?' selected':'')+">Saga: "+e(s.name)+"</option>";}).join('');
   var n=scope?massTargets().length:0;
+  /* how many in scope are Test cards - the box says so before it is ticked */
+  var nTest=scope?massTargets().filter(function(c){ return c&&c.testing; }).length:0;
   host.innerHTML="<div class='tpl-sec'>"
     +"<i class='tpl-hint'>Sets these fields on every card in the chosen scope. Blank fields are left alone. <b>No undo.</b></i>"
     +"<div class='kwm-form'>"
@@ -33999,6 +34045,9 @@ window.edMassRefresh=function(){
       +"<label>Distributor<input class='ed2-in' id='mass-designer' placeholder='leave blank to keep'></label>"
       +"<label>Revision<input class='ed2-in' id='mass-revision' placeholder='leave blank to keep'></label>"
       +"<label>Artist<input class='ed2-in' id='mass-artist' placeholder='leave blank to keep'></label>"
+      /* session 59: take Test off in one go - the next Publish lists them as new */
+      +"<label class='mass-untest'><input type='checkbox' id='mass-untest'> Remove Test from these cards"
+        +" <span class='tpl-hint'>("+nTest+" of them "+(nTest===1?'is a Test card':'are Test cards')+")</span></label>"
     +"</div>"
     +"<div class='tpl-opts'><b>"+n+"</b> card(s) in scope"
       +"<button class='ed2-btn tiny on' onclick='edMassApply()'"+(n?'':' disabled')+">Apply</button></div>"
@@ -34010,10 +34059,18 @@ window.edMassApply=function(){
   var g=function(f){var el=document.getElementById('mass-'+f);return el?el.value.trim():'';};
   var vals={saga:g('saga'),designer:g('designer'),revision:g('revision'),artist:g('artist')};
   var keys=Object.keys(vals).filter(function(k){return vals[k]!=='';});
-  if(!keys.length){ alert('Set at least one field.'); return; }
+  var untestBox=document.getElementById('mass-untest');
+  var untest=!!(untestBox&&untestBox.checked);
+  var tests=untest?list.filter(function(c){ return c&&c.testing; }):[];
+  if(!keys.length&&!untest){ alert('Set at least one field.'); return; }
+  if(!keys.length&&!tests.length){ alert('None of these cards is a Test card.'); return; }
+  /* only the cards that change are touched - Test removal on its own writes
+     the Test cards, not every card in scope */
+  if(!keys.length)list=tests;
   edDangerGate({
     title:'Mass edit '+list.length+' card(s)',
     lose:keys.map(function(k){ return 'Existing '+k+' on '+list.length+' card(s), overwritten with "'+vals[k]+'"'; })
+      .concat(tests.length?[tests.length+' Test card(s) stop being Test cards - the next Publish puts them in the catalogue for everyone']:[])
       .concat(vals.saga?['Cards move saga, which changes their identity (sagaId + name)']:[])
       .concat((vals.saga&&list.filter(isShared).length)
         ? [list.filter(isShared).length+' shared card(s) are re-homed to "'+vals.saga
@@ -34025,6 +34082,7 @@ window.edMassApply=function(){
     if(!ok){ toast('Cancelled - nothing was changed'); return; }
     list.forEach(function(c){
       keys.forEach(function(k){ c[k]=vals[k]; });
+      if(untest)delete c.testing;
       if(vals.saga){
         /* re-homing the primary must not silently drop the card out of the
            sagas it is shared with, so the old primary is kept as a membership */
@@ -35669,7 +35727,11 @@ function buildFaceHTML(c, opts){
         +"<div class='i-num'>"+e(num)+"</div>"
         +rarityHTML(c)
       +"</div>"
-    +"</div></div></div>";
+    +"</div></div>"
+    /* a Test card says so on its face - in the editor, on its tile and in the
+       popout. Positioned over the card, so it moves nothing (session 59). */
+    +(c.testing?"<div class='mcard-test' title='Test card - left out of the published catalogue'>TEST</div>":"")
+    +"</div>";
 }
 /* Expose for the catalog. Looks the card up (by name/id) if given a string.
    Returns a full-card-face HTML string sized to fill its container. */
@@ -36282,6 +36344,22 @@ window.edSetSplitChoice=function(on){
   if(on)c.splitChoice=true; else delete c.splitChoice;
   markDirty(c); persistCard(c);
   renderFields(); renderPreview(c); try{ scheduleFace(); }catch(_){}
+};
+/* ⚠ A TEST CARD (the author, session 59; designed in HANDOFF 58.8). Off is
+   NO field, like `frame`. A Test card is left out of cards.json by Publish
+   and goes to testing.json instead, which only the token holder's copy reads
+   - so nobody using the app normally ever sees it, and switching it on for a
+   card that is already published takes it away from readers on their next
+   open (ghBuildCards, ghGoneCards). The face wears a TEST tag (buildFaceHTML). */
+window.edToggleTesting=function(on){
+  var c=curCard(); if(!c)return;
+  if(typeof edCardLocked==='function'&&edCardLocked(c)){ edLockedToast(); return; }
+  var want=(on===undefined)?!c.testing:!!on;
+  if(want)c.testing=1; else delete c.testing;
+  markDirty(c); persistCard(c);
+  renderFields(); renderPreview(c); try{ scheduleFace(); }catch(_){}
+  try{ applyToCatalog(); }catch(_){}
+  toast(want?'Test card - Publish leaves it out of the catalogue':'No longer a Test card');
 };
 /* Typed into, so it must NOT rebuild the editor - renderFields() here would
    take the caret out of the field on every keystroke. Only the preview
@@ -37487,8 +37565,12 @@ function renderFields(){
        catalogue-wide and live on the app's top row. Nor is Watermarks any
        more (session 55n) - it is the label on the watermark picker now, in
        the box where the watermark is chosen. */
+    /* ⚠ SESSION 59, THE AUTHOR'S LAYOUT: Back to catalog is two columns wide
+       and Duplicate sits beside it on row one; the Test toggle has
+       Duplicate's old place on row two. The corners do not move. */
     +"<div class='ed2-btngrid'>"
       +"<button class='ed2-btn info ed2-bg-back' onclick='edCloseEditor()'>&larr; Back to catalog</button>"
+      +"<button class='ed2-btn ed2-btn-pur' onclick='edDuplicate()'>Duplicate</button>"
       +"<button class='ed2-btn ed2-btn-pur' onclick=\"showTab('keywords')\">▬ Keywords</button>"
       +"<button class='ed2-btn ed2-bg-fix' onclick='edOpenFix()'>⚙ Fix</button>"
       /* ⚠ ONE CELL, TWO HALVES. Save is the thing you press most and Save All
@@ -37499,7 +37581,10 @@ function renderFields(){
         +"<button class='ed2-btn primary' id='edSaveAllBtn' onclick='edSaveAll()'>Save All</button>"
       +"</div>"
       +"<button class='ed2-btn primary' onclick='edNewCard()'>➕ New card</button>"
-      +"<button class='ed2-btn ed2-btn-pur' onclick='edDuplicate()'>Duplicate</button>"
+      /* A Test card is published to testing.json only - see edToggleTesting */
+      +"<button class='ed2-btn ed2-bg-test"+(c.testing?' on':'')+"' id='edTestBtn' aria-pressed='"+(c.testing?'true':'false')+"'"
+        +" title='A Test card is left out of the published catalogue - people using the app never see it. It goes to testing.json, which only your copy reads.'"
+        +" onclick='edToggleTesting()'>Test</button>"
       /* The Classic/MSE-Trim and Dark/Light Cards toggles used to sit here.
          Both are gone by instruction: Classic and Dark are the look, and there
          is no longer an option for either. See edLockCardLook(). */
@@ -37533,19 +37618,28 @@ function renderFields(){
         /* Sorting on BLUR, not on input: reordering the field between keystrokes
            makes a hybrid impossible to type. edLive() still runs per keystroke,
            so the preview keeps up exactly as it does for every other field. */
-        +"<div class='ed2-field f-mana-wrap'><label>Mana Cost</label><input class='ed2-input' id='f-mana' value='"+e(c.manaCost)+"' oninput='edLive()' onblur='edSortMana(this)'></div>"
-        +"<div class='ed2-field f-name-wrap'><label class='ed2-lbl-row'>Name<span class='ed2-rev-date' id='f-rev-date'>"+(c.lastUpdated?("· "+e(c.lastUpdated)):'')+"</span></label><input class='ed2-input' id='f-name' value='"+e(c.name)+"' oninput='edLive()' onfocus='edNameFocus()' onblur='edNameBlur()'></div>"
+        /* ⚠ EACH LABEL ON ITS FIELD'S ROW (the author, session 59): "MANA COST
+           [ ]  NAME [ ]", not a label line above each box. The last-edited
+           date sits at the right-hand end of the Name row - still #f-rev-date,
+           which ed2_tools.js rewrites after a save. */
+        +"<div class='ed2-field ed2-inl f-mana-wrap'><label for='f-mana'>Mana Cost</label><input class='ed2-input' id='f-mana' value='"+e(c.manaCost)+"' oninput='edLive()' onblur='edSortMana(this)'></div>"
+        +"<div class='ed2-field ed2-inl f-name-wrap'><label for='f-name'>Name</label><input class='ed2-input' id='f-name' value='"+e(c.name)+"' oninput='edLive()' onfocus='edNameFocus()' onblur='edNameBlur()'>"
+          +"<span class='ed2-rev-date' id='f-rev-date'>"+(c.lastUpdated?("· "+e(c.lastUpdated)):'')+"</span></div>"
       +"</div>"
-      /* super (L) + sub (R) SEARCHABLE comboboxes */
+      /* super (L) + sub (R) SEARCHABLE comboboxes. The chips of the types the
+         card already has stay ABOVE the box, where they always were; only the
+         label moved, onto the box's own row (session 59). */
       +"<div class='ed2-row2'>"
-        +"<div class='ed2-field'><label>Super-Type</label><div class='ed2-tokrow' id='f-super-toks'></div>"
+        +"<div class='ed2-field'><div class='ed2-tokrow' id='f-super-toks'></div>"
+          +"<div class='ed2-inl'><label for='f-super-in'>Super-Type</label>"
           +"<div class='ed2-combo' id='f-super-combo'>"
             +"<input class='ed2-input' id='f-super-in' placeholder='Type to search…' autocomplete='off'>"
-            +"<div class='ed2-combo-list hidden' id='f-super-list'></div></div></div>"
-        +"<div class='ed2-field'><label>Sub-Type</label><div class='ed2-tokrow' id='f-sub-toks'></div>"
+            +"<div class='ed2-combo-list hidden' id='f-super-list'></div></div></div></div>"
+        +"<div class='ed2-field'><div class='ed2-tokrow' id='f-sub-toks'></div>"
+          +"<div class='ed2-inl'><label for='f-sub-in'>Sub-Type</label>"
           +"<div class='ed2-combo' id='f-sub-combo'>"
             +"<input class='ed2-input' id='f-sub-in' placeholder='Type to search…' autocomplete='off'>"
-            +"<div class='ed2-combo-list hidden' id='f-sub-list'></div></div></div>"
+            +"<div class='ed2-combo-list hidden' id='f-sub-list'></div></div></div></div>"
       +"</div>"
       /* 4 ORB slots (type + value), one row */
       +"<div class='ed2-group-stats'><div class='ed2-stats' id='f-orbs'>"
@@ -37554,7 +37648,10 @@ function renderFields(){
     +"<div class='ed2-group'><div class='ed2-row3'>"
       +"<div class='ed2-rules-col'>"
         +rulesEditorHTML(c)
-        +"<div class='ed2-field'><label>Flavor Text</label>"
+        /* ⚠ ONE ROW (the author, session 59): the label at the left, its two
+           words stacked, then the lines box, then the text - the shape the
+           Choice line already had. */
+        +"<div class='ed2-field ed2-flavor-row'><label class='ed2-stack-lbl' for='f-flavor'>Flavor<br>Text</label>"
           +"<div class='ed2-textwrap'>"
             +"<div class='ed2-rows'><span title='Lines of flavor text on the card. Blank = automatic.'>lines</span>"
               +"<input class='ed2-rowsin' type='number' min='0' max='8' step='0.5' value='"+e(String(m.flavorRows||''))
@@ -42981,7 +43078,7 @@ function ghDiff(incoming){
     bySaga[sid]=(bySaga[sid]||0)+1;
     var at=ix.at(nc), ex=(at==null)?null:mine[at];
     if(!ex){ added++; return; }
-    if(cardDiffers(ex,nc))changed++; else same++;
+    if(cardDiffers(ex,nc)||ghTestDiffers(ex,nc))changed++; else same++;
   });
   /* removed: see ghGoneCards - cards the official source dropped */
   var removed=0;
@@ -43037,6 +43134,13 @@ window.edGhCheck=function(){
     if(res.zip)throw new Error('that address returns a saga .zip. Import it on the Sagas page instead.');
     var pkg=pkgFromJson(res.json);
     if(!pkg.cards||!pkg.cards.length)throw new Error('no cards in what came back.');
+    /* the token holder's copy reads the Test cards too (session 59) - so they
+       follow the author between machines through the ordinary Update badge */
+    return ghFetchTesting(url).then(function(t){
+      if(t.length)pkg.cards=pkg.cards.concat(t);
+      return pkg;
+    });
+  }).then(function(pkg){
     /* before the diff: a card the official set carries is not "made here" */
     try{ ghClearPublishedLocal(pkg.cards); }catch(_){}
     _ghState={pkg:pkg,diff:ghDiff(ghIncoming(pkg.cards)),checked:new Date().toISOString()};
@@ -43146,13 +43250,35 @@ function ghKeepLocalArt(cards){
    be overwritten AND that this machine is allowed to edit: zero means the
    update is free, and a gate in front of a free update is just a door with
    nothing behind it. */
+/* ⚠ A CARD'S TEST STATE IS PART OF WHAT AN UPDATE CHANGES (session 59), on
+   the token holder's copy - the only one that ever reads testing.json, so the
+   only one where an incoming card can say "Test" or "not Test" at all. On
+   every other copy neither side ever carries the flag and this is false. */
+function ghTestDiffers(ex,nc){
+  return !!(ex&&ex.testing)!==!!(nc&&nc.testing);
+}
+/* An import never clears a field the source leaves out, so a card the author
+   took OUT of Test on one machine would stay Test on the other - and the next
+   publish from there would hide it from readers again. After an Update on the
+   token holder's copy, a card the source lists as an ordinary card is not a
+   Test card here either. */
+function ghSyncTestState(cards){
+  try{ if(!edOwnerUnlocked())return Promise.resolve(0); }catch(_){ return Promise.resolve(0); }
+  var mine=(window.CARDS||[]), ix=cardIndex(mine), off=[];
+  (cards||[]).forEach(function(nc){
+    if(!nc||!nc.name||nc.testing)return;
+    var at=ix.at(nc), ex=(at==null)?null:mine[at];
+    if(ex&&ex.testing){ delete ex.testing; markDirty(ex); off.push(ex); }
+  });
+  return Promise.all(off.map(function(c){ return persistCard(c); })).then(function(){ return off.length; });
+}
 function ghWouldOverwriteOwnWork(cards){
   var mine=(window.CARDS||[]), ix=cardIndex(mine);
   var n=0;
   (cards||[]).forEach(function(nc){
     if(!nc||!nc.name)return;
     var at=ix.at(nc), ex=(at==null)?null:mine[at];
-    if(!ex||!cardDiffers(ex,nc))return;
+    if(!ex||!(cardDiffers(ex,nc)||ghTestDiffers(ex,nc)))return;
     var locked=false;
     try{ locked=!!edCardLocked(ex); }catch(_){}
     if(!locked)n++;
@@ -43189,6 +43315,8 @@ function ghGoneCards(incoming){
   var official=0;
   var gone=(window.CARDS||[]).filter(function(c){
     if(!c||c.local||c.__deleted)return false;
+    /* a Test card is never in cards.json, by design - never "gone" (session 59) */
+    if(c.testing)return false;
     if(!edOfficialCard(c))return false;
     official++;
     var locked=false;
@@ -43296,7 +43424,8 @@ function ghApplyUpdate(fromPage){
     /* AFTER the imports, and worked out again against the catalogue as it now
        stands: a card the source renamed has just been matched and updated,
        and must not be counted as gone under its old name. */
-    return work.then(function(){ return ghRemoveGone(ghGoneCards(cards)); }).then(function(nGone){
+    return work.then(function(){ return ghSyncTestState(cards); })
+      .then(function(){ return ghRemoveGone(ghGoneCards(cards)); }).then(function(nGone){
       /* the whole official set has now been applied here - see ghWholeSetProblem */
       if(!window.REBIRTH&&normGroupUrl(GH_SOURCE)===normGroupUrl(GH_DEFAULT_SOURCE)){
         GH_HAS_WHOLE_SET=true;
@@ -43436,6 +43565,15 @@ function artSrcOf(vv){
   return base+ghOutName(u);
 }
 window.edArtSrcOf=artSrcOf;
+/* ⚠ A CARD'S PICTURE, NOT ITS imageUrl (session 59). Of the 1599 published
+   cards 1586 keep their picture on an alternate-art variant and carry
+   imageUrl:"" - so anything asking the card itself got nothing, and the Deck
+   Lists boxes lost their pictures. This answers what the face shows: the
+   chosen variant (variantOf), through artSrcOf's address rule. */
+window.edCardArtSrc=function(c){
+  if(!c)return '';
+  try{ return artSrcOf(variantOf(c))||''; }catch(_){ return ''; }
+};
 
 /* github_sync.py's out_name(): art_18.png -> art_18.webp, image980 -> image980.webp */
 function ghOutName(p){
@@ -43450,28 +43588,37 @@ function ghCdnBase(){
 /* The published cards.json, built to match tools/github_sync.py byte for byte
    where it can. If the two ever disagree on formatting the only cost is one
    redundant 2 MB upload the next time the other one runs. */
+/* ⚠ TEST CARDS ARE NOT IN IT (session 59, HANDOFF 58.8). A card with
+   `testing` goes to testing.json instead (ghBuildTesting), which only the
+   token holder's copy reads - so nobody using the app normally ever sees one,
+   and the saga counts in sagas.json (built from this list) leave them out. */
 function ghBuildCards(){
-  var base=ghCdnBase(), out=[];
-  (window.CARDS||[]).forEach(function(c){
-    var o=JSON.parse(JSON.stringify(c));
-    delete o.__id;
-    /* ⚠ NOT "MADE HERE" (session 58). `local` marks a card made on THIS
-       machine, and it was published with the card - so on every reader's copy
-       the author's own new cards counted as the READER's: editable, and never
-       removed by an update when the author deleted them. A published card is
-       the set's card wherever it lands. */
-    delete o.local;
-    artBearers(o).forEach(function(b){
-      ['art','imageUrl'].forEach(function(f){
-        var v=b[f]||'';
-        if(!v||v.indexOf('http')===0||v.indexOf('data:')===0||v.indexOf('blob:')===0)return;
-        if(f==='imageUrl')b[f]=base+'/art/'+ghOutName(v);
-        else b[f]='';   /* an IndexedDB key on THIS machine, meaningless elsewhere */
-      });
+  return (window.CARDS||[]).filter(function(c){ return c&&!c.testing; }).map(ghPublishedForm);
+}
+function ghBuildTesting(){
+  return (window.CARDS||[]).filter(function(c){ return c&&c.testing; }).map(ghPublishedForm);
+}
+/* One card as it is published - shared by both files, so a card moving in or
+   out of Test reads the same in either. */
+function ghPublishedForm(c){
+  var base=ghCdnBase();
+  var o=JSON.parse(JSON.stringify(c));
+  delete o.__id;
+  /* ⚠ NOT "MADE HERE" (session 58). `local` marks a card made on THIS
+     machine, and it was published with the card - so on every reader's copy
+     the author's own new cards counted as the READER's: editable, and never
+     removed by an update when the author deleted them. A published card is
+     the set's card wherever it lands. */
+  delete o.local;
+  artBearers(o).forEach(function(b){
+    ['art','imageUrl'].forEach(function(f){
+      var v=b[f]||'';
+      if(!v||v.indexOf('http')===0||v.indexOf('data:')===0||v.indexOf('blob:')===0)return;
+      if(f==='imageUrl')b[f]=base+'/art/'+ghOutName(v);
+      else b[f]='';   /* an IndexedDB key on THIS machine, meaningless elsewhere */
     });
-    out.push(o);
   });
-  return out;
+  return o;
 }
 
 /* ⚠ THE BUTTON DOES NOT UPLOAD THE APP ITSELF, ON PURPOSE.
@@ -43613,11 +43760,17 @@ function ghPayload(prev){
     artBase:ghCdnBase()+'/art/'};
   if(prev&&prev.artFiles!=null)manifest.artFiles=prev.artFiles;
   if(prev&&prev.artEncoding)manifest.artEncoding=prev.artEncoding;
+  /* ⚠ testing.json IS ALWAYS WRITTEN, even empty: switching the last Test
+     card off has to upload an empty list, or the old one would sit in the
+     repository for ever and come back on the author's other machines. */
+  var testing=ghBuildTesting();
   return {'cards.json':JSON.stringify({manifest:manifest,cards:cards,look:null,marks:null},null,1),
           'keywords.json':JSON.stringify(kw,null,1),
           'sagas.json':JSON.stringify(sagas,null,1),
           'look.json':JSON.stringify({format:1,look:look,marks:marks},null,1),
-          'manifest.json':JSON.stringify(manifest,null,1)};
+          'manifest.json':JSON.stringify(manifest,null,1),
+          'testing.json':JSON.stringify({manifest:{name:manifest.name,format:2,testing:true,
+            cardCount:testing.length},cards:testing},null,1)};
 }
 
 /* ── WHAT PUBLISH WILL UPLOAD ────────────────────────────────────────────────
@@ -43632,8 +43785,9 @@ function ghInventory(){
   var look=null;
   try{ look=JSON.parse(pay['look.json']).look; }catch(_){}
   function kb(s){ return Math.round((s?s.length:0)/1024); }
+  var nTest=(window.CARDS||[]).filter(function(c){ return c&&c.testing; }).length;
   out.push({file:'cards.json', kb:kb(pay['cards.json']),
-    what:(window.CARDS||[]).length+' cards — every field each one carries: '
+    what:((window.CARDS||[]).length-nTest)+' cards — every field each one carries: '
         +'name, cost, types, rules, flavour, stats and orbs, saga membership, '
         +'and for the card AND every alternate art its picture, art framing '
         +'(X, Y, zoom, rotate, flip), art fit, highlight, watermark, frame '
@@ -43649,6 +43803,9 @@ function ghInventory(){
         +'keyword entries, and '+ghBuildMarks().length+' watermark(s)'});
   out.push({file:'manifest.json', kb:kb(pay['manifest.json']),
     what:'counts and the art base URL'});
+  out.push({file:'testing.json', kb:kb(pay['testing.json']),
+    what:nTest+' Test card(s) — left out of cards.json; only the copy holding '
+        +'this repository’s token reads this file'});
   return {rows:out};
 }
 window.edGhInventory=function(){ return ghInventory(); };
@@ -43668,6 +43825,31 @@ function ghLookUrl(src){
   var u=String(src||'');
   return /cards\.json(\?.*)?$/i.test(u) ? u.replace(/cards\.json(\?.*)?$/i,'look.json')
        : u.replace(/\/[^\/]*$/,'/look.json');
+}
+/* ⚠ testing.json - THE TEST CARDS (session 59, HANDOFF 58.8). Read ONLY by
+   the copy holding the official repository's token, and only from the
+   official source: Publish leaves Test cards out of cards.json so nobody
+   using the app normally ever sees one, and that has to stay true here. Every
+   card in it comes back marked `testing`. A missing file (404), a failed
+   fetch or a bad body is simply "no Test cards". */
+function ghTestingUrl(src){
+  var u=String(src||'');
+  return /cards\.json(\?.*)?$/i.test(u) ? u.replace(/cards\.json(\?.*)?$/i,'testing.json') : '';
+}
+function ghFetchTesting(src){
+  var none=Promise.resolve([]);
+  try{ if(!edOwnerUnlocked())return none; }catch(_){ return none; }
+  if(normGroupUrl(src)!==normGroupUrl(GH_DEFAULT_SOURCE))return none;
+  var url=ghTestingUrl(src);
+  if(!url||syncBlockedReason(url))return none;
+  return fetch(url,{cache:'no-store'}).then(function(r){
+    if(!r.ok)return [];
+    return r.json().then(function(j){
+      var list=(j&&Array.isArray(j.cards))?j.cards:(Array.isArray(j)?j:[]);
+      return list.filter(function(c){ return c&&c.name; })
+                 .map(function(c){ var o=JSON.parse(JSON.stringify(c)); o.testing=1; return o; });
+    },function(){ return []; });
+  },function(){ return []; });
 }
 /* Optional by design: a repo published before look.json existed simply has
    none, the fetch 404s, and the caller carries on with cards alone. */
@@ -44006,9 +44188,9 @@ window.edGhPublish=function(){
      "Would upload: cards.json". The comparison runs first so the count is
      honest, and only a publish that actually drops cards asks anything - the
      ordinary edit-and-push is unchanged. */
-  return ghRemoteCards().then(function(theirs){
-    var d=ghCardsDiff(ghBuildCards(),theirs);
+  return ghPublishDiff().then(function(d){
     _ghDiff=d; edRenderOwnerSync();
+    /* only a REAL removal asks - a card moving to Test is in d.toTesting */
     if(!d.removed.length)return true;
     var names=d.removed.slice(0,8).map(function(x){ return x.name; });
     if(d.removed.length>8)names.push('and '+(d.removed.length-8)+' more');
@@ -44120,9 +44302,11 @@ function ghB64Utf8(b64){
 
    It also brings back the deletion gate: with the remote copy readable again,
    a publish that would remove cards can say so. */
-function ghRemoteCards(){
+/* `path` defaults to cards.json; testing.json is read the same way (session 59). */
+function ghRemoteCards(path){
+  path=path||'cards.json';
   return ghRemoteTree().then(function(rt){
-    var sha=rt&&rt.paths&&rt.paths['cards.json'];
+    var sha=rt&&rt.paths&&rt.paths[path];
     if(!sha)return null;                       /* genuinely nothing published */
     return ghApi('GET','/git/blobs/'+sha).then(function(r){
       if(!r||!r.content)return null;
@@ -44174,9 +44358,15 @@ var _ghDiff=null;                 /* the last comparison, for the panel */
    follows the id (cardIndex - cid first, saga + name only for a card that
    has no id) and says what actually happened: moved, renamed. GONE is a card
    that really is not in the catalogue any more. */
-function ghCardsDiff(mine,theirs){
+/* ⚠ `held` (session 59): the cards held back as Test. A published card that
+   is now a Test card is not GONE - it is moving to testing.json, readers lose
+   it on their next open, and the author still has it - so it is counted as
+   toTesting, and the REMOVE gate (which counts `removed`) does not fire for
+   it. */
+function ghCardsDiff(mine,theirs,held){
   var list=(theirs||[]).filter(Boolean), ix=cardIndex(list);
-  var added=[], changed=[], removed=[], seen={};
+  var added=[], changed=[], removed=[], toTesting=[], seen={};
+  var hix=cardIndex((held||[]).filter(Boolean));
   (mine||[]).forEach(function(c){
     if(!c)return;
     var at=ix.at(c);
@@ -44192,11 +44382,20 @@ function ghCardsDiff(mine,theirs){
     changed.push({name:c.name||mergeKey(c), saga:sagaIdOf(c), fields:how.concat(f)});
   });
   list.forEach(function(c,i){
-    if(!seen[i])removed.push({name:c.name||mergeKey(c), saga:sagaIdOf(c)});
+    if(seen[i])return;
+    var row={name:c.name||mergeKey(c), saga:sagaIdOf(c)};
+    if(hix.has(c))toTesting.push(row); else removed.push(row);
   });
-  return {added:added, changed:changed, removed:removed,
-          total:added.length+changed.length+removed.length,
+  return {added:added, changed:changed, removed:removed, toTesting:toTesting,
+          total:added.length+changed.length+removed.length+toTesting.length,
           first:!theirs};
+}
+/* What happens to testing.json: only the token holder ever reads it, so this
+   is a report, never a gate. */
+function ghTestingDiff(mine,theirs){
+  var d=ghCardsDiff(mine,theirs);
+  return {added:d.added, changed:d.changed, removed:d.removed, count:(mine||[]).length,
+          total:d.added.length+d.changed.length+d.removed.length};
 }
 
 /* One line per card, capped - a first publish of 1601 cards is not a review,
@@ -44215,7 +44414,31 @@ function ghDiffLines(d){
   push(d.added,'NEW');
   push(d.changed,'CHANGED',true);
   push(d.removed,'GONE');
+  /* session 59: Test cards - leaving the catalogue for testing.json, and
+     what changes inside testing.json itself */
+  push(d.toTesting||[],'REMOVED (TESTING)');
+  if(d.testing){
+    push(d.testing.added,'TEST NEW');
+    push(d.testing.changed,'TEST CHANGED',true);
+    push(d.testing.removed,'NO LONGER TEST');
+  }
   return out;
+}
+/* Both comparisons at once: cards.json against the catalogue minus its Test
+   cards, and testing.json against the Test cards. */
+function ghPublishDiff(){
+  return Promise.all([ghRemoteCards('cards.json'),ghRemoteCards('testing.json')]).then(function(r){
+    var held=ghBuildTesting();
+    var d=ghCardsDiff(ghBuildCards(),r[0],held);
+    d.testing=ghTestingDiff(held,r[1]);
+    return d;
+  });
+}
+function ghDiffSummary(d){
+  var s=d.added.length+' new, '+d.changed.length+' changed, '+d.removed.length+' removed';
+  if(d.toTesting&&d.toTesting.length)s+=', '+d.toTesting.length+' moved to Test';
+  if(d.testing&&d.testing.count)s+=' · '+d.testing.count+' Test card(s) in testing.json only';
+  return s;
 }
 
 window.edGhWhatChanged=function(){
@@ -44225,16 +44448,14 @@ window.edGhWhatChanged=function(){
   var blocked=syncBlockedReason('https://api.github.com');
   if(blocked){ ghPushStatus(blocked); return; }
   _ghBusy=true; ghPushStatus('Reading the published cards…');
-  return ghRemoteCards().then(function(theirs){
-    var d=ghCardsDiff(ghBuildCards(),theirs);
+  return ghPublishDiff().then(function(d){
     _ghDiff=d;
     _ghBusy=false;
     edRenderOwnerSync();
     ghPushStatus(d.first
       ? 'Nothing is published yet — all '+d.added.length+' cards would be new.'
-      : (d.total
-          ? d.added.length+' new, '+d.changed.length+' changed, '
-            +d.removed.length+' removed.'
+      : ((d.total||(d.testing&&d.testing.total))
+          ? ghDiffSummary(d)+'.'
           : 'No card differs from what is published.'));
     return d;
   }).catch(function(err){
@@ -44245,7 +44466,7 @@ window.edGhWhatChanged=function(){
 window.edGhDiff=function(){ return _ghDiff; };
 /* exported for the checks: what Publish would call new, changed and GONE,
    for a given pair of card lists - without a token or a network */
-window.edGhCardsDiff=function(mine,theirs){ return ghCardsDiff(mine,theirs); };
+window.edGhCardsDiff=function(mine,theirs,held){ return ghCardsDiff(mine,theirs,held); };
 
 /* Nothing at all until a comparison has been run - an empty box on a panel that
    has never been asked anything reads as "no changes", which is a claim this
@@ -44253,12 +44474,11 @@ window.edGhCardsDiff=function(mine,theirs){ return ghCardsDiff(mine,theirs); };
 function ghDiffHTML(){
   var d=_ghDiff;
   if(!d)return '';
-  if(!d.total)
+  if(!d.total&&!(d.testing&&d.testing.total))
     return "<div class='gh-diff'><b>No card differs</b> from what is published.</div>";
   var lines=ghDiffLines(d);
   return "<div class='gh-diff'>"
-    +"<b>"+d.added.length+" new, "+d.changed.length+" changed, "
-      +d.removed.length+" removed"+(d.first?' (nothing is published yet)':'')+"</b>"
+    +"<b>"+e(ghDiffSummary(d))+(d.first?' (nothing is published yet)':'')+"</b>"
     +"<ul class='gh-difflist'>"
     +lines.map(function(l){ return "<li>"+e(l)+"</li>"; }).join('')
     +"</ul></div>";
