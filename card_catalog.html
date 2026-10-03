@@ -32424,11 +32424,48 @@ function cidHash(s){
   var b=('000000'+(h2>>>0).toString(36)).slice(-7);
   return a+b;
 }
+/* ⚠⚠ A CARD'S ID IS RANDOM NOW, NEVER WORKED OUT FROM ITS NAME (the author,
+   session 57). Everything above about deriving the id is history - keep it for
+   what it explains, and do NOT go back to it.
+
+   What deriving did: a new card was stamped while it was still called "New
+   Card 2" (edEditCard and every catalogue face run ensureIds the moment it
+   exists), so EVERY card the author made got hash("Beginnings::new card 2").
+   The boot merge folded every record with that id into one card on every
+   refresh, a deletion marker carrying it then hid every new card for good,
+   and fields one card lacked showed another card's text. Measured, not
+   guessed: a test card typed as "ZZ Repro One" carried exactly that hash.
+
+   The author's ruling, in their words: "just do a random ID so it stops
+   fucking up ... add a random part based on the date the card was created".
+   So an id is the creation time in base 36 plus twelve random base-36
+   characters, minted ONCE when a card first needs one and never changed.
+   Existing ids are kept as they are: every published card carries its own,
+   and that is what readers' copies match on - agreeing across machines comes
+   from the id travelling WITH the card, not from deriving it twice.
+
+   cidHash stays only because old ids were made with it. */
+function newCid(){
+  var r='', n=12, buf=null;
+  try{ buf=new Uint32Array(n); window.crypto.getRandomValues(buf); }catch(_){ buf=null; }
+  for(var i=0;i<n;i++){
+    var v=buf?buf[i]:Math.floor(Math.random()*4294967296);
+    r+=(v%36).toString(36);
+  }
+  var id='c'+Date.now().toString(36)+r;
+  /* belt and braces - 36^12 makes a repeat practically impossible, and the
+     check costs one pass over the catalogue only when an id is minted */
+  if((window.CARDS||[]).some(function(c){ return c&&c.cid===id; }))return newCid();
+  return id;
+}
+window.edNewCid=function(){ return newCid(); };
+/* The card's id if it has one; a NEW random id if it does not. It does not
+   write the id onto the card - stampCid and ensureIds do that, once. */
 function cardCid(c){
   if(c&&c.cid)return c.cid;
-  return 'c'+cidHash(mergeKey(c||{}));
+  return newCid();
 }
-function stampCid(c){ if(c&&!c.cid)c.cid=cardCid(c); return c; }
+function stampCid(c){ if(c&&!c.cid)c.cid=newCid(); return c; }
 window.edCardCid=function(c){ return cardCid(c); };
 /* The one pass, run from boot() before the stored records are merged. It adds
    the id to every record that has none and touches nothing else, in ONE
@@ -32436,7 +32473,7 @@ window.edCardCid=function(c){ return cardCid(c); };
    owner has saved every card. Running it twice does nothing. */
 function cidStampStored(stored){
   var todo=[];
-  (stored||[]).forEach(function(r){ if(r&&!r.cid){ r.cid=cardCid(r); todo.push(r); } });
+  (stored||[]).forEach(function(r){ if(r&&!r.cid){ r.cid=newCid(); todo.push(r); } });
   if(!todo.length)return 0;
   try{
     var st=tx('cards','readwrite');
@@ -33084,8 +33121,24 @@ window.edSetSagaLook=function(id,useAuthor){
     window.edRenderSagaPage();
   });
 };
+/* ⚠ AN OFFICIAL SAGA IS NOT YOURS TO DELETE (the author, session 57): "If it's
+   in the Official Saga list it shouldn't be deletable, not just Beginnings."
+   Only `builtin` was checked, which is Beginnings alone - so a reader could
+   delete Infinite, and every card in it with tombstones that kept them gone.
+   The one exception, by the author's choice: the copy that holds the official
+   repository's token (edOwnerUnlocked) may retire an official saga such as
+   "Test". Beginnings stays undeletable for everyone. */
+function sagaDeletable(sg){
+  if(!sg||sg.builtin)return false;
+  if(groupKeyOf(sg)===GROUP_OFFICIAL){
+    try{ return !!edOwnerUnlocked(); }catch(_){ return false; }
+  }
+  return true;
+}
+window.edSagaDeletable=function(id){ return sagaDeletable(sagaById(id)); };
 window.edDeleteSaga=function(id){
   var sg=sagaById(id); if(!sg||sg.builtin)return;
+  if(!sagaDeletable(sg)){ toast('Official sagas cannot be deleted'); return; }
   /* A shared card belongs to other sagas too, so deleting THIS saga must not
      destroy it - it only stops being a member. Without the split, deleting a
      saga would take every card it shares down with it, and the dialog would
@@ -33156,7 +33209,7 @@ function sagaRowHTML(sg){
          buttons down a list - and the .zip is gone entirely: it was a complete
          round trip for a SUBSET of the catalogue, which is a backup that
          restores half your cards and says nothing about the other half. */
-      +(sg.builtin?"":"<button class='ed2-btn tiny warn' onclick=\"edDeleteSaga('"+e(sg.id)+"')\">Delete</button>")
+      +(sagaDeletable(sg)?"<button class='ed2-btn tiny warn' onclick=\"edDeleteSaga('"+e(sg.id)+"')\">Delete</button>":"")
     +"</div>"
   +"</div>";
 }
@@ -34608,9 +34661,9 @@ window.edUnshareCard=function(id,sagaId){
   /* \u26a0 A FORK IS ANOTHER CARD, SO IT CANNOT KEEP THE ORIGINAL'S ID. The
      clone above copies every field, cid included, and two live cards sharing
      one id is the one thing the id model cannot survive - the boot merge
-     indexes by it. Dropped here so it is derived afresh from this copy's own
-     saga and name. */
-  delete copy.cid;
+     indexes by it. A random id of its own (session 57) - working it out from
+     this copy's saga and name could land on the original's own id. */
+  copy.cid=newCid();
   copy.sagaId=sagaId; copy.saga=(sg&&sg.name)||sagaId;
   copy.sagaIds=[sagaId]; delete copy.sagaFields;
   /* and the original stops carrying overrides for a saga it no longer has */
@@ -38216,7 +38269,13 @@ window.edNewCard=function(){
     ruleText:'',flavor:'',saga:SETINFO.saga||'',revision:SETINFO.revision||'',
     artist:SETINFO.artist||'',designer:SETINFO.designer||'',imageUrl:'',art:'',
     /* Made here, so editable here - see edOfficialCard. */
-    local:1};
+    local:1,
+    /* ⚠ ITS OWN RANDOM ID, NOW, BEFORE ANYTHING ELSE CAN STAMP ONE (session
+       57). Left empty, edEditCard's ensureIds stamped it a moment later while
+       the card was still called "New Card 2" - and so did every other new
+       card, which is how they all came to share one id and fold into one on
+       refresh. See newCid in ed2_sagas.js. */
+    cid:newCid()};
   // keep names unique so the name-keyed merge on next boot stays stable
   var names={}; (window.CARDS||[]).forEach(function(x){names[normName(x.name)]=1;});
   var i=2,base=c.name; while(names[normName(c.name)]){ c.name=base+' '+(i++); }
@@ -39905,9 +39964,10 @@ window.edSyncSaveBtns=edSyncSaveBtns;
 window.edDuplicate=function(){ var c=curCard(); if(!c)return;
   var copy=JSON.parse(JSON.stringify(c)); copy.__id=uid(); copy.id=uid(); copy.name=(c.name||'Card')+' (copy)';
   /* the clone copied the original's cid with everything else, and two cards
-     cannot share one - the boot merge indexes by it. A new name gives it a
-     new id of its own. */
-  delete copy.cid;
+     cannot share one - the boot merge indexes by it. It gets a RANDOM id of
+     its own (session 57): deleting the cid and letting it be worked out from
+     the name gave every "X (copy)" the same id as every other. */
+  copy.cid=newCid();
   var idx=window.CARDS.indexOf(c); window.CARDS.splice(idx+1,0,copy);
   curId=copy.__id; persistCard(copy).then(function(){ renderFields(); applyToCatalog(); toast('Duplicated'); }); };
 /* ⚠ edDelete WAS REMOVED - it never worked. It spliced the card out of CARDS
@@ -43471,20 +43531,33 @@ function ghFieldsDiffer(a,b){
 }
 
 var _ghDiff=null;                 /* the last comparison, for the panel */
+/* ⚠ BY THE CARD'S OWN ID, NOT ITS SAGA AND NAME (session 57). This keyed both
+   sides by saga + name, so a card that only moved to another saga, or was
+   renamed, read as one card NEW and one card GONE - and the Publish button's
+   REMOVE gate then told the author they were deleting a card they had only
+   moved. Moving a card between sagas is meant to be easy; the diff now
+   follows the id (cardIndex - cid first, saga + name only for a card that
+   has no id) and says what actually happened: moved, renamed. GONE is a card
+   that really is not in the catalogue any more. */
 function ghCardsDiff(mine,theirs){
-  var was={};
-  (theirs||[]).forEach(function(c){ if(c)was[mergeKey(c)]=c; });
+  var list=(theirs||[]).filter(Boolean), ix=cardIndex(list);
   var added=[], changed=[], removed=[], seen={};
   (mine||[]).forEach(function(c){
     if(!c)return;
-    var k=mergeKey(c); seen[k]=1;
-    var old=was[k];
-    if(!old){ added.push({name:c.name||k, saga:sagaIdOf(c)}); return; }
+    var at=ix.at(c);
+    if(at==null||seen[at]){ added.push({name:c.name||mergeKey(c), saga:sagaIdOf(c)}); return; }
+    seen[at]=1;
+    var old=list[at];
     var f=ghFieldsDiffer(old,c);
-    if(f.length)changed.push({name:c.name||k, saga:sagaIdOf(c), fields:f});
+    if(!f.length)return;
+    /* say the move and the rename in words, ahead of the field names */
+    var how=[];
+    if(sagaIdOf(old)!==sagaIdOf(c))how.push('moved from '+sagaIdOf(old)+' to '+sagaIdOf(c));
+    if(normName(old.name)!==normName(c.name))how.push('renamed from '+old.name);
+    changed.push({name:c.name||mergeKey(c), saga:sagaIdOf(c), fields:how.concat(f)});
   });
-  Object.keys(was).forEach(function(k){
-    if(!seen[k])removed.push({name:was[k].name||k, saga:sagaIdOf(was[k])});
+  list.forEach(function(c,i){
+    if(!seen[i])removed.push({name:c.name||mergeKey(c), saga:sagaIdOf(c)});
   });
   return {added:added, changed:changed, removed:removed,
           total:added.length+changed.length+removed.length,
@@ -43535,6 +43608,9 @@ window.edGhWhatChanged=function(){
   });
 };
 window.edGhDiff=function(){ return _ghDiff; };
+/* exported for the checks: what Publish would call new, changed and GONE,
+   for a given pair of card lists - without a token or a network */
+window.edGhCardsDiff=function(mine,theirs){ return ghCardsDiff(mine,theirs); };
 
 /* Nothing at all until a comparison has been run - an empty box on a panel that
    has never been asked anything reads as "no changes", which is a claim this
@@ -43888,6 +43964,13 @@ function ghAutoApply(){
   var d=st.diff;
   if(!d||(!d.added&&!d.changed&&!d.removed))return Promise.resolve(null);
   if(GH_OWNER_MODE)return Promise.resolve(null);
+  /* ⚠ AND NOT ON THE COPY THAT HOLDS THE OFFICIAL REPO'S TOKEN, whatever the
+     owner-mode switch says (session 57). That copy is where the set comes
+     FROM. With the switch off it took "additions" by itself - and a card the
+     author had deleted but not yet published IS an addition as far as the
+     published set is concerned, so it came straight back on the next
+     refresh. The badge stays, one press away. */
+  if(edOwnerUnlocked())return Promise.resolve(null);
   if(ghWouldOverwriteOwnWork(ghIncoming(st.pkg.cards)))return Promise.resolve(null);
   /* edGhCheck has already put the badge up. Take it down BEFORE the apply
      rather than after: a button that appears and vanishes a second later,
@@ -44155,6 +44238,44 @@ var RENAMED_CARDS={
    baked. `bakeCaptured` in meta says it has run; the empty-bake build reads
    it to know this profile is safe. */
 var _storedObjs=[];
+/* ⚠ THE CARDS A SHARED ID HID COME BACK HERE (session 57). The merge above now
+   keeps every saved record as its own card, so the cards that had been folded
+   into one are each on screen again - but still carrying the one id they all
+   got. Two live cards may not share an id (cardIndex, the sync and the
+   publisher all key on it), so all but one get a new random id, written back
+   to their records in one transaction, and the next load finds nothing to do.
+
+   WHICH ONE KEEPS IT: the card whose record has the greatest key - the
+   newest. That is the card the fold was showing (its record loaded last), so
+   it is also the one any publish since then sent out under that id, and
+   readers' copies go on matching it. */
+function edUnfoldSharedIds(split){
+  var groups={};
+  (window.CARDS||[]).forEach(function(c){
+    if(!c||!c.cid)return;
+    (groups[c.cid]=groups[c.cid]||[]).push(c);
+  });
+  var fixed=[];
+  Object.keys(groups).forEach(function(cid){
+    var g=groups[cid]; if(g.length<2)return;
+    g.sort(function(a,b){ var x=String(a.id||''), y=String(b.id||''); return x<y?-1:(x>y?1:0); });
+    g.slice(0,-1).forEach(function(c){ c.cid=newCid(); fixed.push(c); });
+  });
+  if(!fixed.length)return 0;
+  try{
+    var st=tx('cards','readwrite');
+    fixed.forEach(function(c){ if(c.id){ try{ st.put(stripArt(c)); }catch(_){} } });
+  }catch(_){}
+  console.warn('[conjure] recovered '+fixed.length+' card(s) that shared an id with another '
+    +'card and had been hidden by it:',fixed.map(function(c){ return c.name; }),
+    (split&&split.length)?{keptApartThisLoad:split}:'');
+  window.CONJURE_RECOVERED=fixed.map(function(c){ return c.name; });
+  setTimeout(function(){
+    try{ toast('Recovered '+fixed.length+' card'+(fixed.length===1?'':'s')
+      +' that a shared id had hidden'); }catch(_){}
+  },1500);
+  return fixed.length;
+}
 function edCaptureBaked(){
   if(window.REBIRTH)return Promise.resolve(0);
   if(!_origCatalog||!_origCatalog.length)return Promise.resolve(0);
@@ -44289,9 +44410,15 @@ function boot(){ if(_inited)return; _inited=true;
         /* Keyed on saga + name, not name alone: two sagas may each contain a
            card called "Lightning Bolt" and both must survive. */
         var idx={}, byCid={};
-        base.forEach(function(c,i){ idx[mergeKey(c)]=i; byCid[cardCid(c)]=i; });
+        /* only cards that already HAVE an id are indexed by it - asking
+           cardCid of one that has none now mints a random id (session 57) */
+        base.forEach(function(c,i){ idx[mergeKey(c)]=i; if(c.cid)byCid[c.cid]=i; });
         _storedObjs=[];
-        var drop={}, folded=[], renamed=[];
+        /* fromRec[i]: the id of the stored record base[i] came from, or
+           undefined for a card that did not come from a record (Rebirth's
+           seven seeds - the only such cards now that nothing is baked) */
+        var fromRec=[];
+        var drop={}, folded=[], renamed=[], split=[], spared=[];
         cards.forEach(function(sc){
           if(!sc.__id)sc.__id=uid();
           var k=mergeKey(sc);
@@ -44306,13 +44433,46 @@ function boot(){ if(_inited)return; _inited=true;
             renamed.push(sc.name+' -> '+RENAMED_CARDS[k]);
             sc.name=RENAMED_CARDS[k]; k=mergeKey(sc); i=idx[k];
           }
-          if(sc.__deleted){ if(i!=null)drop[i]=1; return; }
+          /* ⚠⚠ ONE STORED RECORD IS ONE CARD (session 57). A record used to
+             fold onto ANY card it matched, and a deletion marker used to hide
+             ANY card it matched - by id first. When every new card was given
+             the same id (see newCid in ed2_sagas.js) that folded all of the
+             author's new cards into one on every refresh, and the marker left
+             by deleting that one card hid every card made after it. Their
+             records were never gone; this merge hid them.
+
+             So, matching a card that itself came from ANOTHER record:
+               - a deletion marker hides it only if it is that same record
+                 (a delete writes its marker OVER the card's own record, under
+                 the same key, so this hides exactly what was deleted);
+               - a live record NEVER folds into it. Every saved record is a
+                 card on screen. A first version folded two records with the
+                 same name and saga, as "a stale copy of one card" - and it
+                 folded two Duplicates of one card, which are both called
+                 "X (copy)", back into one. Losing a card is worse than
+                 showing one twice: a card shown twice can be deleted.
+             A card that did NOT come from a record - one of Rebirth's seeds -
+             is overlaid and hidden exactly as before. */
+          var other=(i!=null && fromRec[i]!==undefined && fromRec[i]!==sc.id);
+          if(sc.__deleted){
+            if(i!=null && !other)drop[i]=1;
+            else if(other)spared.push(sc.name);
+            return;
+          }
+          if(other){ split.push(sc.name); i=null; }
           /* see MERGED_ALT_ART: this card is now a variant of another one, so
              re-adding it would recreate a duplicate. Reported, never deleted. */
           if(i==null && MERGED_ALT_ART[k]){ folded.push(sc.name+' -> '+MERGED_ALT_ART[k]); return; }
-          if(i==null){ base.push(sc); idx[k]=base.length-1; byCid[cardCid(sc)]=base.length-1; _storedObjs.push(sc); }
-          else { base[i]=Object.assign(base[i],sc); _storedObjs.push(base[i]); }
+          if(i==null){
+            base.push(sc); var j=base.length-1; fromRec[j]=sc.id;
+            if(idx[k]==null)idx[k]=j;
+            if(sc.cid && byCid[sc.cid]==null)byCid[sc.cid]=j;
+            _storedObjs.push(sc);
+          }
+          else { base[i]=Object.assign(base[i],sc); fromRec[i]=sc.id; _storedObjs.push(base[i]); }
         });
+        if(spared.length)console.info('[conjure] '+spared.length+' deletion marker(s) matched a '
+          +'DIFFERENT saved card and no longer hide it:',spared);
         if(folded.length){
           console.warn('[conjure] '+folded.length+' saved edit(s) belong to cards that are '
             +'now alternate art on another card. They were NOT re-added and NOT deleted - '
@@ -44324,6 +44484,7 @@ function boot(){ if(_inited)return; _inited=true;
           window.CONJURE_RENAMED_EDITS=renamed;
         }
         window.CARDS=base.filter(function(_,i){return !drop[i];});
+        try{ edUnfoldSharedIds(split); }catch(err){ console.error('[conjure] id recovery failed',err); }
         try{ if(typeof window.run==='function')window.run(); }catch(_){}
         edRefreshDeckSide();
       }
