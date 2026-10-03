@@ -2,7 +2,7 @@
  "manifest": {
   "name": "Conjure UCG",
   "format": 2,
-  "cardCount": 1599,
+  "cardCount": 1597,
   "keywordCount": 108,
   "lookSlots": 0,
   "markCount": 1,
@@ -14979,7 +14979,7 @@
   {
    "name": "Vanity’s Volition",
    "manaCost": "B/V/RR",
-   "cmc": "4",
+   "cmc": "2",
    "colors": [
     "red",
     "blue",
@@ -15013,7 +15013,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Ignite 1\nElevate\n{V}: Each opponent Ignites 2 cards from their Hand.\n{R2}: Deal 6 damage to any target. If a Character dies this way, instead its owner Ignites it.\n{B1}: Each opponent Ignites the top 2 cards of their Deck. You may play a card Ignited by this card without paying its Mana Cost.",
+   "ruleText": "Each opponent Ignites 2 cards from their Hand.\n\nDeal 6 damage to any target. If a Character dies this way, instead its owner Ignites it.\n\nEach opponent Ignites the top 2 cards of their Deck. You may play a card Ignited by this card without paying its Mana Cost.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -15021,7 +15021,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-02",
    "variants": [
     {
      "id": "v1",
@@ -15040,7 +15040,36 @@
    "sagaId": "Beginnings",
    "id": "cms47zh8fodjac",
    "_src": "mse",
-   "cid": "c0pp9g5b1aq2lbz"
+   "cid": "c0pp9g5b1aq2lbz",
+   "rulesSplit": 3,
+   "sections": [
+    {
+     "text": "Each opponent Ignites 2 cards from their Hand.",
+     "name": "",
+     "manaCost": "v",
+     "superTypes": [],
+     "subTypes": [],
+     "ident": true
+    },
+    {
+     "text": "Deal 6 damage to any target. If a Character dies this way, instead its owner Ignites it.",
+     "name": "",
+     "manaCost": "r2",
+     "superTypes": [],
+     "subTypes": [],
+     "ident": true
+    },
+    {
+     "text": "Each opponent Ignites the top 2 cards of their Deck. You may play a card Ignited by this card without paying its Mana Cost.",
+     "name": "",
+     "manaCost": "b1",
+     "superTypes": [],
+     "subTypes": [],
+     "ident": true
+    }
+   ],
+   "splitChoice": true,
+   "choiceText": "Ignite 1, Elevate"
   },
   {
    "name": "Royal Flush",
@@ -33392,7 +33421,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-02",
    "variants": [
     {
      "id": "v1",
@@ -40370,6 +40399,7 @@
    ],
    "subTypes": [
     "Attachment",
+    "Cleric",
     "Relic"
    ],
    "orbs": [
@@ -40401,7 +40431,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-10-01",
    "variants": [
     {
      "id": "v1",
@@ -101050,7 +101080,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Gain 3 Life.\nElevate\n{R}{1}: Destroy target Object.\n{I}{1}: Destroy target Ongoing card.\n{GG}: Destroy target Object or Ongoing card.",
+   "ruleText": "Destroy target Object.\n\nDestroy target Ongoing card.\n\nDestroy target Object or Ongoing card.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -101058,7 +101088,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-02",
    "variants": [
     {
      "id": "v1",
@@ -101071,7 +101101,36 @@
    "sagaId": "Beginnings",
    "id": "cms66imoctxtf3",
    "_src": "mse",
-   "cid": "c19xhz0u0iqam9o"
+   "cid": "c19xhz0u0iqam9o",
+   "rulesSplit": 3,
+   "sections": [
+    {
+     "text": "Destroy target Object.",
+     "name": "",
+     "manaCost": "r1",
+     "superTypes": [],
+     "subTypes": [],
+     "ident": true
+    },
+    {
+     "text": "Destroy target Ongoing card.",
+     "name": "",
+     "manaCost": "i1",
+     "superTypes": [],
+     "subTypes": [],
+     "ident": true
+    },
+    {
+     "text": "Destroy target Object or Ongoing card.",
+     "name": "",
+     "manaCost": "gg",
+     "superTypes": [],
+     "subTypes": [],
+     "ident": true
+    }
+   ],
+   "splitChoice": true,
+   "choiceText": "Elevate Gain 3 Life"
   },
   {
    "name": "Viceroy of Idrig",
@@ -101366,15 +101425,15 @@
    "attack": "1",
    "health": "1",
    "arcane": "1",
-   "ruleText": "As long as this card is connected to a Spell card, it gains Airborne and\n+2 Health.",
+   "ruleText": "As long as this card is connected to a Spell card, it gains Airborne and +2 Health.",
    "imageUrl": "https://files.catbox.moe/f2wkg2.png",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-10-02",
    "art": "",
    "saga": "",
    "designer": "Conjure UCG LLC 2026",
    "revision": "",
    "artist": "Midjourney",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms6mwkqwgwfl4",
    "flavor": "",
    "orbs": [
@@ -101403,7 +101462,11 @@
     "f": 1
    },
    "fit": "contain",
-   "cid": "c1ra0d9f0wsv499"
+   "cid": "c1ra0d9f0wsv499",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Southern Glacier",
@@ -102019,59 +102082,6 @@
    "cid": "c1xtnq570a7rovn"
   },
   {
-   "id": "cmtup123b1g75c",
-   "name": "_New Card",
-   "manaCost": "GBI5",
-   "cmc": "8",
-   "colors": [
-    "green",
-    "blue",
-    "indigo"
-   ],
-   "superTypes": [
-    "Mythic",
-    "Character"
-   ],
-   "subTypes": [
-    "Giant",
-    "Swimming",
-    "Beast",
-    "Horror"
-   ],
-   "attack": "9",
-   "health": "8",
-   "arcane": "11",
-   "ruleText": "Overwhelm, Intimidate\nDiscard 1: Another target Character you control with Arcane less than this card's Arcane gains Thaumaturge this turn.",
-   "flavor": "",
-   "saga": "Test",
-   "revision": "",
-   "artist": "Midjourney",
-   "designer": "Conjure UCG LLC 2026",
-   "imageUrl": "",
-   "art": "",
-   "orbs": [
-    {
-     "type": "attack",
-     "value": "9"
-    },
-    {
-     "type": "health",
-     "value": "8"
-    },
-    {
-     "type": "arcane",
-     "value": "11"
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "range": "",
-   "lastUpdated": "2026-10-01",
-   "cid": "c1fhd70c1xt2dpy"
-  },
-  {
    "name": "Druid Ascendency",
    "manaCost": "G",
    "cmc": "1",
@@ -102251,67 +102261,6 @@
    "cid": "c0cl3yq619qse9g"
   },
   {
-   "name": "_Hardened Steel",
-   "manaCost": "OY",
-   "cmc": "2",
-   "colors": [
-    "orange",
-    "yellow"
-   ],
-   "superTypes": [
-    "Ongoing",
-    "Action"
-   ],
-   "subTypes": [
-    "Pyro",
-    "Artificer"
-   ],
-   "orbs": [
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "attack": "",
-   "health": "",
-   "arcane": "",
-   "ruleText": "Amass — Artificer Characters\nArmament Objects you control gain \"Armed Character gains +2 Health.\"",
-   "flavor": "",
-   "imageUrl": "",
-   "art": "",
-   "saga": "Test",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-10-01",
-   "variants": [
-    {
-     "id": "v1",
-     "label": "Default",
-     "art": "",
-     "imageUrl": "",
-     "mark": "wm_cmudw0ix3xj34z"
-    }
-   ],
-   "variant": "v1",
-   "sagaId": "Infinite",
-   "id": "cmudxtecg7fpki",
-   "_src": "mse",
-   "cid": "c077lfvq1yrf5ky"
-  },
-  {
    "name": "Cael, Ever Marching",
    "manaCost": "VVY",
    "cmc": "3",
@@ -102476,36 +102425,7 @@
    "designer": "Conjure UCG LLC 2026",
    "imageUrl": "",
    "art": "",
-   "local": 1,
-   "cid": "c1jkis4h1iysx71",
-   "orbs": [
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "sagaIds": [
-    "Beginnings"
-   ],
-   "sagaId": "Beginnings",
-   "range": "",
-   "lastUpdated": "2026-10-01",
-   "kwReminders": [
-    "Ignite"
-   ],
-   "flavorRows": 2
+   "cid": "c1jkis4h1iysx71"
   }
  ],
  "look": null,

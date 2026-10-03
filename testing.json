@@ -1,0 +1,521 @@
+{
+ "manifest": {
+  "name": "Conjure UCG",
+  "format": 2,
+  "testing": true,
+  "cardCount": 9
+ },
+ "cards": [
+  {
+   "id": "cmtup123b1g75c",
+   "name": "_New Card",
+   "manaCost": "GBI5",
+   "cmc": "8",
+   "colors": [
+    "green",
+    "blue",
+    "indigo"
+   ],
+   "superTypes": [
+    "Mythic",
+    "Character"
+   ],
+   "subTypes": [
+    "Giant",
+    "Swimming",
+    "Beast",
+    "Horror"
+   ],
+   "attack": "9",
+   "health": "8",
+   "arcane": "11",
+   "ruleText": "Overwhelm, Intimidate\nDiscard 1: Another target Character you control with Arcane less than this card's Arcane gains Thaumaturge this turn.",
+   "flavor": "",
+   "saga": "Beginnings",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "9"
+    },
+    {
+     "type": "health",
+     "value": "8"
+    },
+    {
+     "type": "arcane",
+     "value": "11"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "range": "",
+   "lastUpdated": "2026-10-03",
+   "cid": "c1fhd70c1xt2dpy",
+   "testing": 1,
+   "sagaIds": [
+    "Beginnings"
+   ],
+   "sagaId": "Beginnings"
+  },
+  {
+   "name": "_Hardened Steel",
+   "manaCost": "OY",
+   "cmc": "2",
+   "colors": [
+    "orange",
+    "yellow"
+   ],
+   "superTypes": [
+    "Ongoing",
+    "Action"
+   ],
+   "subTypes": [
+    "Pyro",
+    "Artificer"
+   ],
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Amass — Artificer Characters\nArmament Objects you control gain \"Armed Character gains +2 Health.\"",
+   "flavor": "",
+   "imageUrl": "",
+   "art": "",
+   "saga": "Infinite",
+   "revision": "Rev 1.0",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "lastUpdated": "2026-10-03",
+   "variants": [
+    {
+     "id": "v1",
+     "label": "Default",
+     "art": "",
+     "imageUrl": "",
+     "mark": "wm_cmudw0ix3xj34z"
+    }
+   ],
+   "variant": "v1",
+   "sagaId": "Infinite",
+   "id": "cmudxtecg7fpki",
+   "_src": "mse",
+   "cid": "c077lfvq1yrf5ky",
+   "testing": 1,
+   "sagaIds": [
+    "Infinite"
+   ]
+  },
+  {
+   "id": "cmup8fjmo5m7gf",
+   "name": "_Crimson Centurion",
+   "manaCost": "RR4",
+   "cmc": "6",
+   "colors": [
+    "red"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Wizard",
+    "Warrior"
+   ],
+   "attack": "5",
+   "health": "4",
+   "arcane": "5",
+   "ruleText": "Raid — Target Non-Ongoing Spell in your Grave gains Recall this turn.\nEmpower — Target Non-Ongoing Action in your Grace gains Recall this turn.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmurpwi95k0ae7f3sehs3",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "5"
+    },
+    {
+     "type": "health",
+     "value": "4"
+    },
+    {
+     "type": "arcane",
+     "value": "5"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "sagaIds": [
+    "Beginnings"
+   ],
+   "sagaId": "Beginnings",
+   "range": "",
+   "lastUpdated": "2026-10-03",
+   "testing": 1
+  },
+  {
+   "id": "cmup8w2l3rsysf",
+   "name": "_Wrought Spike",
+   "manaCost": "V1",
+   "cmc": "2",
+   "colors": [
+    "violet",
+    "grey"
+   ],
+   "superTypes": [
+    "Object"
+   ],
+   "subTypes": [
+    "Necro",
+    "Relic"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Arrive — Target Character gains -2 this turn.\nSacrifice, Sacrifice a Character or pay 3 Life: Delve 2.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmurpwi953zqvjd0ktdp4",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "kwReminders": [
+    "Delve"
+   ],
+   "sagaIds": [
+    "Beginnings"
+   ],
+   "sagaId": "Beginnings",
+   "lastUpdated": "2026-10-03",
+   "testing": 1
+  },
+  {
+   "id": "cmup90a5thx3ml",
+   "name": "_Sinew Ash Snapper",
+   "manaCost": "VR4",
+   "cmc": "6",
+   "colors": [
+    "red",
+    "violet"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Demonic",
+    "Slimy",
+    "Shaman"
+   ],
+   "attack": "3",
+   "health": "2",
+   "arcane": "7",
+   "ruleText": "Intimidate, Lethal\nArrive — Pay X Life, Revive target Character with Mana Cost X or less. That card gains Intimidate, Lethal, Swift, and Decayed this turn, Banish it at the next Offset.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmurpwi96zz3dex4fnuzr",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "3"
+    },
+    {
+     "type": "health",
+     "value": "2"
+    },
+    {
+     "type": "arcane",
+     "value": "7"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "range": "",
+   "sagaIds": [
+    "Beginnings"
+   ],
+   "sagaId": "Beginnings",
+   "lastUpdated": "2026-10-03",
+   "testing": 1
+  },
+  {
+   "id": "cmup96gj9rexkc",
+   "name": "_Hierophant's Pursuit",
+   "manaCost": "Y/G",
+   "cmc": "1",
+   "colors": [
+    "yellow",
+    "green"
+   ],
+   "superTypes": [
+    "Ongoing",
+    "Spell"
+   ],
+   "subTypes": [
+    "Armament",
+    "Monk"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Coalesce — Arm this card.\nAs long as this card is Armed, it gains \n\"{L}: Create 1 mana of any color among the Armed card's colors.\"",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmurpwi96mqfkfm7y3kxa",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "sagaIds": [
+    "Infinite"
+   ],
+   "sagaId": "Infinite",
+   "lastUpdated": "2026-10-03",
+   "testing": 1,
+   "mark": "wm_cmudw0ix3xj34z"
+  },
+  {
+   "id": "cmup9h6m9ovz8e",
+   "name": "_Forge Runner",
+   "manaCost": "R2",
+   "cmc": "3",
+   "colors": [
+    "red"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Scaly",
+    "Warrior"
+   ],
+   "attack": "3",
+   "health": "2",
+   "arcane": "",
+   "ruleText": "Swift\nArrive — Discard up to 2 cards. If you do, you Draw or Ignite that many cards.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmurpwi96nlju8vzfbpg5",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "3"
+    },
+    {
+     "type": "health",
+     "value": "2"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "range": "",
+   "kwReminders": [
+    "Ignite"
+   ],
+   "sagaIds": [
+    "Beginnings"
+   ],
+   "sagaId": "Beginnings",
+   "lastUpdated": "2026-10-03",
+   "testing": 1
+  },
+  {
+   "id": "cmup9p7lywc19a",
+   "name": "_Thrall Feaster",
+   "manaCost": "VR3",
+   "cmc": "5",
+   "colors": [
+    "red",
+    "violet"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Demonic",
+    "Void",
+    "Avatar"
+   ],
+   "attack": "7",
+   "health": "4",
+   "arcane": "7A",
+   "ruleText": "Arrive — Discard your Hand. You may sacrifice any number of other Characters. If you do, Draw or Ignite equal to the number of cards sacrificed.\nDemise — You may sacrifice any number of Characters. If you do, put a Depleted or Decayed counter on up to X target Field Cards.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmurpwi9632rhmviio71e",
+   "orbs": [
+    {
+     "type": "attack and arcane",
+     "value": "7"
+    },
+    {
+     "type": "health",
+     "value": "4"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "sagaIds": [
+    "Beginnings"
+   ],
+   "sagaId": "Beginnings",
+   "range": "",
+   "lastUpdated": "2026-10-03",
+   "testing": 1
+  },
+  {
+   "id": "cmupa1tw424l2a",
+   "name": "_Modus Devourendi",
+   "manaCost": "BIVR",
+   "cmc": "4",
+   "colors": [
+    "red",
+    "blue",
+    "indigo",
+    "violet"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Demonic",
+    "Shade",
+    "Avatar"
+   ],
+   "attack": "5",
+   "health": "4",
+   "arcane": "7",
+   "ruleText": "Depleted, Swift, Airborne, Gouge\nRaid & Your Offset — Sacrifice a Non-Avatar Character. If you do, create a copy of this card.",
+   "flavor": "\"Be alert and of sober mind. Your enemy the devil prowls around like a roaring lion looking for someone to devour.\" 1 Peter 5:8: ",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmurpwi962in9k863abe3",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "5"
+    },
+    {
+     "type": "health",
+     "value": "4"
+    },
+    {
+     "type": "arcane",
+     "value": "7"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "range": "",
+   "flavorRows": 2,
+   "lastUpdated": "2026-10-03",
+   "sagaIds": [
+    "Beginnings"
+   ],
+   "sagaId": "Beginnings",
+   "testing": 1
+  }
+ ]
+}
