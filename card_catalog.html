@@ -463,6 +463,11 @@ body.light .ci-qadd{background:var(--s2);border-color:var(--gr);color:var(--gr)}
 .ttag+label:hover{color:var(--tx);border:1px solid;border-image:linear-gradient(180deg,#1a2440 0%,#3a5080 15%,#c8d8f8 40%,#7b9cda 50%,#5a78b0 60%,#3a5080 85%,#1a2440 100%) 1;border-radius:0;box-shadow:0 0 8px rgba(123,156,218,.25)}
 .stf{display:flex;flex-direction:column;gap:4px;margin-top:5px}
 .str{display:block;position:relative;width:100%}
+/* the type autocomplete (session 58): at least the box's width, wider for a
+   long word; the right-hand column's opens leftward so the sidebar's edge
+   does not cut it off */
+.str .cat-tcombo{min-width:100%;width:max-content;max-width:240px;right:auto}
+.type-col:last-child .str .cat-tcombo{left:auto;right:0}
 .sti{width:100%;min-width:0;box-sizing:border-box;background:var(--s2);border:1px solid var(--b1);border-radius:0;color:var(--tx);font-family:'Crimson Pro',serif;font-size:.85rem;padding:4px 7px;outline:none}
 .str-rm .sti{padding-right:22px}
 .sti-x{position:absolute;top:50%;right:3px;transform:translateY(-50%);width:16px;height:16px;border-radius:50%;background:rgba(196,92,92,.12);border:1.5px solid var(--re);color:var(--re);font-size:.62rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:all .15s}
@@ -544,6 +549,9 @@ body.light .cpill{background:rgba(0,0,0,.05)}
 .pg-btn:disabled{opacity:.35;cursor:default}
 .pg-info{font-family:'Cinzel',serif;font-size:.7rem;color:var(--td)}
 .pg-cur{font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;color:var(--txt-accent);min-width:60px;text-align:center}
+/* the typeable page number (session 58) */
+.pg-num{width:3.2em;text-align:center;font:inherit;color:inherit;background:var(--s2);border:1px solid var(--b1);border-radius:3px;padding:1px 2px;margin:0 2px}
+.pg-num:focus{outline:none;border-color:var(--go)}
 .pg-sel{background:var(--s2);border:1px solid var(--b1);border-radius:0;color:var(--tx);font-family:'Crimson Pro',serif;font-size:.9rem;padding:3px 6px;cursor:pointer}.tab-btn{font-family:'Cinzel',serif;font-size:1.08rem;font-weight:700;letter-spacing:.06em;padding:7px 17px;border:1px solid var(--b2);border-radius:0;background:none;color:var(--td);cursor:pointer;transition:all .15s;white-space:nowrap;border-bottom:3px solid var(--b2)}
 .tab-btn.on{background:var(--s3);color:var(--go);border:2px solid;border-image:linear-gradient(180deg,#4a3818 0%,#7a6030 15%,#f5ecd0 40%,#e8c96a 50%,#c9a84c 60%,#7a6030 85%,#4a3818 100%) 1;border-radius:0;border-bottom:3px solid}
 .tab-btn:not(.on):hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
@@ -1219,6 +1227,13 @@ body.light .dl-card-hero-grad{background:linear-gradient(to right,var(--s1) 25%,
 .ed2-combo-opt{padding:5px 9px;font-family:'Crimson Pro',serif;font-size:.92rem;color:var(--tx);cursor:pointer}
 .ed2-combo-opt:hover,.ed2-combo-opt.active{background:rgba(201,168,76,.16);color:var(--go)}
 .ed2-combo-add{color:var(--go);font-style:italic;border-bottom:1px solid var(--b2)}
+/* Fix — (session 58) */
+.dash-list{max-height:340px;overflow:auto;border:1px solid var(--b2);padding:4px 6px;margin-top:6px}
+.dash-row{display:flex;gap:6px;align-items:baseline;padding:2px 0;font-size:.84rem;color:var(--tx);cursor:pointer}
+.dash-row.dash-word{opacity:.72}
+.dash-f{color:var(--tm);font-size:.76rem;white-space:nowrap}
+.dash-ctx{font-family:'Crimson Pro',serif;white-space:pre-wrap;word-break:break-word;flex:1;min-width:0}
+.dash-mk{background:rgba(201,168,76,.38);color:inherit;padding:0 1px;border-radius:2px}
 .ed2-combo-empty{padding:6px 9px;color:var(--tm);font-style:italic;font-family:'Crimson Pro',serif;font-size:.86rem}
 
 /* type token chips (multi-select for super/sub) */
@@ -2788,7 +2803,9 @@ span.ed2-sagachip{cursor:default}
    position:fixed and placed by hand by edOpenCardLink, because the editor pane
    scrolls and a scroll container clips its children whatever their z-index.
    Same reason tdPlaceDrop does it for the counter dropdowns. */
-.ed2-clbtn{width:auto;padding:0 8px;font-size:.66rem;letter-spacing:.03em;white-space:nowrap}
+/* "Add —" (session 58) wears the same text-button shape under its own class:
+   .ed2-clbtn is how the card-link button is found (checkfix_scope.js) */
+.ed2-clbtn,.ed2-dashbtn{width:auto;padding:0 8px;font-size:.66rem;letter-spacing:.03em;white-space:nowrap}
 .ed2-cl-pop{position:fixed;z-index:9000;width:300px;max-height:340px;display:flex;
   flex-direction:column;gap:6px;padding:8px;border:1px solid var(--b2);border-radius:4px;
   background:var(--s2);box-shadow:0 8px 28px rgba(0,0,0,.55)}
@@ -8120,7 +8137,7 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
       <div class='pg-bar' id='pgBar' style='justify-content:center'>
         <div style='display:flex;align-items:center;gap:6px'>
           <button class='pg-btn' id='pgPrev' onclick='goPage(-1)'>&#8592;</button>
-          <span class='pg-cur' id='pgCur'></span>
+          <span class='pg-cur' id='pgCur'>Page <input id='pgNum' class='pg-num' type='text' inputmode='numeric' autocomplete='off' aria-label='Page number' title='Type a page number and press Enter'> / <span id='pgTot'>1</span></span>
           <button class='pg-btn' id='pgNext' onclick='goPage(1)'>&#8594;</button>
           <span class='pg-cur' id='pgRange' style='margin-left:8px;font-size:.7rem;color:var(--td);font-weight:600'></span>
         </div>
@@ -9565,8 +9582,9 @@ function manaCostColorIcons(mc, sz){
     if(clr && !seen[clr]){ seen[clr]=true; out.push(clr); }
     i++;
   }
-  // Sort in ROYGBIV order
-  out.sort(function(a,b){ return ROYGBIV.indexOf(a)-ROYGBIV.indexOf(b); });
+  /* ⚠ IN THE ORDER THE COST IS WRITTEN, not ROYGBIV (session 58) - the same
+     order the card's frame is drawn in now (frameColorsOf in ed2_core.js), so
+     the list's swatches and the card agree. It was sorted into the wheel here. */
   return out.map(function(c){
     var url = CICO[c]||'';
     if(url) return manaImg(url, c, sz);
@@ -9948,11 +9966,112 @@ function _imgErrMdi(img){
    getSTTerms()/getSUTerms(): collect typed filter terms from #stf / #suf
    Both use .sti CSS class; scoped by container ID to avoid cross-contamination
 ═══════════════════════════════════════════════════════════════════════════ */
+/* ── TYPE AUTOCOMPLETE (session 58) ─────────────────────────────────────────
+   The author: as you type in the Super Type / Sub Type boxes, show the
+   possible words to click. The words are the catalogue's own - every type on
+   a card in an enabled saga, split sections included, the same set the
+   filter itself searches - so a suggestion is never a word that finds
+   nothing. Built here rather than by generalising the editor's setupCombo:
+   that one adds a type to the open card, this one only fills the box, and the
+   editor's scripts load after these rows already exist. Picking fills the box
+   and nothing else - filtering is still the Apply Filters button, as it has
+   always been (see runDebounced below). */
+function catTypeVocab(which){
+  var key = which === 'super' ? 'superTypes' : 'subTypes';
+  var seen = {}, out = [];
+  var on = (typeof window.edSagaEnabled === 'function') ? function(c){
+    var sid = (typeof window.edSagaOf === 'function') ? window.edSagaOf(c) : (c.sagaId || c.saga || '');
+    return window.edSagaEnabled(sid);
+  } : function(){ return true; };
+  (CARDS || []).forEach(function(c){
+    if(!c || !on(c)) return;
+    var list = (c[key] || []).slice();
+    var si = (typeof window.edAnyIdent === 'function') ? window.edAnyIdent(c) : !!c.splitIdent;
+    if(si && typeof window.edSplitFacets === 'function'){
+      var sf = window.edSplitFacets(c);
+      if(sf && sf[key]) list = list.concat(sf[key]);
+    }
+    list.forEach(function(t){
+      t = String(t || '').trim(); if(!t) return;
+      var k = t.toLowerCase(); if(seen[k]) return;
+      seen[k] = 1; out.push(t);
+    });
+  });
+  return out.sort(_cmpStr);
+}
+window.catTypeVocab = catTypeVocab;
+function catTypeCombo(inp, row, which){
+  inp.setAttribute('autocomplete', 'off');      /* the browser's own history list fights it */
+  var list = document.createElement('div');
+  list.className = 'ed2-combo-list cat-tcombo hidden';
+  row.appendChild(list);
+  var active = -1, vocab = null, picking = false;
+  function taken(){
+    var col = row.parentNode, t = {};
+    if(col) Array.prototype.forEach.call(col.querySelectorAll('.sti'), function(o){
+      if(o !== inp && o.value.trim()) t[o.value.trim().toLowerCase()] = 1;
+    });
+    return t;
+  }
+  function render(){
+    if(!vocab) vocab = catTypeVocab(which);
+    var f = inp.value.trim().toLowerCase(), skip = taken();
+    var show = vocab.filter(function(o){
+      var l = o.toLowerCase();
+      return !skip[l] && (!f || l.indexOf(f) >= 0);
+    });
+    /* the words that START with what was typed first, then the rest */
+    if(f) show.sort(function(a, b){
+      var as = a.toLowerCase().indexOf(f) === 0 ? 0 : 1, bs = b.toLowerCase().indexOf(f) === 0 ? 0 : 1;
+      return as - bs || _cmpStr(a, b);
+    });
+    active = -1;
+    if(!show.length){ list.innerHTML = ''; list.classList.add('hidden'); return; }
+    list.innerHTML = show.slice(0, 40).map(function(o){
+      return "<div class='ed2-combo-opt' data-v='" + e(o) + "'>" + e(o) + "</div>";
+    }).join('');
+    list.classList.remove('hidden');
+  }
+  function hi(){
+    var items = list.querySelectorAll('.ed2-combo-opt');
+    Array.prototype.forEach.call(items, function(el, i){
+      el.classList.toggle('active', i === active);
+      if(i === active) el.scrollIntoView({block: 'nearest'});
+    });
+  }
+  function pick(v){
+    inp.value = v;
+    list.classList.add('hidden');
+    /* told, so anything listening to the box - the Rewards panel - re-reads it */
+    picking = true;
+    try{ inp.dispatchEvent(new Event('input', {bubbles: true})); }catch(_){}
+    picking = false;
+  }
+  list.addEventListener('mousedown', function(ev){
+    var o = ev.target && ev.target.closest && ev.target.closest('.ed2-combo-opt');
+    if(!o) return;
+    ev.preventDefault();
+    pick(o.getAttribute('data-v'));
+  });
+  inp.addEventListener('focus', function(){ vocab = catTypeVocab(which); render(); });
+  inp.addEventListener('input', function(){ if(!picking) render(); });
+  inp.addEventListener('blur', function(){ setTimeout(function(){ list.classList.add('hidden'); }, 150); });
+  inp.addEventListener('keydown', function(ev){
+    var items = list.querySelectorAll('.ed2-combo-opt');
+    var open = !list.classList.contains('hidden') && items.length;
+    if(ev.key === 'ArrowDown' && open){ ev.preventDefault(); active = Math.min(active + 1, items.length - 1); hi(); }
+    else if(ev.key === 'ArrowUp' && open){ ev.preventDefault(); active = Math.max(active - 1, 0); hi(); }
+    else if(ev.key === 'Enter' && open && active >= 0){ ev.preventDefault(); pick(items[active].getAttribute('data-v')); }
+    else if(ev.key === 'Escape'){ list.classList.add('hidden'); }
+  });
+}
+
 function makeSTRow(first) {
   var row=document.createElement('div'); row.className='str';
   var inp=document.createElement('input');
   inp.type='text'; inp.className='sti'; inp.placeholder='e.g. Dragon';
   row.appendChild(inp);
+  catTypeCombo(inp, row, 'sub');
   if (!first) {
     var rm=document.createElement('button');
     rm.type='button'; rm.className='sti-x'; rm.textContent='\u2715'; rm.title='Remove';
@@ -9971,6 +10090,7 @@ function makeSURow(first) {
   var inp=document.createElement('input');
   inp.type='text'; inp.className='sti'; inp.placeholder='e.g. Character';
   row.appendChild(inp);
+  catTypeCombo(inp, row, 'super');
   if (!first) {
     var rm=document.createElement('button');
     rm.type='button'; rm.className='sti-x'; rm.textContent='\u2715'; rm.title='Remove';
@@ -10073,6 +10193,36 @@ function goPage(delta){
   renderPage();
 }
 
+/* ⚠ THE PAGE NUMBER IS A BOX YOU CAN TYPE IN (the author, session 58): type
+   over the 3 in "Page 3 / 8" to go there. Past the last page goes to the
+   last; below 1 goes to the first; something that is not a number puts the
+   current page back. Only a real change redraws - Enter and the blur that
+   follows it would otherwise draw the same page twice. */
+function goToPage(v){
+  var total = Math.max(1, Math.ceil(_allFiltered.length/_pageSize));
+  var n = parseInt(String(v == null ? '' : v).trim(), 10);
+  var box = document.getElementById('pgNum');
+  if(isNaN(n)){ if(box) box.value = _curPage + 1; return; }
+  var to = Math.max(0, Math.min(n - 1, total - 1));
+  if(to === _curPage){ if(box) box.value = _curPage + 1; return; }
+  _curPage = to;
+  renderPage();
+  /* renderPage leaves a box being typed in alone - this one was just
+     answered, so it shows where it went: 999 reads back as the last page */
+  if(box) box.value = _curPage + 1;
+}
+window.goToPage = goToPage;
+(function(){
+  var box = document.getElementById('pgNum');
+  if(!box) return;
+  box.addEventListener('keydown', function(ev){
+    if(ev.key === 'Enter'){ ev.preventDefault(); goToPage(box.value); box.select(); }
+    else if(ev.key === 'Escape'){ box.value = _curPage + 1; box.blur(); }
+  });
+  box.addEventListener('blur', function(){ goToPage(box.value); });
+  box.addEventListener('focus', function(){ try{ box.select(); }catch(_){} });
+})();
+
 function renderPage(){
   var start = _curPage * _pageSize;
   var end   = Math.min(start + _pageSize, _allFiltered.length);
@@ -10095,9 +10245,12 @@ function renderPage(){
   } else _tot=CARDS.length;
   if(ri) ri.innerHTML='Showing <strong>'+_allFiltered.length+'</strong> of <strong>'+_tot+'</strong> cards';
 
-  var cur = document.getElementById('pgCur');
   var total = Math.ceil(_allFiltered.length/_pageSize)||1;
-  if(cur) cur.textContent = 'Page '+(total>1?(_curPage+1)+' / '+total:'1');
+  /* the number lives in a box now (goToPage) - writing the label as text would
+     wipe the box out. Left alone while it is being typed in. */
+  var pgNum = document.getElementById('pgNum'), pgTot = document.getElementById('pgTot');
+  if(pgNum && document.activeElement !== pgNum) pgNum.value = _curPage + 1;
+  if(pgTot) pgTot.textContent = total;
 
   var prev = document.getElementById('pgPrev');
   var next = document.getElementById('pgNext');
@@ -10491,7 +10644,10 @@ function fmtRule(text){
   var t=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   var _lk=[]; t=cardLinksHold(t,_lk);        /* before the [x] rule below */
   t=t.replace(/\n/g,'<br>');
-  t=t.replace(/\{([^}]+)\}/g,function(match,inner){ return renderManaCost(inner,16); });
+  /* ⚠ THE CARD FACE'S TOKEN PATTERN, not "anything in braces" (session 58).
+     {mana in any combination of R} on 17 cards came out as a jumble of
+     icons here while the face left it as words. */
+  t=t.replace(/\{([A-Za-z0-9\/]+)\}/g,function(match,inner){ return renderManaCost(inner,16); });
   t=t.replace(/\[([^\]]+)\]/g,'<strong class="rkw">[$1]</strong>');
   t=t.replace(/(^|<br>)(---|___)/g,'$1<span class="rdv"></span>');
   if(typeof linkKeywords === 'function' && document.getElementById('kwdata')) {
@@ -10673,7 +10829,7 @@ function fmtRuleInline(text){
   t=t.replace(/&lt;(\/?)(b|i|u)&gt;/g,'<$1$2>');
   var _lk=[]; t=cardLinksHold(t,_lk);        /* before the [x] rule below */
   t=t.replace(/\n/g,'<br>');
-  t=t.replace(/\{([^}]+)\}/g,function(match,inner){ return renderManaCost(inner,14); });
+  t=t.replace(/\{([A-Za-z0-9\/]+)\}/g,function(match,inner){ return renderManaCost(inner,14); });
   t=t.replace(/\[([^\]]+)\]/g,'<strong class="rkw">[$1]</strong>');
   return cardLinksPut(t,_lk);
 }
@@ -10684,7 +10840,7 @@ function fmtRuleNoLinks(text){
   var t=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   var _lk=[]; t=cardLinksHold(t,_lk);        /* before the [x] rule below */
   t=t.replace(/\n/g,'<br>');
-  t=t.replace(/\{([^}]+)\}/g,function(match,inner){ return renderManaCost(inner,16); });
+  t=t.replace(/\{([A-Za-z0-9\/]+)\}/g,function(match,inner){ return renderManaCost(inner,16); });
   t=t.replace(/\[([^\]]+)\]/g,'<strong class="rkw">[$1]</strong>');
   t=t.replace(/(^|<br>)(---|___)/g,'$1<span class="rdv"></span>');
   return cardLinksPut(t,_lk);
@@ -22818,12 +22974,31 @@ function tdAltCounterHTML(t){
    text - it would print the keyword twice, once as a heading and again as the
    first word of its own explanation. What is wanted here is the mana symbols
    drawn and nothing else pilled. */
+/* ⚠ AND NO LINKS (session 58). symbolizeRules was never reachable from here
+   until session 58 exported it - this always fell through to plain text, {6}
+   included. Reachable, it showed that noPills still LINKS each keyword: a
+   kw-link with an onclick to the Keywords page, which on a window that
+   follows the pointer is a way off the board (tdPillLook strips a counter's
+   pill for the same reason). So each link is unwrapped to its words and no
+   onclick survives; the symbols stay. */
 function tdRuleHTML(txt){
+  var html = '';
   try{
     if(typeof symbolizeRules === 'function')
-      return symbolizeRules(String(txt), true).replace(/<\/?p>/g, '');
-  }catch(_){}
-  return e(String(txt));
+      html = symbolizeRules(String(txt), true).replace(/<\/?p>/g, '');
+  }catch(_){ html = ''; }
+  if(!html) return e(String(txt));
+  try{
+    var box = document.createElement('div');
+    box.innerHTML = html;
+    Array.prototype.forEach.call(box.querySelectorAll('.kw-link'), function(a){
+      a.parentNode.replaceChild(document.createTextNode(a.textContent), a);
+    });
+    Array.prototype.forEach.call(box.querySelectorAll('[onclick]'), function(el){
+      el.removeAttribute('onclick');
+    });
+    return box.innerHTML;
+  }catch(_){ return e(String(txt)); }
 }
 function tdAltShowCounter(tokEl){
   var t = tdTokenOf(tokEl);
@@ -28382,17 +28557,43 @@ function _kwHighlightMatch(){
 })();
 
 // Hyperlink keywords in rule text — called inside fmtRule after HTML escaping
+/* ⚠⚠ ONLY THE TEXT, NEVER THE INSIDE OF A TAG (session 58). This ran its
+   pattern over the WHOLE finished HTML, attributes included - and by the time
+   it runs, fmtRule has already turned {6} into an <img src="data:...base64">.
+   The dice keywords D6 and D4 match by pure chance inside the base64 of the
+   6, 5 and 3 icons ("/D6/", "+d6/", "+d4/"), so a <span class="kw-link"> was
+   spliced into the middle of the src: the tag closed early and about 8 KB of
+   base64 poured into the popout's rules text. {R} was fine only because the
+   colour icons happen not to contain a keyword.
+
+   So the HTML is split on tags and only the text between them is searched -
+   what pillifyRules (ed2_core.js) has always done for the card face - and
+   each link goes in as a placeholder until every keyword has run, so a later
+   keyword cannot match inside an earlier link's markup either. The
+   placeholder is SEP + one private-use character + SEP: no keyword contains
+   either, and both are built here rather than written as escapes (HANDOFF 0). */
 function linkKeywords(t) {
-  KW_MATCHES.forEach(function(k){
-    var pat = k.match.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    var re = new RegExp('(?<![\\w-])(' + pat + ')(?![\\w-])', 'gi');
-    t = t.replace(re, function(m){
-      var mode = k.mode;
-      var entryId = 'kwentry-'+k.name.replace(/\s+/g,'_');
-      return '<span class="kw-link" onclick="_openKwAndHighlight(\''+mode+'\',\''+entryId+'\')">'+m+'</span>';
+  var SEP = String.fromCharCode(1), held = [];
+  var parts = String(t == null ? '' : t).split(/(<[^>]*>)/);
+  for (var p = 0; p < parts.length; p += 2) {          /* even pieces are text */
+    var s = parts[p];
+    if (!s) continue;
+    KW_MATCHES.forEach(function(k){
+      var pat = k.match.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      var re = new RegExp('(?<![\\w-])(' + pat + ')(?![\\w-])', 'gi');
+      s = s.replace(re, function(m){
+        var mode = k.mode;
+        var entryId = 'kwentry-'+k.name.replace(/\s+/g,'_');
+        held.push('<span class="kw-link" onclick="_openKwAndHighlight(\''+mode+'\',\''+entryId+'\')">'+m+'</span>');
+        return SEP + String.fromCharCode(0xE000 + held.length - 1) + SEP;
+      });
     });
-  });
-  return t;
+    parts[p] = s;
+  }
+  var out = parts.join('');
+  if (!held.length) return out;
+  var hole = new RegExp(SEP + '([' + String.fromCharCode(0xE000) + '-' + String.fromCharCode(0xF8FF) + '])' + SEP, 'g');
+  return out.replace(hole, function(_, ch){ return held[ch.charCodeAt(0) - 0xE000] || ''; });
 }
 
 /* A keyword clicked in rule text jumps to its row on the Keywords PAGE now,
@@ -28516,16 +28717,106 @@ function docPageHtml(body, bodyClass) {
   return '<!DOCTYPE html><html><head><meta charset="utf-8">'
     + '<style>html,body{margin:0;background:#fff}'
     + '#contents{padding:18px 26px 60px}'
-    + 'img{max-width:100%;height:auto}</style></head>'
+    + 'img{max-width:100%;height:auto}'
+    /* the mana symbols docSymbolize puts in - sized in em so they follow
+       Google's own font sizes, a heading's symbol as big as its letters */
+    + '.mana-s{display:inline-flex;align-items:center;gap:1px;vertical-align:-.15em}'
+    + '.mico{vertical-align:middle;filter:drop-shadow(0 0 1px rgba(0,0,0,.55))}'
+    + '.hyb,.hyb3{position:relative;display:inline-flex;width:1em;height:1em;vertical-align:middle;flex-shrink:0}'
+    + '.hyb-t,.hyb-b,.hyb-3a,.hyb-3b,.hyb-3c{position:absolute;top:0;left:0;width:1em;height:1em}'
+    + '.hyb-t{clip-path:polygon(0 0,100% 0,0 100%)}'
+    + '.hyb-b{clip-path:polygon(100% 0,100% 100%,0 100%)}'
+    + '.hyb-3a{clip-path:polygon(50% 50%,50% 0%,100% 0%,100% 75%,93% 75%)}'
+    + '.hyb-3b{clip-path:polygon(50% 50%,93% 75%,100% 100%,0% 100%,7% 75%)}'
+    + '.hyb-3c{clip-path:polygon(50% 50%,7% 75%,0% 100%,0% 0%,50% 0%)}'
+    + '</style></head>'
     + '<body class="' + String(bodyClass || 'doc-content').replace(/"/g, '') + '">'
     + body
     + '<script>(function(){'
+    /* the symbols, as soon as the body is parsed - before every picture in
+       the document has loaded, which is when the frame's load event fires */
+    + 'try{if(window.parent&&window.parent.docSymbolize)window.parent.docSymbolize(document);}catch(_){}'
     + 'document.addEventListener("click",function(e){var a=e.target&&e.target.closest&&e.target.closest("a[href]");'
     + 'if(!a)return;var h=a.getAttribute("href")||"";if(h.charAt(0)==="#")return;'
     + 'e.preventDefault();try{window.open(a.href,"_blank","noopener");}catch(_){}} ,true);'
     + 'window.addEventListener("message",function(ev){if(ev.data&&ev.data.scrollTo){'
     + 'var el=document.getElementById(ev.data.scrollTo);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});}});'
     + '})();<\/script></body></html>';
+}
+
+/* ⚠ {R} IN THE GOOGLE DOC BECOMES THE MANA SYMBOL (session 58). A DOM pass,
+   never a string pass - a regex over the HTML would rewrite Google's own CSS
+   and is exactly how the popout's {6} broke (linkKeywords). Per leaf block,
+   the text nodes are joined (Google splits "{", "R", "}" across <span>s), the
+   card face's token pattern is matched, and each hit is swapped through a
+   Range, last first. A token renderManaCost cannot fully draw ({Draw}) stays
+   text, and one that crosses a link's edge is left alone. data-sym keeps the
+   token for the contents list (docNodeText). */
+var DOC_BLOCKS = 'p,li,h1,h2,h3,h4,h5,h6,td,th';
+function docSymbolize(doc) {
+  var n = 0;
+  try {
+    var root = doc.getElementById('contents') || doc.body;
+    if (!root || typeof renderManaCost !== 'function') return 0;
+    var blocks = Array.prototype.filter.call(root.querySelectorAll(DOC_BLOCKS), function(b) {
+      return !b.querySelector(DOC_BLOCKS);                 /* leaf blocks only */
+    });
+    blocks.forEach(function(b) {
+      var nodes = [], starts = [], text = '';
+      var w = doc.createTreeWalker(b, 4 /* SHOW_TEXT */, null, false);
+      while (w.nextNode()) {
+        var tn = w.currentNode, pt = tn.parentNode && tn.parentNode.nodeName;
+        if (pt === 'SCRIPT' || pt === 'STYLE') continue;
+        nodes.push(tn); starts.push(text.length); text += tn.data;
+      }
+      if (text.indexOf('{') < 0) return;
+      var re = /\{([A-Za-z0-9\/]+)\}/g, m, hits = [];
+      while ((m = re.exec(text))) hits.push({s: m.index, e: m.index + m[0].length, tok: m[1]});
+      for (var h = hits.length - 1; h >= 0; h--) {
+        var hit = hits[h], html = renderManaCost(hit.tok, 16);
+        if (!html || html.indexOf('mana-txt') >= 0) continue;     /* not all symbols */
+        var sN = null, sO = 0, eN = null, eO = 0;
+        for (var i = 0; i < nodes.length; i++) {
+          var a0 = starts[i], a1 = a0 + nodes[i].data.length;
+          if (!sN && hit.s >= a0 && hit.s < a1) { sN = nodes[i]; sO = hit.s - a0; }
+          if (hit.e > a0 && hit.e <= a1) { eN = nodes[i]; eO = hit.e - a0; }
+        }
+        if (!sN || !eN) continue;
+        var la = sN.parentNode && sN.parentNode.closest ? sN.parentNode.closest('a') : null;
+        var lb = eN.parentNode && eN.parentNode.closest ? eN.parentNode.closest('a') : null;
+        if (la !== lb) continue;                                 /* crosses a link edge */
+        var holder = doc.createElement('span');
+        holder.innerHTML = html;
+        var sym = holder.firstChild;
+        if (!sym) continue;
+        sym.setAttribute('data-sym', '{' + hit.tok + '}');
+        [sym].concat(Array.prototype.slice.call(sym.querySelectorAll('*'))).forEach(function(el) {
+          if (el.style && el.style.width) el.style.width = '1em';
+          if (el.style && el.style.height) el.style.height = '1em';
+        });
+        var rg = doc.createRange();
+        rg.setStart(sN, sO); rg.setEnd(eN, eO);
+        rg.deleteContents(); rg.insertNode(sym);
+        n++;
+      }
+    });
+  } catch (_) {}
+  return n;
+}
+window.docSymbolize = docSymbolize;
+/* a heading's text with its symbols read back as {R}, for the contents list */
+function docNodeText(el) {
+  var out = '';
+  (function walk(n) {
+    for (var c = n.firstChild; c; c = c.nextSibling) {
+      if (c.nodeType === 3) out += c.data;
+      else if (c.nodeType === 1) {
+        if (c.getAttribute && c.getAttribute('data-sym')) out += c.getAttribute('data-sym');
+        else walk(c);
+      }
+    }
+  })(el);
+  return out;
 }
 
 /* Draw one into its frame, then read its headings back out for the contents
@@ -28547,7 +28838,7 @@ function docRender(id, body, bodyClass) {
     if (!fd || !fd.body) return;
     var items = [];
     fd.querySelectorAll('h1[id],h2[id],h3[id],h4[id],p.title[id]').forEach(function(h) {
-      var text = (h.textContent || '').replace(/[\u25be\u25b8]/g, '').trim();
+      var text = docNodeText(h).replace(/[\u25be\u25b8]/g, '').trim();
       if (!text) return;                      /* Google leaves blank spacer headings */
       var m = h.tagName.match(/^H(\d)$/i);
       items.push({id: h.id, text: text, level: m ? parseInt(m[1], 10) : 0});
@@ -28642,7 +28933,11 @@ function _buildToc(tocListEl, items, frameEl) {
     var a = document.createElement('a');
     a.href = '#' + item.id;
     a.className = 'lvl-' + item.level;
-    a.textContent = item.text;
+    /* {R} in a heading draws as the symbol here too (session 58) */
+    a.innerHTML = docEsc(item.text).replace(/\{([A-Za-z0-9\/]+)\}/g, function(t, tok) {
+      var h = (typeof renderManaCost === 'function') ? renderManaCost(tok, 14) : '';
+      return (h && h.indexOf('mana-txt') < 0) ? h : t;
+    });
     a.addEventListener('click', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
@@ -29767,6 +30062,14 @@ var ROY=['red','orange','yellow','green','blue','indigo','violet'];
 function colorsFromMana(mc){if(!mc)return[];var map={R:'red',O:'orange',Y:'yellow',G:'green',B:'blue',I:'indigo',V:'violet'};
   var seen={},out=[];mc.toUpperCase().replace(/\s|\//g,'').split('').forEach(function(ch){if(map[ch]&&!seen[map[ch]]){seen[map[ch]]=1;out.push(map[ch]);}});
   out.sort(function(a,b){return ROY.indexOf(a)-ROY.indexOf(b);});return out;}
+/* The colours in the order the COST writes them (the author, session 58): a
+   card costing BIVR is drawn Blue, Indigo, Violet, Red - not wheel order.
+   First appearance wins; a hybrid is read left to right. For drawing only:
+   c.colors stays in wheel order, because the update check, the Colour sort
+   and the deck's colour groups compare it by position. */
+function colorsInCostOrder(mc){if(!mc)return[];var map={R:'red',O:'orange',Y:'yellow',G:'green',B:'blue',I:'indigo',V:'violet'};
+  var seen={},out=[];String(mc).toUpperCase().replace(/\s|\//g,'').split('').forEach(function(ch){if(map[ch]&&!seen[map[ch]]){seen[map[ch]]=1;out.push(map[ch]);}});
+  return out;}
 var ESSMAP={Ire:'red',Vig:'orange',Lux:'yellow',Arch:'green',Yune:'blue',Psy:'indigo',Gris:'violet'};
 function colorsFromEssence(subs){var seen={},out=[];(subs||[]).forEach(function(s){if(ESSMAP[s]&&!seen[ESSMAP[s]]){seen[ESSMAP[s]]=1;out.push(ESSMAP[s]);}});
   out.sort(function(a,b){return ROY.indexOf(a)-ROY.indexOf(b);});return out;}
@@ -30204,10 +30507,25 @@ function frameColorsOf(c){
   var vt=(c&&typeof variantOf==='function')?variantOf(c):c;
   var ov=vt&&vt.frameColor;
   if(Array.isArray(ov)&&ov.length){
-    var keep=ov.filter(function(x){return FRAME_ORDER.indexOf(x)>=0;});
+    /* the override SET, in the order it has always been drawn (wheel order -
+       frameOvrSetOf), now that the painters no longer sort for it */
+    var keep=frameOvrSetOf(c);
     if(keep.length)return keep;
   }
-  return (c&&c.colors)||[];
+  /* ⚠ THE ORDER THE COST IS WRITTEN IN (the author, session 58). c.colors is
+     in wheel order and the three painters below used to sort it again, so a
+     card costing BIVR was drawn Red, Blue, Indigo, Violet. Now: Object grey
+     first (where it has always been drawn), then the cost's colours as
+     written, then anything else the card carries (an Essence's colours, which
+     have no cost to order them) in wheel order as before. */
+  var cols=((c&&c.colors)||[]).filter(function(x){return FRAME_ORDER.indexOf(x)>=0;});
+  if(cols.length<2)return cols;
+  var out=[], has={};
+  cols.forEach(function(x){ has[x]=1; });
+  if(has.grey){ out.push('grey'); has.grey=0; }
+  colorsInCostOrder(c&&c.manaCost).forEach(function(x){ if(has[x]){ out.push(x); has[x]=0; } });
+  FRAME_ORDER.forEach(function(x){ if(has[x]){ out.push(x); has[x]=0; } });
+  return out;
 }
 /* ⚠ THE OVERRIDE IS A SET, NOT A COLOUR. A card can be printed in any number
    of colours and any combination of them - there is no pair limit - so the
@@ -30251,15 +30569,16 @@ function outlineHex(c){
 /* single solid dark colour for the inner hairline on the boxes. For a colour
    PAIR this takes the first colour in FRAME_ORDER — box-shadow cannot take a
    gradient, so one of the two has to win. */
+/* ⚠ NONE OF THE THREE PAINTERS SORTS ANY MORE (session 58). They drew in
+   whatever order they were handed, re-sorted into FRAME_ORDER - which threw
+   away the cost's order. frameColorsOf decides the order now, once. */
 function outlineSolid(colors){
-  var cols=(colors||[]).slice().filter(function(c){return FRAME_ORDER.indexOf(c)>=0;})
-    .sort(function(a,b){return FRAME_ORDER.indexOf(a)-FRAME_ORDER.indexOf(b);});
+  var cols=(colors||[]).slice().filter(function(c){return FRAME_ORDER.indexOf(c)>=0;});
   return cols.length?outlineHex(cols[0]):'#141418';
 }
 function frameDarkOf(colors){
   var A='var(--holo-ang,120deg)';
-  var cols=(colors||[]).slice().filter(function(c){return FRAME_ORDER.indexOf(c)>=0;})
-    .sort(function(a,b){return FRAME_ORDER.indexOf(a)-FRAME_ORDER.indexOf(b);});
+  var cols=(colors||[]).slice().filter(function(c){return FRAME_ORDER.indexOf(c)>=0;});
   if(!cols.length) return 'linear-gradient('+A+',#17171b 0%,#232329 46%,#141418 100%)';
   if(cols.length===1){
     var h=outlineHex(cols[0]);
@@ -30294,7 +30613,7 @@ function frameOf(colors){
     return '#ffe1ef '+(pos-hw)+'%,#fff7d8 '+(pos-q)+'%,'+HL+' '+pos+'%,'
          + '#d8fff1 '+(pos+q)+'%,#dde7ff '+(pos+hw)+'%';
   }
-  var cols=(colors||[]).slice().filter(function(c){return FRAME_ORDER.indexOf(c)>=0;}).sort(function(a,b){return FRAME_ORDER.indexOf(a)-FRAME_ORDER.indexOf(b);});
+  var cols=(colors||[]).slice().filter(function(c){return FRAME_ORDER.indexOf(c)>=0;});
   if(!cols.length){
     // colorless frame — a clean neutral silver (NOT near-black).
     return 'linear-gradient('+A+',#9a938a 0%,#c5bfb4 '+narrow(30,46)+'%,'+hl(46)+',#7d766c '+narrow(62,46)+'%,#9a938a 100%)';
@@ -31348,6 +31667,10 @@ function symbolizeRules(txt,noPills){if(!txt)return'';var out=unescapeRuleFmt(e(
   catch(_){ if(typeof window.linkKeywords==='function'){try{out=window.linkKeywords(out);}catch(__){}} }
   if(_hold&&_put) out=_put(out,_lk);
   return out.split('\n').map(function(l){return '<p>'+l+'</p>';}).join('');}
+/* ⚠ ON window FOR THE TEST DECK (session 58). tdRuleHTML (cat_testdeck.js)
+   asks `typeof symbolizeRules`, which never found this closure-private
+   function - so the counter window has always shown {6} as plain text. */
+window.symbolizeRules=symbolizeRules;
 function typeLine(c){var sup=(c.superTypes||[]).join(' '),sub=(c.subTypes||[]).join(' ');return sub?(sup+' \u2014 '+sub):sup;}
 
 /* card number XXXX/XXXX within its saga (position among cards sharing saga) */
@@ -35115,7 +35438,8 @@ function rulesAreaHTML(c,rulesAlign,rules,flavor){
     var mine=sectionShowsIdent(c,s);
     var vars='';
     if(mine){
-      var cols=colorsFromMana(s.manaCost);
+      /* the section's own cost, in the order it is written (session 58) */
+      var cols=colorsInCostOrder(s.manaCost);
       if(cols.length){
         vars="--frame:"+frameOf(cols)+";--frame-dark:"+frameDarkOf(cols)
             +";--pin:"+frameOf(cols)+";--ink-dark:"+outlineSolid(cols);
@@ -35514,7 +35838,33 @@ document.addEventListener('focusin', function(ev){
      (t.id === 'f-rules' || t.id === 'f-choice'
       || t.classList.contains('ed2-sec-ta')
       || t.classList.contains('ed2-choice-ta'))) _edRulesTA = t;
+  /* "Add —" also reaches Flavor Text, where an attribution starts with the
+     dash. Its OWN tracker: Insert Card Name keeps to the boxes where a
+     [[link]] is read, and flavor is not one of them. */
+  if(t && t.tagName === 'TEXTAREA' && (t === _edRulesTA || t.id === 'f-flavor')) _edDashTA = t;
 }, true);
+var _edDashTA = null;
+/* ⚠ "ADD —" (the author, session 58). Inserts an em dash at the caret with a
+   space either side - 715 of the 805 em dashes in the catalogue are written
+   " — " - but never doubles a space that is already there, and at the start of
+   a line it is "— ". Written through edRulesChanged like every other tool on
+   the bar, so the card is marked to save. */
+window.edInsertDash=function(){
+  var ta = (_edDashTA && document.contains(_edDashTA)) ? _edDashTA : edRulesTA();
+  if(!ta){ try{ toast('Open a card first'); }catch(_){} return false; }
+  var s = ta.selectionStart, en = ta.selectionEnd, v = ta.value;
+  var before = v.slice(0, s), after = v.slice(en);
+  var lead  = (before === '' || /\s$/.test(before)) ? '' : ' ';
+  var trail = /^\s/.test(after) ? '' : ' ';
+  var ins = lead + '—' + trail;
+  ta.value = before + ins + after;
+  /* the caret goes after the space that follows the dash, typed or already there */
+  var caret = s + ins.length + ((trail === '' && /^ /.test(after)) ? 1 : 0);
+  ta.selectionStart = ta.selectionEnd = caret;
+  ta.focus();
+  edRulesChanged(ta);
+  return true;
+};
 function edRulesTA(){
   if(_edRulesTA && document.contains(_edRulesTA)) return _edRulesTA;
   return document.getElementById('f-rules')
@@ -35780,6 +36130,9 @@ function rulesEditorHTML(c){
       +"<button type='button' class='ed2-fmtbtn' title='Bold' onclick=\"edWrapRules('b')\"><b>B</b></button>"
       +"<button type='button' class='ed2-fmtbtn' title='Italic' onclick=\"edWrapRules('i')\"><i>I</i></button>"
       +"<button type='button' class='ed2-fmtbtn' title='Underline' onclick=\"edWrapRules('u')\"><u>U</u></button>"
+      /* session 58: an em dash, at the caret, with smart spacing */
+      +"<button type='button' class='ed2-fmtbtn ed2-dashbtn' title='Insert an em dash (—)' "
+        +"onclick='edInsertDash()'>Add —</button>"
       +"<button type='button' class='ed2-fmtbtn ed2-clbtn' "
         +"title='Link another card by name. It prints bold and underlined, shows "
         +"that card when hovered, and the Test Deck can create a copy of it.' "
@@ -39400,6 +39753,232 @@ window.edFrApplyAll=function(){
     });
   });
 };
+/* ── FIX —: EVERY DASH, MADE CONSISTENT (the author, session 58) ─────────────
+   "Search cards for ANY AND ALL types of dashes, and let me replace them with
+   that dash." Every dash-like character in the text a card PRINTS - rules
+   (or each split section, which is what a split card prints), the Choice
+   line, flavor and each saga's own flavor - is found. Names, mana costs, type
+   lines (the " — " there is drawn, not stored), ids and dates never are.
+
+   ⚠ MOST HYPHENS ARE NOT DASHES. In the real data 91 sit inside words
+   ("Non-Ongoing" x39), 53 are minus signs - 26 of them "-1 counter", a
+   keyword that only matches with a hyphen - and 5 are "4-Sided". So each one
+   is CLASSIFIED: used as a dash (" - ", a line-start "- ", "--", an en dash
+   between words) is ticked; inside a word or a number is listed but unticked,
+   and the author ticks it only on purpose (their choice).
+
+   A dash is written with the same spacing "Add —" gives - " — ", or "— " at
+   the start of a line - so the result is consistent, not just the character.
+
+   ⚠ SPLIT CARDS ARE WRITTEN IN c.sections, NOT THROUGH cardSections(). That
+   returns COPIES; writing those changed nothing (it is why Strip ( ) and the
+   rename relink do nothing on a split card). The card's ruleText is then
+   brought back in step with syncSplitRuleText. */
+var DASH_SET = '-' + String.fromCharCode(0x2010,0x2011,0x2012,0x2013,0x2015,0x2212,0xFE58,0xFE63,0xFF0D);
+var _dashList = [], _dashIdx = 0, _dashMode = 'all';
+function dashFields(c){
+  var out = [], n = (typeof rulesSplitOf === 'function') ? rulesSplitOf(c) : 0;
+  if(n && Array.isArray(c.sections)){
+    for(var i = 0; i < n; i++)(function(i){
+      if(c.sections[i] && c.sections[i].text) out.push({key:'sec'+i, label:'Section '+(i+1), split:true,
+        get:function(){ return String(c.sections[i].text || ''); },
+        set:function(v){ c.sections[i].text = v; }});
+    })(i);
+  } else if(c.ruleText){
+    out.push({key:'rules', label:'Rules',
+      get:function(){ return String(c.ruleText || ''); }, set:function(v){ c.ruleText = v; }});
+  }
+  if(typeof c.choiceText === 'string' && c.choiceText) out.push({key:'choice', label:'Choice',
+    get:function(){ return String(c.choiceText || ''); }, set:function(v){ c.choiceText = v; }});
+  if(c.flavor) out.push({key:'flavor', label:'Flavor', flavor:true,
+    get:function(){ return String(c.flavor || ''); }, set:function(v){ c.flavor = v; }});
+  if(c.sagaFields && typeof c.sagaFields === 'object') Object.keys(c.sagaFields).forEach(function(sid){
+    var f = c.sagaFields[sid];
+    if(f && typeof f.flavor === 'string' && f.flavor) out.push({key:'sf:'+sid, label:'Flavor ('+sid+')', flavor:true,
+      get:function(){ return String(c.sagaFields[sid].flavor || ''); }, set:function(v){ c.sagaFields[sid].flavor = v; }});
+  });
+  return out;
+}
+/* One occurrence at text[i]: how long it is (a "--" is one), whether it is
+   used AS a dash, and what it becomes. */
+function dashAt(text, i, isFlavor){
+  var ch = text[i], len = (ch === '-' && text[i+1] === '-') ? 2 : 1;
+  var prev = i > 0 ? text[i-1] : '', next = text[i+len] || '';
+  var lineStart = (i === 0 || prev === '\n');
+  var sp = function(x){ return x === ' ' || x === '\t'; };
+  var word = function(x){ return /[A-Za-z0-9]/.test(x); };
+  var asDash;
+  if(len === 2) asDash = true;                                   /* "--" */
+  else if(ch !== '-' && ch !== String.fromCharCode(0x2212)){     /* an en dash or the like */
+    asDash = !(/[0-9]/.test(prev) && /[0-9]/.test(next));        /* "1–3" is a range */
+  }
+  else if(sp(prev) && (sp(next) || next === '\n' || next === '')) asDash = true;   /* " - " */
+  else if(lineStart && sp(next)) asDash = true;                                    /* "- " */
+  else if(lineStart && isFlavor && /[A-Za-z]/.test(next)) asDash = true;           /* "-Ancient Elf Hymn" */
+  else if(word(prev) && word(next)) asDash = false;               /* Non-Ongoing, 4-Sided */
+  else if(/[0-9XxD+]/.test(next)) asDash = false;                 /* -1 counter, -X, -D4 */
+  else if(word(prev) && (sp(next) || next === '')) asDash = true; /* "Arrive- Ignite" */
+  else if(sp(prev) && /[A-Za-z]/.test(next)) asDash = true;       /* "Arrive -Ignite" */
+  else asDash = false;
+  var rep = '—';
+  if(asDash){
+    var lead  = (lineStart || sp(prev)) ? '' : ' ';
+    var trail = (sp(next) || next === '\n' || next === '') ? '' : ' ';
+    rep = lead + '—' + trail;
+  }
+  return {len: len, asDash: asDash, rep: rep};
+}
+function dashScan(){
+  var dash = [], word = [];
+  (window.CARDS || []).forEach(function(c){
+    if(!c) return;
+    try{ if(typeof edCardLocked === 'function' && edCardLocked(c)) return; }catch(_){}
+    dashFields(c).forEach(function(f){
+      var t = f.get();
+      for(var i = 0; i < t.length; i++){
+        if(DASH_SET.indexOf(t[i]) < 0) continue;
+        var d = dashAt(t, i, !!f.flavor);
+        var o = {card: c, field: f, pos: i, len: d.len, asDash: d.asDash, rep: d.rep, on: d.asDash};
+        (d.asDash ? dash : word).push(o);
+        i += d.len - 1;
+      }
+    });
+  });
+  /* the real dashes first, then the in-word ones - One at a Time steps
+     through them in this order */
+  _dashList = dash.concat(word);
+}
+function dashCtx(o, after){
+  var t = o.field.get(), a = Math.max(0, o.pos - 34), b = Math.min(t.length, o.pos + o.len + 34);
+  var nl = function(s){ return e(s).replace(/\n/g, '⏎'); };
+  var mid = after ? o.rep : t.slice(o.pos, o.pos + o.len);
+  return (a > 0 ? '…' : '') + nl(t.slice(a, o.pos)) + "<mark class='dash-mk'>" + nl(mid) + "</mark>"
+    + nl(t.slice(o.pos + o.len, b)) + (b < t.length ? '…' : '');
+}
+/* write a set of occurrences: per field, from the end backwards so the
+   earlier positions stay true */
+function dashWrite(list){
+  var byCard = {};
+  list.forEach(function(o){
+    var k = o.card.__id;
+    (byCard[k] = byCard[k] || {card: o.card, fields: {}});
+    var fk = o.field.key;
+    (byCard[k].fields[fk] = byCard[k].fields[fk] || {field: o.field, hits: []}).hits.push(o);
+  });
+  var cards = [];
+  Object.keys(byCard).forEach(function(k){
+    var g = byCard[k], split = false;
+    Object.keys(g.fields).forEach(function(fk){
+      var F = g.fields[fk], t = F.field.get();
+      F.hits.sort(function(x, y){ return y.pos - x.pos; }).forEach(function(o){
+        t = t.slice(0, o.pos) + o.rep + t.slice(o.pos + o.len);
+      });
+      F.field.set(t);
+      if(F.field.split) split = true;
+    });
+    if(split && typeof syncSplitRuleText === 'function') syncSplitRuleText(g.card);
+    markDirty(g.card);
+    cards.push(g.card);
+  });
+  return Promise.all(cards.map(function(c){ return persistCard(c); })).then(function(){
+    applyToCatalog();
+    var cur = curCard();
+    if(cur && cards.indexOf(cur) >= 0){ renderFields(); renderPreview(cur); }
+    return cards.length;
+  });
+}
+window.edDashMode = function(mode){
+  _dashMode = (mode === 'one') ? 'one' : 'all';
+  dashScan(); _dashIdx = 0;
+  edDashRender();
+};
+window.edDashRender = function(){
+  var host = document.getElementById('edDashBody'); if(!host) return;
+  var L = _dashList;
+  if(!L.length){ host.innerHTML = "<div class='tpl-opts'><b>No dashes to fix.</b></div>"; return; }
+  var cards = {}; L.forEach(function(o){ cards[o.card.__id] = 1; });
+  var nCards = Object.keys(cards).length, nOn = L.filter(function(o){ return o.on; }).length;
+  if(_dashMode === 'one'){
+    if(_dashIdx >= L.length) _dashIdx = L.length - 1;
+    if(_dashIdx < 0) _dashIdx = 0;
+    var o = L[_dashIdx];
+    host.innerHTML =
+      "<div class='tpl-opts'><b>" + (_dashIdx + 1) + " of " + L.length + "</b>"
+        + "<span class='tpl-lbl' style='min-width:0;flex:1'>" + e(o.card.name) + " · " + e(o.field.label)
+        + (o.asDash ? '' : " · <i>inside a word or a number</i>") + "</span>"
+        + "<button class='ed2-btn tiny' onclick='edDashBack()'>← Back</button>"
+        + "<button class='ed2-btn tiny' onclick='edDashSkip()'>Skip →</button>"
+        + "<button class='ed2-btn tiny on' onclick='edDashReplaceOne()'>Replace</button>"
+      + "</div>"
+      + "<div class='fr-cols'>"
+        + "<div><h4>Before</h4><pre class='fr-pre dash-before'>" + dashCtx(o, false) + "</pre></div>"
+        + "<div><h4>After</h4><pre class='fr-pre dash-after'>" + dashCtx(o, true) + "</pre></div>"
+      + "</div>";
+    return;
+  }
+  host.innerHTML =
+    "<div class='tpl-opts'><b>" + L.length + "</b> dash(es) on <b>" + nCards + "</b> card(s) · <b class='dash-n'>" + nOn + "</b> ticked"
+      + "<button class='ed2-btn tiny' onclick='edDashTick(\"dash\")'>Tick dashes only</button>"
+      + "<button class='ed2-btn tiny' onclick='edDashTick(\"all\")'>Tick all</button>"
+      + "<button class='ed2-btn tiny' onclick='edDashTick(\"none\")'>Untick all</button>"
+      + "<button class='ed2-btn tiny warn' onclick='edDashReplaceTicked()'>Replace ticked with —</button>"
+    + "</div>"
+    + "<div class='dash-list'>"
+    + L.map(function(o, i){
+        return "<label class='dash-row" + (o.asDash ? '' : ' dash-word') + "'>"
+          + "<input type='checkbox' data-i='" + i + "'" + (o.on ? ' checked' : '') + " onchange='edDashToggle(" + i + ",this.checked)'>"
+          + "<b>" + e(o.card.name) + "</b><span class='dash-f'>" + e(o.field.label) + "</span>"
+          + "<span class='dash-ctx'>" + dashCtx(o, false) + "</span></label>";
+      }).join('')
+    + "</div>";
+};
+window.edDashToggle = function(i, on){
+  if(_dashList[i]) _dashList[i].on = !!on;
+  var n = document.querySelector('#edDashBody .dash-n');
+  if(n) n.textContent = _dashList.filter(function(o){ return o.on; }).length;
+};
+window.edDashTick = function(which){
+  _dashList.forEach(function(o){ o.on = (which === 'all') ? true : (which === 'none') ? false : o.asDash; });
+  edDashRender();
+};
+window.edDashReplaceTicked = function(){
+  var list = _dashList.filter(function(o){ return o.on; });
+  if(!list.length){ toast('Nothing is ticked'); return; }
+  var cards = {}; list.forEach(function(o){ cards[o.card.__id] = 1; });
+  var n = Object.keys(cards).length;
+  return edDangerGate({
+    title: 'Replace dashes',
+    lose: [list.length + ' dash(es) on ' + n + ' card(s) become —',
+           'There is no undo'],
+    phrase: 'DASH',
+    requireBackup: true,
+    proceedLabel: 'Replace ' + list.length
+  }).then(function(ok){
+    if(!ok){ toast('Cancelled - nothing was changed'); return; }
+    return dashWrite(list).then(function(k){
+      toast('Replaced ' + list.length + ' dash(es) on ' + k + ' card(s)');
+      dashScan(); edDashRender();
+    });
+  });
+};
+window.edDashReplaceOne = function(){
+  var o = _dashList[_dashIdx]; if(!o) return;
+  return dashWrite([o]).then(function(){
+    /* the list is worked out again - the positions after this one moved -
+       and the next occurrence slides into this place */
+    dashScan(); edDashRender();
+  });
+};
+window.edDashSkip = function(){ if(_dashIdx < _dashList.length - 1) _dashIdx++; edDashRender(); };
+window.edDashBack = function(){ if(_dashIdx > 0) _dashIdx--; edDashRender(); };
+window.edDashState = function(){
+  return {mode: _dashMode, idx: _dashIdx, list: _dashList.map(function(o){
+    var t = o.field.get();
+    return {name: o.card.name, field: o.field.key, pos: o.pos, asDash: o.asDash, on: o.on, rep: o.rep,
+            pre: t.slice(Math.max(0, o.pos - 12), o.pos), ch: t.substr(o.pos, o.len),
+            post: t.slice(o.pos + o.len, o.pos + o.len + 12)}; })};
+};
+
 /* ── REPAIR: fused stats that imported as "6A" / "6H" ───────────────────────
    An older import wrote the fused types as a letter suffix on the arcane slot's
    VALUE ("6A" = attack+arcane, "6H" = health+arcane) instead of setting the orb
@@ -39463,6 +40042,17 @@ window.edOpenFix=function(){
     ov.innerHTML="<div class='ed2-modal ed2-modal-wide'><div class='ed2-modal-head'>"
       +"<b>⚙ Fix</b><button class='ed2-btn tiny close-x' onclick='edCloseFix()'>Close &#10005;</button></div>"
       +"<div class='ed2-modal-body'>"
+        /* session 58: first, by the author's request */
+        +"<div class='tpl-sec'><h4>Fix —</h4>"
+          +"<i class='tpl-hint'>Every kind of dash in rules, Choice and flavor text, made the "
+          +"same —. Dashes used as a dash are ticked; hyphens inside words and minus signs "
+          +"(Non-Ongoing, -1 counter) are listed but left unticked. Names, mana costs and type "
+          +"lines are never touched.</i>"
+          +"<div class='tpl-opts'>"
+            +"<button class='ed2-btn tiny' onclick=\"edDashMode('all')\">All at Once</button>"
+            +"<button class='ed2-btn tiny' onclick=\"edDashMode('one')\">One at a Time</button>"
+          +"</div>"
+          +"<div id='edDashBody'></div></div>"
         +"<div class='tpl-sec'><h4>Fused stats</h4>"
           +"<i class='tpl-hint'>An older import wrote fused stats as “6A” / “6H” in the "
           +"arcane slot's value instead of setting the orb type. Check first — the repair has "
@@ -39524,11 +40114,9 @@ window.edOpenFix=function(){
            runs by itself at load and only ever ADDS a field, so there is
            nothing to press - this says what it did, and offers the way back. */
         +"<div class='tpl-sec'><h4>Card ids</h4>"
-          +"<i class='tpl-hint'>Every card now carries an id of its own, worked out from "
-          +"its saga and name the first time it is seen and frozen from then on. It is what "
-          +"lets a card be renamed or re-homed without the app losing track of which card it "
-          +"is. Nothing else about a card was changed, and an older copy of the app reads "
-          +"this store exactly as it did before.</i>"
+          +"<i class='tpl-hint'>Every card carries an id of its own - random, made when the "
+          +"card is first made, and never changed. It is what lets a card be renamed or "
+          +"re-homed without the app losing track of which card it is.</i>"
           +"<div class='tpl-opts'>"
             +"<button class='ed2-btn tiny' onclick='edCidRefresh()'>Check card ids</button>"
             +"<button class='ed2-btn tiny warn' onclick='edCidRollback()'>Undo the id pass…</button>"
@@ -42449,6 +43037,8 @@ window.edGhCheck=function(){
     if(res.zip)throw new Error('that address returns a saga .zip. Import it on the Sagas page instead.');
     var pkg=pkgFromJson(res.json);
     if(!pkg.cards||!pkg.cards.length)throw new Error('no cards in what came back.');
+    /* before the diff: a card the official set carries is not "made here" */
+    try{ ghClearPublishedLocal(pkg.cards); }catch(_){}
     _ghState={pkg:pkg,diff:ghDiff(ghIncoming(pkg.cards)),checked:new Date().toISOString()};
     /* nothing the official source publishes is missing here: this copy holds
        the whole set, whether or not it ever had a bake to write down */
@@ -42491,7 +43081,21 @@ function ghStripArt(cards){
    points at art/ on disk, so comparing the raw payload reports all 1601 cards
    as changed, for ever, and the badge becomes a permanent lie about work that
    owner mode would then refuse to do. Diff what would actually happen. */
+/* ⚠ NOTHING THAT ARRIVES FROM A SOURCE WAS MADE HERE (session 58). `local`
+   marks a card made on THIS machine. Publish sent it on the author's own new
+   cards until ghBuildCards stopped it, and an import copies every field it is
+   handed - so a reader importing that file took the author's card as their
+   own: editable, and never removed when the author deleted it. Dropped on the
+   way in, whatever the source sends; ghClearPublishedLocal deals with the
+   copies that took it before. Copies, so the fetched package is not altered. */
+function ghNotLocal(cards){
+  return (cards||[]).map(function(c){
+    if(!c||!c.local)return c;
+    var o=JSON.parse(JSON.stringify(c)); delete o.local; return o;
+  });
+}
 function ghIncoming(cards){
+  cards=ghNotLocal(cards);
   return GH_OWNER_MODE?ghKeepLocalArt(cards):cards;
 }
 /* ⚠ STRIPPING WAS WRONG FOR VARIANTS, AND WRONG FOR CARDS THIS COPY LACKS
@@ -42615,6 +43219,31 @@ function ghRemoveGone(gone){
   });
   window.CARDS=(window.CARDS||[]).filter(function(x){ return !drop[x.__id]; });
   return Promise.all(tombs.map(persistCard)).then(function(){ return tombs.length; });
+}
+
+/* ⚠ THE AUTHOR'S CARDS, ON A READER'S COPY, STOP BEING THE READER'S (session
+   58). Until Publish stopped sending it (ghBuildCards), every card the author
+   made in the app went out with `local:1`, so readers' copies hold those
+   cards as their OWN: editable, and never removed by an update. An import
+   never clears a field the source leaves out, so the flag would stay for
+   ever. Matched by the card's id only - a strong match, never a name - and
+   only on a copy following the official set that is not the token holder's:
+   a reader's own cards have random ids no published card carries, so they
+   are never touched. */
+/* ⚠ THE CARD'S id AND ITS RECORD id, BOTH. Before session 57 an id was worked
+   out from the card's name, so a reader's OWN new card and one of the
+   author's could both have been born "New Card 2" and share a card id. A
+   reader's copy of the author's card was imported under the PUBLISHED record
+   id; a reader's own card has a record id of its own. Both ids together are
+   the author's card and nothing else. */
+function ghClearPublishedLocal(incoming){
+  try{ if(edOwnerUnlocked())return 0; }catch(_){ return 0; }
+  if(normGroupUrl(GH_SOURCE)!==normGroupUrl(GH_DEFAULT_SOURCE))return 0;
+  var ids={};
+  (incoming||[]).forEach(function(c){ if(c&&c.cid&&c.id)ids[c.cid]=c.id; });
+  var fixed=(window.CARDS||[]).filter(function(c){ return c&&c.local&&c.cid&&c.id&&ids[c.cid]===c.id; });
+  fixed.forEach(function(c){ delete c.local; try{ persistCard(c); }catch(_){} });
+  return fixed.length;
 }
 
 /* The green badge on the top row. One press: check if there is nothing in
@@ -42826,6 +43455,12 @@ function ghBuildCards(){
   (window.CARDS||[]).forEach(function(c){
     var o=JSON.parse(JSON.stringify(c));
     delete o.__id;
+    /* ⚠ NOT "MADE HERE" (session 58). `local` marks a card made on THIS
+       machine, and it was published with the card - so on every reader's copy
+       the author's own new cards counted as the READER's: editable, and never
+       removed by an update when the author deleted them. A published card is
+       the set's card wherever it lands. */
+    delete o.local;
     artBearers(o).forEach(function(b){
       ['art','imageUrl'].forEach(function(f){
         var v=b[f]||'';
@@ -44047,7 +44682,8 @@ function ghWeeklyRun(){
         }).length;
         held+=changed;
         if(!fresh.length)return;
-        return importCardRows(fresh,sg.name||sg.id).then(function(){ added+=fresh.length; });
+        /* not "made here" either (ghNotLocal) */
+        return importCardRows(ghNotLocal(fresh),sg.name||sg.id).then(function(){ added+=fresh.length; });
       }).catch(function(){ failed++; });
     });
   },Promise.resolve()).then(function(){
