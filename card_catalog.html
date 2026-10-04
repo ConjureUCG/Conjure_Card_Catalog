@@ -28643,7 +28643,7 @@ window.ioImportSheet = function(input){
    glow, the symbols and fewer particles stay.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-var TDFX = {since:{}, hold:{}, landing:{}, items:[], emitOn:false,
+var TDFX = {since:{}, hold:{}, landing:{}, items:[], rects:{}, emitOn:false,
             running:false, last:0, acc:0, accStar:0, tt:0, burst:0};
 var TDFX_COL = {red:'#ff4d3d', orange:'#ff9a2e', yellow:'#ffe14a', green:'#3ddc84',
                 blue:'#3ab7ff', indigo:'#7a63ff', violet:'#d84dff', grey:'#9aa0aa'};
@@ -28695,7 +28695,23 @@ function tdFxArtFrac(el){
   return Math.max(.15, Math.min(.8, (top + a.offsetHeight / 2) / m.offsetHeight));
 }
 
-/* ── the particles: one canvas over the window, clipped to the board ──────── */
+/* ── the particles: one canvas over the window, clipped to the board ────────
+   ⚠ NO shadowBlur WHERE IT REPEATS (the author's optimization pass, session
+   64). Every particle used to be drawn with the canvas's shadowBlur for its
+   glow, and the canvas re-blurs a shadowed shape from scratch on every draw:
+   with four cards declared that was 120-180 blurred draws a frame, MEASURED at
+   23 frames a second on a 2x screen against 144 with the blur off - and the
+   CSS pulses, the canvas layer and the JavaScript barely registered beside
+   it. Each look is drawn ONCE now, glow and all, into a small sprite
+   (tdFxSprite), cached by shape, colour, size and glow; a particle is a
+   single drawImage of it. Rings and Absolute's diamonds are stroked twice -
+   wide and faint, then thin and bright - instead of blurred.
+
+   ⚠ PARTICLES ARE PLAIN RECORDS. Each names a kind, and TDFX_KIND holds the
+   ONE update and draw every particle of that kind shares - a spark used to
+   carry two fresh closures of its own, thousands a second with cards
+   declared, all of it garbage to collect. Only the rare one-off (the flying
+   gem, Absolute's diamonds, Unique's star) still brings a draw of its own. */
 function tdFxCanvas(){
   var cv = document.getElementById('tdFxCanvas');
   if(cv) return cv;
@@ -28706,16 +28722,139 @@ function tdFxCanvas(){
   TDFX.ctx = cv.getContext && cv.getContext('2d');
   tdFxSize();
   window.addEventListener('resize', tdFxSize);
+  /* a stopped loop wakes when declared cards are scrolled back into view - a
+     scroll redraws nothing, so no render would wake it (capture: element
+     scrolls do not bubble) */
+  document.addEventListener('scroll', function(){
+    if(!TDFX.running && document.querySelector('#tdBoard .td-fx-decl')) tdFxKick();
+  }, {passive:true, capture:true});
   return cv;
 }
 function tdFxSize(){
   var cv = document.getElementById('tdFxCanvas');
   if(!cv || !TDFX.ctx) return;
   var d = Math.min(2, window.devicePixelRatio || 1);
+  /* sprites are drawn at the screen's density, so a new density draws them again */
+  if(d !== TDFX.dpr){ TDFX.spr = {}; TDFX.sprN = 0; }
+  TDFX.dpr = d;
   TDFX.W = window.innerWidth; TDFX.H = window.innerHeight;
   cv.width = TDFX.W * d; cv.height = TDFX.H * d;
   TDFX.ctx.setTransform(d, 0, 0, d, 0, 0);
 }
+
+/* ── THE SPRITES ─────────────────────────────────────────────────────────────
+   One small canvas per shape + fill + glow + size + blur, drawn the first time
+   it is asked for and kept. Sizes go by the half pixel (by the pixel past 8),
+   so a shrinking spark steps through a handful of them rather than making a
+   new one every frame. The blur is the same NUMBER the shadowBlur had and is
+   measured in the screen's pixels, as shadowBlur is - so a sprite glows
+   exactly as the shadowed draw it replaces. */
+TDFX.spr = {}; TDFX.sprN = 0;
+function tdFxSprite(shape, fill, glow, r, blur){
+  var rb = r < 8 ? Math.max(.5, Math.round(r * 2) / 2) : Math.round(r);
+  var key = shape + '|' + fill + '|' + glow + '|' + rb + '|' + blur;
+  var s = TDFX.spr[key];
+  if(s) return s;
+  if(TDFX.sprN > 800){ TDFX.spr = {}; TDFX.sprN = 0; }      // a bound, never reached in play
+  var d = TDFX.dpr || 1, half = rb + blur * 1.6 / d, px = Math.max(2, Math.ceil(half * 2 * d));
+  var cv = document.createElement('canvas');
+  cv.width = cv.height = px;
+  var c = cv.getContext('2d');
+  c.setTransform(d, 0, 0, d, px / 2, px / 2);
+  c.fillStyle = fill;
+  if(blur){ c.shadowColor = glow; c.shadowBlur = blur; }
+  if(shape === 'star') tdFxStar(c, 0, 0, rb, 0);
+  else { c.beginPath(); c.arc(0, 0, rb, 0, 7); c.fill(); }
+  s = {cv:cv, half:px / 2 / d};
+  TDFX.spr[key] = s; TDFX.sprN++;
+  return s;
+}
+/* a soft dust cloud: a radial fade, drawn once per colour at 64px and scaled */
+function tdFxPuffSprite(hex){
+  var key = 'puff|' + hex, s = TDFX.spr[key];
+  if(s) return s;
+  var n = parseInt(hex.slice(1), 16), rgb = (n >> 16) + ',' + ((n >> 8) & 255) + ',' + (n & 255);
+  var cv = document.createElement('canvas'); cv.width = cv.height = 64;
+  var c = cv.getContext('2d'), g = c.createRadialGradient(32, 32, 0, 32, 32, 32);
+  g.addColorStop(0, 'rgba(' + rgb + ',1)'); g.addColorStop(1, 'rgba(' + rgb + ',0)');
+  c.fillStyle = g; c.fillRect(0, 0, 64, 64);
+  s = {cv:cv}; TDFX.spr[key] = s; TDFX.sprN++;
+  return s;
+}
+function tdFxBlit(c, s, x, y){ c.drawImage(s.cv, x - s.half, y - s.half, s.half * 2, s.half * 2); }
+/* a sprite turned about its centre; the canvas's base transform is put back */
+function tdFxBlitTurned(c, s, x, y, rot, sc){
+  var h = s.half * (sc || 1);
+  c.translate(x, y); c.rotate(rot);
+  c.drawImage(s.cv, -h, -h, h * 2, h * 2);
+  var d = TDFX.dpr || 1; c.setTransform(d, 0, 0, d, 0, 0);
+}
+/* a prism hue, in 15-degree steps so the flying gem's rainbow is a few dozen
+   sprites rather than one per frame */
+function tdFxHue(h, l){ return 'hsl(' + ((Math.round(h / 15) * 15) % 360) + ',100%,' + l + '%)'; }
+
+/* ── THE KINDS ───────────────────────────────────────────────────────────── */
+var TDFX_KIND = {
+  spark:{
+    update:function(p, dt){ var f = Math.pow(p.drag, dt * 60); p.vx *= f; p.vy = p.vy * f + p.g * dt; p.x += p.vx * dt; p.y += p.vy * dt; },
+    draw:function(c, p, k){ c.globalAlpha = 1 - k; tdFxBlit(c, tdFxSprite('dot', p.color, p.color, p.size * (1 - k * .5), 8), p.x, p.y); }
+  },
+  chunk:{ blend:'source-over',
+    update:function(p, dt){ var f = Math.pow(.97, dt * 60); p.vx *= f; p.vy *= f; p.x += p.vx * dt; p.y += p.vy * dt; },
+    draw:function(c, p, k){
+      var sz = p.sz; c.globalAlpha = 1 - k * k; c.fillStyle = p.color;
+      c.translate(p.x, p.y); c.rotate(p.rot0 + p.spin * p.age);
+      c.beginPath(); c.moveTo(-sz, -sz * .6); c.lineTo(sz * .8, -sz * .8); c.lineTo(sz, sz * .5); c.lineTo(-sz * .5, sz);
+      c.closePath(); c.fill();
+      var d = TDFX.dpr || 1; c.setTransform(d, 0, 0, d, 0, 0); }
+  },
+  puff:{ blend:'source-over',
+    update:function(p, dt){ var f = Math.pow(.95, dt * 60); p.vx *= f; p.vy *= f; p.x += p.vx * dt; p.y += p.vy * dt; },
+    draw:function(c, p, k){
+      var r = p.r0 + (p.r1 - p.r0) * tdFxEaseOut(k);
+      c.globalAlpha = p.a * (1 - k); c.drawImage(tdFxPuffSprite(p.color).cv, p.x - r, p.y - r, r * 2, r * 2); }
+  },
+  ring:{
+    draw:function(c, p, k){
+      var r = p.r0 + (p.r1 - p.r0) * tdFxEaseOut(k), lw = p.w * (1 - k) + .5;
+      if(p.cols && p.cols.length > 1 && c.createConicGradient){
+        if(!p.grad){
+          p.grad = c.createConicGradient(-Math.PI / 2, p.x, p.y);
+          var cs = p.cols.concat([p.cols[0]]);
+          cs.forEach(function(col, i){ p.grad.addColorStop(i / (cs.length - 1), col); });
+        }
+        c.strokeStyle = p.grad;
+      } else c.strokeStyle = p.color;
+      c.beginPath(); c.ellipse(p.x, p.y, r, r * p.sy, 0, 0, 7);
+      /* the glow: the same ellipse, wide and faint, under the line itself */
+      c.globalAlpha = (1 - k) * .28; c.lineWidth = lw + 7; c.stroke();
+      c.globalAlpha = 1 - k; c.lineWidth = lw; c.stroke(); }
+  },
+  wisp:{
+    draw:function(c, p, k){
+      c.globalAlpha = Math.sin(Math.PI * k) * .9;
+      tdFxBlit(c, tdFxSprite('dot', Math.random() < .1 ? '#ffffff' : '#5fb8ff', '#4aa8ff', 2.2 * (1 - k * .5), 12),
+               p.x + Math.sin(p.ph + k * 7) * 10, p.y - k * 60); }
+  },
+  /* a blocker's mote rides its card's border, read from THIS frame's table
+     (TDFX.rects) - it never looks the card up in the page itself */
+  mote:{
+    draw:function(c, p, k){
+      var b = TDFX.rects[p.uid];
+      if(!b) return;
+      var pt = tdFxOnRect(b, p.start + p.speed * p.age, 6 + k * 4.5);
+      var share = p.half === 'bot' ? tdFxBotShare(b, pt[1]) : 1;
+      if(share <= 0) return;
+      c.globalAlpha = Math.sin(Math.PI * k) * share;
+      tdFxBlit(c, tdFxSprite('dot', Math.random() < .08 ? '#fff6cc' : '#ffd75a', '#ffcc33', 2, 10), pt[0], pt[1]); }
+  },
+  star:{
+    draw:function(c, p, k){
+      c.globalAlpha = p.fade === 'sin' ? Math.sin(Math.PI * k) : 1 - k;
+      tdFxBlitTurned(c, tdFxSprite('star', p.color, p.glow || p.color, p.r, p.blur), p.x, p.y, p.rot0 + p.spin * k); }
+  },
+  custom:{ draw:function(c, p, k){ p.draw(c, p, k); } }
+};
 function tdFxAdd(p){ p.age = 0; TDFX.items.push(p); tdFxKick(); return p; }
 function tdFxKick(){
   if(TDFX.running) return;
@@ -28725,70 +28864,63 @@ function tdFxKick(){
   TDFX.last = performance.now();
   requestAnimationFrame(tdFxLoop);
 }
+/* ⚠ THE LOOP SLEEPS when nothing visible needs it: no particle in flight and
+   no declared card on the screen. A board that is hidden (another page) or
+   scrolled away spawns nothing and draws nothing; a render, or scrolling the
+   cards back into view, wakes it. */
 function tdFxLoop(t){
-  var ctx = TDFX.ctx, dt = Math.min(.05, (t - TDFX.last) / 1000);
+  var ctx = TDFX.ctx, d = TDFX.dpr || 1, dt = Math.min(.05, (t - TDFX.last) / 1000);
   TDFX.last = t;
+  ctx.setTransform(d, 0, 0, d, 0, 0);
   ctx.clearRect(0, 0, TDFX.W, TDFX.H);
   var host = document.getElementById('tdBoard');
   var br = host ? host.getBoundingClientRect() : null;
-  var live = !!(br && br.width && host.querySelector('.td-fx-decl'));
-  if(live){ try{ tdFxDeclTick(dt, br); }catch(_){} }
-  ctx.save();
-  if(br && br.width){ ctx.beginPath(); ctx.rect(br.left, br.top, br.width, br.height); ctx.clip(); }
-  TDFX.items = TDFX.items.filter(function(p){
-    p.age += dt;
-    if(p.age >= p.life) return false;
-    var k = p.age / p.life;
-    if(p.update) p.update(p, dt, k);
-    if(br && br.width){
-      ctx.save(); ctx.globalCompositeOperation = p.blend || 'lighter';
-      try{ p.draw(ctx, p, k); }catch(_){}
-      ctx.restore();
-    }
-    return true;
-  });
-  ctx.restore();
-  if(TDFX.items.length || (host && host.querySelector('.td-fx-decl'))) requestAnimationFrame(tdFxLoop);
+  var shown = !!(br && br.width && br.bottom > 0 && br.top < window.innerHeight);
+  var live = 0;
+  if(shown){ try{ live = tdFxDeclTick(dt, br); }catch(_){} }
+  if(shown && TDFX.items.length){
+    ctx.save();
+    ctx.beginPath(); ctx.rect(br.left, br.top, br.width, br.height); ctx.clip();
+    var blend = '';
+    TDFX.items = TDFX.items.filter(function(p){
+      p.age += dt;
+      if(p.age >= p.life) return false;
+      var K = TDFX_KIND[p.kind], k = p.age / p.life;
+      if(K.update) K.update(p, dt);
+      var b = p.blend || K.blend || 'lighter';
+      if(b !== blend){ ctx.globalCompositeOperation = blend = b; }
+      try{ K.draw(ctx, p, k); }catch(_){ ctx.setTransform(d, 0, 0, d, 0, 0); }
+      return true;
+    });
+    ctx.restore();
+  } else {
+    TDFX.items = TDFX.items.filter(function(p){ p.age += dt; return p.age < p.life; });
+  }
+  if(TDFX.items.length || live) requestAnimationFrame(tdFxLoop);
   else { TDFX.running = false; ctx.clearRect(0, 0, TDFX.W, TDFX.H); }
 }
 function tdFxSpark(x, y, vx, vy, color, o){
   o = o || {};
-  return tdFxAdd({x:x, y:y, vx:vx, vy:vy, life:o.life || tdFxRnd(.5, 1.1), size:o.size || tdFxRnd(1.2, 2.8),
-    g:o.g || 0, drag:o.drag == null ? .96 : o.drag, color:color,
-    update:function(p, dt){ p.vx *= Math.pow(p.drag, dt * 60); p.vy = p.vy * Math.pow(p.drag, dt * 60) + p.g * dt;
-      p.x += p.vx * dt; p.y += p.vy * dt; },
-    draw:function(c, p, k){ c.globalAlpha = 1 - k; c.fillStyle = p.color; c.shadowColor = p.color; c.shadowBlur = 8;
-      c.beginPath(); c.arc(p.x, p.y, p.size * (1 - k * .5), 0, 7); c.fill(); }});
+  return tdFxAdd({kind:'spark', x:x, y:y, vx:vx, vy:vy, life:o.life || tdFxRnd(.5, 1.1), size:o.size || tdFxRnd(1.2, 2.8),
+    g:o.g || 0, drag:o.drag == null ? .96 : o.drag, color:color});
 }
 function tdFxChunk(x, y, vx, vy, color){
-  var rot0 = tdFxRnd(0, 7), spin = tdFxRnd(-12, 12), sz = tdFxRnd(1.6, 3.6);
-  return tdFxAdd({x:x, y:y, vx:vx, vy:vy, life:tdFxRnd(.7, 1.2), blend:'source-over',
-    update:function(p, dt){ p.vx *= Math.pow(.97, dt * 60); p.vy *= Math.pow(.97, dt * 60); p.x += p.vx * dt; p.y += p.vy * dt; },
-    draw:function(c, p, k){ c.globalAlpha = 1 - k * k; c.translate(p.x, p.y); c.rotate(rot0 + spin * p.age); c.fillStyle = color;
-      c.beginPath(); c.moveTo(-sz, -sz * .6); c.lineTo(sz * .8, -sz * .8); c.lineTo(sz, sz * .5); c.lineTo(-sz * .5, sz);
-      c.closePath(); c.fill(); }});
+  return tdFxAdd({kind:'chunk', x:x, y:y, vx:vx, vy:vy, life:tdFxRnd(.7, 1.2), color:color,
+    rot0:tdFxRnd(0, 7), spin:tdFxRnd(-12, 12), sz:tdFxRnd(1.6, 3.6)});
 }
 function tdFxPuff(x, y, vx, vy, hex){
-  var n = parseInt(hex.slice(1), 16), rgb = (n >> 16) + ',' + ((n >> 8) & 255) + ',' + (n & 255);
-  return tdFxAdd({x:x, y:y, vx:vx, vy:vy, life:tdFxRnd(1.1, 1.7), r0:tdFxRnd(8, 16), r1:tdFxRnd(36, 60), a:.3, blend:'source-over',
-    update:function(p, dt){ p.vx *= Math.pow(.95, dt * 60); p.vy *= Math.pow(.95, dt * 60); p.x += p.vx * dt; p.y += p.vy * dt; },
-    draw:function(c, p, k){ var r = p.r0 + (p.r1 - p.r0) * tdFxEaseOut(k), g = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
-      g.addColorStop(0, 'rgba(' + rgb + ',' + (p.a * (1 - k)) + ')'); g.addColorStop(1, 'rgba(' + rgb + ',0)');
-      c.fillStyle = g; c.beginPath(); c.arc(p.x, p.y, r, 0, 7); c.fill(); }});
+  return tdFxAdd({kind:'puff', x:x, y:y, vx:vx, vy:vy, life:tdFxRnd(1.1, 1.7), r0:tdFxRnd(8, 16), r1:tdFxRnd(36, 60), a:.3, color:hex});
 }
 function tdFxRing(x, y, color, o){
   o = o || {};
-  return tdFxAdd({x:x, y:y, life:o.life || .7, r0:o.r0 || 10, r1:o.r1 || 140, w:o.w || 4, color:color, sy:o.sy || 1, cols:o.cols,
-    draw:function(c, p, k){ var r = p.r0 + (p.r1 - p.r0) * tdFxEaseOut(k);
-      c.globalAlpha = 1 - k; c.lineWidth = p.w * (1 - k) + .5; c.shadowColor = p.color; c.shadowBlur = 14;
-      if(p.cols && p.cols.length > 1 && c.createConicGradient){
-        var g = c.createConicGradient(-Math.PI / 2, p.x, p.y), cs = p.cols.concat([p.cols[0]]);
-        cs.forEach(function(col, i){ g.addColorStop(i / (cs.length - 1), col); });
-        c.strokeStyle = g;
-      } else c.strokeStyle = p.color;
-      c.beginPath(); c.ellipse(p.x, p.y, r, r * p.sy, 0, 0, 7); c.stroke(); }});
+  return tdFxAdd({kind:'ring', x:x, y:y, life:o.life || .7, r0:o.r0 || 10, r1:o.r1 || 140, w:o.w || 4, color:color,
+    sy:o.sy || 1, cols:o.cols});
 }
-function tdFxCustom(life, draw){ return tdFxAdd({life:life, draw:draw}); }
+function tdFxStarP(x, y, o){
+  return tdFxAdd({kind:'star', x:x, y:y, life:o.life, r:o.r, rot0:o.rot0 || 0, spin:o.spin || 0,
+    color:o.color, glow:o.glow, blur:o.blur == null ? 8 : o.blur, fade:o.fade});
+}
+function tdFxCustom(life, draw){ return tdFxAdd({kind:'custom', life:life, draw:draw}); }
 function tdFxStar(c, x, y, r, rot){
   c.beginPath();
   for(var i = 0; i < 8; i++){ var a = rot + i * Math.PI / 4, rr = i % 2 ? r * .22 : r;
@@ -28801,16 +28933,18 @@ function tdFxHex(c, x, y, r, rot){
   c.closePath();
 }
 /* Absolute's five gold diamonds: two fixed at 100% and 90%, three at random
-   between 75% and 115%. */
+   between 75% and 115%. Stroked twice - wide and faint, then the line. */
 function tdFxDiamonds(cx, cy, base){
   var sizes = [base, base * .9, base * tdFxRnd(.75, 1.15), base * tdFxRnd(.75, 1.15), base * tdFxRnd(.75, 1.15)];
   sizes.forEach(function(S, i){
     setTimeout(function(){
       var col = i % 2 ? '#fff2b8' : '#ffd24a', lw = i < 2 ? 3 : tdFxRnd(1.6, 2.6);
       tdFxCustom(tdFxRnd(.7, .95), function(c, p, k){
-        var s = base * .15 + (S - base * .15) * tdFxEaseOut(k);
-        c.globalAlpha = 1 - k; c.strokeStyle = col; c.shadowColor = '#ffd24a'; c.shadowBlur = 16; c.lineWidth = lw;
-        c.translate(cx, cy); c.rotate(Math.PI / 4); c.strokeRect(-s / 2, -s / 2, s, s);
+        var s = base * .15 + (S - base * .15) * tdFxEaseOut(k), d = TDFX.dpr || 1;
+        c.translate(cx, cy); c.rotate(Math.PI / 4);
+        c.strokeStyle = '#ffd24a'; c.globalAlpha = (1 - k) * .3; c.lineWidth = lw + 8; c.strokeRect(-s / 2, -s / 2, s, s);
+        c.strokeStyle = col; c.globalAlpha = 1 - k; c.lineWidth = lw; c.strokeRect(-s / 2, -s / 2, s, s);
+        c.setTransform(d, 0, 0, d, 0, 0);
       });
     }, i === 0 ? 0 : i * 95 + tdFxRnd(0, 70));
   });
@@ -28824,11 +28958,8 @@ function tdFxMythicOn(el){
   for(var i = 0; i < 38; i++) (function(i){
     setTimeout(function(){
       var a = tdFxRnd(0, 7), r = tdFxRnd(B.w * .5, B.h * .8);
-      tdFxCustom(.8, function(c, p, k){
-        c.globalAlpha = Math.sin(Math.PI * k); c.fillStyle = 'hsl(' + ((i * 37) % 360) + ',100%,80%)';
-        c.shadowColor = c.fillStyle; c.shadowBlur = 10;
-        tdFxStar(c, B.cx + Math.cos(a) * r, B.cy + Math.sin(a) * r, 5, k * 2.25);
-      });
+      tdFxStarP(B.cx + Math.cos(a) * r, B.cy + Math.sin(a) * r,
+                {life:.8, r:5, spin:2.25, color:tdFxHue(i * 37, 80), blur:10, fade:'sin'});
     }, i * 40);
   })(i);
 }
@@ -29051,25 +29182,14 @@ function tdFxFlame(x, y){
   tdFxSpark(x, y, tdFxRnd(-12, 12), -tdFxRnd(35, 95), tdFxPick(TDFX_FLAME), {drag:.99, size:tdFxRnd(1.3, 2.8), life:tdFxRnd(.5, .9)});
 }
 function tdFxWisp(x, y){
-  var ph = tdFxRnd(0, 7);
-  tdFxAdd({life:tdFxRnd(1, 1.5), draw:function(c, p, k){
-    var yy = y - k * 60, xx = x + Math.sin(ph + k * 7) * 10;
-    c.globalAlpha = Math.sin(Math.PI * k) * .9; c.fillStyle = Math.random() < .1 ? '#ffffff' : '#5fb8ff';
-    c.shadowColor = '#4aa8ff'; c.shadowBlur = 12; c.beginPath(); c.arc(xx, yy, 2.2 * (1 - k * .5), 0, 7); c.fill(); }});
+  tdFxAdd({kind:'wisp', x:x, y:y, ph:tdFxRnd(0, 7), life:tdFxRnd(1, 1.5)});
 }
 /* the blocker's motes: round the border just outside the card, clockwise or
    counter-clockwise at random; on the bottom half only (fading over the
    blend) when the top belongs to the Thaumaturge */
 function tdFxMote(uid, half){
-  var start = tdFxRnd(0, 2000), speed = tdFxRnd(45, 82.5) * (Math.random() < .5 ? 1 : -1);
-  tdFxAdd({life:tdFxRnd(1.1, 1.7), draw:function(c, p, k){
-    var el = tdFxEl(uid);
-    if(!el || !el.classList.contains('td-fx-decl')) return;
-    var b = tdFxRect(el), pt = tdFxOnRect(b, start + speed * p.age, 6 + k * 4.5);
-    var share = half === 'bot' ? tdFxBotShare(b, pt[1]) : 1;
-    if(share <= 0) return;
-    c.globalAlpha = Math.sin(Math.PI * k) * share; c.fillStyle = Math.random() < .08 ? '#fff6cc' : '#ffd75a';
-    c.shadowColor = '#ffcc33'; c.shadowBlur = 10; c.beginPath(); c.arc(pt[0], pt[1], 2, 0, 7); c.fill(); }});
+  tdFxAdd({kind:'mote', uid:uid, half:half, start:tdFxRnd(0, 2000),
+           speed:tdFxRnd(45, 82.5) * (Math.random() < .5 ? 1 : -1), life:tdFxRnd(1.1, 1.7)});
 }
 /* the card's turn, read off its computed matrix - ⚠ from INSIDE the brackets:
    a floating card's transform is a matrix3d(...), and a bare number match
@@ -29080,34 +29200,73 @@ function tdFxTurnOf(el){
   var v = m.slice(m.indexOf('(') + 1, m.lastIndexOf(')')).split(',').map(Number);
   return Math.atan2(v[1], v[0]) * 180 / Math.PI - (el.classList.contains('locked') ? 90 : 0);
 }
+/* ⚠ EVERY READ FIRST, EVERY WRITE AFTER (session 64). Each card's place, its
+   diamond and its turn are read once a frame into TDFX.rects, before a single
+   attribute is written: a write between two reads makes the browser lay the
+   page out again for the second, once per card per frame. The motes, the
+   lines and the spawns all read from that table. And a write happens only when
+   it changes something - a stat icon's gradients when the angle moved a
+   degree, a line's ends when they moved half a pixel. The elements' own
+   lookups (its diamond, its gradients) are kept on the element, which a render
+   replaces, so they can never go stale.
+
+   Returns how many declared cards are on the screen - the loop sleeps at 0. */
 function tdFxDeclTick(dt, br){
   var host = document.getElementById('tdBoard');
   var cards = host.querySelectorAll('.td-card.td-fx-decl');
+  TDFX.rects = {};
+  if(!cards.length) return 0;
   TDFX.tt += dt; TDFX.acc += dt; TDFX.accStar += dt; TDFX.burst += dt;
-  var list = [];
-  for(var i = 0; i < cards.length; i++){
+  var burstDue = TDFX.burst >= 3, vw = window.innerWidth, vh = window.innerHeight;
+  var list = [], rects = TDFX.rects, i;
+  for(i = 0; i < cards.length; i++){
     var el = cards[i], r = el.getBoundingClientRect();
     if(!r.width) continue;
-    list.push({el:el, uid:el.getAttribute('data-uid'), role:(el.className.match(/td-fx-(atk|blk|thatk|thblk)\b/) || [])[1]});
-    /* ⚠ ONLY THE GRADIENTS THE APP TURNS (data-rot), from its resting 120°.
-       A combined orb's fade masks are the seam between its two stats, not
-       light; turning them stood the seam on its end. */
-    var ang = 120 + tdFxTurnOf(el) * 14;
-    var gs = el.querySelectorAll('.td-fx-stat linearGradient[data-rot]');
-    for(var j = 0; j < gs.length; j++) gs[j].setAttribute('gradientTransform', 'rotate(' + ang.toFixed(1) + ' .5 .5)');
+    if(el.__fxRole === undefined){
+      el.__fxRole = (el.className.match(/td-fx-(atk|blk|thatk|thblk)\b/) || [])[1] || '';
+      el.__fxIcon = el.querySelector(':scope > .td-fx-icon');
+      el.__fxDia = el.__fxIcon && el.__fxIcon.querySelector('.td-fx-dia');
+      /* ⚠ ONLY THE GRADIENTS THE APP TURNS (data-rot), from its resting 120°.
+         A combined orb's fade masks are the seam between its two stats, not
+         light; turning them stood the seam on its end. */
+      el.__fxGs = el.querySelectorAll(':scope > .td-fx-stat linearGradient[data-rot]');
+    }
+    var b = {x:r.left, y:r.top, w:r.width, h:r.height, cx:r.left + r.width / 2, cy:r.top + r.height / 2,
+             on:r.bottom > 0 && r.top < vh && r.right > 0 && r.left < vw};
+    var dr = el.__fxDia ? el.__fxDia.getBoundingClientRect() : null;
+    b.dia = (dr && dr.width) ? {x:dr.left + dr.width / 2 - br.left, y:dr.top + dr.height / 2 - br.top}
+                             : {x:b.cx - br.left, y:b.cy - br.top};
+    var uid = el.getAttribute('data-uid');
+    rects[uid] = b;
+    list.push({el:el, uid:uid, role:el.__fxRole, b:b,
+               ang:el.__fxGs.length ? 120 + tdFxTurnOf(el) * 14 : null,
+               ic:(burstDue && el.__fxIcon) ? tdFxRect(el.__fxIcon) : null});
   }
-  /* the block lines follow the diamonds as the cards float */
   var lines = host.querySelectorAll('.td-blockline[data-from]');
+  /* - the writes - */
+  list.forEach(function(d){
+    if(d.ang == null || (d.el.__fxAng != null && Math.abs(d.ang - d.el.__fxAng) < 1)) return;
+    d.el.__fxAng = d.ang;
+    for(var g = 0; g < d.el.__fxGs.length; g++)
+      d.el.__fxGs[g].setAttribute('gradientTransform', 'rotate(' + d.ang.toFixed(1) + ' .5 .5)');
+  });
+  /* the block lines follow the diamonds as the cards float */
   for(var l = 0; l < lines.length; l++){
-    var f = tdFxAnchor(lines[l].getAttribute('data-from'), br), t = tdFxAnchor(lines[l].getAttribute('data-to'), br);
+    var L = lines[l], f = rects[L.getAttribute('data-from')], t = rects[L.getAttribute('data-to')];
     if(!f || !t) continue;
-    lines[l].setAttribute('x1', f.x.toFixed(1)); lines[l].setAttribute('y1', f.y.toFixed(1));
-    lines[l].setAttribute('x2', t.x.toFixed(1)); lines[l].setAttribute('y2', t.y.toFixed(1));
+    var v = [f.dia.x, f.dia.y, t.dia.x, t.dia.y], o = L.__fx;
+    if(o && Math.abs(o[0] - v[0]) < .5 && Math.abs(o[1] - v[1]) < .5
+         && Math.abs(o[2] - v[2]) < .5 && Math.abs(o[3] - v[3]) < .5) continue;
+    L.__fx = v;
+    L.setAttribute('x1', v[0].toFixed(1)); L.setAttribute('y1', v[1].toFixed(1));
+    L.setAttribute('x2', v[2].toFixed(1)); L.setAttribute('y2', v[3].toFixed(1));
   }
+  /* - the spawns: only round a card that is on the screen - */
+  list = list.filter(function(d){ return d.b.on; });
   if(TDFX.acc >= (tdFxReduced() ? .09 : .03)){
     TDFX.acc = 0;
     list.forEach(function(d){
-      var b = tdFxRect(d.el), pt;
+      var b = d.b, pt;
       if(d.role === 'atk'){ pt = tdFxEdgePoint(b); tdFxFlame(pt[0], pt[1]); }
       else if(d.role === 'blk') tdFxMote(d.uid);
       else if(d.role === 'thatk'){ pt = tdFxEdgePoint(b);
@@ -29121,25 +29280,27 @@ function tdFxDeclTick(dt, br){
     TDFX.accStar = 0;
     list.forEach(function(d){
       if(d.role !== 'thatk') return;
-      var b = tdFxRect(d.el);
-      for(var s = 0; s < 3; s++) (function(a0){
-        tdFxAdd({life:.4, draw:function(c, p, k){ c.globalAlpha = 1 - k; c.fillStyle = '#9fd0ff'; c.shadowColor = '#4aa8ff';
-          c.shadowBlur = 8; tdFxStar(c, b.cx + Math.cos(a0) * b.w * .7, b.cy + Math.sin(a0) * b.h * .25 + b.h * .55, 3.5, a0); }});
-      })(TDFX.tt * 2 + s * 2.09);
+      var b = d.b;
+      for(var s = 0; s < 3; s++){
+        var a0 = TDFX.tt * 2 + s * 2.09;
+        tdFxStarP(b.cx + Math.cos(a0) * b.w * .7, b.cy + Math.sin(a0) * b.h * .25 + b.h * .55,
+                  {life:.4, r:3.5, rot0:a0, color:'#9fd0ff', glow:'#4aa8ff', blur:8});
+      }
     });
   }
   /* a ring burst off each symbol every 3 seconds - the symbol is not redrawn */
-  if(TDFX.burst >= 3){
+  if(burstDue){
     TDFX.burst = 0;
     list.forEach(function(d){
-      var ic = d.el.querySelector(':scope > .td-fx-icon');
-      if(!ic) return;
-      var r = tdFxRect(ic), col = TDFX_ROLES[d.role] ? TDFX_ROLES[d.role].ic : '#ffffff';
+      var r = d.ic;
+      if(!r) return;
+      var col = TDFX_ROLES[d.role] ? TDFX_ROLES[d.role].ic : '#ffffff';
       tdFxRing(r.cx, r.cy, col, {r0:5, r1:46, w:2.5, life:.5});
       for(var q = 0; q < 12; q++){ var a = tdFxRnd(0, 7);
         tdFxSpark(r.cx, r.cy, Math.cos(a) * tdFxRnd(50, 130), Math.sin(a) * tdFxRnd(50, 130), col, {life:.5}); }
     });
   }
+  return list.length;
 }
 
 /* ═════ 3. CRYSTALLIZE ═════ */
@@ -29249,28 +29410,39 @@ function tdFxGemFlight(fromArt, target, cols, eCard, er, T, done){
   var mythic = tdFxHasSuper(eCard, 'mythic'), unique = tdHasKeyword(eCard, 'Unique');
   var ctl = {x:(fromArt.x + target.x) / 2 + 60, y:Math.min(fromArt.y, target.y) - 110};
   var c1 = TDFX_COL[cols[0]], c2 = TDFX_COL[cols[1] || cols[0]], s = Math.max(9, Math.min(15, er.w * .15));
-  tdFxAdd({life:T, blend:'source-over', draw:function(c, p, k){
-    var e = tdFxEaseInOut(k), u = 1 - e;
+  var gemGrad = null;
+  tdFxAdd({kind:'custom', life:T, blend:'source-over', draw:function(c, p, k){
+    var e = tdFxEaseInOut(k), u = 1 - e, d = TDFX.dpr || 1;
     var x = u * u * fromArt.x + 2 * u * e * ctl.x + e * e * target.x, y = u * u * fromArt.y + 2 * u * e * ctl.y + e * e * target.y;
     var turn = Math.min(1, k * 1.15);
     for(var i = 0; i < (cols.length > 1 ? 2 : 1) + (mythic ? 1 : 0); i++){
       var ang = k * 26 + i * Math.PI, ox = cols.length > 1 ? Math.cos(ang) * 8 : 0, oy = cols.length > 1 ? Math.sin(ang) * 8 : 0;
-      var prism = 'hsl(' + ((k * 900 + i * 120) % 360) + ',100%,78%)';
       tdFxSpark(x + ox, y + oy, tdFxRnd(-20, 20), tdFxRnd(-20, 20),
-                (mythic || Math.random() > turn) ? prism : TDFX_COL[cols[i % cols.length]], {life:tdFxRnd(.35, .6), size:tdFxRnd(1.4, 2.6)});
+                (mythic || Math.random() > turn) ? tdFxHue(k * 900 + i * 120, 78) : TDFX_COL[cols[i % cols.length]],
+                {life:tdFxRnd(.35, .6), size:tdFxRnd(1.4, 2.6)});
     }
+    /* its glow: a soft sprite under it, white turning to its colour - in place
+       of a 20px shadowBlur on the gem every frame */
+    c.globalCompositeOperation = 'lighter';
+    c.globalAlpha = (1 - turn) * .8; tdFxBlit(c, tdFxSprite('dot', '#ffffff', '#ffffff', s * .7, 22), x, y);
+    c.globalAlpha = turn * .8; tdFxBlit(c, tdFxSprite('dot', c1, c1, s * .7, 20), x, y);
+    c.globalCompositeOperation = 'source-over';
     c.translate(x, y); c.rotate(Math.sin(k * 6) * .25); c.scale(Math.max(.12, Math.abs(Math.cos(k * Math.PI * 5))), 1);
     c.globalAlpha = 1 - turn;
     var w = c.createLinearGradient(-s, -s, s, s), h0 = (k * 700) % 360;
     w.addColorStop(0, '#ffffff'); w.addColorStop(.35, 'hsl(' + h0 + ',100%,88%)'); w.addColorStop(.55, '#ffffff');
     w.addColorStop(.75, 'hsl(' + ((h0 + 140) % 360) + ',100%,86%)'); w.addColorStop(1, '#e8ecff');
-    c.fillStyle = w; c.shadowColor = '#ffffff'; c.shadowBlur = 22; tdFxHex(c, 0, 0, s, Math.PI / 6); c.fill();
+    c.fillStyle = w; tdFxHex(c, 0, 0, s, Math.PI / 6); c.fill();
     c.globalAlpha = turn;
-    var g = c.createLinearGradient(-s, -s, s, s);
-    g.addColorStop(0, '#ffffff'); g.addColorStop(.45, c1); g.addColorStop(.55, c2); g.addColorStop(1, tdFxMix(c2, '#000000', .35));
-    c.fillStyle = g; c.shadowColor = c1; c.shadowBlur = 20; tdFxHex(c, 0, 0, s, Math.PI / 6); c.fill();
+    if(!gemGrad){       /* its own colours never change, so made once */
+      gemGrad = c.createLinearGradient(-s, -s, s, s);
+      gemGrad.addColorStop(0, '#ffffff'); gemGrad.addColorStop(.45, c1); gemGrad.addColorStop(.55, c2);
+      gemGrad.addColorStop(1, tdFxMix(c2, '#000000', .35));
+    }
+    c.fillStyle = gemGrad; tdFxHex(c, 0, 0, s, Math.PI / 6); c.fill();
     c.globalAlpha = .55; c.fillStyle = '#ffffff'; c.beginPath(); c.moveTo(-s * .35, -s * .55); c.lineTo(s * .2, -s * .35);
-    c.lineTo(-s * .1, s * .1); c.lineTo(-s * .55, -s * .15); c.closePath(); c.fill(); }});
+    c.lineTo(-s * .1, s * .1); c.lineTo(-s * .55, -s * .15); c.closePath(); c.fill();
+    c.setTransform(d, 0, 0, d, 0, 0); }});
   setTimeout(function(){
     done();
     cols.forEach(function(cl, i){ tdFxRing(target.x, target.y, TDFX_COL[cl], {r0:5, r1:50 + i * 16, w:3.5, life:.6 + i * .1}); });
@@ -29279,13 +29451,16 @@ function tdFxGemFlight(fromArt, target, cols, eCard, er, T, done){
     if(mythic) for(var m = 0; m < 14; m++) (function(m){
       setTimeout(function(){
         var an = tdFxRnd(0, 7), r = tdFxRnd(16, 48);
-        tdFxCustom(.6, function(c, p, k){ c.globalAlpha = Math.sin(Math.PI * k); c.fillStyle = 'hsl(' + ((m * 47) % 360) + ',100%,82%)';
-          c.shadowColor = c.fillStyle; c.shadowBlur = 10; tdFxStar(c, target.x + Math.cos(an) * r, target.y + Math.sin(an) * r, 4.5, k * 4); });
+        tdFxStarP(target.x + Math.cos(an) * r, target.y + Math.sin(an) * r,
+                  {life:.6, r:4.5, spin:4, color:tdFxHue(m * 47, 82), blur:10, fade:'sin'});
       }, m * 45);
     })(m);
     if(unique){
-      tdFxCustom(1, function(c, p, k){ c.fillStyle = '#ffffff'; c.shadowColor = '#fff2a8'; c.shadowBlur = 24;
-        tdFxStar(c, target.x, target.y - 3, 28 * Math.sin(Math.PI * k), k * 2); });
+      /* one big star swelling and shrinking: its sprite drawn once at full size, then scaled */
+      tdFxCustom(1, function(c, p, k){
+        c.globalAlpha = 1;
+        tdFxBlitTurned(c, tdFxSprite('star', '#ffffff', '#fff2a8', 28, 24), target.x, target.y - 3, k * 2,
+                       Math.max(.01, Math.sin(Math.PI * k))); });
       tdFxDiamonds(target.x, target.y, 100);
     }
   }, T * 1000);
@@ -29318,7 +29493,7 @@ function tdFxAction(board, a, before){
 
 /* for the checks: what is in flight */
 window.tdFxStats = function(){
-  return {particles:TDFX.items.length, running:TDFX.running,
+  return {particles:TDFX.items.length, running:TDFX.running, sprites:TDFX.sprN || 0,
           holds:Object.keys(TDFX.hold).length, landing:Object.keys(TDFX.landing).length};
 };
 /* ═══════════════════════════════════════════════════════════════════════════
