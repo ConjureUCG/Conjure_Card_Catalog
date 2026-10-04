@@ -2855,6 +2855,14 @@ span.ed2-sagachip{cursor:default}
   pointer-events:none;background:#e0a020;color:#1a1206;font:700 10px/1 'Cinzel',serif;
   letter-spacing:.16em;padding:3px 9px 3px 10px;border-radius:0 0 7px 7px;
   box-shadow:0 2px 6px rgba(0,0,0,.45)}
+
+/* Rebirth's Damage Type section (session 63): its two Add buttons on the
+   heading, and the class ticks in a damage entry's editor */
+.kwp-hacts{display:inline-flex;gap:6px;margin-left:12px;vertical-align:middle}
+.kwe-dmgcls{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px}
+.kwe-dmgcls[hidden]{display:none}
+.kwe-dmglab{font-size:.78rem;color:var(--tm,#9aa3b5)}
+.kwe-chk{display:inline-flex;align-items:center;gap:5px;font-size:.84rem;cursor:pointer}
 /* ═══════════════════════════════════════════════════════════════════════════
    CONJURE UCG — CLASSIC CARD FACE LAYOUT  (standalone / default look)
    ---------------------------------------------------------------------------
@@ -32060,12 +32068,74 @@ function symToken(tok,size){
      reminderBare  optional text used when no value is written
    'cost' renders the value as a mana symbol {2}; the others insert it plainly. */
 var KW_BAKED=null, KWCUSTOM=[];
+/* ── DAMAGE TYPES AND DAMAGE CLASSES - REBIRTH ONLY (the author, session 63) ──
+   From the author's "Rebirth Damage Types" sheet: three Damage Classes and the
+   Damage Types in each - Gravity counts as all three. They sit on the Keywords
+   page in their own section, "Damage Type", and are drawn in rules text as
+   pills, but ONLY with a number after them: "Slash -1", "SL +2", "FI 3". The
+   number, positive or negative, is inside the pill; "a Fire Elemental" or
+   "Magic" in ordinary prose is left alone. The name and the abbreviation both
+   match, exactly as written - "SL" and "Slash", never "sl" or "slash".
+
+   ⚠ BUILT IN, NOT STORED. These are code, merged in edApplyCustomEntries
+   like the main game's baked keywords - so an official keywords.json or a
+   look replacing KW_BAKED cannot take them away, and nothing is written over
+   anything the author set. Their colours are DEFAULTS in kwStyleFor (the
+   sheet's font colour is the pill's font AND outline, its fill the fill);
+   the author's own colours win, and Reset styles goes back to these.
+
+   The author's own Damage Types and Classes are ordinary kwcustom records with
+   mode 'damage', dmgKind 'type'|'class' and dmgClass, the list of class NAMES
+   a type belongs to. A record with the same name - or `replaces` naming a
+   built-in it renamed - takes the built-in's place.
+   kind, name, abbreviation, classes, font (= outline), fill */
+var RB_DAMAGE=[
+  ['class','Physical','PHYS',[],'#d9d9d9','#434343'],
+  ['class','Elemental','ELEM',[],'#6ebace','#d2f4eb'],
+  ['class','Mystic','MYST',[],'#ce6aaf','#efcce4'],
+  ['type','Slash','SL',['Physical'],'#ea9999','#434343'],
+  ['type','Pierce','PI',['Physical'],'#ffe599','#434343'],
+  ['type','Blunt','BL',['Physical'],'#a4c2f4','#434343'],
+  ['type','Fire','FI',['Elemental'],'#cc0000','#f4a049'],
+  ['type','Ice','IC',['Elemental'],'#1155cc','#cfe2f3'],
+  ['type','Lightning','LI',['Elemental'],'#bf9000','#ffe599'],
+  ['type','Wind','WI',['Elemental'],'#738fa9','#cfe2f3'],
+  ['type','Earth','EA',['Elemental'],'#968143','#eddcaa'],
+  ['type','Water','WA',['Elemental'],'#c9daf8','#3c78d8'],
+  ['type','Magic','MA',['Mystic'],'#351c75','#8e7cc3'],
+  ['type','Psychic','PS',['Mystic'],'#741b47','#d5a6bd'],
+  ['type','Necrotic','NE',['Mystic'],'#b6d7a8','#104118'],
+  ['type','Holy','HO',['Mystic'],'#ffffff','#ffd966'],
+  ['type','Demonic','DE',['Mystic'],'#cc0000','#280b0b'],
+  ['type','Gravity','GR',['Physical','Elemental','Mystic'],'#d596ef','#802a79']
+];
+var RB_DAMAGE_STYLE={};
+RB_DAMAGE.forEach(function(d){ RB_DAMAGE_STYLE[d[1]]={t:d[4],o:d[4],f:d[5]}; });
+/* the built-ins as KW_DATA entries, each abbreviation an alias of its name */
+function rbDamageBuiltins(){
+  if(!window.REBIRTH)return [];
+  return RB_DAMAGE.reduce(function(a,d){
+    var base={name:d[1],mode:'damage',match:d[1],matchAlt:d[2],param:'number',reminder:'',
+              dmgKind:d[0],dmgClass:d[3].slice(),__dmgBuiltin:true};
+    return a.concat([base,Object.assign({},base,{match:d[2],__alias:true})]);
+  },[]);
+}
+window.edRbDamage=function(){ return RB_DAMAGE.map(function(d){
+  return {kind:d[0],name:d[1],abbr:d[2],classes:d[3].slice(),font:d[4],fill:d[5]}; }); };
 function kwCustomAll(){return new Promise(function(res){try{var r=tx('kwcustom','readonly').getAll();
   r.onsuccess=function(){res(r.result||[])};r.onerror=function(){res([])};}catch(_){res([]);}});}
 function kwCustomToEntry(c){
-  return {name:c.name, mode:c.mode||'keyword', match:(c.match||c.name),
+  var o={name:c.name, mode:c.mode||'keyword', match:(c.match||c.name),
           reminder:c.reminder||'', reminderBare:c.reminderBare||'',
           param:c.param||'none', __custom:true, __id:c.id};
+  /* a Damage Type or Class (session 63) carries what it is and its classes */
+  if(o.mode==='damage'){
+    o.dmgKind=(c.dmgKind==='class')?'class':'type';
+    o.dmgClass=(o.dmgKind==='type')?(c.dmgClass||[]).slice():[];
+    o.matchAlt=c.matchAlt||''; o.param='number';
+    if(c.replaces)o.replaces=c.replaces;
+  }
+  return o;
 }
 /* Extra words that should behave as the SAME entry ("Grinds" -> "Grind").
    Stored as a newline/comma separated string on the record; each one becomes
@@ -32085,8 +32155,19 @@ function kwCustomEntries(c){
 }
 function edApplyCustomEntries(){
   if(!KW_BAKED)KW_BAKED=(window.KW_DATA||[]).slice();
-  var over={}; KWCUSTOM.forEach(function(c){ over[(c.mode||'keyword')+'\u0000'+c.name]=1; });
-  var merged=KW_BAKED.filter(function(b){ return !over[(b.mode||'keyword')+'\u0000'+b.name]; })
+  var over={}; KWCUSTOM.forEach(function(c){
+    over[(c.mode||'keyword')+'\u0000'+c.name]=1;
+    /* a renamed built-in Damage Type still takes the built-in's place */
+    if(c.replaces)over[(c.mode||'keyword')+'\u0000'+c.replaces]=1;
+  });
+  /* Rebirth's built-in Damage Types (session 63). A published keywords.json
+     carries them too, as KW_BAKED entries - the code's copy is the one kept, so
+     they are never listed twice. */
+  var dmg=rbDamageBuiltins(), dmgName={};
+  dmg.forEach(function(d){ dmgName[d.name]=1; });
+  var merged=KW_BAKED.filter(function(b){ return !over[(b.mode||'keyword')+'\u0000'+b.name]
+                                             && !((b.mode==='damage')&&dmgName[b.name]); })
+                     .concat(dmg.filter(function(d){ return !over['damage\u0000'+d.name]; }))
                      .concat(KWCUSTOM.reduce(function(a,c){return a.concat(kwCustomEntries(c));},[]));
   window.KW_DATA=merged;
   window.KW_MATCHES=merged.slice().sort(function(a,b){
@@ -32109,6 +32190,60 @@ window.edKwCustomSave=function(rec){
     try{ if(typeof window.edRenderKwPage==='function'&&document.getElementById('kwPageBody'))window.edRenderKwPage(); }catch(_){}
     edKwManageRefresh(); edKwPanelRefresh();
   });
+};
+/* ── SAVING A DAMAGE TYPE OR CLASS (session 63) ───────────────────────────────────────────
+   `was` is the name the entry had before this edit. Three things beyond an
+   ordinary save:
+     - a BUILT-IN renamed here records `replaces`, so it does not come back
+       beside its new name;
+     - a rename carries the colours with it, unless the new name has its own;
+     - a CLASS renamed takes its members along: every type that listed the old
+       name is saved again with the new one, a built-in type as an override. */
+/* ⚠ IN THE SHEET'S ORDER. An edited built-in is a custom record, and those
+   come after the built-ins in KW_DATA - so a plain list would move Slash to
+   the end of its class the moment its colour or abbreviation was changed.
+   An entry that is, or replaces, a built-in keeps that built-in's place;
+   everything the author added follows, in the order it was added. */
+function dmgEntries(){
+  var at={}; RB_DAMAGE.forEach(function(d,i){ at[d[1]]=i; });
+  return (window.KW_DATA||[]).filter(function(k){ return k.mode==='damage'&&!k.__alias; })
+    .map(function(k,i){
+      var b=(k.name in at)?at[k.name]:(k.replaces in at)?at[k.replaces]:null;
+      return {k:k,o:(b==null?1000+i:b)};
+    }).sort(function(a,b){ return a.o-b.o; }).map(function(x){ return x.k; });
+}
+window.edDmgEntries=dmgEntries;
+window.edDmgClasses=function(){
+  return dmgEntries().filter(function(k){ return k.dmgKind==='class'; });
+};
+window.edDmgMembers=function(cls){
+  return dmgEntries().filter(function(k){ return k.dmgKind!=='class'&&(k.dmgClass||[]).indexOf(cls)>=0; });
+};
+window.edDmgSave=function(rec,was){
+  var prev=was?KWCUSTOM.filter(function(c){ return c.mode==='damage'&&c.name===was; })[0]:null;
+  var kind=(rec.dmgKind==='class')?'class':'type';
+  var full={id:rec.id||(prev&&prev.id),name:rec.name,mode:'damage',match:rec.name,
+            matchAlt:rec.matchAlt||'',param:'number',reminder:'',reminderBare:'',
+            dmgKind:kind,dmgClass:(kind==='type')?(rec.dmgClass||[]).slice():[]};
+  var rep=rec.replaces||(prev&&prev.replaces);
+  if(!rep&&was&&was!==rec.name&&!prev&&RB_DAMAGE_STYLE[was])rep=was;
+  if(rep&&rep!==rec.name)full.replaces=rep;
+  if(was&&was!==rec.name&&!KWSTYLE[rec.name]){
+    KWSTYLE[rec.name]=kwStyleFor(was); setMetaSafe('kwStyles',KWSTYLE);
+  }
+  var moved=[];
+  if(kind==='class'&&was&&was!==rec.name){
+    window.edDmgMembers(was).forEach(function(t){
+      var own=KWCUSTOM.filter(function(c){ return c.mode==='damage'&&c.name===t.name; })[0];
+      var r=Object.assign({},own||{name:t.name,mode:'damage',match:t.name,matchAlt:t.matchAlt||'',
+        param:'number',reminder:'',reminderBare:'',dmgKind:'type'});
+      r.dmgClass=(t.dmgClass||[]).map(function(n){ return n===was?rec.name:n; });
+      moved.push(r);
+    });
+  }
+  /* the class first, then its members, one after another - each save redraws */
+  return moved.reduce(function(p,r){ return p.then(function(){ return window.edKwCustomSave(r); }); },
+                      window.edKwCustomSave(full)).then(function(){ return full; });
 };
 window.edKwCustomDelete=function(id){
   var r=KWCUSTOM.filter(function(x){return x.id===id;})[0];
@@ -32328,7 +32463,9 @@ function kwEntries(){ return (window.KW_MATCHES||[]).filter(function(k){return k
 function kwNames(){ var m={}; kwEntries().forEach(function(k){ if(!k.__alias)m[k.name]=1; }); return Object.keys(m).sort(); }
 window.edKwNames=function(){return kwNames();};
 window.edKwStyle=function(n){return kwStyleFor(n);};
-function kwStyleFor(n){ return Object.assign({},KW_DEFAULT,KWSTYLE[n]||{}); }
+function kwStyleFor(n){
+  /* Rebirth's built-in Damage Types start in the sheet's colours (session 63) */
+  return Object.assign({},KW_DEFAULT,(window.REBIRTH&&RB_DAMAGE_STYLE[n])||{},KWSTYLE[n]||{}); }
 /* Every preset is an ACCENT, not a replacement: each stop is mixed halfway
    toward the pill's own highlight colour, and the pill's base colour still
    opens and closes the ramp. A preset therefore tints the sheen rather than
@@ -32406,16 +32543,22 @@ function kwReminderFor(name,matched,mode){
   });
 }
 window.edKwReminder=function(n,m){return kwReminderFor(n,m);};
-function kwPill(name,text,reminder){
+function kwPill(name,text,reminder,mode){
   var s=kwStyleFor(name);
   var cls='kw-pill'+(KW_SHAPECLASS[s.shape]||'');
+  /* ⚠ A DAMAGE TYPE'S LETTERS ARE OUTLINED IN ITS FILL (session 63). --kw-o
+     is the 1px ring drawn round every letter, and a keyword takes it from the
+     Outline colour. The sheet makes a Damage Type's outline its FONT colour,
+     so its letters were ringed in their own colour and read as blobs; ringed
+     in the fill they sit on the pill as the sheet draws them. The border still
+     wears the Outline colour. */
   var st='--kw-out:'+kwGrad(s.o,s.oh,s.hl)+';--kw-fill:'+kwGrad(s.f,s.fh,s.hl)
-        +';--kw-w:'+(+s.w||1.5)+'px;--kw-o:'+s.o+';color:'+s.t;
+        +';--kw-w:'+(+s.w||1.5)+'px;--kw-o:'+(mode==='damage'?s.f:s.o)+';color:'+s.t;
   var rem=KW_HOVER?(kwReminderFor(name,text)||reminder||''):'';
   var tip=rem?" title='"+e(rem).replace(/'/g,'&#39;')+"'":'';
   /* wrapped so the drop-shadow is not clipped away by the pointed shapes */
   return "<span class='kw-shadow'><span class='"+cls+"' style='"+st+"'"+tip
-    +" onclick=\"_openKwAndHighlight('keyword','kwentry-"
+    +" onclick=\"_openKwAndHighlight('"+(mode||'keyword')+"','kwentry-"
     + name.replace(/\s+/g,'_') + "')\">"+text+"</span></span>";
 }
 
@@ -32606,6 +32749,15 @@ function matchPlan(){
     }
     var k=ent.k;
     var lit=String(k.match||k.name).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    /* ⚠ A DAMAGE TYPE NEEDS ITS NUMBER, AND THE NUMBER MAY BE SIGNED (the
+       author, session 63): "Slash -1", "SL +2", "FI 3", "Fire −1" with the
+       typographic minus, or "SL-1" with no space - one pill, number inside. No
+       number, no pill, so the everyday words among them stay prose. And no `i`:
+       "SL" and "Slash" exactly as written. */
+    if(k.mode==='damage'){
+      ent.re=new RegExp('(?<![\\w-])('+lit+'(?:\\s+[+\\-\u2212]?|[+\\-\u2212])\\d+)(?![\\w-])','g');
+      return;
+    }
     /* A trailing number or X is pulled INTO the pill ("Sustain 2", "Gouge X").
        Optional: keywords whose value is 1 are written bare. A custom entry
        declaring param:'none' never swallows a trailing number. */
@@ -32635,8 +32787,9 @@ function pillifyRules(html){
       }
       /* compiled in matchPlan(), which is cached on KW_MATCHES */
       seg=seg.replace(ent.re,function(m){
-        if(k.mode==='keyword')return (PILLS_ON&&!_noPills)?ph(kwPill(k.name,m,k.reminder))
-          :ph("<span class='kw-link' onclick=\"_openKwAndHighlight('keyword','kwentry-"
+        if(k.mode==='keyword'||k.mode==='damage')
+          return (PILLS_ON&&!_noPills)?ph(kwPill(k.name,m,k.reminder,k.mode))
+          :ph("<span class='kw-link' onclick=\"_openKwAndHighlight('"+k.mode+"','kwentry-"
              +k.name.replace(/\s+/g,'_')+"')\">"+m+"</span>");
         return ph("<span class='kw-link' onclick=\"_openKwAndHighlight('"+k.mode
           +"','kwentry-"+k.name.replace(/\s+/g,'_')+"')\">"+m+"</span>");
@@ -32667,7 +32820,7 @@ function pillifyRules(html){
 function pillableMode(name){
   var hit=(window.KW_MATCHES||[]).filter(function(k){return k.name===name;})[0];
   var m=hit&&(hit.mode||'keyword');
-  return m==='keyword'||m==='counter';
+  return m==='keyword'||m==='counter'||m==='damage';
 }
 window.edKwIsPillable=pillableMode;
 /* ── A PILL'S OWN COLOURS, WITHOUT THE PILL ──────────────────────────────────
@@ -39212,6 +39365,8 @@ function detectKeywords(txt){
   if(!txt)return []; var found=[],seen={};
   kwMatchesList().forEach(function(k){
     if(!k||!k.match)return;
+    /* a Damage Type has no reminder to offer (session 63) */
+    if(k.mode==='damage')return;
     var pat=k.match.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
     /* Capture the trailing value the way pillifyRules does, so "Gouge 2" yields
        "Gouge 2" and kwReminderFor can substitute {value}. Matching only the bare
@@ -40198,12 +40353,44 @@ var KW_COLFIELDS=[['o','Outline'],['oh','Outline glow'],['f','Fill'],
 var KW_SHAPES=[['pill','Pill'],['box','Box'],['point','Pointed ▶'],
                ['lpoint','Left point ◀'],['dpoint','Double point'],['slant','Slanted']];
 var _kwPageOpen=null;      // key of the row expanded for editing
+/* Rebirth adds a fifth section, "Damage Type" (the author, session 63). */
+function kwSections(){
+  return window.REBIRTH ? KW_SECTIONS.concat([['damage','Damage Type']]) : KW_SECTIONS;
+}
 
 function kwPageKey(k){ return (k.mode||'keyword')+'|'+k.name; }
 function kwPageList(mode){
-  return (window.KW_DATA||[]).filter(function(k){
+  var list=(window.KW_DATA||[]).filter(function(k){
     return (k.mode||'keyword')===mode && !k.__alias;
-  }).sort(function(a,b){ return String(a.name).localeCompare(String(b.name)); });
+  });
+  if(mode==='damage')return dmgPageOrder(window.edDmgEntries());
+  return list.sort(function(a,b){ return String(a.name).localeCompare(String(b.name)); });
+}
+/* The classes first, in their own order; then the types, grouped by the first
+   class each belongs to, in the sheet's order (edDmgEntries). A type in no
+   class comes last. */
+function dmgPageOrder(list){
+  var cls=list.filter(function(k){ return k.dmgKind==='class'; });
+  var at={}; cls.forEach(function(c,i){ at[c.name]=i; });
+  var first=function(k){
+    var best=1e9; (k.dmgClass||[]).forEach(function(n){ if(n in at&&at[n]<best)best=at[n]; });
+    return best;
+  };
+  var types=list.filter(function(k){ return k.dmgKind!=='class'; })
+    .map(function(k,i){ return {k:k,i:i,f:first(k)}; })
+    .sort(function(a,b){ return (a.f-b.f)||(a.i-b.i); }).map(function(x){ return x.k; });
+  return cls.concat(types);
+}
+/* What a damage row says where a keyword's reminder would be: its
+   abbreviation, then its classes - or, for a class, the types in it. */
+function dmgSummary(k){
+  var ab=String(k.matchAlt||'').split(/[\n,]/)[0].trim();
+  var names=window.edDmgClasses().map(function(c){ return c.name; });
+  var rest=(k.dmgKind==='class')
+    ? window.edDmgMembers(k.name).map(function(t){ return t.name; })
+    : (k.dmgClass||[]).filter(function(n){ return names.indexOf(n)>=0; });
+  return (ab?ab+' \u00b7 ':'')+(k.dmgKind==='class'?'Damage Class: ':'')
+    +(rest.length?rest.join(', '):(k.dmgKind==='class'?'no types yet':'no class'));
 }
 /* The custom record behind an entry, if the user made or overrode it. Only
    those can be deleted - a baked entry is part of the file. */
@@ -40284,10 +40471,11 @@ function kwPageRowHTML(k){
   /* pillableMode() takes the NAME and resolves the mode through KW_MATCHES, so
      it is the same answer pillifyRules gives when it decides on a card. */
   var key=kwPageKey(k), cu=kwPageCustom(k), pill=pillableMode(k.name);
-  var head=pill?kwPill(k.name,e(k.name)):("<span class='kwp-plain'>"+e(k.name)+"</span>");
+  var head=pill?kwPill(k.name,e(k.name),undefined,k.mode):("<span class='kwp-plain'>"+e(k.name)+"</span>");
   var split=(typeof window.edKwReminderSplit==='function')
     ? window.edKwReminderSplit(k.name,k.reminder) : null;
-  var rem=(typeof fmtRuleNoLinks==='function')
+  var rem=(k.mode==='damage') ? e(dmgSummary(k))
+    : (typeof fmtRuleNoLinks==='function')
     ? fmtRuleNoLinks(split?split.rest:(k.reminder||'')) : e(k.reminder||'');
 
   var acts="<div class='kwp-acts'>"
@@ -40321,15 +40509,50 @@ function kwPageRowHTML(k){
       +"</div>"
       +(pill?kwPageCtlHTML(k.name,acts):acts)
     +"</div>"
-    +(_kwPageOpen===key?kwPageEditHTML(k,cu):"")
+    +(_kwPageOpen===key?(k.mode==='damage'?dmgEditHTML(k,cu):kwPageEditHTML(k,cu)):"")
   +"</div>";
+}
+/* ── EDITING A DAMAGE TYPE OR CLASS (the author, session 63) ───────────────────────
+   Name, Abbreviation, Kind - and for a type, a tick for every class there is,
+   built-in or added, so a type can sit in any number of them the way Gravity
+   sits in all three. No Parameter (the number is always required) and no
+   Reminder (there is none). */
+function dmgEditHTML(k,cu){
+  var c=cu||k, kind=(c.dmgKind==='class')?'class':'type', mine=c.dmgClass||[];
+  var classes=window.edDmgClasses().filter(function(x){ return x.name!==k.name; });
+  var opt=function(v,l){ return "<option value='"+v+"'"+(kind===v?' selected':'')+">"+l+"</option>"; };
+  return "<div class='kwp-edit'><div class='kwm-form kwe-form'>"
+    +"<div class='kwe-row'>"
+      +"<label class='kwe-f'><span>Name</span>"
+        +"<input class='ed2-in' data-kwe='name' value='"+e(c.name||'')+"'></label>"
+      +"<label class='kwe-f'><span>Abbreviation</span>"
+        +"<input class='ed2-in' data-kwe='matchAlt' value='"+e(c.matchAlt||'')+"' placeholder='SL'></label>"
+      +"<label class='kwe-f kwe-sel'><span>Kind</span><select class='ed2-in' data-kwe='dmgKind'>"
+        +opt('type','Damage Type')+opt('class','Damage Class')+"</select></label>"
+    +"</div>"
+    +"<div class='kwe-row kwe-dmgcls'"+(kind==='class'?" hidden":"")+">"
+      +"<span class='kwe-dmglab'>Damage Classes</span>"
+      +(classes.length?classes.map(function(x){
+          return "<label class='kwe-chk'><input type='checkbox' data-kwdc='"+e(x.name)+"'"
+            +(mine.indexOf(x.name)>=0?' checked':'')+"> "+e(x.name)+"</label>";
+        }).join(''):"<span class='kwe-dmglab'>(no classes yet)</span>")
+    +"</div>"
+  +"</div><div class='tpl-opts'>"
+    +"<button class='ed2-btn tiny primary' data-kwact='save'>Save</button>"
+  +"</div></div>";
+}
+/* A name nobody has used yet: "New damage type", "New damage type 2", ... */
+function dmgFreshName(base){
+  var taken={}; (window.KW_DATA||[]).forEach(function(k){ if(k.mode==='damage')taken[k.name]=1; });
+  if(!taken[base])return base;
+  for(var i=2;;i++)if(!taken[base+' '+i])return base+' '+i;
 }
 window.edRenderKwPage=function(){
   var bar=document.getElementById('kwPageBar'), body=document.getElementById('kwPageBody');
   if(!body)return;
   if(bar){
     bar.innerHTML="<div class='kwp-jump'>"
-      +KW_SECTIONS.map(function(s){
+      +kwSections().map(function(s){
         return "<button class='ed2-btn tiny' data-kwjump='"+s[0]+"'>"+s[1]+"</button>";}).join('')
       +"</div>"
       +"<input type='text' class='ed2-in kwp-search' id='kwSearch' placeholder='Search…'>"
@@ -40340,11 +40563,16 @@ window.edRenderKwPage=function(){
         +"<button class='ed2-btn tiny warn' data-kwbar='reset'>Reset styles</button>"
       +"</div>";
   }
-  body.innerHTML=KW_SECTIONS.map(function(s){
+  body.innerHTML=kwSections().map(function(s){
     var list=kwPageList(s[0]);
-    if(!list.length)return '';
+    /* the Damage Type section is there even empty - it holds its own Add buttons */
+    if(!list.length&&s[0]!=='damage')return '';
     return "<h3 class='kwp-head' id='kwsec-"+s[0]+"'>"+s[1]
-      +"<span class='kwp-count'>"+list.length+"</span></h3>"
+      +"<span class='kwp-count'>"+list.length+"</span>"
+      +(s[0]==='damage'?"<span class='kwp-hacts'>"
+          +"<button class='ed2-btn tiny primary' data-kwdmgadd='type'>＋ Damage Type</button>"
+          +"<button class='ed2-btn tiny primary' data-kwdmgadd='class'>＋ Damage Class</button></span>":"")
+      +"</h3>"
       +list.map(kwPageRowHTML).join('');
   }).join('');
   kwPageBind();
@@ -40435,6 +40663,24 @@ function kwPageBind(){
     if(s)s.addEventListener('input',function(){ try{ _kwFilter(); }catch(_){} kwFitRems(); });
   }
   if(!body)return;
+  /* ＋ Damage Type / ＋ Damage Class: made, then opened for editing */
+  body.querySelectorAll('[data-kwdmgadd]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var kind=b.getAttribute('data-kwdmgadd');
+      var nm=dmgFreshName(kind==='class'?'New damage class':'New damage type');
+      window.edDmgSave({name:nm,matchAlt:'',dmgKind:kind,dmgClass:[]}).then(function(){
+        _kwPageOpen='damage|'+nm; window.edRenderKwPage();
+        var r=document.querySelector("[data-kwrow='damage|"+nm+"']");
+        if(r)r.scrollIntoView({behavior:'smooth',block:'center'});
+      });
+    });
+  });
+  body.querySelectorAll("[data-kwe='dmgKind']").forEach(function(sel){
+    sel.addEventListener('change',function(){
+      var r=sel.closest('.kwp-row'), box=r&&r.querySelector('.kwe-dmgcls');
+      if(box)box.hidden=(sel.value==='class');
+    });
+  });
   body.querySelectorAll('.kwp-row').forEach(function(row){
     var name=row.getAttribute('data-kwname'), key=row.getAttribute('data-kwrow');
     row.querySelectorAll('[data-kwf]').forEach(function(inp){
@@ -40481,6 +40727,19 @@ function kwPageBind(){
         else if(a==='save'){
           var g=function(f){var el=row.querySelector("[data-kwe='"+f+"']");return el?String(el.value).trim():'';};
           var nm=g('name'); if(!nm){alert('Name is required.');return;}
+          if(key.indexOf('damage|')===0){
+            var clash=(window.KW_DATA||[]).some(function(k){
+              return k.mode==='damage'&&!k.__alias&&k.name===nm&&nm!==name; });
+            if(clash){ alert('There is already a Damage Type or Class called "'+nm+'".'); return; }
+            var ticks=Array.prototype.map.call(row.querySelectorAll('[data-kwdc]:checked'),
+              function(x){ return x.getAttribute('data-kwdc'); });
+            var own=(KWCUSTOM||[]).filter(function(c){return c.mode==='damage'&&c.name===name;})[0];
+            window.edDmgSave({id:own?own.id:undefined,replaces:own?own.replaces:undefined,name:nm,
+              matchAlt:g('matchAlt'),dmgKind:g('dmgKind'),dmgClass:ticks},name).then(function(){
+                _kwPageOpen=null; window.edRenderKwPage();
+              });
+            return;
+          }
           var cu=(KWCUSTOM||[]).filter(function(c){return (c.mode||'keyword')+'|'+c.name===key;})[0];
           window.edKwCustomSave({id:cu?cu.id:undefined,name:nm,mode:g('mode')||'keyword',
             match:g('match')||nm,matchAlt:g('matchAlt'),param:g('param')||'none',
@@ -40496,7 +40755,9 @@ function kwPageBind(){
    colour does not re-render 100+ rows on every input event. */
 function kwPageRepaint(row,name){
   var pv=row.querySelector('.kwp-pill');
-  if(pv)pv.innerHTML=kwPill(name,e(name));
+  /* the row's own mode, so a Damage Type keeps its letters ringed in its fill */
+  var md=String(row.getAttribute('data-kwrow')||'').split('|')[0];
+  if(pv)pv.innerHTML=kwPill(name,e(name),undefined,md);
   var s=kwStyleFor(name), sel=row.querySelector('.kwp-hlsel');
   if(sel){ sel.style.backgroundImage=edKwGradFlat(s.hl,s.f,s.fh);
            sel.style.color=(s.hl==='none'?'#dbe2ee':'#0d1017'); }
