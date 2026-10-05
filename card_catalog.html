@@ -7474,9 +7474,9 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
   animation:tdFxLift .4s cubic-bezier(.2,.9,.3,1.2) both,tdFxFloat 2.6s ease-in-out infinite;
   animation-delay:var(--fx-age,0ms),calc(var(--fx-age,0ms) + .4s)}
 @keyframes tdFxLift{from{transform:rotate(var(--fx-lk))}
-  to{transform:rotate(var(--fx-lk)) perspective(520px) translateY(-10px) rotateX(14deg) rotate(-2deg) scale(1.05)}}
-@keyframes tdFxFloat{0%,100%{transform:rotate(var(--fx-lk)) perspective(520px) translateY(-10px) rotateX(14deg) rotate(-2deg) scale(1.05)}
-  50%{transform:rotate(var(--fx-lk)) perspective(520px) translateY(-15px) rotateX(14deg) rotate(2deg) scale(1.05)}}
+  to{transform:rotate(var(--fx-lk)) perspective(520px) translateY(var(--fx-lift,-10px)) rotateX(14deg) rotate(-2deg) scale(1.05)}}
+@keyframes tdFxFloat{0%,100%{transform:rotate(var(--fx-lk)) perspective(520px) translateY(var(--fx-lift,-10px)) rotateX(14deg) rotate(-2deg) scale(1.05)}
+  50%{transform:rotate(var(--fx-lk)) perspective(520px) translateY(calc(var(--fx-lift,-10px) - 5px)) rotateX(14deg) rotate(2deg) scale(1.05)}}
 
 /* the glow - one colour, or two for the Thaumaturge pairings that BLEND over
    the middle quarter of the card (37.5% to 62.5% of its height). Each colour
@@ -7521,7 +7521,9 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
 
 /* a card being dragged leaves its effects behind - the copy under the pointer
    is a copy of the face, not of the Battle */
-.td-ghost>.td-fx-gwrap,.td-ghost>.td-fx-icon,.td-ghost>.td-fx-stat,.td-ghost>.td-fx-gem{display:none}
+.td-ghost>.td-fx-gwrap,.td-ghost>.td-fx-icon,.td-ghost>.td-fx-stat,.td-ghost>.td-fx-gem,
+.td-ghost>.td-fx-fangs,.td-ghost>.td-fx-banner,
+.td-ghost>.td-fx-shadow,.td-ghost>.td-fx-vw{display:none}
 
 /* ── the gem on an Essence card IN THE ESSENCE AREA ── */
 .td-fx-gem{position:absolute;left:50%;top:var(--fx-art,40%);width:30%;aspect-ratio:30/35;transform:translate(-50%,-50%);
@@ -7559,12 +7561,86 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
     rgba(255,179,64,.5) 75.5%,rgba(255,233,90,.5) 78%,rgba(79,224,143,.5) 80.5%,rgba(74,184,255,.5) 83%,
     rgba(154,107,255,.5) 85.5%,#ffffff 88%,transparent 96%)}
 
+/* ── THE ATTACK KEYWORDS on a declared attacker (session 66) - only for a
+   keyword the card really has: its keyword line, an ability line that starts
+   with it, or a keyword counter on it (tdFxKeywords) ── */
+/* Airborne: it floats 20px higher, over a shadow where it would stand */
+.td-card.td-fx-k-airborne{--fx-lift:-30px}
+.td-fx-shadow{position:absolute;left:10%;width:80%;top:calc(100% + 24px);height:18px;z-index:1;border-radius:50%;pointer-events:none;
+  background:radial-gradient(ellipse,rgba(0,0,0,.6),transparent 70%)}
+/* Fury trembles and Shade phases - their own animations alongside the float,
+   by `translate` and `opacity`, so the float's transform is untouched */
+.td-card.td-fx-decl.td-fx-k-fury{
+  animation:tdFxLift .4s cubic-bezier(.2,.9,.3,1.2) both,tdFxFloat 2.6s ease-in-out infinite,tdFxTremble .11s steps(2) infinite;
+  animation-delay:var(--fx-age,0ms),calc(var(--fx-age,0ms) + .4s),0s}
+.td-card.td-fx-decl.td-fx-k-shade{filter:brightness(.82) drop-shadow(1.5px 0 0 rgba(170,60,255,.35)) drop-shadow(-1.5px 0 0 rgba(60,160,255,.35));
+  animation:tdFxLift .4s cubic-bezier(.2,.9,.3,1.2) both,tdFxFloat 2.6s ease-in-out infinite,tdFxPhase 2.6s steps(1) infinite;
+  animation-delay:var(--fx-age,0ms),calc(var(--fx-age,0ms) + .4s),0s}
+.td-card.td-fx-decl.td-fx-k-fury.td-fx-k-shade{
+  animation:tdFxLift .4s cubic-bezier(.2,.9,.3,1.2) both,tdFxFloat 2.6s ease-in-out infinite,tdFxTremble .11s steps(2) infinite,tdFxPhase 2.6s steps(1) infinite;
+  animation-delay:var(--fx-age,0ms),calc(var(--fx-age,0ms) + .4s),0s,0s}
+@keyframes tdFxTremble{0%{translate:.8px -.6px}50%{translate:-.8px .7px}100%{translate:.5px .4px}}
+@keyframes tdFxPhase{0%,100%{opacity:1}20%{opacity:.82}26%{opacity:.96}60%{opacity:.85}66%{opacity:1}}
+/* Unblockable, Shade, Lethal: the aura in the keyword's colours, top to bottom.
+   ⚠ THE SAME SIZE AS THE DEFAULT GLOW (the author, session 67): it IS the
+   default glow - .td-fx-gwrap/.td-fx-glow, untouched - three times over, one
+   per colour, each masked to its band as the Thaumaturge's two are. The bands
+   cross-fade at 0%, 55% and 100% of the card's own height (measured inside
+   the wrap's 20px margin). */
+.td-fx-gwrap.td-fx-a1{
+  -webkit-mask-image:linear-gradient(to bottom,#000 20px,transparent calc(20px + (100% - 40px)*.55));
+  mask-image:linear-gradient(to bottom,#000 20px,transparent calc(20px + (100% - 40px)*.55))}
+.td-fx-gwrap.td-fx-a2{
+  -webkit-mask-image:linear-gradient(to bottom,transparent 20px,#000 calc(20px + (100% - 40px)*.55),transparent calc(100% - 20px));
+  mask-image:linear-gradient(to bottom,transparent 20px,#000 calc(20px + (100% - 40px)*.55),transparent calc(100% - 20px))}
+.td-fx-gwrap.td-fx-a3{
+  -webkit-mask-image:linear-gradient(to bottom,transparent calc(20px + (100% - 40px)*.55),#000 calc(100% - 20px));
+  mask-image:linear-gradient(to bottom,transparent calc(20px + (100% - 40px)*.55),#000 calc(100% - 20px))}
+/* Overwhelm: wolf fangs over the top and bottom - 25% bigger than the lab's,
+   further out from the card, and biting with half again the travel */
+.td-fx-fangs{position:absolute;left:-21.25%;width:142.5%;height:18.75%;z-index:7;pointer-events:none;color:#f4efe4;
+  filter:drop-shadow(0 0 2px rgba(0,0,0,.85)) drop-shadow(0 0 6px rgba(255,70,50,.5))}
+.td-fx-fangs svg{width:100%;height:100%;display:block;overflow:visible}
+.td-fx-fangs.td-fx-top{top:-14%;animation:tdFxChompT 3.2s ease-in-out infinite}
+.td-fx-fangs.td-fx-bot{bottom:-14%;animation:tdFxChompB 3.2s ease-in-out infinite}
+@keyframes tdFxChompT{0%,100%{transform:translateY(-7.5px)}50%{transform:translateY(4.5px)}}
+@keyframes tdFxChompB{0%,100%{transform:translateY(7.5px) scaleY(-1)}50%{transform:translateY(-4.5px) scaleY(-1)}}
+/* Raid: the banner in the card's colours on its gold pole */
+.td-fx-banner{position:absolute;right:-30%;top:-46%;width:56%;height:78%;z-index:2;pointer-events:none}
+.td-fx-banner svg{width:100%;height:100%;display:block;overflow:visible}
+.td-fx-flag{transform-origin:6% 20%;animation:tdFxWave 1.4s ease-in-out infinite}
+@keyframes tdFxWave{0%,100%{transform:skewY(0) scaleX(1)}50%{transform:skewY(6deg) scaleX(.94)}}
+/* Volley: copies of the card's own weapon at both sides, bobbing out of step */
+.td-fx-vw{position:absolute;width:20%;aspect-ratio:24/32;z-index:5;pointer-events:none;color:#ff3b3b;opacity:.85;
+  filter:drop-shadow(0 0 2px #000) drop-shadow(0 0 6px var(--vc,#ff3b3b));animation:tdFxVbob 3.2s ease-in-out infinite}
+.td-fx-vw svg{width:100%;height:100%;display:block;overflow:visible}
+@keyframes tdFxVbob{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-6px) rotate(calc(var(--r,0deg) + var(--sw,8deg)))}}
+
+/* ── A Character dies: Demise's skull over the picture, the burn to ash ── */
+.td-fx-skullmark{position:absolute;left:50%;top:38%;width:56%;aspect-ratio:1;transform:translate(-50%,-50%);z-index:7;pointer-events:none;
+  color:#f3ece0;filter:drop-shadow(0 0 2px #000) drop-shadow(0 0 8px var(--sk,#7a2cff)) drop-shadow(0 0 16px var(--sk,#7a2cff))}
+.td-fx-skullmark svg{width:100%;height:100%;display:block}
+.td-fx-ghost.td-fx-ash{-webkit-mask-image:linear-gradient(to top,transparent calc(var(--burn,0) * 1%),#000 calc(var(--burn,0) * 1% + 9%));
+  mask-image:linear-gradient(to top,transparent calc(var(--burn,0) * 1%),#000 calc(var(--burn,0) * 1% + 9%))}
+
+/* ── An Ongoing Action's Rune Circle or Spell's Turning Seal, for five seconds ── */
+.td-fx-circle{position:fixed;z-index:8690;pointer-events:none}
+.td-fx-circle svg{width:100%;height:100%;display:block;overflow:visible}
+
+/* ── Swift: the two Declare Swords, opposite each other through the card ── */
+.td-fx-pswd{position:fixed;aspect-ratio:24/32;z-index:8696;pointer-events:none;color:#ff3b3b;
+  filter:drop-shadow(0 0 2px #000) drop-shadow(0 0 7px #ff3b3b)}
+.td-fx-pswd svg{width:100%;height:100%;display:block;overflow:visible}
+
 /* With reduced motion asked for: no lift, float, stamp or diamond swell - the
-   glow, the symbols and the gem stay. */
+   glow, the symbols and the gem stay; so do the keywords' fangs, banner and
+   copies, standing still. */
 @media (prefers-reduced-motion:reduce){
   .td-card.td-fx-decl{animation:none;transform:rotate(var(--fx-lk)) translateY(-6px)}
+  .td-card.td-fx-decl.td-fx-k-fury,.td-card.td-fx-decl.td-fx-k-shade{animation:none}
   .td-fx-icon,.td-fx-stat,.td-fx-dia,.td-fx-gem.td-fx-pop{animation:none}
   .td-card.td-fx-myth{animation:none}
+  .td-fx-fangs.td-fx-top,.td-fx-fangs.td-fx-bot,.td-fx-flag,.td-fx-vw{animation:none}
 }
 /* ═══════════════════════════════════════════════════════════════════════════
    THE CARD BACK, AS THE APP WEARS IT
@@ -15882,6 +15958,9 @@ function tdDo(a){
     if(at){ before = at.zone;
             beforeName = at.item.card ? at.item.card.name : null; }
   }
+  /* what the effects must know from before the move - a dying card's keyword
+     counters go with the move (cat_boardfx.js) */
+  if(typeof tdFxBefore === 'function') tdFxBefore(TD.board, a, before);
   fn(TD.board, a);
   if(TD.logOn) TD.log.push(a);
   /* The record, in words. Written here rather than at the twenty call sites, so
@@ -19866,7 +19945,7 @@ function tdCardHTML(item, zone, opts){
      and so is the gem an Essence card wears in the Essence Area. */
   var declCls = item.decl === 'atk' ? ' td-decl-atk' : item.decl === 'thm' ? ' td-decl-thaum'
               : item.decl === 'blk' ? ' td-decl-blk' : '';
-  var fx = (typeof tdFxCard === 'function') ? tdFxCard(item, zone, c) : null;
+  var fx = (typeof tdFxCard === 'function') ? tdFxCard(item, zone, c, opts.board) : null;
   if(fx && fx.style)
     pos = " style='" + (pos ? pos.slice(8, -1) + ';' : '') + fx.style + "'";
   return "<div class='td-card" + (item.locked ? ' locked' : '') + declCls + (fx ? fx.cls : '')
@@ -22127,7 +22206,11 @@ function tdMenuItems(item, zoneId){
         rows.push({label:'Remove Attacker', act:"tdDeclare('" + item.uid + "','')"});
       if(item.decl !== 'atk')
         rows.push({label:'Declare Attacker', act:"tdDeclare('" + item.uid + "','atk')"});
-      if(item.decl !== 'thm' && tdHasKeyword(item.card, 'Thaumaturge'))
+      /* ⚠ ONLY A CARD THAT ALWAYS HAS IT (session 66): Thaumaturge on its keyword
+         line, or a Thaumaturge counter on it - not "gains Thaumaturge" in a
+         sentence (tdCardHasKw, cat_boardfx.js) */
+      if(item.decl !== 'thm' && (typeof tdCardHasKw === 'function' ? tdCardHasKw(item, 'Thaumaturge', TD.board)
+                                                                  : tdHasKeyword(item.card, 'Thaumaturge')))
         rows.push({label:'Declare Thaumaturge Attacker', act:"tdDeclare('" + item.uid + "','thm')"});
     }
     else
@@ -24763,6 +24846,7 @@ function tblActFrom(a, fromId){
     var at = tdFindIn(half, a.uid);
     if(at){ was = at.zone; wasName = at.item.card ? at.item.card.name : null; }
   }
+  if(typeof tdFxBefore === 'function') tdFxBefore(half, a, was);
   tdApplyTo(half, a);
   /* their Character slams onto their Field, their Crystallize plays - on
      this screen too (cat_boardfx.js), before the redraw moves the card */
@@ -28643,7 +28727,7 @@ window.ioImportSheet = function(input){
    glow, the symbols and fewer particles stay.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-var TDFX = {since:{}, hold:{}, landing:{}, items:[], rects:{}, emitOn:false,
+var TDFX = {since:{}, hold:{}, landing:{}, items:[], rects:{}, emitOn:false, uid:0, fired:{}, kacc:0,
             running:false, last:0, acc:0, accStar:0, tt:0, burst:0};
 var TDFX_COL = {red:'#ff4d3d', orange:'#ff9a2e', yellow:'#ffe14a', green:'#3ddc84',
                 blue:'#3ab7ff', indigo:'#7a63ff', violet:'#d84dff', grey:'#9aa0aa'};
@@ -28975,21 +29059,49 @@ function tdFxUniqueRunner(el){
   u.firstChild.animate([{transform:'rotate(0deg)'}, {transform:'rotate(720deg)'}], {duration:3200, easing:'linear', fill:'forwards'})
     .finished.then(function(){ setTimeout(function(){ u.remove(); }, 260); });
 }
-function tdFxSlam(uid){
+function tdFxSlam(uid, pre){
   var el = tdFxEl(uid);
   if(!el || !el.animate) return;
-  var at = null;
-  [TD.board].concat(tdFoeList()).some(function(h){ at = h && tdFindIn(h, uid); return !!at; });
+  var half = tdFxHalfOf(uid), at = tdFindIn(half, uid);
   var c = at && at.item.card;
   if(!c) return;
   var reduced = tdFxReduced(), pal = tdFxPalette(c);
   /* where it LANDS - measured before the drop, which only translates it */
   var b = tdFxRect(el), cx = b.cx, cy = b.cy;
-  if(!reduced)
+  pre = pre || {};
+  /* Swift's wind, then Arrive's star, then the slam (session 66) */
+  if(!reduced && (pre.swift || pre.arrive)){
+    if(pre.swift) tdFxWind(b);
+    setTimeout(function(){
+      if(pre.arrive) tdFxStarfall(b, pal);
+      setTimeout(function(){
+        delete TDFX.hold[uid];
+        var now = tdFxEl(uid);
+        if(!now || tdFxZoneOf(uid) !== 'field') return;   /* undone in the meantime */
+        now.classList.remove('td-fx-hold');
+        if(pre.arrive){
+          if(now.animate) now.animate([{opacity:0, filter:'brightness(3)'}, {opacity:1, filter:'brightness(1)'}], {duration:420});
+          tdFxRing(cx, cy, '#ffffff', {r0:5, r1:120 * b.w / 132, w:6, life:.4});
+          tdFxSlamHit(uid, b, pal, c, at.item, half, pre.swift);
+        } else tdFxSlamDrop(uid, b, pal, c, at.item, half, pre.swift);
+      }, pre.arrive ? TDFX_STAR_MS : 0);
+    }, pre.swift ? TDFX_WIND_MS : 0);
+    return;
+  }
+  tdFxSlamDrop(uid, b, pal, c, at.item, half, false);
+}
+function tdFxSlamDrop(uid, b, pal, c, item, half, swift){
+  var el = tdFxEl(uid), reduced = tdFxReduced();
+  if(!reduced && el && el.animate)
     el.animate([{translate:'0 -220px', scale:'1.4', opacity:0}, {opacity:1, offset:.2}, {translate:'0 0', scale:'1', opacity:1}],
                {duration:340, easing:'cubic-bezier(.6,0,1,.4)'});
-  setTimeout(function(){
-    var live = tdFxEl(uid) || el, board = live.closest('.td-board') || document.getElementById('tdBoard');
+  setTimeout(function(){ tdFxSlamHit(uid, b, pal, c, item, half, swift); }, reduced ? 0 : 340);
+}
+function tdFxSlamHit(uid, b, pal, c, item, half, swift){
+  var el = tdFxEl(uid), reduced = tdFxReduced(), cx = b.cx, cy = b.cy;
+  (function(){
+    var live = tdFxEl(uid) || el, board = (live && live.closest('.td-board')) || document.getElementById('tdBoard');
+    if(!live) return;
     if(!reduced && board && board.animate)
       board.animate([{translate:'0 0'}, {translate:'-6px 4px'}, {translate:'5px -3px'}, {translate:'-3px 2px'},
                      {translate:'1px -1px'}, {translate:'0 0'}], {duration:360});
@@ -29013,21 +29125,10 @@ function tdFxSlam(uid){
       tdFxPuff(cx + Math.cos(q) * b.w * .55, cy + Math.sin(q) * b.h * .5,
                Math.cos(q) * tdFxRnd(50, 120), Math.sin(q) * tdFxRnd(50, 120), tdFxPick(['#8d8576', '#5c5f66', '#b9bcc4']));
     }
-    setTimeout(function(){
-      var now = tdFxEl(uid);
-      if(!now) return;
-      var B = tdFxRect(now), wait = 0;
-      if(tdHasKeyword(c, 'Absolute')){ tdFxDiamonds(B.cx, B.cy, 260 * sc); wait += 220; }
-      setTimeout(function(){
-        var n2 = tdFxEl(uid);
-        if(n2 && tdHasKeyword(c, 'Unique')){ tdFxUniqueRunner(n2); }
-        setTimeout(function(){
-          var n3 = tdFxEl(uid);
-          if(n3 && tdFxHasSuper(c, 'mythic')) tdFxMythicOn(n3);
-        }, (n2 && tdHasKeyword(c, 'Unique')) ? 220 : 0);
-      }, wait);
-    }, 650);
-  }, reduced ? 0 : 340);
+    if(swift && !reduced) setTimeout(function(){ tdFxSwiftSwords(b); }, 120);
+    /* Absolute, Unique and Mythic - by the keyword rule (session 66) */
+    tdFxFinishes(uid, item, half, c, sc, 650);
+  })();
 }
 
 /* ═════ 2. DECLARED ATTACKERS AND BLOCKERS ═════ */
@@ -29090,7 +29191,7 @@ function tdFxStatFor(card, want){
 }
 
 /* What tdCardHTML adds to one card: classes, style and markup. */
-function tdFxCard(item, zone, c){
+function tdFxCard(item, zone, c, board){
   var out = {cls:'', style:'', html:''};
   if(!item || !zone) return out;
   var now = Date.now(), hold = TDFX.hold[item.uid];
@@ -29107,12 +29208,25 @@ function tdFxCard(item, zone, c){
     var R = TDFX_ROLES[role], lag = 'animation-delay:' + (-(now % TD_PULSE_MS)) + 'ms';
     out.cls += ' td-fx-decl td-fx-' + role;
     out.style = '--fx-age:' + (-(now - was.at)) + 'ms;';
-    /* the glow: one colour, or two that blend over the middle quarter */
-    out.html += R.top === R.bot
+    /* the attack keywords (session 66) - attackers only, by the keyword rule */
+    var A = (role === 'atk' || role === 'thatk') ? tdFxAtkHTML(item, board, role, c) : null;
+    /* the glow: one colour, or two that blend over the middle quarter - or, for
+       an aura keyword, its three colours top to bottom.
+       ⚠ THE AURA IS THE DEFAULT GLOW, NOTHING THICKER (the author, session 67):
+       the same .td-fx-gwrap/.td-fx-glow three times over, each masked to its
+       band, so its ring, blur, spread and pulse are the plain attacker's */
+    var aura = (A && role === 'atk' && A.set.aura) ? TDFX_AURA[A.set.aura] : null;
+    out.html += aura
+      ? aura.map(function(g, i){
+          return "<div class='td-fx-gwrap td-fx-a" + (i + 1) + "' style='--g:" + g + ';' + lag + "'><div class='td-fx-glow'></div></div>"; }).join('')
+      : R.top === R.bot
       ? "<div class='td-fx-gwrap' style='--g:" + R.top + ';' + lag + "'><div class='td-fx-glow'></div></div>"
       : "<div class='td-fx-gwrap td-fx-top' style='--g:" + R.top + ';' + lag + "'><div class='td-fx-glow'></div></div>"
         + "<div class='td-fx-gwrap td-fx-bot' style='--g:" + R.bot + ';' + lag + "'><div class='td-fx-glow'></div></div>";
-    out.html += "<div class='td-fx-icon' style='--ic:" + R.ic + "'>" + TDFX_ICON[R.icon]
+    var weapon = (A && role === 'atk' && (A.set.aura || A.set.has.Shade || A.set.has.Lethal || A.set.has.Unblockable)) ? tdFxWeaponSVG(A.set) : TDFX_ICON[R.icon];
+    var ic = (A && role === 'atk' && A.set.aura) ? TDFX_AURA[A.set.aura][1] : R.ic;
+    if(A){ out.cls += A.cls; out.html += A.html; }
+    out.html += "<div class='td-fx-icon' style='--ic:" + ic + "'>" + weapon
       + "<i class='td-fx-dia' style='top:" + TDFX_DIA_TOP[R.icon] + ';' + lag + "'><b></b></i></div>";
     var o = (c && !item.anon && window.edOrbSvg) ? tdFxStatFor(c, R.stat) : null;
     if(o){
@@ -29123,14 +29237,15 @@ function tdFxCard(item, zone, c){
     var cols = tdFxEssCols(c);
     if(cols.length){
       out.cls += ' td-fx-gemcard';
-      out.html += tdFxGemHTML(c, cols);
+      out.html += tdFxGemHTML(c, cols, false, tdCardHasKw(item, 'Unique', board));
     }
   }
   return out;
 }
-function tdFxGemHTML(c, cols, pop){
+/* `uniq`: Unique by the keyword rule (tdCardHasKw), worked out by the caller */
+function tdFxGemHTML(c, cols, pop, uniq){
   return "<div class='td-fx-gem" + (tdFxHasSuper(c, 'mythic') ? ' td-fx-mythic' : '')
-    + (tdHasKeyword(c, 'Unique') ? ' td-fx-unique' : '') + (pop ? ' td-fx-pop' : '')
+    + (uniq ? ' td-fx-unique' : '') + (pop ? ' td-fx-pop' : '')
     + "' style='--g1:" + TDFX_COL[cols[0]] + ';--g2:' + TDFX_COL[cols[1] || cols[0]] + "'></div>";
 }
 
@@ -29178,8 +29293,8 @@ function tdFxOnRect(b, d, out){
 function tdFxBotShare(b, y){
   return Math.max(0, Math.min(1, ((y - b.y) / b.h - .375) / .25));
 }
-function tdFxFlame(x, y){
-  tdFxSpark(x, y, tdFxRnd(-12, 12), -tdFxRnd(35, 95), tdFxPick(TDFX_FLAME), {drag:.99, size:tdFxRnd(1.3, 2.8), life:tdFxRnd(.5, .9)});
+function tdFxFlame(x, y, pal){
+  tdFxSpark(x, y, tdFxRnd(-12, 12), -tdFxRnd(35, 95), tdFxPick(pal || TDFX_FLAME), {drag:.99, size:tdFxRnd(1.3, 2.8), life:tdFxRnd(.5, .9)});
 }
 function tdFxWisp(x, y){
   tdFxAdd({kind:'wisp', x:x, y:y, ph:tdFxRnd(0, 7), life:tdFxRnd(1, 1.5)});
@@ -29230,6 +29345,12 @@ function tdFxDeclTick(dt, br){
          A combined orb's fade masks are the seam between its two stats, not
          light; turning them stood the seam on its end. */
       el.__fxGs = el.querySelectorAll(':scope > .td-fx-stat linearGradient[data-rot]');
+      /* its attack keywords (session 66), from the classes the render gave it */
+      el.__fxKw = {};
+      (el.className.match(/td-fx-k-[a-z]+/g) || []).forEach(function(k){ el.__fxKw[k.slice(8)] = 1; });
+      el.__fxIc = el.__fxIcon ? el.__fxIcon.style.getPropertyValue('--ic') : '';
+      var it = tdFxItemAnywhere(el.getAttribute('data-uid'));
+      el.__fxCols = tdFxPalette(it && it.card);
     }
     var b = {x:r.left, y:r.top, w:r.width, h:r.height, cx:r.left + r.width / 2, cy:r.top + r.height / 2,
              on:r.bottom > 0 && r.top < vh && r.right > 0 && r.left < vw};
@@ -29238,9 +29359,9 @@ function tdFxDeclTick(dt, br){
                              : {x:b.cx - br.left, y:b.cy - br.top};
     var uid = el.getAttribute('data-uid');
     rects[uid] = b;
-    list.push({el:el, uid:uid, role:el.__fxRole, b:b,
+    list.push({el:el, uid:uid, role:el.__fxRole, b:b, kw:el.__fxKw, cols:el.__fxCols,
                ang:el.__fxGs.length ? 120 + tdFxTurnOf(el) * 14 : null,
-               ic:(burstDue && el.__fxIcon) ? tdFxRect(el.__fxIcon) : null});
+               icr:(burstDue && el.__fxIcon) ? tdFxRect(el.__fxIcon) : null});
   }
   var lines = host.querySelectorAll('.td-blockline[data-from]');
   /* - the writes - */
@@ -29267,15 +29388,30 @@ function tdFxDeclTick(dt, br){
     TDFX.acc = 0;
     list.forEach(function(d){
       var b = d.b, pt;
-      if(d.role === 'atk'){ pt = tdFxEdgePoint(b); tdFxFlame(pt[0], pt[1]); }
+      /* Shade's smoke replaces the attacker's flames; Unblockable recolours them */
+      var pal = d.kw.unblockable ? TDFX_FLAME_UB : null;
+      if(d.role === 'atk'){ if(!d.kw.shade){ pt = tdFxEdgePoint(b); tdFxFlame(pt[0], pt[1], pal); } }
       else if(d.role === 'blk') tdFxMote(d.uid);
       else if(d.role === 'thatk'){ pt = tdFxEdgePoint(b);
-        if(Math.random() < tdFxBotShare(b, pt[1])) tdFxWisp(pt[0], pt[1]); else tdFxFlame(pt[0], pt[1]); }
+        if(Math.random() < tdFxBotShare(b, pt[1])) tdFxWisp(pt[0], pt[1]); else if(!d.kw.shade) tdFxFlame(pt[0], pt[1], pal); }
       else if(d.role === 'thblk'){ pt = tdFxEdgePoint(b);
         if(Math.random() >= tdFxBotShare(b, pt[1])) tdFxWisp(pt[0], pt[1]);
         if(Math.random() < .6) tdFxMote(d.uid, 'bot'); }
     });
   }
+  /* the attack keywords' particles, and Battlecry's call every five seconds */
+  TDFX.kacc += dt;
+  if(TDFX.kacc >= (tdFxReduced() ? .24 : .08)){
+    TDFX.kacc = 0;
+    list.forEach(function(d){ if(d.role === 'atk' || d.role === 'thatk') tdFxKwTick(d); });
+  }
+  list.forEach(function(d){
+    if(!d.kw.battlecry || tdFxReduced()) return;
+    var since = TDFX.since[d.uid];
+    if(!since) return;
+    var n = Math.floor((Date.now() - since.at) / 5000);
+    if(since.bc !== n){ since.bc = n; tdFxBattlecry(d.b, d.cols); }
+  });
   if(TDFX.accStar >= .12){   /* the Thaumaturge's little stars under the card */
     TDFX.accStar = 0;
     list.forEach(function(d){
@@ -29292,15 +29428,455 @@ function tdFxDeclTick(dt, br){
   if(burstDue){
     TDFX.burst = 0;
     list.forEach(function(d){
-      var r = d.ic;
+      var r = d.icr;
       if(!r) return;
-      var col = TDFX_ROLES[d.role] ? TDFX_ROLES[d.role].ic : '#ffffff';
+      /* the icon's own colour - an aura keyword's, or the role's */
+      var col = d.el.__fxIc || (TDFX_ROLES[d.role] ? TDFX_ROLES[d.role].ic : '#ffffff');
       tdFxRing(r.cx, r.cy, col, {r0:5, r1:46, w:2.5, life:.5});
       for(var q = 0; q < 12; q++){ var a = tdFxRnd(0, 7);
         tdFxSpark(r.cx, r.cy, Math.cos(a) * tdFxRnd(50, 130), Math.sin(a) * tdFxRnd(50, 130), col, {life:.5}); }
     });
   }
   return list.length;
+}
+
+/* ═════ THE KEYWORDS A CARD REALLY HAS (the author, session 66) ═════
+   ⚠ A KEYWORD EFFECT PLAYS ONLY FOR A KEYWORD THE CARD ALWAYS HAS. Keywords are
+   listed first on a card; a keyword met anywhere else is part of an ability
+   ("this card gains Airborne", "Characters you control gain Overwhelm") and the
+   card does not necessarily have it. So:
+     - a static keyword counts only from the KEYWORD LINE: the first line, and
+       only when that line is nothing but a list of keywords, each perhaps with
+       a parameter ("Airborne, Gouge 2", "Bloodlust, Fury", "Sustain 2").
+       "Target Character gains Swift this turn." is a sentence, not a list;
+     - the ability words Battlecry, Raid, Arrive and Demise count when a line
+       STARTS with them - "Battlecry — …" on any line is the card's own ability
+       (measured: Battlecry opens line 1 of 9 published cards and a later line
+       of 26). Inside a sentence or quotes they do not count;
+     - either way, a keyword counter of that name ON the card counts.
+   The names come back in the card's own order, which is how a clash between
+   colour-giving keywords would read if one were ever decided by order. */
+var TDFX_ABILITY_RX = /^\s*(Battlecry|Raid|Arrive|Demise)\b[^—–:\-\n]{0,12}?\s*[—–:\-]/;
+var TDFX_PARAM_RX = /^\s*:?\s*((\d+|X|[+\-−]\d+|\([^)]*\)|\{[^}]*\})\s*)*$/;
+var _tdFxKwNames = null, _tdFxKwFor = null;
+/* ⚠ THE NAMES THE EFFECTS THEMSELVES USE ARE ALWAYS KNOWN - the keyword list
+   comes from the sync, and a board opened before it lands (or a set without
+   one of them) must still see "Swift" on a keyword line as a keyword */
+var TDFX_OWN_KW = ['Airborne', 'Lethal', 'Overwhelm', 'Battlecry', 'Raid', 'Unblockable', 'Shade', 'Volley', 'Fury',
+                   'Swift', 'Arrive', 'Demise', 'Absolute', 'Unique', 'Thaumaturge'];
+function tdFxKwNames(){
+  var all = window.KW_MATCHES || [];
+  if(_tdFxKwNames && _tdFxKwFor === all) return _tdFxKwNames;
+  var seen = {};
+  _tdFxKwNames = all.filter(function(k){ return (k.mode || 'keyword') === 'keyword'; })
+    .map(function(k){ return String(k.name); }).concat(TDFX_OWN_KW).filter(function(n){ return !seen[n] && (seen[n] = 1); })
+    .sort(function(a, b){ return b.length - a.length; });
+  _tdFxKwFor = all;
+  return _tdFxKwNames;
+}
+function tdFxHalfOf(uid){
+  var halves = [TD.board].concat(tdFoeList());
+  for(var i = 0; i < halves.length; i++) if(halves[i] && tdFindIn(halves[i], uid)) return halves[i];
+  return TD.board;
+}
+function tdFxKeywords(item, board){
+  var out = [], seen = {};
+  function add(n){ if(!seen[n]){ seen[n] = 1; out.push(n); } }
+  if(!item) return out;
+  var c = item.card, names = tdFxKwNames();
+  if(c && !item.anon){
+    var lines = String(c.ruleText || '').split(/\r?\n/);
+    var first = (lines[0] || '').trim().replace(/\.\s*$/, ''), got = [], ok = !!first;
+    if(ok) first.split(/\s*,\s*/).forEach(function(part){
+      if(!ok) return;
+      var hit = null;
+      for(var i = 0; i < names.length && !hit; i++){
+        var n = names[i];
+        if(part === n || (part.indexOf(n) === 0 && TDFX_PARAM_RX.test(part.slice(n.length)))) hit = n;
+      }
+      if(hit) got.push(hit); else ok = false;
+    });
+    if(ok) got.forEach(add);
+    lines.forEach(function(l){ var m = TDFX_ABILITY_RX.exec(l); if(m) add(m[1]); });
+  }
+  board = board || tdFxHalfOf(item.uid);
+  ((board && board.tokens) || []).forEach(function(t){
+    if(t.kind !== 'kw' || t.on !== item.uid) return;
+    var nm = String(t.name || '').replace(/\bcounters?\b/gi, '').trim();
+    for(var i = 0; i < names.length; i++) if(nm === names[i] || nm.indexOf(names[i] + ' ') === 0){ add(names[i]); break; }
+  });
+  return out;
+}
+function tdCardHasKw(item, name, board){ return tdFxKeywords(item, board).indexOf(name) >= 0; }
+window.tdFxKeywords = tdFxKeywords;
+window.tdCardHasKw = tdCardHasKw;
+
+/* ═════ THE ATTACK KEYWORDS (session 66) ═════
+   Added to a declared attacker's look. One weapon icon, used everywhere: the
+   knife when Unblockable, otherwise the Sword; Lethal sets a small skull on it,
+   Shade a crescent around it, the same height and width as the weapon. Its fill
+   and the card's aura are the first of Unblockable > Shade > Lethal it has (the
+   author's order); without any of them the icon and aura stay the attacker's
+   red. Volley's spare weapons are copies of that icon. A Thaumaturge attacker
+   keeps its Arcane Sigil and two-tone glow - only the recolours skip it. */
+var TDFX_ATK_KW = ['Airborne', 'Lethal', 'Overwhelm', 'Battlecry', 'Raid', 'Unblockable', 'Shade', 'Volley', 'Fury'];
+var TDFX_AURA = {
+  ub:    ['#3b2a8a', '#5a1a5e', '#9a0f22'],
+  shade: ['#2b2350', '#4a3f7a', '#8a8fa3'],
+  lethal:['#0f5a2a', '#2bd94a', '#b4ff6a']
+};
+var TDFX_FLAME_UB = ['#3b2a8a', '#5a1a6a', '#8a0f22', '#b0122a'];
+var TDFX_KNIFE = '<path d="M12 1c3.4 3.4 3.8 8 2.4 12.6H10.2V3.4Z"/><path d="M12.2 3.2c1.6 2.6 1.9 6 1.2 9" stroke="#e6dcff" stroke-width=".5" fill="none" opacity=".6"/>'
+  + '<rect x="7.6" y="13.6" width="8.8" height="1.9" rx=".9"/><rect x="10.7" y="15.5" width="2.6" height="6" rx="1.1" fill="#2a1830"/><circle cx="12" cy="22.2" r="1.3"/>';
+var TDFX_SWORD = '<polygon points="12,1 14.3,4 14.3,14 9.7,14 9.7,4"/><rect x="6.2" y="14" width="11.6" height="2.3" rx="1"/>'
+  + '<rect x="10.9" y="16.3" width="2.2" height="4.3"/><circle cx="12" cy="21.7" r="1.7"/>';
+/* the crescent, drawn in the weapon's own 24x32 box so it is exactly as tall and wide */
+var TDFX_MOON = '<path d="M17.8-5.4A11.5 15.5 0 1 0 17.8 21.4 9.4 13.6 0 0 1 17.8-5.4Z" fill="none" stroke-width="1.3" stroke-linejoin="round"/>';
+var TDFX_SKULL = '<g transform="translate(7.2 3.6) scale(.4)"><path d="M12 2C7 2 3.5 5.6 3.5 10.2c0 2.8 1.3 4.6 2.9 5.7V19c0 .8.7 1.5 1.5 1.5h1.2V18h1.4v2.5h3V18h1.4v2.5h1.2c.8 0 1.5-.7 1.5-1.5v-3.1c1.6-1.1 2.9-2.9 2.9-5.7C20.5 5.6 17 2 12 2Z" stroke="#0b0b0b" stroke-width="2" paint-order="stroke"/>'
+  + '<circle cx="8.4" cy="11.3" r="2.1" fill="#0b0b0b"/><circle cx="15.6" cy="11.3" r="2.1" fill="#0b0b0b"/></g>';
+var TDFX_FANGS = (function(){
+  function fang(x, w, h, bend){
+    return '<path d="M' + x + ' 0Q' + (x + w * .08) + ' ' + (h * .62) + ' ' + (x + w * .5 + bend) + ' ' + h
+      + 'Q' + (x + w * .92) + ' ' + (h * .62) + ' ' + (x + w) + ' 0Q' + (x + w * .5) + ' ' + (h * .12) + ' ' + x + ' 0Z"/>';
+  }
+  return '<svg viewBox="0 0 100 22" preserveAspectRatio="none"><g fill="url(#tdFxFangG)" stroke="#8f8370" stroke-width=".4">'
+    + [[3, 9, 21, 2.2], [20, 6, 11, 0], [31, 5, 8.5, 0], [41, 5, 7.5, 0], [54, 5, 7.5, 0], [64, 5, 8.5, 0], [74, 6, 11, 0], [88, 9, 21, -2.2]]
+        .map(function(f){ return fang(f[0], f[1], f[2], f[3]); }).join('') + '</g></svg>';
+})();
+/* the fang gradient, defined once for the whole page */
+function tdFxDefs(){
+  if(document.getElementById('tdFxDefs')) return;
+  var d = document.createElement('div');
+  d.innerHTML = '<svg id="tdFxDefs" width="0" height="0" style="position:absolute" aria-hidden="true"><defs>'
+    + '<linearGradient id="tdFxFangG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9cfbd"/><stop offset=".35" stop-color="#fbf8f1"/><stop offset="1" stop-color="#ffffff"/></linearGradient>'
+    + Object.keys(TDFX_AURA).map(function(k){ var a = TDFX_AURA[k];
+        return '<linearGradient id="tdFxW' + k + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + a[0] + '"/><stop offset=".55" stop-color="' + a[1] + '"/><stop offset="1" stop-color="' + a[2] + '"/></linearGradient>'; }).join('')
+    + '</defs></svg>';
+  document.body.appendChild(d.firstChild);
+}
+/* which keywords, the colour, and the icon - for one declared card */
+function tdFxAtkSet(item, board){
+  var kws = tdFxKeywords(item, board).filter(function(n){ return TDFX_ATK_KW.indexOf(n) >= 0; }), has = {};
+  kws.forEach(function(n){ has[n] = 1; });
+  var aura = has.Unblockable ? 'ub' : has.Shade ? 'shade' : has.Lethal ? 'lethal' : '';
+  return {kws:kws, has:has, aura:aura};
+}
+function tdFxWeaponSVG(set){
+  var fill = set.aura ? 'url(#tdFxW' + set.aura + ')' : 'currentColor';
+  return '<svg viewBox="0 -8 24 32" fill="' + fill + '" stroke="' + fill + '">'
+    + (set.has.Shade ? TDFX_MOON : '')
+    + '<g stroke="none">' + (set.has.Unblockable ? TDFX_KNIFE : TDFX_SWORD) + '</g>'
+    + (set.has.Lethal ? TDFX_SKULL : '') + '</svg>';
+}
+function tdFxBannerSVG(cols){
+  var cs = cols.length ? cols : ['#ff4d3d'], id = 'tdFxBan' + (++TDFX.uid);
+  var stops = (cs.length === 1 ? [cs[0], cs[0]] : cs).map(function(c, i, a){
+    return '<stop offset="' + (i / (a.length - 1)) + '" stop-color="' + c + '"/>'; }).join('');
+  /* left to right, so a many-coloured flag reads in vertical bands */
+  return '<svg viewBox="0 0 60 90"><defs><linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="0">' + stops + '</linearGradient></defs>'
+    + '<rect x="2" y="0" width="3" height="90" rx="1.5" fill="#c8a45a"/><circle cx="3.5" cy="2" r="3" fill="#ffe08a"/>'
+    + '<g class="td-fx-flag"><path d="M5 6h50l-9 14 9 14H5Z" fill="url(#' + id + ')" stroke="#ffcf6b" stroke-width="1.2"/></g></svg>';
+}
+/* the markup and classes the keywords add to a declared card */
+function tdFxAtkHTML(item, board, role, c){
+  var set = tdFxAtkSet(item, board), h = set.has, html = '', cls = '';
+  if(!set.kws.length) return {cls:'', html:'', set:set};
+  tdFxDefs();
+  set.kws.forEach(function(n){ cls += ' td-fx-k-' + n.toLowerCase(); });
+  var cols = tdFxPalette(c);
+  /* the aura itself is the card's glow, in its colours (tdFxCard) */
+  if(role === 'atk' && set.aura) cls += ' td-fx-aura';
+  if(h.Overwhelm) html += "<div class='td-fx-fangs td-fx-top'>" + TDFX_FANGS + "</div><div class='td-fx-fangs td-fx-bot'>" + TDFX_FANGS + "</div>";
+  if(h.Raid) html += "<div class='td-fx-banner'>" + tdFxBannerSVG(cols) + "</div>";
+  if(h.Airborne) html += "<div class='td-fx-shadow'></div>";
+  if(h.Volley && role === 'atk'){
+    var w = tdFxWeaponSVG(set), vc = set.aura ? TDFX_AURA[set.aura][1] : '#ff3b3b';
+    [[-34, 6, -10, 8], [-26, 50, -4, -7], [118, 8, 10, -8], [110, 52, 4, 7]].forEach(function(v, i){
+      html += "<div class='td-fx-vw' style='left:" + v[0] + '%;top:' + v[1] + '%;--r:' + v[2] + 'deg;--sw:' + v[3] + 'deg;--vc:' + vc
+        + ';animation-delay:' + (-i * .8) + "s'>" + w + '</div>';
+    });
+  }
+  return {cls:cls, html:html, set:set, cols:cols};
+}
+
+/* ═════ A CHARACTER DIES (session 66) ═════
+   Field to Grave, on any screen. The card's old element becomes a fixed ghost
+   (as Crystallize does) and the Grave card waits for it (td-fx-hold, zone
+   'grave' - an undo mid-way shows it at once). Demise first: a skull stamps
+   over the picture and bursts in the card's colours, then the Death Knell -
+   two slow ripples in its colours, a gradient round the ring when it has more
+   than one, that rattle the cards near it. Then Collapse into Ash: it tips
+   back and falls flat with a dust ring, and burns away from the bottom up. */
+var TDFX_SKULLMARK = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7 2 3.5 5.6 3.5 10.2c0 2.8 1.3 4.6 2.9 5.7V19c0 .8.7 1.5 1.5 1.5h1.2V18h1.4v2.5h3V18h1.4v2.5h1.2c.8 0 1.5-.7 1.5-1.5v-3.1c1.6-1.1 2.9-2.9 2.9-5.7C20.5 5.6 17 2 12 2Zm-3.6 11.4a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2Zm7.2 0a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2Z"/></svg>';
+function tdFxWaitMs(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+function tdFxGhostOf(el, from){
+  var g = el.cloneNode(true);
+  g.removeAttribute('data-uid');
+  Array.prototype.forEach.call(g.querySelectorAll('[class*="td-fx-"]'), function(n){ n.remove(); });
+  g.className = 'td-card td-fx-ghost';
+  g.style.left = from.x + 'px'; g.style.top = from.y + 'px'; g.style.width = from.w + 'px'; g.style.height = from.h + 'px';
+  g.style.animation = 'none'; g.style.transform = 'none';
+  document.body.appendChild(g);
+  return g;
+}
+function tdFxDeath(board, a){
+  if(tdFxReduced()) return;
+  var el = tdFxEl(a.uid), at = tdFindIn(board, a.uid), item = at && at.item, c = item && item.card;
+  if(!el || !c) return;
+  var from = tdFxRect(el);
+  if(!from.w) return;
+  /* its keywords as they were on the Field - the move took its counters */
+  var kws = (TDFX.pre && TDFX.pre.uid === a.uid) ? TDFX.pre.kws : tdFxKeywords(item, board);
+  var demise = kws.indexOf('Demise') >= 0, cols = tdFxPalette(c);
+  var total = (demise ? 1900 : 0) + 700 + 250 + 1500 + 200;
+  TDFX.hold[a.uid] = {zone:'grave', until:Date.now() + total};
+  TDFX.fired.death = (TDFX.fired.death || 0) + 1;
+  var ghost = tdFxGhostOf(el, from), B = from;
+  /* ⚠ UNDONE IN THE MEANTIME, IT STOPS (as Crystallize does): the card is back
+     on the Field, on view, and the ghost fades where it stands */
+  function undone(){
+    if(tdFxZoneOf(a.uid) === 'grave') return false;
+    delete TDFX.hold[a.uid];
+    if(ghost.animate) ghost.animate([{opacity:1}, {opacity:0}], {duration:300, fill:'forwards'})
+      .finished.then(function(){ ghost.remove(); });
+    else ghost.remove();
+    return true;
+  }
+  (async function(){
+    if(demise){
+      TDFX.fired.demise = (TDFX.fired.demise || 0) + 1;
+      var s = document.createElement('div'); s.className = 'td-fx-skullmark'; s.style.setProperty('--sk', cols[0]); s.innerHTML = TDFX_SKULLMARK;
+      ghost.appendChild(s);
+      if(s.animate) s.animate([{transform:'translate(-50%,-50%) scale(2.4) rotate(-20deg)', opacity:0}, {transform:'translate(-50%,-50%) scale(1)', opacity:1}],
+                              {duration:380, easing:'cubic-bezier(.2,1.6,.4,1)', fill:'forwards'});
+      await tdFxWaitMs(650);
+      if(undone()) return;
+      var cx = B.cx, cy = B.y + B.h * .38;
+      for(var i = 0; i < 40; i++){ var an = tdFxRnd(0, 7), sp = tdFxRnd(90, 240);
+        if(i % 3) tdFxSpark(cx, cy, Math.cos(an) * sp, Math.sin(an) * sp, tdFxPick(cols.concat(['#ffffff'])), {life:tdFxRnd(.5, .9)});
+        else tdFxChunk(cx, cy, Math.cos(an) * sp * .8, Math.sin(an) * sp * .8, '#14101c'); }
+      if(s.animate) s.animate([{opacity:1}, {opacity:0, transform:'translate(-50%,-50%) scale(1.6)'}], {duration:300, fill:'forwards'});
+      for(var k = 0; k < 2; k++){
+        TDFX.fired.knell = (TDFX.fired.knell || 0) + 1;
+        tdFxRing(B.cx, B.cy, cols[0], {r0:20, r1:B.w * 2.6, w:9, life:1.4, cols:cols.length > 1 ? cols : null});
+        setTimeout(function(){ tdFxRattle(B); }, 420);
+        await tdFxWaitMs(600);
+        if(undone()) return;
+      }
+    }
+    /* collapse */
+    if(ghost.animate) ghost.animate([{transform:'perspective(500px) rotateX(0)'}, {transform:'perspective(500px) rotateX(-12deg)', offset:.25},
+                                     {transform:'perspective(500px) rotateX(78deg) translateY(30px)', filter:'brightness(.7) grayscale(.4)'}],
+                                    {duration:700, easing:'cubic-bezier(.5,0,.9,.5)', fill:'forwards'});
+    await tdFxWaitMs(650);
+    if(undone()) return;
+    var by = B.y + B.h * .92;
+    tdFxRing(B.cx, by, '#a9adb6', {r0:20, r1:150 * B.w / 132, w:4, sy:.28, life:.7});
+    for(var j = 0; j < 14; j++){ var q = tdFxRnd(-Math.PI, 0);
+      tdFxPuff(B.cx + Math.cos(q) * B.w * .5, by, Math.cos(q) * tdFxRnd(60, 140), Math.sin(q) * tdFxRnd(5, 30), tdFxPick(['#8d8576', '#5c5f66', '#b9bcc4'])); }
+    for(var m = 0; m < 18; m++) tdFxChunk(B.cx + tdFxRnd(-B.w / 2, B.w / 2), by, tdFxRnd(-120, 120), -tdFxRnd(30, 120), tdFxPick(TDFX_GREYS));
+    await tdFxWaitMs(250);
+    if(undone()) return;
+    /* then it burns to ash where it lies, from the bottom up */
+    var F = tdFxRect(ghost), T = 1500, t0 = performance.now();
+    ghost.classList.add('td-fx-ash');
+    if(ghost.animate) ghost.animate([{filter:'brightness(.7) grayscale(.4)'}, {filter:'grayscale(1) brightness(.5)'}], {duration:T * .7, fill:'forwards'});
+    tdFxCustom(T / 1000, function(cx2, p, k){
+      ghost.style.setProperty('--burn', (k * 100).toFixed(1));
+      var y = F.y + F.h * (1 - k);
+      for(var e = 0; e < 3; e++) tdFxSpark(F.x + tdFxRnd(0, F.w), y + tdFxRnd(-2, 2), tdFxRnd(-20, 20), -tdFxRnd(30, 80),
+        tdFxPick(['#ff9a2e', '#ffcf6b', '#ff5a1f']), {life:tdFxRnd(.7, 1.3), drag:.99, size:tdFxRnd(1.2, 2.4)});
+      if(Math.random() < .3) tdFxPuff(F.x + tdFxRnd(0, F.w), y, tdFxRnd(-10, 10), -tdFxRnd(10, 30), '#5c5f66');
+    });
+    await tdFxWaitMs(T);
+    ghost.remove();
+    delete TDFX.hold[a.uid];
+    var g = tdFxEl(a.uid);
+    if(g && g.classList.contains('td-fx-hold')){
+      g.classList.remove('td-fx-hold');
+      if(g.animate) g.animate([{opacity:0}, {opacity:1}], {duration:400});
+    }
+  })();
+}
+/* the cards near a tolling knell rattle */
+function tdFxRattle(B){
+  Array.prototype.forEach.call(document.querySelectorAll('#tdBoard .td-zone[data-zone=field] .td-card'), function(el){
+    var r = tdFxRect(el);
+    if(Math.hypot(r.cx - B.cx, r.cy - B.cy) > B.w * 3 || !el.animate) return;
+    el.animate([{translate:'0 0'}, {translate:'-3px 1px'}, {translate:'3px -1px'}, {translate:'-2px 0'}, {translate:'0 0'}], {duration:380});
+  });
+}
+
+/* ═════ AN ONGOING ACTION OR SPELL IS PLAYED (session 66) ═════
+   A play effect only - nothing stays. An Action draws the Rune Circle, a Spell
+   the Turning Seal (the Seal when it is both), in the card's colours - a
+   gradient when it has more than one - turning and glowing for five seconds,
+   then gone. Absolute, Unique and Mythic add the finishes a Character gets. */
+var TDFX_RUNES = 'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ';
+function tdFxCircleSVG(kind, cols){
+  var id = 'tdFxCi' + (++TDFX.uid), cs = cols.length > 1 ? cols : [cols[0], cols[0]];
+  var defs = '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="0">'
+    + cs.map(function(c, i){ return '<stop offset="' + (i / (cs.length - 1)) + '" stop-color="' + c + '"/>'; }).join('') + '</linearGradient></defs>';
+  var st = 'stroke="url(#' + id + ')"', draw = ' pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" class="td-fx-draw"';
+  var t = '<svg viewBox="-100 -100 200 200" fill="none">' + defs + '<g class="td-fx-spin">';
+  if(kind === 'runes'){
+    t += '<circle r="94" ' + st + ' stroke-width="1.6"' + draw + '/><circle r="72" ' + st + ' stroke-width="1"' + draw + '/>';
+    for(var i = 0; i < 24; i++){ var a = i / 24 * Math.PI * 2, x = (Math.cos(a) * 83).toFixed(1), y = (Math.sin(a) * 83).toFixed(1);
+      t += '<text x="' + x + '" y="' + (+y + 4) + '" font-size="11" fill="url(#' + id + ')" text-anchor="middle" opacity="0" class="td-fx-glyph" transform="rotate('
+        + (a * 180 / Math.PI + 90).toFixed(1) + ' ' + x + ' ' + y + ')">' + TDFX_RUNES[i] + '</text>'; }
+  } else {
+    t += '<circle r="96" ' + st + ' stroke-width="2"' + draw + '/><circle r="84" ' + st + ' stroke-width=".8"' + draw + '/><circle r="40" ' + st + ' stroke-width="1.2"' + draw + '/>'
+      + '<path d="M0-84 72.7 42-72.7 42Z M0 84-72.7-42 72.7-42Z" ' + st + ' stroke-width="1.3"' + draw + '/>';
+    for(var j = 0; j < 12; j++){ var b = j / 12 * Math.PI * 2;
+      t += '<circle cx="' + (Math.cos(b) * 90).toFixed(1) + '" cy="' + (Math.sin(b) * 90).toFixed(1) + '" r="2.6" fill="url(#' + id + ')" opacity="0" class="td-fx-glyph"/>'; }
+  }
+  return t + '</g></svg>';
+}
+function tdFxIsOngoing(c){
+  return tdFxHasSuper(c, 'ongoing') && (tdFxHasSuper(c, 'action') || tdFxHasSuper(c, 'spell')) && !tdIsCharacterCard(c);
+}
+function tdFxOngoing(uid){
+  var el = tdFxEl(uid), half = tdFxHalfOf(uid), at = tdFindIn(half, uid), item = at && at.item, c = item && item.card;
+  if(!el || !c) return;
+  var B = tdFxRect(el);
+  if(!B.w) return;
+  var kind = tdFxHasSuper(c, 'spell') ? 'seal' : 'runes', cols = tdFxPalette(c), FIVE = 5000;
+  TDFX.fired['ongoing-' + kind] = (TDFX.fired['ongoing-' + kind] || 0) + 1;
+  if(!tdFxReduced() && el.animate) el.animate([{translate:'0 -40px', opacity:0}, {translate:'0 0', opacity:1}], {duration:420, easing:'cubic-bezier(.2,1.2,.4,1)'});
+  setTimeout(function(){
+    var D = B.h * (kind === 'runes' ? 1.3 : 1.42), fx = document.createElement('div');
+    fx.className = 'td-fx-circle td-fx-' + kind;
+    fx.style.left = (B.cx - D / 2) + 'px'; fx.style.top = (B.cy - D / 2) + 'px'; fx.style.width = fx.style.height = D + 'px';
+    fx.innerHTML = tdFxCircleSVG(kind, cols);
+    document.body.appendChild(fx);
+    if(!fx.animate){ setTimeout(function(){ fx.remove(); }, FIVE); return; }
+    Array.prototype.forEach.call(fx.querySelectorAll('.td-fx-draw'), function(n, i){
+      n.animate([{strokeDashoffset:100}, {strokeDashoffset:0}], {duration:900, delay:i * 120, fill:'forwards', easing:'ease-out'}); });
+    Array.prototype.forEach.call(fx.querySelectorAll('.td-fx-glyph'), function(n, i){
+      n.animate([{opacity:0}, {opacity:.9}], {duration:200, delay:300 + i * 30, fill:'forwards'}); });
+    if(!tdFxReduced()) fx.querySelector('.td-fx-spin').animate([{transform:'rotate(0)'}, {transform:'rotate(' + (kind === 'runes' ? 120 : -150) + 'deg)'}],
+      {duration:FIVE, easing:'cubic-bezier(.3,0,.4,1)', fill:'forwards'});
+    fx.animate([{filter:'drop-shadow(0 0 3px ' + cols[0] + ')', opacity:1}, {filter:'drop-shadow(0 0 14px ' + cols[cols.length - 1] + ') brightness(1.5)', offset:.2},
+                {filter:'drop-shadow(0 0 6px ' + cols[0] + ')', opacity:1, offset:.82}, {filter:'drop-shadow(0 0 2px ' + cols[0] + ')', opacity:0}],
+      {duration:FIVE, fill:'forwards'}).finished.then(function(){ fx.remove(); });
+    if(kind === 'seal') [0, 1].forEach(function(i){ setTimeout(function(){ tdFxRing(B.cx, B.cy, cols[0], {r0:B.h * .4, r1:B.h * 1.15, w:3, life:.9, cols:cols.length > 1 ? cols : null}); }, 600 + i * 1600); });
+    else for(var s = 0; s < 26; s++) setTimeout(function(){ var an = tdFxRnd(0, 7);
+      tdFxSpark(B.cx + Math.cos(an) * D * .47, B.cy + Math.sin(an) * D * .47, 0, -tdFxRnd(15, 40), tdFxPick(cols), {life:tdFxRnd(.8, 1.3), size:1.6, drag:.99}); }, 400 + s * 150);
+    tdFxFinishes(uid, item, half, c, B.w / 132, 300);
+  }, 380);
+}
+/* Absolute's diamonds, Unique's running border, Mythic's prismatic edge - by the
+   keyword rule - for a Character's slam and an Ongoing card's play alike */
+function tdFxFinishes(uid, item, half, c, sc, delay){
+  var abs = tdCardHasKw(item, 'Absolute', half), uni = tdCardHasKw(item, 'Unique', half), myth = tdFxHasSuper(c, 'mythic');
+  setTimeout(function(){
+    var now = tdFxEl(uid);
+    if(!now) return;
+    var B = tdFxRect(now), wait = 0;
+    if(abs){ tdFxDiamonds(B.cx, B.cy, 260 * sc); wait += 220; }
+    setTimeout(function(){
+      var n2 = tdFxEl(uid);
+      if(n2 && uni) tdFxUniqueRunner(n2);
+      setTimeout(function(){ var n3 = tdFxEl(uid); if(n3 && myth) tdFxMythicOn(n3); }, (n2 && uni) ? 220 : 0);
+    }, wait);
+  }, delay);
+}
+
+/* ═════ ARRIVE AND SWIFT, ON THE IMPACT SLAM (session 66) ═════
+   Swift: a gust rising from below across the card's spot before it lands,
+   then two of the Declare Swords stamp in DIRECTLY OPPOSITE each other through
+   the card's centre (a random direction) and fade. Arrive: the card comes down
+   as a falling star with a long trail in its colours and lands in a flash,
+   instead of dropping. Together: the wind, the star, the slam, the swords. The
+   card is held out of sight (td-fx-hold, zone 'field') through the prelude. */
+var TDFX_WIND_MS = 360, TDFX_STAR_MS = 550;
+function tdFxWind(B){
+  TDFX.fired.wind = (TDFX.fired.wind || 0) + 1;
+  var H = window.innerHeight;
+  for(var i = 0; i < 11; i++) (function(xx, len, d){
+    tdFxCustom(.9, function(c, p, k){
+      var kk = Math.max(0, (k - d) / (1 - d)); if(!kk) return;
+      var yy = B.y + B.h + len - (B.h + len * 2.2) * tdFxEaseOut(kk);
+      c.globalAlpha = Math.sin(Math.PI * kk) * .55; c.strokeStyle = '#d9fff0'; c.lineWidth = 1.6;
+      c.beginPath(); c.moveTo(xx, yy + len); c.bezierCurveTo(xx - 8, yy + len * .6, xx + 8, yy + len * .3, xx + Math.sin(kk * 9) * 4, yy); c.stroke();
+    });
+  })(B.cx + tdFxRnd(-B.w * 1.6, B.w * 1.6), tdFxRnd(110, 220), tdFxRnd(0, .25));
+  for(var j = 0; j < 20; j++) tdFxSpark(B.cx + tdFxRnd(-B.w * 1.5, B.w * 1.5), Math.min(H, B.y + B.h + 60), tdFxRnd(-20, 20), -tdFxRnd(500, 800), '#c8ffd9', {life:.7, size:1.4, drag:.98});
+}
+function tdFxStarfall(B, cols){
+  TDFX.fired.starfall = (TDFX.fired.starfall || 0) + 1;
+  var sx = B.cx - 380, sy = B.cy - 420;
+  tdFxCustom(TDFX_STAR_MS / 1000, function(c, p, k){
+    var e = k * k, X = sx + (B.cx - sx) * e, Y = sy + (B.cy - sy) * e;
+    for(var i = 0; i < 18; i++){ var t = Math.max(0, e - i * .018);
+      c.globalAlpha = (1 - i / 18) * .8;
+      tdFxBlit(c, tdFxSprite('dot', i ? cols[i % cols.length] : '#ffffff', '#ffffff', 6 - i * .28, 14), sx + (B.cx - sx) * t, sy + (B.cy - sy) * t); }
+    if(Math.random() < .8) tdFxSpark(X, Y, tdFxRnd(-30, 30), tdFxRnd(-30, 30), tdFxPick(['#ffffff', cols[0]]), {life:.5, size:1.6});
+  });
+}
+function tdFxSwiftSwords(B){
+  TDFX.fired.swords = (TDFX.fired.swords || 0) + 1;
+  var th = tdFxRnd(0, Math.PI * 2), rx = B.w * .85, ry = B.h * .72, w = Math.max(20, B.w * .24);
+  [1, -1].forEach(function(sg, i){
+    var s = document.createElement('div'); s.className = 'td-fx-pswd';
+    s.innerHTML = TDFX_ICON.sword + "<i class='td-fx-dia' style='top:12.5%'><b></b></i>";
+    s.style.width = w + 'px';
+    s.style.left = (B.cx + sg * Math.cos(th) * rx - w / 2) + 'px'; s.style.top = (B.cy + sg * Math.sin(th) * ry - w * 4 / 6) + 'px';
+    document.body.appendChild(s);
+    if(!s.animate){ setTimeout(function(){ s.remove(); }, 1700); return; }
+    s.animate([{transform:'scale(2.4) rotate(-20deg)', opacity:0}, {transform:'scale(1)', opacity:1, offset:.2},
+               {transform:'translateY(-8px) scale(1)', opacity:1, offset:.75}, {transform:'translateY(-14px)', opacity:0}],
+      {duration:1700, delay:i * 140, easing:'ease-out', fill:'forwards'}).finished.then(function(){ s.remove(); });
+    setTimeout(function(){ var r = tdFxRect(s); tdFxRing(r.cx, r.cy, '#ff3b3b', {r0:4, r1:34, w:2.5, life:.45}); }, 300 + i * 140);
+  });
+}
+
+/* the attack keywords' own particles, a few times a second per card */
+function tdFxFeather(x, y, down){
+  var ph = tdFxRnd(0, 7), rot0 = tdFxRnd(-1, 1), fall = down ? tdFxRnd(34, 50) : tdFxRnd(18, 30);
+  tdFxAdd({kind:'custom', life:tdFxRnd(2.2, 3), blend:'source-over', draw:function(c, p, k){
+    var X = x + Math.sin(ph + p.age * 2.2) * 16, Y = y + p.age * fall;
+    c.globalAlpha = Math.sin(Math.PI * k) * .9; c.translate(X, Y); c.rotate(rot0 + Math.sin(ph + p.age * 2.2) * .7);
+    c.fillStyle = '#f2f8ff'; c.beginPath(); c.ellipse(0, 0, 2.2, 7, 0, 0, 7); c.fill();
+    c.strokeStyle = '#a9cfe8'; c.lineWidth = .7; c.beginPath(); c.moveTo(0, -7); c.lineTo(0, 8); c.stroke(); }});
+}
+function tdFxDrip(b){
+  var x = b.x + tdFxRnd(.1, .9) * b.w, y0 = b.y + b.h + 2;
+  tdFxAdd({kind:'custom', life:tdFxRnd(.9, 1.3), draw:function(c, p, k){
+    c.globalAlpha = 1 - k; tdFxBlit(c, tdFxSprite('dot', '#9dff5a', '#2bd94a', 2.2 * (1 - k * .3), 8), x, y0 + 220 * p.age * p.age); }});
+}
+function tdFxKwTick(d){
+  var b = d.b, k = d.kw;
+  if(k.airborne){
+    if(Math.random() < .2) tdFxFeather(b.x + tdFxRnd(-10, b.w + 10), b.y + tdFxRnd(0, b.h * .3));
+    if(Math.random() < .45) tdFxFeather(b.x + tdFxRnd(.05, .95) * b.w, b.y + b.h - 4, true);
+  }
+  if(k.lethal){
+    tdFxDrip(b);
+    if(Math.random() < .25) tdFxPuff(b.x + tdFxRnd(0, b.w), b.y + b.h * tdFxRnd(.5, 1), tdFxRnd(-8, 8), -tdFxRnd(5, 15), '#3ddc84');
+  }
+  if(k.raid && Math.random() < .5)
+    tdFxSpark(b.x + b.w + tdFxRnd(-6, 26), b.y - tdFxRnd(0, 20), tdFxRnd(-6, 6), -tdFxRnd(30, 60), tdFxPick(['#ffb347', '#ff7a1a']), {drag:.99, size:1.4, life:tdFxRnd(.8, 1.2)});
+  if(k.shade){ var e = tdFxEdgePoint(b);
+    tdFxAdd({kind:'puff', x:e[0], y:e[1], vx:tdFxRnd(-10, 10), vy:-tdFxRnd(10, 25), life:tdFxRnd(1.4, 2), r0:6, r1:tdFxRnd(22, 34), a:.55,
+             color:tdFxPick(['#1c1726', '#2b2236', '#3a3046'])}); }
+  if(k.unblockable && Math.random() < .7){ var m = tdFxEdgePoint(b);
+    tdFxAdd({kind:'puff', x:m[0], y:m[1], vx:tdFxRnd(-14, 14), vy:tdFxRnd(-8, 4), life:tdFxRnd(1.6, 2.4), r0:8, r1:tdFxRnd(26, 40), a:.18,
+             blend:'lighter', color:tdFxPick(['#dfe8f0', '#c8d6e2', '#ffffff'])}); }
+}
+/* Battlecry: the War Horn's arcs without the horn, rising from just above the
+   card in its own colours - when it is declared, and every five seconds after */
+function tdFxBattlecry(b, cols){
+  TDFX.fired.battlecry = (TDFX.fired.battlecry || 0) + 1;
+  var hx = b.cx, hy = b.y - b.h * .12;
+  for(var i = 0; i < 5; i++) (function(i){
+    setTimeout(function(){ tdFxCustom(1, function(c, p, k){
+      var r = 14 + k * 150 * b.w / 132;
+      c.strokeStyle = cols[i % cols.length]; c.beginPath(); c.arc(hx, hy, r, -Math.PI * .85, -Math.PI * .15);
+      c.globalAlpha = (1 - k) * .3; c.lineWidth = 3.2 * (1 - k) + 6.6; c.stroke();
+      c.globalAlpha = (1 - k) * .9; c.lineWidth = 3.2 * (1 - k) + .6; c.stroke(); }); }, i * 170);
+  })(i);
+  for(var j = 0; j < 14; j++) tdFxSpark(hx + tdFxRnd(-20, 20), hy, tdFxRnd(-60, 60), -tdFxRnd(80, 200), tdFxPick(cols), {life:tdFxRnd(.6, 1), size:1.6});
 }
 
 /* ═════ 3. CRYSTALLIZE ═════ */
@@ -29369,20 +29945,21 @@ function tdFxCrystal(board, a){
    `fromArt` (or simply appears there, with nothing to fly from); 4 - it
    lands on the middle of the Essence card's picture */
 function tdFxEssenceArrives(essUid, fromArt, eCard, cols, GROW){
-  var essEl = tdFxEl(essUid);
+  var essEl = tdFxEl(essUid), eAt = tdFindIn(tdFxHalfOf(essUid), essUid);
+  var uniq = !!eAt && tdCardHasKw(eAt.item, 'Unique');
   delete TDFX.hold[essUid];
   if(!essEl){ delete TDFX.landing[essUid]; return; }
   essEl.classList.remove('td-fx-hold');
   if(essEl.animate) essEl.animate([{scale:'0', opacity:.3}, {scale:'1', opacity:1}], {duration:GROW, easing:'cubic-bezier(.3,1.4,.5,1)'});
   var er = tdFxRect(essEl), target = {x:er.cx, y:er.y + er.h * tdFxArtFrac(essEl)};
   if(essEl.classList.contains('locked')){ target.x = er.cx; target.y = er.cy; }
-  tdFxGemFlight(fromArt || target, target, cols, eCard, er, GROW / 1000, function(){
+  tdFxGemFlight(fromArt || target, target, cols, eCard, er, GROW / 1000, uniq, function(){
     delete TDFX.landing[essUid];
     var e2 = tdFxEl(essUid);
     if(e2 && e2.getAttribute('data-zone') === 'essarea' && !e2.querySelector(':scope > .td-fx-gem')){
       e2.classList.add('td-fx-gemcard');
       e2.style.setProperty('--fx-art', (tdFxArtFrac(e2) * 100).toFixed(1) + '%');
-      e2.insertAdjacentHTML('beforeend', tdFxGemHTML(eCard, cols, true));
+      e2.insertAdjacentHTML('beforeend', tdFxGemHTML(eCard, cols, true, uniq));
     }
   });
 }
@@ -29406,8 +29983,8 @@ function tdFxCrystalSeen(board, a){
     tdFxEssenceArrives(a.uid, (r && r.w) ? {x:r.cx, y:r.y + r.h * tdFxArtFrac(el)} : null, eCard, cols, GROW);
   }, T0);
 }
-function tdFxGemFlight(fromArt, target, cols, eCard, er, T, done){
-  var mythic = tdFxHasSuper(eCard, 'mythic'), unique = tdHasKeyword(eCard, 'Unique');
+function tdFxGemFlight(fromArt, target, cols, eCard, er, T, unique, done){
+  var mythic = tdFxHasSuper(eCard, 'mythic');
   var ctl = {x:(fromArt.x + target.x) / 2 + 60, y:Math.min(fromArt.y, target.y) - 110};
   var c1 = TDFX_COL[cols[0]], c2 = TDFX_COL[cols[1] || cols[0]], s = Math.max(9, Math.min(15, er.w * .15));
   var gemGrad = null;
@@ -29466,8 +30043,19 @@ function tdFxGemFlight(fromArt, target, cols, eCard, er, T, done){
   }, T * 1000);
 }
 
-/* ═════ the door: an action, as it happens ═════
-   Called by tdDo for your own actions and by tblActFrom for another
+/* ═════ the doors: just before an action, and as it happens ═════
+   Before: only what the action is about to take away - a card leaving the
+   Field loses its keyword counters, and Demise can be one. */
+function tdFxBefore(board, a, before){
+  TDFX.pre = null;
+  try{
+    if(!a || a.t !== 'move' || before !== 'field' || a.to === 'field') return;
+    var at = tdFindIn(board, a.uid);
+    if(at) TDFX.pre = {uid:a.uid, kws:tdFxKeywords(at.item, board)};
+  }catch(_){}
+}
+/* As it happens:
+   called by tdDo for your own actions and by tblActFrom for another
    player's - after the action is applied to its half and BEFORE the board is
    redrawn, so the card's old element is still where it stood. `before` is the
    zone the card was in. */
@@ -29481,8 +30069,20 @@ function tdFxAction(board, a, before){
               || (a.t === 'appear' && a.zone === 'field' && !a.anon);
     if(played){
       var at = tdFindIn(board, a.uid);
-      if(at && at.item.card && !at.item.down && !at.item.anon && tdIsCharacterCard(at.item.card))
-        setTimeout(function(){ tdFxSlam(a.uid); }, 0);
+      if(at && at.item.card && !at.item.down && !at.item.anon && tdIsCharacterCard(at.item.card)){
+        /* Swift and Arrive play before the slam, so the card waits out of sight
+           (the hold is set here, before the redraw that draws it) */
+        var pre = {swift:tdCardHasKw(at.item, 'Swift', board), arrive:tdCardHasKw(at.item, 'Arrive', board)};
+        if((pre.swift || pre.arrive) && !tdFxReduced())
+          TDFX.hold[a.uid] = {zone:'field', until:Date.now() + (pre.swift ? TDFX_WIND_MS : 0) + (pre.arrive ? TDFX_STAR_MS : 0) + 400};
+        setTimeout(function(){ tdFxSlam(a.uid, pre); }, 0);
+      }
+      else if(at && at.item.card && !at.item.down && !at.item.anon && tdFxIsOngoing(at.item.card))
+        setTimeout(function(){ tdFxOngoing(a.uid); }, 0);
+    } else if(a.t === 'move' && a.to === 'grave' && before === 'field'){
+      /* a Character dying (session 66) - its old element is still where it stood */
+      var dead = tdFindIn(board, a.uid);
+      if(dead && dead.item.card && !dead.item.anon && tdIsCharacterCard(dead.item.card)) tdFxDeath(board, a);
     } else if(a.t === 'crystal'){
       tdFxCrystal(board, a);
     } else if(a.t === 'appear' && a.fx === 'crystal' && a.zone === 'essarea'){
@@ -29493,7 +30093,7 @@ function tdFxAction(board, a, before){
 
 /* for the checks: what is in flight */
 window.tdFxStats = function(){
-  return {particles:TDFX.items.length, running:TDFX.running, sprites:TDFX.sprN || 0,
+  return {particles:TDFX.items.length, running:TDFX.running, sprites:TDFX.sprN || 0, fired:Object.assign({}, TDFX.fired),
           holds:Object.keys(TDFX.hold).length, landing:Object.keys(TDFX.landing).length};
 };
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -32721,14 +33321,12 @@ window.edKwReminder=function(n,m){return kwReminderFor(n,m);};
 function kwPill(name,text,reminder,mode){
   var s=kwStyleFor(name);
   var cls='kw-pill'+(KW_SHAPECLASS[s.shape]||'');
-  /* ⚠ A DAMAGE TYPE'S LETTERS ARE OUTLINED IN ITS FILL (session 63). --kw-o
-     is the 1px ring drawn round every letter, and a keyword takes it from the
-     Outline colour. The sheet makes a Damage Type's outline its FONT colour,
-     so its letters were ringed in their own colour and read as blobs; ringed
-     in the fill they sit on the pill as the sheet draws them. The border still
-     wears the Outline colour. */
+  /* --kw-o is the 1px ring drawn round every letter, and it is the Outline
+     colour - for a Damage Type exactly as for a keyword (the author, session
+     65). Session 63 ringed a Damage Type's letters in its fill instead; the
+     author chose the keyword rule, and recolours a pill that reads heavy. */
   var st='--kw-out:'+kwGrad(s.o,s.oh,s.hl)+';--kw-fill:'+kwGrad(s.f,s.fh,s.hl)
-        +';--kw-w:'+(+s.w||1.5)+'px;--kw-o:'+(mode==='damage'?s.f:s.o)+';color:'+s.t;
+        +';--kw-w:'+(+s.w||1.5)+'px;--kw-o:'+s.o+';color:'+s.t;
   var rem=KW_HOVER?(kwReminderFor(name,text)||reminder||''):'';
   var tip=rem?" title='"+e(rem).replace(/'/g,'&#39;')+"'":'';
   /* wrapped so the drop-shadow is not clipped away by the pointed shapes */
