@@ -7470,7 +7470,7 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
    lift is long over and the float is already that far through its swing. */
 .td-card{--fx-lk:0deg}
 .td-card.locked{--fx-lk:90deg}
-.td-card.td-fx-decl{overflow:visible;z-index:30;
+.td-card.td-fx-decl,.td-card.td-fx-play{overflow:visible;z-index:30;
   animation:tdFxLift .4s cubic-bezier(.2,.9,.3,1.2) both,tdFxFloat 2.6s ease-in-out infinite;
   animation-delay:var(--fx-age,0ms),calc(var(--fx-age,0ms) + .4s)}
 @keyframes tdFxLift{from{transform:rotate(var(--fx-lk))}
@@ -7523,7 +7523,7 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
    is a copy of the face, not of the Battle */
 .td-ghost>.td-fx-gwrap,.td-ghost>.td-fx-icon,.td-ghost>.td-fx-stat,.td-ghost>.td-fx-gem,
 .td-ghost>.td-fx-fangs,.td-ghost>.td-fx-banner,
-.td-ghost>.td-fx-shadow,.td-ghost>.td-fx-vw{display:none}
+.td-ghost>.td-fx-shadow,.td-ghost>.td-fx-vw,.td-ghost>.td-pfx-u,.td-ghost>.td-pfx-o,.td-ghost>.td-resolve{display:none}
 
 /* ── the gem on an Essence card IN THE ESSENCE AREA ── */
 .td-fx-gem{position:absolute;left:50%;top:var(--fx-art,40%);width:30%;aspect-ratio:30/35;transform:translate(-50%,-50%);
@@ -7632,11 +7632,32 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
   filter:drop-shadow(0 0 2px #000) drop-shadow(0 0 7px #ff3b3b)}
 .td-fx-pswd svg{width:100%;height:100%;display:block;overflow:visible}
 
+/* ── AN ACTION OR SPELL ON THE FIELD (session 68, cat_playfx.js) ──
+   It floats as a declared card does (the rule above). Its effects are drawn on
+   two canvases of its own, 3.2 cards wide and 2.5 tall, centred on it: the
+   first at z-index -1 - inside the card's stacking context that is behind its
+   face and in front of the board, so what is "behind the card" shows round it
+   - the second in front of the face and under the counters (12). */
+.td-card.td-pfx-burst{overflow:visible;z-index:30}
+.td-pfx-u,.td-pfx-o{position:absolute;left:-110%;top:-75%;width:320%;height:250%;pointer-events:none}
+.td-pfx-u{z-index:-1}
+.td-pfx-o{z-index:9}
+/* Resolve: under the card, its owner's only */
+.td-resolve{position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);z-index:14;white-space:nowrap;
+  font-family:Cinzel,serif;font-weight:600;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 12px;border-radius:999px;border:1px solid #f0d488;background:linear-gradient(#e8c96a,#b8902f);color:#1a1206;
+  box-shadow:0 2px 8px rgba(0,0,0,.55);cursor:pointer}
+.td-resolve:hover{background:linear-gradient(#f3d983,#c9a13d)}
+.td-resolve:focus-visible{outline:2px solid #fff;outline-offset:2px}
+/* resolved: the card flashes where it stood, then flies to the Grave */
+.td-fx-ghost.td-pfx-flash::after{content:"";position:absolute;inset:0;border-radius:6px;background:#fff;animation:tdPfxFlash .38s ease-out forwards}
+@keyframes tdPfxFlash{0%{opacity:0}35%{opacity:.85}100%{opacity:0}}
+
 /* With reduced motion asked for: no lift, float, stamp or diamond swell - the
    glow, the symbols and the gem stay; so do the keywords' fangs, banner and
    copies, standing still. */
 @media (prefers-reduced-motion:reduce){
-  .td-card.td-fx-decl{animation:none;transform:rotate(var(--fx-lk)) translateY(-6px)}
+  .td-card.td-fx-decl,.td-card.td-fx-play{animation:none;transform:rotate(var(--fx-lk)) translateY(-6px)}
   .td-card.td-fx-decl.td-fx-k-fury,.td-card.td-fx-decl.td-fx-k-shade{animation:none}
   .td-fx-icon,.td-fx-stat,.td-fx-dia,.td-fx-gem.td-fx-pop{animation:none}
   .td-card.td-fx-myth{animation:none}
@@ -21875,6 +21896,9 @@ function tdBindDrag(){
   board.addEventListener('pointerdown', function(ev){
     if(ev.button !== 0) return;                    /* right-click is the menu */
     if(!TD.board) return;
+    /* the Resolve button under an Action or Spell (session 68) is a button,
+       not the card - pressing it must not pick the card up */
+    if(ev.target.closest && ev.target.closest('.td-resolve')) return;
     /* ⚠ NOTHING ON THE OPPONENT'S HALF MOVES. Not a card, not a counter, not
        the start of a Connect. Checked before anything else so no gesture can
        begin on their side of the table and then be half-cancelled. Reading the
@@ -28962,6 +28986,8 @@ function tdFxLoop(t){
   var shown = !!(br && br.width && br.bottom > 0 && br.top < window.innerHeight);
   var live = 0;
   if(shown){ try{ live = tdFxDeclTick(dt, br); }catch(_){} }
+  /* the Actions and Spells on the Field draw on canvases of their own (cat_playfx.js) */
+  if(shown && typeof tdPfxTick === 'function'){ try{ live += tdPfxTick(dt); }catch(_){} }
   if(shown && TDFX.items.length){
     ctx.save();
     ctx.beginPath(); ctx.rect(br.left, br.top, br.width, br.height); ctx.clip();
@@ -29199,6 +29225,10 @@ function tdFxCard(item, zone, c, board){
     if(now >= hold.until) delete TDFX.hold[item.uid];
     else if(hold.zone === zone.id) out.cls += ' td-fx-hold';
   }
+  /* an Action or Spell on the Field: the float, its effects' canvases and the
+     owner's Resolve button (session 68, cat_playfx.js) */
+  var P = (typeof tdPfxCard === 'function') ? tdPfxCard(item, zone, c, board) : null;
+  if(P){ out.cls += P.cls; out.style += P.style; out.html += P.html; }
   if(zone.id !== 'field') delete TDFX.since[item.uid];
   if(zone.id === 'field'){
     var role = tdFxRoleOf(item);
@@ -29270,7 +29300,7 @@ function tdFxAfterRender(host){
   var els = host.querySelectorAll('.td-card.td-fx-decl, .td-card.td-fx-gemcard');
   for(var i = 0; i < els.length; i++)
     els[i].style.setProperty('--fx-art', (tdFxArtFrac(els[i]) * 100).toFixed(1) + '%');
-  if(els.length && host.querySelector('.td-fx-decl')) tdFxKick();
+  if(host.querySelector('.td-fx-decl, .td-fx-play, .td-pfx-burst')) tdFxKick();
 }
 
 /* The declared cards, every frame. */
@@ -30077,12 +30107,19 @@ function tdFxAction(board, a, before){
           TDFX.hold[a.uid] = {zone:'field', until:Date.now() + (pre.swift ? TDFX_WIND_MS : 0) + (pre.arrive ? TDFX_STAR_MS : 0) + 400};
         setTimeout(function(){ tdFxSlam(a.uid, pre); }, 0);
       }
-      else if(at && at.item.card && !at.item.down && !at.item.anon && tdFxIsOngoing(at.item.card))
+      else if(at && at.item.card && !at.item.down && !at.item.anon && tdFxIsOngoing(at.item.card)){
+        /* and its colour effects for 2.5 seconds (session 68, cat_playfx.js) -
+           set up here, before the redraw that draws their canvases */
+        if(typeof tdPfxBurst === 'function') tdPfxBurst(board, a.uid);
         setTimeout(function(){ tdFxOngoing(a.uid); }, 0);
+      }
     } else if(a.t === 'move' && a.to === 'grave' && before === 'field'){
       /* a Character dying (session 66) - its old element is still where it stood */
       var dead = tdFindIn(board, a.uid);
       if(dead && dead.item.card && !dead.item.anon && tdIsCharacterCard(dead.item.card)) tdFxDeath(board, a);
+      /* an Action or Spell resolved - or sent to the Grave any other way (session 68) */
+      else if(dead && dead.item.card && !dead.item.anon && typeof tdPfxKind === 'function'
+              && tdPfxKind(dead.item.card) === 'loop') tdPfxResolved(board, a);
     } else if(a.t === 'crystal'){
       tdFxCrystal(board, a);
     } else if(a.t === 'appear' && a.fx === 'crystal' && a.zone === 'essarea'){
@@ -30096,6 +30133,679 @@ window.tdFxStats = function(){
   return {particles:TDFX.items.length, running:TDFX.running, sprites:TDFX.sprN || 0, fired:Object.assign({}, TDFX.fired),
           holds:Object.keys(TDFX.hold).length, landing:Object.keys(TDFX.landing).length};
 };
+/* ═══════════════════════════════════════════════════════════════════════════
+   ACTIONS AND SPELLS ON THE FIELD (session 68) - the look the author approved
+   in FX Lab III (https://claude.ai/artifact/GjALw8cX2ZiXu9zrkZ7BUZ, rounds 1-5).
+
+   ⚠ THE RULES, all the author's:
+     - a face-up Action or Spell that is NOT Ongoing, on the Field: it floats
+       exactly as a declared card does (the same tdFxLift/tdFxFloat), plays up
+       to 3 colour effects for as long as it stays, and its OWNER - only its
+       owner - gets a "Resolve" button under it that sends it to the Grave;
+     - the 3 are picked at random ONCE, when it arrives on the Field, from its
+       colours × its types (Red Spell, Blue Action...). A card with no colour
+       has the one colourless effect, the dust;
+     - each effect is drawn in ITS OWN colour only - a red-and-yellow Action's
+       swords are red and its shield is yellow;
+     - Unique (by the keyword rule, tdCardHasKw), Mythic and Absolute play the
+       app's own effects at half speed, never counted in the 3: each plays,
+       waits 5 seconds, and plays again;
+     - whatever is drawn over the card's face is 25% see-through;
+     - an ONGOING Action or Spell plays the same colour effects for 2.5 seconds
+       right after it is played, then stops (as well as its Rune Circle or
+       Turning Seal and its finishes, cat_boardfx.js).
+
+   HOW IT IS DRAWN. Each such card carries two canvases of its own (from
+   tdFxCard's markup): .td-pfx-u at z-index -1 - inside the card's stacking
+   context that is BEHIND the face but in front of the board, so a shield
+   "behind the card" shows round its edges - and .td-pfx-o in front of the face
+   and under the counters. They are 3.2 cards wide and 2.5 tall, centred on the
+   card, and they ride its float, tilt and Lock for free. The effects' state
+   lives here by uid (TDPFX.cards), so a redraw of the board - which replaces
+   the element - carries straight on. The frames come from cat_boardfx.js's
+   loop (tdFxLoop calls tdPfxTick), which sleeps when nothing on screen needs
+   it.
+
+   Every effect rolls its random choices once per play; what each one
+   randomizes is listed in HANDOFF §68. */
+var TDPFX = {cards:{}};
+(function(){
+
+var TAU = Math.PI * 2, SLOW = 2, GAP = 5, BURST = 2.5;
+var PAD_X = 1.1, PAD_Y = .75;          /* the canvases' margin round the card, in cards */
+var GREY = ['#d3d7de', '#8f96a1'];
+
+/* ── small helpers ── */
+function rnd(a, b){ return a + Math.random() * (b - a); }
+function irnd(a, b){ return Math.floor(rnd(a, b + 1)); }
+function pick(a){ return a[(Math.random() * a.length) | 0]; }
+function sgn(){ return Math.random() < .5 ? -1 : 1; }
+function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+function ease(t){ return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+function easeOut(t){ return 1 - Math.pow(1 - t, 3); }
+function backOut(t){ return 1 + 2.7 * Math.pow(t - 1, 3) + 1.7 * Math.pow(t - 1, 2); }
+function times(n, fn){ var out = []; for(var i = 0; i < n; i++) out.push(fn(i)); return out; }
+function shuffle(a){ for(var i = a.length - 1; i > 0; i--){ var j = (Math.random() * (i + 1)) | 0, x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
+function hexA(h, a){ var n = parseInt(h.slice(1), 16);
+  return 'rgba(' + (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255) + ',' + clamp(a, 0, 1).toFixed(3) + ')'; }
+function mixHex(h1, h2, t){ var a = parseInt(h1.slice(1), 16), b = parseInt(h2.slice(1), 16);
+  function c(s){ return Math.round(((a >> s) & 255) * (1 - t) + ((b >> s) & 255) * t); }
+  return '#' + ((1 << 24) | (c(16) << 16) | (c(8) << 8) | c(0)).toString(16).slice(1); }
+function light(h, t){ return mixHex(h, '#ffffff', t); }
+function dark(h, t){ return mixHex(h, '#000000', t); }
+function lin(c, x0, y0, x1, y1, cols, a){
+  var g = c.createLinearGradient(x0, y0, x1, y1), cs = cols.length > 1 ? cols : [cols[0], cols[0]];
+  cs.forEach(function(k, i){ g.addColorStop(i / (cs.length - 1), a != null && a < 1 ? hexA(k, a) : k); }); return g; }
+function rrect(c, x, y, w, h, r){ c.beginPath(); if(c.roundRect) c.roundRect(x, y, w, h, r); else c.rect(x, y, w, h); }
+function poly(c, pts){ c.beginPath(); pts.forEach(function(p, i){ if(i) c.lineTo(p[0], p[1]); else c.moveTo(p[0], p[1]); }); }
+/* a point on the card's border, from the top middle, clockwise */
+function perim(R, off, u){
+  var x0 = R.x - off, y0 = R.y - off, w = R.w + 2 * off, h = R.h + 2 * off, P = 2 * (w + h);
+  var d = ((u * P + w / 2) % P + P) % P;
+  if(d < w) return [x0 + d, y0]; d -= w;
+  if(d < h) return [x0 + w, y0 + d]; d -= h;
+  if(d < w) return [x0 + w - d, y0 + h]; d -= w;
+  return [x0, y0 + h - d];
+}
+function emit(st, key, rate, dt, fn){ st[key] = (st[key] || 0) + rate * dt; while(st[key] >= 1){ st[key]--; fn(); } }
+function glowDot(c, x, y, r, col, a){
+  var g = c.createRadialGradient(x, y, 0, x, y, r * 4); g.addColorStop(0, hexA(col, .45 * a)); g.addColorStop(1, hexA(col, 0));
+  c.fillStyle = g; c.beginPath(); c.arc(x, y, r * 4, 0, TAU); c.fill();
+  c.fillStyle = hexA(light(col, .5), a); c.beginPath(); c.arc(x, y, r, 0, TAU); c.fill();
+}
+function wander(q, t, sp){
+  return [Math.sin(t * q.fx * sp + q.a) * .6 + Math.sin(t * q.fx * 1.7 * sp + q.b) * .35,
+          Math.sin(t * q.fy * sp + q.c) * .6 + Math.cos(t * q.fy * 1.3 * sp + q.a) * .3];
+}
+
+/* ── particles: plain records, one draw per kind ── */
+function Parts(){ this.a = []; }
+Parts.prototype.add = function(p){ p.age = 0; this.a.push(p); return p; };
+Parts.prototype.step = function(dt){
+  var a = this.a;
+  for(var i = a.length - 1; i >= 0; i--){
+    var p = a[i]; p.age += dt;
+    if(p.age >= p.life){ a.splice(i, 1); continue; }
+    var d = p.drag == null ? 1 : p.drag; p.vx *= d; p.vy = p.vy * d + (p.ay || 0) * dt;
+    p.x += p.vx * dt; p.y += p.vy * dt;
+    if(p.wob) p.x += Math.sin(p.age * p.wf + p.ph) * p.wob * dt;
+  }
+};
+Parts.prototype.draw = function(c){ for(var i = 0; i < this.a.length; i++){ var p = this.a[i]; DRAW[p.k](c, p, p.age / p.life); } };
+var DRAW = {
+  dot:function(c, p, k){ var a = (p.fade === 'sin' ? Math.sin(Math.PI * k) : 1 - k) * (p.a == null ? 1 : p.a);
+    c.fillStyle = hexA(p.col, a * .22); c.beginPath(); c.arc(p.x, p.y, p.r * 2.6, 0, TAU); c.fill();
+    c.fillStyle = hexA(p.col, a); c.beginPath(); c.arc(p.x, p.y, p.r, 0, TAU); c.fill(); },
+  leaf:function(c, p, k){ var a = Math.sin(Math.PI * k) * .95;
+    c.save(); c.translate(p.x, p.y); c.rotate(p.rot + p.age * p.spin); c.scale(1, .35 + .65 * Math.abs(Math.sin(p.age * p.flip + p.ph)));
+    c.fillStyle = hexA(p.col, a); c.beginPath(); c.moveTo(-p.r, 0); c.quadraticCurveTo(0, -p.r * .7, p.r, 0); c.quadraticCurveTo(0, p.r * .7, -p.r, 0); c.fill();
+    c.strokeStyle = 'rgba(255,255,255,' + (a * .45).toFixed(3) + ')'; c.lineWidth = .6; c.beginPath(); c.moveTo(-p.r * .9, 0); c.lineTo(p.r * .9, 0); c.stroke(); c.restore(); },
+  petal:function(c, p, k){ var a = Math.sin(Math.PI * k) * .9;
+    c.save(); c.translate(p.x, p.y); c.rotate(p.rot + p.age * p.spin); c.scale(1, .4 + .6 * Math.abs(Math.sin(p.age * p.flip + p.ph)));
+    c.fillStyle = hexA(light(p.col, .45), a); c.beginPath(); c.ellipse(0, 0, p.r * .65, p.r * .42, 0, 0, TAU); c.fill(); c.restore(); },
+  puff:function(c, p, k){ var a = Math.sin(Math.PI * k) * (p.a == null ? .2 : p.a), r = p.r0 + (p.r1 - p.r0) * k;
+    var g = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, r); g.addColorStop(0, hexA(p.col, a)); g.addColorStop(1, hexA(p.col, 0));
+    c.fillStyle = g; c.beginPath(); c.arc(p.x, p.y, r, 0, TAU); c.fill(); },
+  streak:function(c, p, k){ var a = (1 - k) * (p.a == null ? 1 : p.a), sp = Math.hypot(p.vx, p.vy) || 1, L = p.len || 14;
+    c.strokeStyle = hexA(p.col, a); c.lineWidth = p.w || 1.6; c.lineCap = 'round';
+    c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(p.x - p.vx / sp * L, p.y - p.vy / sp * L); c.stroke(); },
+  plus:function(c, p, k){ var a = Math.sin(Math.PI * k), s = p.r * (.7 + .3 * k);
+    c.save(); c.translate(p.x, p.y); c.rotate(p.rot); c.shadowColor = p.col; c.shadowBlur = 6;
+    c.fillStyle = hexA(p.col, a); c.fillRect(-s, -s * .3, s * 2, s * .6); c.fillRect(-s * .3, -s, s * .6, s * 2);
+    c.shadowBlur = 0; c.fillStyle = 'rgba(255,255,255,' + (a * .8).toFixed(3) + ')'; c.fillRect(-s * .7, -s * .1, s * 1.4, s * .2); c.fillRect(-s * .1, -s * .7, s * .2, s * 1.4); c.restore(); }
+};
+
+/* ── shapes, in their own units ── */
+var SHAPES = null;     /* made on first use: Path2D is a browser object */
+function shapes(){
+  if(SHAPES) return SHAPES;
+  function gear(n, hole){
+    var p = new Path2D(), ro = 1, ri = .78;
+    for(var i = 0; i < n; i++){
+      var a = i / n * TAU, s = TAU / n;
+      [[ri, a], [ro, a + s * .18], [ro, a + s * .45], [ri, a + s * .62], [ri, a + s]].forEach(function(q, j){
+        var x = Math.cos(q[1]) * q[0], y = Math.sin(q[1]) * q[0]; if(i === 0 && j === 0) p.moveTo(x, y); else p.lineTo(x, y); });
+    }
+    p.closePath(); p.moveTo(hole, 0); p.arc(0, 0, hole, 0, TAU); return {p:p, n:n};
+  }
+  function circle(r, hole){ var p = new Path2D(); p.arc(0, 0, r, 0, TAU); if(hole){ p.moveTo(hole, 0); p.arc(0, 0, hole, 0, TAU); } return p; }
+  function bottle(kind){ var p = new Path2D();
+    if(kind === 'flask'){ p.arc(0, 8, 18, 0, TAU); p.rect(-5, -22, 10, 16); }
+    else if(kind === 'vial'){ if(p.roundRect) p.roundRect(-9, -12, 18, 40, 8); else p.rect(-9, -12, 18, 40); p.rect(-4, -22, 8, 12); }
+    else { p.rect(-15, -8, 30, 34); p.rect(-5, -22, 10, 15); }
+    return p; }
+  SHAPES = {
+    sword:new Path2D('M-3 -1h6v19h-6Z M-15 18h30v4.5h-30Z M-5 22.5h10l-1.2 78l-3.8 13l-3.8-13Z'),
+    swordHL:new Path2D('M-1 25h2l-.4 74h-1.2Z'),
+    shields:{
+      heater:[new Path2D('M0 -60L48 -44V-6C48 30 26 52 0 64C-26 52 -48 30 -48 -6V-44Z'), new Path2D('M0 -46L34 -34V-6C34 20 18 38 0 48C-18 38 -34 20 -34 -6V-34Z')],
+      round:[circle(54), circle(40, 14)],
+      kite:[new Path2D('M0 -66C30 -62 46 -42 46 -16C46 20 22 46 0 72C-22 46 -46 20 -46 -16C-46 -42 -30 -62 0 -66Z'), new Path2D('M0 -52C20 -49 32 -36 32 -16C32 12 16 32 0 52C-16 32 -32 12 -32 -16C-32 -36 -20 -49 0 -52Z')]
+    },
+    bow:new Path2D('M6 -72Q0 -66 -6 -58Q-40 -24 -40 0Q-40 24 -6 58Q0 66 6 72'),
+    bottles:{flask:bottle('flask'), vial:bottle('vial'), square:bottle('square')},
+    blade:new Path2D('M0 0Q-22 -5.5 -62 -7.5L-62 7.5Q-22 5.5 0 0Z'),
+    crescent:new Path2D('M0 -16A16 16 0 0 0 0 16A9 16 0 0 1 0 -16Z'),
+    fletch:new Path2D('M-66 0L-56 -6.5L-50 -6.5L-59 0L-50 6.5L-56 6.5Z'),
+    head:new Path2D('M0 0L-11 -5L-8 0L-11 5Z'),
+    /* the app's Demise skull (24x24), eyes cut out */
+    skull:new Path2D('M12 2C7 2 3.5 5.6 3.5 10.2c0 2.8 1.3 4.6 2.9 5.7V19c0 .8.7 1.5 1.5 1.5h1.2V18h1.4v2.5h3V18h1.4v2.5h1.2c.8 0 1.5-.7 1.5-1.5v-3.1c1.6-1.1 2.9-2.9 2.9-5.7C20.5 5.6 17 2 12 2Zm-3.6 11.4a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2Zm7.2 0a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2Z'),
+    gears:[gear(10, .3), gear(7, .3), gear(8, .34), gear(12, .26)]
+  };
+  return SHAPES;
+}
+function drawGear(c, path, x, y, r, ang, cols){
+  c.save(); c.translate(x, y); c.rotate(ang); c.scale(r, r);
+  c.shadowColor = hexA(cols[0], .7); c.shadowBlur = 8;
+  c.fillStyle = lin(c, -1, -1, 1, 1, cols.map(function(k){ return dark(k, .1); })); c.fill(path, 'evenodd'); c.shadowBlur = 0;
+  c.strokeStyle = 'rgba(0,0,0,.45)'; c.lineWidth = 1.4 / r; c.stroke(path);
+  c.strokeStyle = 'rgba(255,255,255,.35)'; c.lineWidth = 1 / r; c.beginPath(); c.arc(0, 0, .58, 0, TAU); c.stroke();
+  c.restore();
+}
+function drawChain(c, px, py, L, ang, n, cols){
+  for(var i = 0; i < n; i++){ var f = (i + .5) / n, a = ang * f * f, x = px + Math.sin(a) * L * f, y = py + Math.cos(a) * L * f;
+    c.save(); c.translate(x, y); c.rotate(-a + (i % 2 ? Math.PI / 2 : 0)); c.strokeStyle = cols[i % cols.length]; c.lineWidth = 1.8;
+    c.beginPath(); c.ellipse(0, 0, (i % 2 ? 2.2 : 3.4), (i % 2 ? 3.4 : 4.6), 0, 0, TAU); c.stroke(); c.restore(); }
+}
+function drawArrow(c, cols){
+  var S = shapes();
+  c.fillStyle = lin(c, -66, 0, 0, 0, cols.map(function(k){ return dark(k, .2); })); c.fillRect(-66, -1.6, 58, 3.2);
+  c.fillStyle = light(cols[cols.length - 1], .25); c.fill(S.fletch); c.fillStyle = '#dfe6ee'; c.fill(S.head);
+}
+
+/* ═════ the effects ═════
+   E[key]() makes one - rolling its random choices - and returns its draw:
+   draw(cu, co, R, t, dt, cols, S) paints behind the card (cu) and in front
+   (co); R is the card in the canvases' own coordinates; S.el is the card. */
+var E = {};
+function combo(keys){ return function(){ var parts = keys.map(function(k){ return E[k](); });
+  return function(cu, co){ var args = arguments; parts.forEach(function(p){ cu.save(); co.save(); p.apply(null, args); cu.restore(); co.restore(); }); }; }; }
+
+/* ── the parts several slots share ── */
+E.lightning = function(){ var bolts = [], next = 0; return function(cu, co, R, t, dt, cols){
+  if(t >= next){ next = t + rnd(.45, 1); var u = Math.random(), L = rnd(.08, .16), pts = [];
+    for(var i = 0; i <= 10; i++){ var q = perim(R, 2, u + L * i / 10); pts.push([q[0] + rnd(-5, 5), q[1] + rnd(-5, 5)]); }
+    bolts.push({pts:pts, born:t, col:pick(cols)}); }
+  for(var j = bolts.length - 1; j >= 0; j--){ var b = bolts[j], age = t - b.born; if(age > .28){ bolts.splice(j, 1); continue; }
+    var a = (1 - age / .28) * (Math.random() < .3 ? .5 : 1);
+    co.lineJoin = 'round';
+    co.strokeStyle = hexA(b.col, .35 * a); co.lineWidth = 5; poly(co, b.pts); co.stroke();
+    co.strokeStyle = 'rgba(255,255,255,' + a.toFixed(3) + ')'; co.lineWidth = 1.6; poly(co, b.pts); co.stroke(); } }; };
+E.anvil = function(){ var P = new Parts(), next = 0; return function(cu, co, R, t, dt, cols){
+  if(t >= next){ next = t + rnd(.7, 1.3); var f = Math.random(), x = R.x + f * R.w, sd = f < .5 ? -1 : 1, n = irnd(16, 26);
+    for(var i = 0; i < n; i++) P.add({k:'streak', x:x, y:R.y + R.h, vx:sd * rnd(10, 150) + rnd(-30, 30), vy:-rnd(80, 210), ay:380, drag:.99, life:rnd(.6, 1.05), col:pick(cols.concat(['#fff1c9'])), len:7, w:1.4}); }
+  P.step(dt); P.draw(co); }; };
+E.orbs = function(){ var o = times(irnd(1, 2), function(){ return {ph:rnd(0, TAU), sp:rnd(.6, 1) * sgn(), rx:rnd(.85, 1.05), ry:rnd(.55, .7)}; });
+  return function(cu, co, R, t, dt, cols){ o.forEach(function(q){
+    var a = q.ph + t * q.sp, x = R.cx + Math.cos(a) * R.w * q.rx, y = R.cy + Math.sin(a) * R.h * q.ry;
+    var ex = clamp(x, R.x, R.x + R.w), ey = clamp(y, R.y, R.y + R.h), n = 8, pts = [];
+    for(var i = 0; i <= n; i++){ var f = i / n, j = i && i < n ? 4 : 0; pts.push([x + (ex - x) * f + rnd(-j, j), y + (ey - y) * f + rnd(-j, j)]); }
+    co.strokeStyle = hexA(cols[0], .35); co.lineWidth = 4; poly(co, pts); co.stroke();
+    co.strokeStyle = 'rgba(255,255,255,.85)'; co.lineWidth = 1.3; poly(co, pts); co.stroke();
+    glowDot(co, x, y, 4.5, cols[0], 1); }); }; };
+E.whirl = function(){ var n = irnd(10, 18), dir = sgn(), sp = rnd(1.1, 1.7); return function(cu, co, R, t, dt, cols){
+  for(var i = 0; i < n; i++){ var a = dir * t * sp + i * TAU / n, z = Math.sin(a), c = z < 0 ? cu : co, v = ((i / n + t * .08) % 1);
+    DRAW.leaf(c, {x:R.cx + Math.cos(a) * R.w * .78, y:R.y + R.h * (1.05 - v * 1.1) + z * 6, r:5 + 1.5 * z, col:cols[i % cols.length], rot:a, spin:0, age:t, flip:2, ph:i}, v * .9 + .05); } }; };
+E.falling = function(){ var P = new Parts(), st = {}; return function(cu, co, R, t, dt, cols){
+  emit(st, 'l', 2.4, dt, function(){ P.add({k:Math.random() < .6 ? 'leaf' : 'petal', x:R.x + rnd(-.3, 1.3) * R.w, y:R.y - R.h * .25, vx:rnd(-6, 6), vy:rnd(14, 22),
+    life:rnd(4, 5.2), r:rnd(4, 6.5), col:pick(cols), rot:rnd(0, 7), spin:rnd(-1.2, 1.2), flip:rnd(1.5, 3), ph:rnd(0, 7), wob:18, wf:rnd(.8, 1.6)}); });
+  P.step(dt); P.draw(co); }; };
+E.tendrils = function(){ var corners = shuffle([0, 1, 2, 3]).slice(0, irnd(2, 4)).map(function(i){ return {i:i, len:rnd(.75, 1.25), sp:rnd(.7, 1.2), ph:rnd(0, 7)}; });
+  return function(cu, co, R, t, dt, cols){
+    var C = [[R.x, R.y, -1, -1], [R.x + R.w, R.y, 1, -1], [R.x + R.w, R.y + R.h, 1, 1], [R.x, R.y + R.h, -1, 1]];
+    co.lineCap = 'round';
+    corners.forEach(function(q){ var x = C[q.i][0], y = C[q.i][1], L = R.w * .5 * q.len * (.6 + .4 * Math.sin(t * .9 * q.sp + q.ph)), dx = C[q.i][2] * .7071, dy = C[q.i][3] * .7071, n = 16;
+      function lat(f){ return Math.sin(f * 5 - t * 2 * q.sp + q.ph) * f * L * .25; }
+      for(var j = 1; j <= n; j++){ var f0 = (j - 1) / n, f1 = j / n;
+        co.strokeStyle = hexA(dark(cols[j % cols.length], .2), .9 * (1 - f0 * .5)); co.lineWidth = 5 * (1 - f0) + .5;
+        co.beginPath(); co.moveTo(x + dx * L * f0 - dy * lat(f0), y + dy * L * f0 + dx * lat(f0)); co.lineTo(x + dx * L * f1 - dy * lat(f1), y + dy * L * f1 + dx * lat(f1)); co.stroke(); } }); }; };
+E.mist = function(){ var P = new Parts(), st = {}, n = irnd(8, 14), dir = sgn(), sz = times(n, function(){ return rnd(.16, .26); });
+  return function(cu, co, R, t, dt, cols){
+    for(var i = 0; i < n; i++){ var u = ((dir * t * .035 + i / n) % 1 + 1) % 1, q = perim(R, 6, u), r = R.w * (sz[i] + .06 * Math.sin(t * .9 + i)), col = cols[i % cols.length];
+      [[cu, .2], [co, .09]].forEach(function(L){ var c = L[0], g = c.createRadialGradient(q[0], q[1], 0, q[0], q[1], r);
+        g.addColorStop(0, hexA(col, L[1] * (.7 + .3 * Math.sin(t + i)))); g.addColorStop(1, hexA(col, 0)); c.fillStyle = g; c.beginPath(); c.arc(q[0], q[1], r, 0, TAU); c.fill(); }); }
+    emit(st, 'm', 3.5, dt, function(){ var q = perim(R, rnd(-4, 14), Math.random()); P.add({k:'dot', x:q[0], y:q[1], vx:rnd(-8, 8), vy:-rnd(4, 14), r:rnd(.8, 1.4), life:rnd(1.5, 2.5), fade:'sin', col:light(pick(cols), .3)}); });
+    P.step(dt); P.draw(co); }; };
+E.chains = function(){ var nc = irnd(2, 3), ch = times(nc, function(i){ return {f:(i + rnd(.2, .8)) / nc, len:rnd(.35, .6), sp:rnd(1, 1.6), ph:rnd(0, 7)}; });
+  return function(cu, co, R, t, dt, cols){ ch.forEach(function(q){ var L = R.h * q.len;
+    drawChain(co, R.x + R.w * (.1 + .8 * q.f), R.y + R.h - 2, L, Math.sin(t * q.sp + q.ph) * .3, Math.round(L / 7), cols); }); }; };
+E.plus = function(){ var P = new Parts(), st = {}, rate = rnd(2.5, 4.5); return function(cu, co, R, t, dt, cols){
+  emit(st, 'p', rate, dt, function(){ var sd = sgn(); P.add({k:'plus', x:sd < 0 ? R.x - rnd(4, R.w * .35) : R.x + R.w + rnd(4, R.w * .35), y:R.y + R.h * rnd(.1, 1), vx:rnd(-4, 4), vy:-rnd(18, 30), life:rnd(1.6, 2.4), r:rnd(3, 5), rot:rnd(-.2, .2), col:pick(cols)}); });
+  P.step(dt); P.draw(co); }; };
+E.constellation = function(){ var pts = null, gen = -1, n = irnd(7, 11), T = rnd(7, 9); return function(cu, co, R, t, dt, cols){
+  var id = Math.floor(t / T), cyc = t % T, i;
+  if(id !== gen){ gen = id; pts = []; var a0 = rnd(0, TAU);
+    for(i = 0; i < n; i++){ var a = a0 + i / n * TAU + rnd(-.25, .25); pts.push([R.cx + Math.cos(a) * R.w * rnd(.75, .95), R.cy + Math.sin(a) * R.h * rnd(.6, .75), rnd(1.4, 2.6)]); } }
+  var fade = cyc < .6 ? cyc / .6 : cyc > T - .7 ? (T - cyc) / .7 : 1, prog = clamp((cyc - .6) / (T * .52), 0, 1) * (pts.length - 1);
+  var lf = cyc > T - 1.6 ? clamp(1 - (cyc - (T - 1.6)) / .9, 0, 1) : 1;
+  co.lineWidth = 1.2;
+  for(i = 0; i < pts.length - 1 && i < prog; i++){ var f = Math.min(1, prog - i), A = pts[i], B = pts[i + 1];
+    co.strokeStyle = hexA(cols[0], .6 * lf * fade); co.beginPath(); co.moveTo(A[0], A[1]); co.lineTo(A[0] + (B[0] - A[0]) * f, A[1] + (B[1] - A[1]) * f); co.stroke(); }
+  pts.forEach(function(p, j){ var x = p[0], y = p[1], r = p[2], tw = (.7 + .3 * Math.sin(t * 3 + j * 1.7)) * fade;
+    co.fillStyle = hexA(cols[0], .3 * tw); co.beginPath(); co.arc(x, y, r * 3, 0, TAU); co.fill();
+    co.strokeStyle = 'rgba(255,255,255,' + (.7 * tw).toFixed(3) + ')'; co.lineWidth = .8; co.beginPath(); co.moveTo(x - r * 2.4, y); co.lineTo(x + r * 2.4, y); co.moveTo(x, y - r * 2.4); co.lineTo(x, y + r * 2.4); co.stroke();
+    co.fillStyle = 'rgba(255,255,255,' + tw.toFixed(3) + ')'; co.beginPath(); co.arc(x, y, r * .7, 0, TAU); co.fill(); }); }; };
+E.ripple = function(){ var rings = irnd(2, 4), sp = rnd(.32, .5); return function(cu, co, R, t, dt, cols){
+  for(var i = 0; i < rings; i++){ var k = ((t * sp) + i / rings) % 1, rx = R.w * (.35 + .75 * k);
+    cu.strokeStyle = hexA(cols[0], (1 - k) * .65); cu.lineWidth = 1.6; cu.beginPath(); cu.ellipse(R.cx, R.y + R.h + 8, rx, rx * .2, 0, 0, TAU); cu.stroke(); } }; };
+E.whirlpool = function(){ var arms = irnd(3, 5), dir = sgn(), sp = rnd(.8, 1.4), foam = times(14, function(){ return {r:rnd(.2, .95), a:rnd(0, TAU)}; });
+  return function(cu, co, R, t, dt, cols){
+    var cx = R.cx, cy = R.y + R.h + R.h * .06, sq = .28;
+    function at(s, i){ var r = s * R.w * .95, a = dir * (s * 4.2 - t * sp) + i * TAU / arms; return [cx + Math.cos(a) * r, cy + Math.sin(a) * r * sq]; }
+    cu.lineCap = 'round';
+    for(var i = 0; i < arms; i++) for(var j = 1; j <= 30; j++){ var s0 = (j - 1) / 30, p0 = at(s0, i), p1 = at(j / 30, i);
+      cu.strokeStyle = hexA(j % 3 ? cols[0] : light(cols[0], .5), (1 - s0) * .75); cu.lineWidth = 2.6 * (1 - s0) + .5;
+      cu.beginPath(); cu.moveTo(p0[0], p0[1]); cu.lineTo(p1[0], p1[1]); cu.stroke(); }
+    foam.forEach(function(f){ var a = f.a - dir * t * sp * (1.3 - f.r); cu.fillStyle = 'rgba(255,255,255,' + (.6 * (1 - f.r)).toFixed(3) + ')';
+      cu.beginPath(); cu.arc(cx + Math.cos(a) * f.r * R.w * .95, cy + Math.sin(a) * f.r * R.w * .95 * sq, 1.3, 0, TAU); cu.fill(); }); }; };
+E.fireflies = function(){ var n = irnd(6, 12), sp = rnd(.6, 1.1), f = times(n, function(){ return {a:rnd(0, 7), b:rnd(0, 7), c:rnd(0, 7), fx:rnd(.3, .7), fy:rnd(.3, .7), blink:rnd(1.2, 2.6), bp:rnd(0, 7)}; });
+  return function(cu, co, R, t, dt, cols){ f.forEach(function(q){ var w = wander(q, t, sp), b = Math.pow(.5 + .5 * Math.sin(t * TAU / q.blink + q.bp), 3);
+    glowDot(co, R.cx + w[0] * R.w * .95, R.cy + w[1] * R.h * .8, 2.3, cols[0], .2 + .8 * b); }); }; };
+E.dust = function(){ var P = new Parts(), st = {}, rate = rnd(5, 9), drift = pick([[-6, -2], [6, -2], [0, -7]]); return function(cu, co, R, t, dt, cols){
+  emit(st, 'd', rate, dt, function(){ P.add({k:'dot', x:R.cx + rnd(-.9, .9) * R.w, y:R.cy + rnd(-.75, .75) * R.h, vx:drift[0] + rnd(-3, 3), vy:drift[1] + rnd(-3, 3), r:rnd(.6, 1.3), life:rnd(2.5, 4), fade:'sin', a:.85, col:light(pick(cols), .4)}); });
+  P.step(dt); P.draw(co); }; };
+
+/* ── whole effects ── */
+E.swords = function(){ var per = rnd(2.8, 4), amp = rnd(.21, .35), sw = times(2, function(){ return {h:rnd(.72, 1.02), len:rnd(.5, .75)}; });
+  return function(cu, co, R, t, dt, cols){ var S = shapes();
+    [-1, 1].forEach(function(sd, si){
+      var q = sw[si], s = R.h * q.len / 115, px = sd < 0 ? R.x - R.w * .27 : R.x + R.w * 1.27, py = R.y + R.h * q.h;
+      /* opposite directions at the same time (the author, round 3) */
+      var ang = sd * Math.sin(t * TAU / per) * amp;
+      co.save(); co.translate(px, py); co.rotate(Math.PI + ang); co.scale(s, s);
+      co.shadowColor = hexA(cols[0], .9); co.shadowBlur = 10; co.fillStyle = lin(co, 0, 0, 0, 114, cols.map(function(k){ return light(k, .1); })); co.fill(S.sword);
+      co.beginPath(); co.arc(0, -4, 4.2, 0, TAU); co.fill(); co.shadowBlur = 0; co.fillStyle = 'rgba(255,255,255,.4)'; co.fill(S.swordHL); co.restore();
+    }); }; };
+E.prisms = function(){ var dir = sgn(), q = times(irnd(4, 8), function(){ return {ph:rnd(0, TAU), sp:rnd(.35, .6), h:rnd(-.35, .35), s:rnd(.8, 1.2), next:rnd(.5, 3), beam:-9}; });
+  return function(cu, co, R, t, dt, cols){ q.forEach(function(c){
+    var a = dir * t * c.sp + c.ph, z = Math.sin(a), x = R.cx + Math.cos(a) * R.w * .85, y = R.cy + c.h * R.h + z * R.h * .08, cx = z < 0 ? cu : co, s = R.w * .07 * c.s * (.85 + .15 * z);
+    if(t >= c.next){ c.next = t + rnd(2, 4); c.beam = t; }
+    var bk = clamp(1 - (t - c.beam) / .5, 0, 1);
+    if(bk > 0){ var g = co.createLinearGradient(x, y, R.cx, R.cy); g.addColorStop(0, 'rgba(255,255,255,' + (.7 * bk).toFixed(3) + ')'); g.addColorStop(1, hexA(cols[0], 0));
+      co.strokeStyle = g; co.lineWidth = 3; co.beginPath(); co.moveTo(x, y); co.lineTo(R.cx + (R.cx - x) * .3, R.cy + (R.cy - y) * .3); co.stroke(); }
+    cx.save(); cx.translate(x, y); cx.rotate(t * .6 + c.ph); cx.shadowColor = cols[0]; cx.shadowBlur = 8;
+    cx.fillStyle = lin(cx, -s, -s, s, s, [light(cols[0], .7), cols[0], dark(cols[0], .2)]); cx.beginPath();
+    for(var i = 0; i < 6; i++){ var b = i / 6 * TAU; cx.lineTo(Math.cos(b) * s * (i % 3 ? .6 : 1), Math.sin(b) * s * 1.5 * (i % 3 ? 1 : .2)); }
+    cx.closePath(); cx.fill(); cx.shadowBlur = 0; cx.strokeStyle = 'rgba(255,255,255,.7)'; cx.lineWidth = .8; cx.stroke(); cx.restore(); }); }; };
+E.cogs = function(){
+  var SPOTS = [[-.08, .18], [-.12, .55], [-.06, .9], [1.08, .16], [1.12, .5], [1.06, .86], [.5, -.1], [.5, 1.08]];
+  var gears = shapes().gears, n = irnd(2, 4);
+  var g = shuffle(SPOTS.slice()).slice(0, n).map(function(sp){ return {sp:sp, r:rnd(.18, .32), gear:pick(gears), per:rnd(.8, 1.4), dir:sgn(), ph:rnd(0, 1)}; });
+  var mAng = Math.atan2(g[0].sp[1] - .5, g[0].sp[0] - .5) + rnd(-.7, .7);
+  return function(cu, co, R, t, dt, cols){
+    function tick(q){ var k = t / q.per + q.ph, f = k - Math.floor(k); return (Math.floor(k) + backOut(clamp(f / .22, 0, 1))) * TAU / q.gear.n * q.dir; }
+    var bob = Math.sin(t * 1.1) * 3, a0 = g[0], r0 = R.w * a0.r, x0 = R.x + R.w * a0.sp[0], y0 = R.y + R.h * a0.sp[1] + bob;
+    g.forEach(function(q, i){
+      var r = R.w * q.r, x, y, ang;
+      if(i === 0){ x = x0; y = y0; ang = tick(q); }
+      else if(i === 1){ x = x0 + Math.cos(mAng) * (r0 + r) * .93; y = y0 + Math.sin(mAng) * (r0 + r) * .93; ang = -tick(a0) * r0 / r + .2; }
+      else { x = R.x + R.w * q.sp[0]; y = R.y + R.h * q.sp[1] - bob; ang = tick(q); }
+      drawGear(cu, i === 1 ? a0.gear.p : q.gear.p, x, y, r, ang, cols); }); }; };
+E.shield = function(){ var keys = ['heater', 'round', 'kite'], shape = pick(keys), bob = rnd(1, 1.6), lean = sgn();
+  return function(cu, co, R, t, dt, cols){ var P = shapes().shields[shape], s = R.h * 1.22 / 124;
+    cu.save(); cu.translate(R.cx, R.cy - R.h * .02 + Math.sin(t * bob) * 4); cu.rotate(lean * Math.sin(t * .8) * .04); cu.scale(s, s);
+    cu.shadowColor = hexA(cols[0], .8); cu.shadowBlur = 18; cu.fillStyle = lin(cu, 0, -60, 0, 64, cols.map(function(k){ return dark(k, .15); })); cu.fill(P[0], 'evenodd'); cu.shadowBlur = 0;
+    cu.fillStyle = 'rgba(0,0,0,.25)'; cu.fill(P[1], 'evenodd');
+    cu.strokeStyle = lin(cu, -48, -60, 48, 64, cols.map(function(k){ return light(k, .55); })); cu.lineWidth = 3; cu.stroke(P[0]); cu.lineWidth = 1.5; cu.stroke(P[1]); cu.restore(); }; };
+E.bow = function(){ var dir = sgn(), flying = [];
+  function aim(t){ return {at:t, per:rnd(1.6, 2.4), y:rnd(-.08, .08), ang:rnd(-.09, .09)}; }
+  var shot = aim(0);
+  return function(cu, co, R, t, dt, cols){
+    var S = shapes(), s = R.h * 1.5 / 144, k = t - shot.at, bx = R.cx - dir * R.w * .22, by = R.cy + Math.sin(t * 1.1) * 3, pull = 0, nocked = true;
+    if(k < .15) pull = 0; else if(k < .95) pull = ease((k - .15) / .8) * 22; else if(k < 1.1) pull = 22 + Math.sin(k * 70) * .4;
+    else { nocked = false;
+      if(!shot.fired){ shot.fired = true; flying.push({x0:bx - dir * 30 * s, x:bx - dir * 30 * s, y:by + shot.y * R.h, vx:-dir * 820 * Math.cos(shot.ang), vy:820 * Math.sin(shot.ang)}); }
+      var r = k - 1.1; pull = 22 * Math.exp(-r * 14) * Math.cos(r * 40); }
+    if(k > shot.per) shot = aim(t);
+    var ny = shot.y * R.h / s;
+    cu.save(); cu.translate(bx, by); cu.scale(dir * s, s);
+    cu.strokeStyle = 'rgba(240,240,230,.8)'; cu.lineWidth = .9; cu.beginPath(); cu.moveTo(6, -72); cu.lineTo(6 + pull, ny); cu.lineTo(6, 72); cu.stroke();
+    cu.shadowColor = hexA(cols[0], .9); cu.shadowBlur = 12; cu.lineCap = 'round';
+    cu.strokeStyle = lin(cu, 0, -72, 0, 72, cols.map(function(c2){ return light(c2, .05); })); cu.lineWidth = 6; cu.stroke(S.bow); cu.shadowBlur = 0;
+    cu.fillStyle = lin(cu, 0, -12, 0, 12, cols.map(function(c2){ return dark(c2, .45); })); cu.fillRect(-44, -11, 9, 22);
+    if(nocked){ cu.save(); cu.globalAlpha = clamp(k / .15, 0, 1); cu.translate(6 + pull - 66, ny); cu.rotate(Math.PI); drawArrow(cu, cols); cu.restore(); }
+    cu.restore();
+    /* ⚠ AN ARROW FADES before the edge of the card's canvas, which is as far
+       as anything of this card can be drawn - it flies off, it is not cut */
+    for(var i = flying.length - 1; i >= 0; i--){ var a = flying[i]; a.x += a.vx * dt; a.y += a.vy * dt;
+      var al = clamp(1 - (Math.abs(a.x - a.x0) - R.w * .55) / (R.w * .45), 0, 1);
+      if(al <= 0){ flying.splice(i, 1); continue; }
+      co.save(); co.globalAlpha = al;
+      co.strokeStyle = hexA(cols[0], .35); co.lineWidth = 2; co.beginPath(); co.moveTo(a.x, a.y); co.lineTo(a.x - a.vx * .06, a.y - a.vy * .06); co.stroke();
+      co.translate(a.x, a.y); co.rotate(Math.atan2(a.vy, a.vx)); co.scale(s * 1.05, s * 1.05); drawArrow(co, cols); co.restore(); } }; };
+E.potions = function(){ var P = new Parts(), st = {}, keys = ['flask', 'vial', 'square'], kinds = [pick(keys), pick(keys)],
+    lag = [0, rnd(0, .8)], land = [rnd(-.05, .05), rnd(-.05, .05)], last = [-1, -1];
+  return function(cu, co, R, t, dt, cols){
+    var T = 5.2, s = R.w * .19 / 18, sheenMax = 0, S = shapes();
+    [-1, 1].forEach(function(sd, si){
+      var tt = Math.max(0, t - lag[si]), cyc = tt % T, id = Math.floor(tt / T);
+      if(id !== last[si]){ last[si] = id; land[si] = rnd(-.05, .05); }
+      var tilt, fill, pour = 0;
+      if(cyc < .9){ tilt = ease(cyc / .9); fill = 1; }
+      else if(cyc < 3.7){ tilt = 1; pour = 1; fill = 1 - .7 * (cyc - .9) / 2.8; }
+      else if(cyc < 4.5){ tilt = 1 - ease((cyc - 3.7) / .8); fill = .3; }
+      else { tilt = 0; fill = .3 + .7 * (cyc - 4.5) / .7; }
+      sheenMax = Math.max(sheenMax, cyc < .9 ? 0 : cyc < 3.7 ? clamp((cyc - 1) / 1.2, 0, 1) : clamp(1 - (cyc - 3.7) / 1.4, 0, 1));
+      var streamIn = pour ? clamp((cyc - .9) / .18, 0, 1) : 0, streamOut = pour ? clamp((cyc - 3.5) / .2, 0, 1) : 0;
+      /* the mouth is turned TO the card: the left bottle leans right, the right one left */
+      var bx = sd < 0 ? R.x - R.w * .4 : R.x + R.w * 1.4, by = R.y - R.h * .06 + Math.sin(t * 1.2 + sd) * 2, ang = -sd * (.35 + 1.7 * tilt);
+      var nx = bx + Math.sin(ang) * 25 * s, ny = by - Math.cos(ang) * 25 * s;
+      var tx = R.cx + sd * R.w * (.36 + land[si]), ty = R.y + R.h * .26;
+      if(pour){ var a0 = streamOut, a1 = streamIn, cx1 = nx + (tx - nx) * .55 + Math.sin(t * 11 + sd) * 1.5, cy1 = ny + (ty - ny) * .02, pts = [];
+        for(var i = 0; i <= 18; i++){ var f = a0 + (a1 - a0) * i / 18; pts.push([(1 - f) * (1 - f) * nx + 2 * (1 - f) * f * cx1 + f * f * tx, (1 - f) * (1 - f) * ny + 2 * (1 - f) * f * cy1 + f * f * ty]); }
+        co.lineCap = 'round'; co.lineWidth = 6.4; co.strokeStyle = lin(co, nx, ny, tx, ty, cols); poly(co, pts); co.stroke();
+        co.lineWidth = 1.6; co.strokeStyle = 'rgba(255,255,255,.45)'; poly(co, pts); co.stroke();
+        if(streamIn >= 1 && streamOut < 1) emit(st, 'd' + sd, 26, dt, function(){ P.add({k:'dot', x:tx, y:ty, vx:rnd(-45, 45), vy:-rnd(20, 60), ay:240, life:rnd(.35, .55), r:1.3, col:pick(cols)}); }); }
+      var B = S.bottles[kinds[si]], d = co.getTransform ? co.getTransform() : null;
+      co.save(); co.translate(bx, by); co.rotate(ang); co.scale(s, s);
+      co.fillStyle = 'rgba(200,230,255,.1)'; co.fill(B);
+      co.save(); co.clip(B); if(d) co.setTransform(d);
+      var lvl = by + 26 * s - fill * 44 * s; co.fillStyle = lin(co, bx, lvl, bx, by + 26 * s, cols.map(function(k){ return light(k, .1); })); co.fillRect(bx - 40 * s, lvl, 80 * s, 80 * s); co.restore();
+      co.strokeStyle = 'rgba(235,245,255,.75)'; co.lineWidth = 1.4 / s; co.stroke(B);
+      co.fillStyle = 'rgba(255,255,255,.5)'; co.beginPath(); co.ellipse(-6, 4, 2.6, 6, .4, 0, TAU); co.fill();
+      co.fillStyle = '#8a6440'; co.fillRect(-6, -27, 12, 5); co.restore();
+    });
+    if(sheenMax > 0){ co.save(); rrect(co, R.x, R.y, R.w, R.h, 6); co.clip();
+      var g = co.createRadialGradient(R.cx, R.y + R.h * .26, 0, R.cx, R.y + R.h * .26, R.w * .75);
+      g.addColorStop(0, hexA(cols[0], .38 * sheenMax)); g.addColorStop(1, hexA(cols[0], 0));
+      co.fillStyle = g; co.fillRect(R.x, R.y, R.w, R.h); co.restore(); }
+    P.step(dt); P.draw(co); }; };
+E.crescents = function(){ var n = irnd(2, 4), dir = sgn(), sp = rnd(.8, 1.4), tilt = rnd(-.14, .14);
+  return function(cu, co, R, t, dt, cols){ var S = shapes();
+    for(var i = 0; i < n; i++) for(var j = 4; j >= 0; j--){
+      var a = dir * (t * sp - j * .09) + i * TAU / n, z = Math.sin(a), c = z < 0 ? cu : co, sc = (R.w / 110) * (.82 + .18 * z);
+      var x = Math.cos(a) * R.w * .88, y = z * R.h * .2;
+      c.save(); c.translate(R.cx + x * Math.cos(tilt) - y * Math.sin(tilt), R.cy - R.h * .05 + x * Math.sin(tilt) + y * Math.cos(tilt)); c.rotate(dir * t * 5 - j * .3); c.scale(sc, sc);
+      c.globalAlpha = j ? .22 / j : 1; if(!j){ c.shadowColor = cols[0]; c.shadowBlur = 10; }
+      c.fillStyle = lin(c, -16, -16, 0, 16, cols.map(function(k){ return light(k, .2); })); c.fill(S.crescent); c.restore(); } }; };
+E.necro = function(){ var nh = irnd(2, 3), nk = irnd(1, 2), slots = shuffle(times(nh + nk, function(i){ return (i + rnd(.25, .75)) / (nh + nk); }));
+  var hands = slots.slice(0, nh).map(function(f){ return {f:f, per:rnd(5.5, 7.5), ph:rnd(0, 7), lean:rnd(-.25, .25), sz:rnd(.9, 1.15)}; });
+  var skulls = slots.slice(nh).map(function(f){ return {f:f, per:rnd(6, 8), ph:rnd(0, 7), lean:rnd(-.2, .2), sz:rnd(.9, 1.2)}; });
+  return function(cu, co, R, t, dt, cols){
+    var gy = R.y + R.h * 1.2, S = shapes();
+    var g = cu.createRadialGradient(R.cx, gy, 0, R.cx, gy, R.w * .9); g.addColorStop(0, hexA(dark(cols[0], .3), .55)); g.addColorStop(1, hexA(cols[0], 0));
+    cu.fillStyle = g; cu.beginPath(); cu.ellipse(R.cx, gy, R.w * .95, R.h * .12, 0, 0, TAU); cu.fill();
+    cu.strokeStyle = hexA(cols[0], .35); cu.lineWidth = 1.2; cu.beginPath(); cu.ellipse(R.cx, gy, R.w * .8, R.h * .07, 0, 0, TAU); cu.stroke();
+    function ground(){ co.beginPath(); co.rect(0, 0, co.canvas.width, gy); co.clip(); }
+    hands.forEach(function(h){
+      var k = ((t + h.ph) % h.per) / h.per, rise = k < .25 ? ease(k / .25) : k < .75 ? 1 : 1 - ease((k - .75) / .25);
+      var curl = .25 + .55 * (.5 + .5 * Math.sin(t * 2.4 + h.ph)), s = R.w / 95 * h.sz, x = R.x + R.w * (-.1 + 1.2 * h.f), base = gy - rise * 34 * s;
+      co.save(); ground(); co.translate(x, base); co.rotate(h.lean);
+      co.strokeStyle = light(cols[0], .78); co.shadowColor = cols[0]; co.shadowBlur = 8; co.lineCap = 'round';
+      co.lineWidth = 3 * s; co.beginPath(); co.moveTo(-3 * s, 0); co.lineTo(-4 * s, 40 * s); co.moveTo(3 * s, 0); co.lineTo(4 * s, 40 * s); co.stroke();
+      co.fillStyle = light(cols[0], .7); rrect(co, -7 * s, -12 * s, 14 * s, 12 * s, 3 * s); co.fill();
+      co.lineWidth = 2.4 * s;
+      [-5.5, -1.8, 1.8, 5.5].forEach(function(fx, i){ var a0 = -Math.PI / 2 + fx * .05, l1 = (i === 0 || i === 3 ? 8 : 10) * s, l2 = 7 * s;
+        var x1 = fx * s + Math.cos(a0) * l1, y1 = -12 * s + Math.sin(a0) * l1, a1 = a0 + curl * 1.3;
+        co.beginPath(); co.moveTo(fx * s, -12 * s); co.lineTo(x1, y1); co.lineTo(x1 + Math.cos(a1) * l2, y1 + Math.sin(a1) * l2); co.stroke(); });
+      var ta = -2.5 + curl * .8; co.beginPath(); co.moveTo(-7 * s, -5 * s); co.lineTo(-7 * s + Math.cos(ta) * 8 * s, -5 * s + Math.sin(ta) * 8 * s); co.stroke();
+      co.restore(); });
+    skulls.forEach(function(h){
+      var k = ((t + h.ph) % h.per) / h.per, rise = k < .3 ? ease(k / .3) : k < .72 ? 1 : 1 - ease((k - .72) / .28);
+      var s = R.w / 95 * h.sz, x = R.x + R.w * (-.1 + 1.2 * h.f), base = gy + 6 * s - rise * 30 * s, look = Math.sin(t * 1.3 + h.ph) * .12;
+      co.save(); ground(); co.translate(x, base); co.rotate(h.lean + look); co.scale(s * 1.15, s * 1.15); co.translate(-12, -22);
+      co.shadowColor = cols[0]; co.shadowBlur = 10; co.fillStyle = light(cols[0], .78); co.fill(S.skull); co.shadowBlur = 0;
+      co.fillStyle = hexA(cols[0], .5 + .4 * Math.sin(t * 3 + h.ph)); co.beginPath(); co.arc(8.4, 11.3, 1.1, 0, TAU); co.arc(15.6, 11.3, 1.1, 0, TAU); co.fill();
+      co.restore(); }); }; };
+E.blades = function(){ var P = new Parts(), st = {}, used = [];
+  /* each blade's spot is chosen once - it stabs the same place every time */
+  var blades = times(irnd(1, 3), function(){ var side, hgt, tries = 0;
+    do { side = sgn(); hgt = rnd(.25, .75); tries++; } while(tries < 20 && used.some(function(u){ return u.side === side && Math.abs(u.hgt - hgt) < .18; }));
+    var b = {side:side, hgt:hgt, tilt:.4 + rnd(-.25, .25), ph:rnd(0, 5)}; used.push(b); return b; });
+  return function(cu, co, R, t, dt, cols){ var S = shapes();
+    blades.forEach(function(b, bi){
+      var cyc = (t + b.ph) % 5, out = -30, inn = R.w * .26, dep;
+      if(cyc < 1.1) dep = out + Math.sin(cyc * 3) * 2;
+      else if(cyc < 3.1) dep = out + (inn - out) * ease((cyc - 1.1) / 2);
+      else if(cyc < 3.9) dep = inn + Math.sin(cyc * 40) * .6;
+      else if(cyc < 4.8) dep = inn + (out - inn) * ease((cyc - 3.9) / .9);
+      else dep = out;
+      var side = b.side, ex = side > 0 ? R.x + R.w : R.x, ey = R.y + R.h * b.hgt, th = side > 0 ? Math.PI - b.tilt : b.tilt, dx = Math.cos(th), dy = Math.sin(th), s = R.w * .0095;
+      co.save(); co.beginPath(); co.rect(0, 0, co.canvas.width, co.canvas.height); if(co.roundRect) co.roundRect(R.x, R.y, R.w, R.h, 6); else co.rect(R.x, R.y, R.w, R.h); co.clip('evenodd');
+      co.translate(ex + dx * dep, ey + dy * dep); co.rotate(th); if(side < 0) co.scale(1, -1); co.scale(s, s);
+      co.shadowColor = hexA(cols[0], .9); co.shadowBlur = 10;
+      co.fillStyle = lin(co, -62, 0, 0, 0, [dark(cols[0], .55), light(cols[0], .35)]); co.fill(S.blade); co.shadowBlur = 0;
+      co.strokeStyle = 'rgba(255,255,255,.7)'; co.lineWidth = .9; co.beginPath(); co.moveTo(-60, -4.6); co.quadraticCurveTo(-22, -3.4, -2, -.4); co.stroke();
+      co.fillStyle = dark(cols[0], .35); co.fillRect(-66, -11, 4, 22); co.fillStyle = '#1a1420'; co.fillRect(-90, -3.6, 24, 7.2);
+      co.strokeStyle = hexA(cols[0], .8); co.lineWidth = 1; for(var k = -86; k < -68; k += 4){ co.beginPath(); co.moveTo(k, -3.6); co.lineTo(k + 3, 3.6); co.stroke(); }
+      co.fillStyle = dark(cols[0], .3); co.beginPath(); co.arc(-93, 0, 4.6, 0, TAU); co.fill(); co.restore();
+      if(dep > 0){ var kk = clamp(dep / inn, 0, 1); co.strokeStyle = hexA(light(cols[0], .5), .9 * kk); co.lineWidth = 2; co.shadowColor = cols[0]; co.shadowBlur = 8;
+        co.beginPath(); co.moveTo(ex + dy * 7, ey - dx * 7); co.lineTo(ex - dy * 7, ey + dx * 7); co.stroke(); co.shadowBlur = 0;
+        if(cyc > 1.6 && cyc < 3.2) emit(st, 'p' + bi, 12, dt, function(){ P.add({k:Math.random() < .5 ? 'dot' : 'puff', x:ex + side * rnd(-2, 4), y:ey + rnd(-6, 6), vx:side * rnd(10, 40), vy:rnd(-20, 10), r:1.2, r0:2, r1:9, a:.35, life:rnd(.4, .8), col:Math.random() < .5 ? '#2a1830' : cols[0]}); }); }
+    });
+    P.step(dt); P.draw(co); }; };
+
+/* ── Unique, Mythic, Absolute: the app's own effects, at half speed, each
+   followed by a 5-second wait ── */
+var STARS = {};
+function starSprite(col){
+  if(STARS[col]) return STARS[col];
+  var cv = document.createElement('canvas'), Z = 22, c; cv.width = cv.height = Z * 2; c = cv.getContext('2d');
+  c.translate(Z, Z); c.shadowColor = col; c.shadowBlur = 10; c.fillStyle = col; c.beginPath();
+  for(var i = 0; i < 8; i++){ var a = i * Math.PI / 4, rr = i % 2 ? 5 * .22 : 5; c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } c.closePath(); c.fill();
+  return (STARS[col] = cv);
+}
+/* tdFxDiamonds, slowed - each diamond drawn in front of or behind the card at random */
+E['kw-absolute'] = function(){ var cyc = -1, ds = [];
+  return function(cu, co, R, t){
+    var L = 1.4 * SLOW + GAP, id = Math.floor(t / L), k0 = t % L, base = 260 * R.w / 132;
+    if(id !== cyc){ cyc = id; ds = [base, base * .9, base * rnd(.75, 1.15), base * rnd(.75, 1.15), base * rnd(.75, 1.15)].map(function(S, i){
+      return {S:S, at:(i === 0 ? 0 : i * .095 + rnd(0, .07)) * SLOW, life:rnd(.7, .95) * SLOW, col:i % 2 ? '#fff2b8' : '#ffd24a', lw:i < 2 ? 3 : rnd(1.6, 2.6), front:Math.random() < .5}; }); }
+    ds.forEach(function(d){ var k = (k0 - d.at) / d.life; if(k < 0 || k > 1) return;
+      var s = base * .15 + (d.S - base * .15) * easeOut(k), c = d.front ? co : cu;
+      c.save(); c.translate(R.cx, R.cy); c.rotate(Math.PI / 4);
+      c.strokeStyle = '#ffd24a'; c.globalAlpha = (1 - k) * .3; c.lineWidth = d.lw + 8; c.strokeRect(-s / 2, -s / 2, s, s);
+      c.strokeStyle = d.col; c.globalAlpha = 1 - k; c.lineWidth = d.lw; c.strokeRect(-s / 2, -s / 2, s, s); c.restore(); }); }; };
+/* tdFxUniqueRunner, slowed: two laps of the white running border with its prism edge */
+E['kw-unique'] = function(){ return function(cu, co, R, t){
+  var run = 3.4 * SLOW, L = run + GAP, k0 = t % L; if(k0 > run || !co.createConicGradient) return;
+  var f = k0 / run, op = f < .06 ? f / .06 : f > .9 ? (1 - f) / .1 : 1, spin = clamp(k0 / (3.2 * SLOW), 0, 1) * 720;
+  co.save(); co.globalAlpha = op; co.beginPath();
+  if(co.roundRect){ co.roundRect(R.x - 4, R.y - 4, R.w + 8, R.h + 8, 9); co.roundRect(R.x, R.y, R.w, R.h, 6); } else { co.rect(R.x - 4, R.y - 4, R.w + 8, R.h + 8); co.rect(R.x, R.y, R.w, R.h); }
+  co.clip('evenodd');
+  var g = co.createConicGradient(-Math.PI / 2 + spin * Math.PI / 180, R.cx, R.cy);
+  [[0, 'rgba(0,0,0,0)'], [.52, 'rgba(0,0,0,0)'], [.62, 'rgba(255,255,255,.35)'], [.70, '#ffffff'], [.73, 'rgba(255,90,122,.5)'], [.755, 'rgba(255,179,64,.5)'],
+   [.78, 'rgba(255,233,90,.5)'], [.805, 'rgba(79,224,143,.5)'], [.83, 'rgba(74,184,255,.5)'], [.855, 'rgba(154,107,255,.5)'], [.88, '#ffffff'], [.96, 'rgba(0,0,0,0)'], [1, 'rgba(0,0,0,0)']]
+    .forEach(function(s){ g.addColorStop(s[0], s[1]); });
+  co.fillStyle = g; co.fillRect(R.x - 6, R.y - 6, R.w + 12, R.h + 12); co.restore(); }; };
+/* tdFxMythicOn, slowed: the prismatic edge glow on the card (td-fx-myth's
+   keyframes) and its 38 rainbow stars. ⚠ A REDRAW REPLACES THE CARD ELEMENT,
+   so a glow in progress is started again on the new one, at the same moment. */
+E['kw-mythic'] = function(){ var stars = [], cyc = -1, spawned = 0, anim = null, animEl = null;
+  return function(cu, co, R, t, dt, cols, S){
+    var L = 2.3 * SLOW + GAP, id = Math.floor(t / L), k0 = t % L, GLOW = 2.2 * SLOW;
+    if(id !== cyc){ cyc = id; spawned = 0; animEl = null; }
+    if(k0 < GLOW && S.el && S.el !== animEl && S.el.animate){
+      if(anim) anim.cancel(); animEl = S.el;
+      anim = S.el.animate([{boxShadow:'0 0 0 2px #fff,0 0 30px 9px #ffd86b'}, {boxShadow:'0 0 0 2px hsl(300 90% 70%),0 0 26px 8px hsl(200 90% 60%)', offset:.4}, {boxShadow:'none'}],
+        {duration:GLOW * 1000, easing:'ease-out'});
+      anim.currentTime = k0 * 1000; }
+    while(spawned < 38 && k0 >= spawned * .04 * SLOW){ var i = spawned++, a = rnd(0, 7), r = rnd(R.w * .5, R.h * .8);
+      stars.push({dx:Math.cos(a) * r, dy:Math.sin(a) * r, age:0, life:.8 * SLOW, col:'hsl(' + ((Math.round(i * 37 / 15) * 15) % 360) + ',100%,80%)'}); }
+    for(var j = stars.length - 1; j >= 0; j--){ var p = stars[j]; p.age += dt; if(p.age >= p.life){ stars.splice(j, 1); continue; }
+      var k = p.age / p.life; co.save(); co.globalAlpha = Math.sin(Math.PI * k); co.translate(R.cx + p.dx, R.cy + p.dy); co.rotate(2.25 * k); co.drawImage(starSprite(p.col), -22, -22); co.restore(); } }; };
+
+/* ── the slots: colour × type, as the author settled them ── */
+var SLOTS = {
+  'red-spell':combo(['lightning', 'anvil', 'orbs']),      'red-action':E.swords,
+  'orange-spell':E.prisms,                                 'orange-action':E.cogs,
+  'yellow-spell':combo(['plus', 'constellation']),        'yellow-action':E.shield,
+  'green-spell':combo(['whirl', 'falling']),              'green-action':E.bow,
+  'blue-spell':combo(['ripple', 'whirlpool', 'fireflies']), 'blue-action':E.potions,
+  'indigo-spell':combo(['tendrils', 'mist', 'chains']),   'indigo-action':E.crescents,
+  'violet-spell':E.necro,                                  'violet-action':E.blades,
+  'grey':E.dust
+};
+
+/* ═════ which cards, and what they play ═════ */
+/* 'loop' - an Action or Spell that is not Ongoing; 'ongoing' - one that is;
+   '' - anything else (a Character with Action on it is a Character) */
+function tdPfxKind(c){
+  if(!c || tdIsCharacterCard(c)) return '';
+  var act = tdFxHasSuper(c, 'action'), sp = tdFxHasSuper(c, 'spell');
+  if(!act && !sp) return '';
+  return tdFxHasSuper(c, 'ongoing') ? 'ongoing' : 'loop';
+}
+/* the card's colours that have an effect, and its types */
+function tdPfxPool(c){
+  var cols = (c.colors || []).map(function(x){ return String(x).toLowerCase(); })
+    .filter(function(x, i, a){ return x !== 'grey' && TDFX_COL[x] && a.indexOf(x) === i; });
+  if(!cols.length) return ['grey'];
+  var types = [];
+  if(tdFxHasSuper(c, 'spell')) types.push('spell');
+  if(tdFxHasSuper(c, 'action')) types.push('action');
+  var out = [];
+  cols.forEach(function(k){ types.forEach(function(ty){ out.push(k + '-' + ty); }); });
+  return out;
+}
+function tdPfxColsOf(key){ var k = key.split('-')[0]; return k === 'grey' ? GREY : [TDFX_COL[k]]; }
+/* a new record: the 3 picked now, once, and the rarity effects beside them */
+function tdPfxNew(item, c, board, burst){
+  var pool = tdPfxPool(c), keys = shuffle(pool.slice()).slice(0, 3), kw = [];
+  if(!burst){
+    if(tdCardHasKw(item, 'Unique', board)) kw.push('kw-unique');
+    if(tdFxHasSuper(c, 'mythic')) kw.push('kw-mythic');
+    if(tdCardHasKw(item, 'Absolute', board)) kw.push('kw-absolute');
+  }
+  var now = performance.now();
+  var inst = keys.map(function(k){ return {key:k, cols:tdPfxColsOf(k), draw:SLOTS[k](), t0:now}; })
+    .concat(kw.map(function(k){ return {key:k, cols:GREY, draw:E[k](), t0:now}; }));
+  return {at:Date.now(), keys:keys, kw:kw, pool:pool.length, inst:inst, burst:!!burst,
+          until:burst ? Date.now() + BURST * 1000 : 0};
+}
+function tdPfxMine(item, board){
+  board = board || tdFxHalfOf(item.uid);
+  return board === TD.board;
+}
+var CANVASES = "<canvas class='td-pfx-u' aria-hidden='true'></canvas><canvas class='td-pfx-o' aria-hidden='true'></canvas>";
+
+/* What tdFxCard adds to a card in any zone: the float, the canvases and the
+   Resolve button for an Action or Spell on the Field; nothing anywhere else
+   (and a card that has left the Field is forgotten). */
+window.tdPfxCard = function(item, zone, c, board){
+  var uid = item.uid, rec = TDPFX.cards[uid];
+  var kind = (zone && zone.id === 'field' && c && !item.anon && !item.down
+              && !(typeof tdIsPool === 'function' && tdIsPool())) ? tdPfxKind(c) : '';
+  /* ⚠ NOT IN A CONNECTED GROUP. A card attached under another, or with one
+     attached under it, is laid out by the group - the one behind peeks out
+     over the top of the one in front - and a floating card would lift out of
+     that. It plays none of this; the menu's "Send to Grave" still sends it. */
+  if(kind){ var half = board || tdFxHalfOf(uid);
+    if(item.connectedTo || ((half && half.zones && half.zones.field) || []).some(function(k){ return k.connectedTo === uid; })) kind = ''; }
+  if(!kind){ if(rec) delete TDPFX.cards[uid]; return null; }
+  var reduced = tdFxReduced();
+  if(kind === 'ongoing'){
+    /* only the 2.5-second burst a play set off (tdPfxBurst) */
+    if(!rec || !rec.burst || reduced) return null;
+    if(Date.now() > rec.until){ delete TDPFX.cards[uid]; return null; }
+    return {cls:' td-pfx-burst', style:'', html:CANVASES};
+  }
+  if(!rec || rec.burst) rec = TDPFX.cards[uid] = tdPfxNew(item, c, board, false);
+  /* ⚠ THE OWNER ONLY. The other player sees the card float and its effects,
+     and it goes to the Grave on their screen when its owner resolves it. */
+  var btn = tdPfxMine(item, board)
+    ? "<button type='button' class='td-resolve' title='Resolve: send it to the Grave' onclick=\"tdPfxResolve('" + uid + "')\">Resolve</button>"
+    : '';
+  return {cls:' td-fx-play', style:'--fx-age:' + (-(Date.now() - rec.at)) + 'ms;', html:(reduced ? '' : CANVASES) + btn};
+};
+/* an Ongoing Action or Spell was just played - called from tdFxAction, before
+   the redraw that draws it */
+window.tdPfxBurst = function(board, uid){
+  var at = tdFindIn(board, uid);
+  if(!at || !at.item.card || tdFxReduced()) return;
+  TDPFX.cards[uid] = tdPfxNew(at.item, at.item.card, board, true);
+};
+window.tdPfxKind = tdPfxKind;
+/* the Resolve button: the same move as the menu's "Send to Grave" */
+window.tdPfxResolve = function(uid){
+  var at = tdFind(uid);
+  if(!at || at.zone !== 'field') return;
+  tdMenuMove(uid, 'grave');
+};
+/* Resolved (or sent to the Grave any other way), on any screen: the card
+   flashes where it stood and flies to the Grave, which waits for it. Called
+   from tdFxAction with the old element still in place. */
+window.tdPfxResolved = function(board, a){
+  if(tdFxReduced()) return;
+  var el = tdFxEl(a.uid);
+  if(!el) return;
+  var from = tdFxRect(el);
+  if(!from.w) return;
+  var ghost = tdFxGhostOf(el, from);
+  Array.prototype.forEach.call(ghost.querySelectorAll('.td-pfx-u,.td-pfx-o,.td-resolve'), function(n){ n.remove(); });
+  ghost.classList.add('td-pfx-flash');
+  TDFX.hold[a.uid] = {zone:'grave', until:Date.now() + 1200};
+  TDFX.fired.resolve = (TDFX.fired.resolve || 0) + 1;
+  setTimeout(function(){
+    var to = tdFxEl(a.uid);
+    function done(){ ghost.remove(); delete TDFX.hold[a.uid]; var g = tdFxEl(a.uid); if(g) g.classList.remove('td-fx-hold'); }
+    /* undone in the meantime: the ghost fades where it stands */
+    if(!to || tdFxZoneOf(a.uid) !== 'grave' || !ghost.animate){
+      if(ghost.animate) ghost.animate([{opacity:1}, {opacity:0}], {duration:300, fill:'forwards'}).finished.then(done); else done();
+      return;
+    }
+    var t = tdFxRect(to);
+    ghost.animate([{transform:'translate(0,0) scale(1) rotate(0)', opacity:1},
+                   {transform:'translate(' + (t.cx - from.cx) + 'px,' + (t.cy - from.cy) + 'px) scale(' + (t.w / from.w || 1).toFixed(3) + ') rotate(-8deg)', opacity:.25}],
+                  {duration:600, easing:'cubic-bezier(.5,0,.3,1)', fill:'forwards'}).finished.then(done);
+  }, 300);
+};
+
+/* ═════ every frame (from tdFxLoop) ═════
+   Every read first, every write after (as tdFxDeclTick does). Returns how
+   many of these cards are on the screen - the loop sleeps at 0. */
+window.tdPfxTick = function(dt){
+  if(tdFxReduced()) return 0;
+  var host = document.getElementById('tdBoard');
+  if(!host) return 0;
+  var els = host.querySelectorAll('.td-card.td-fx-play, .td-card.td-pfx-burst');
+  if(!els.length) return 0;
+  var vw = window.innerWidth, vh = window.innerHeight, now = performance.now(), wall = Date.now(), list = [], i;
+  for(i = 0; i < els.length; i++){
+    var el = els[i], rec = TDPFX.cards[el.getAttribute('data-uid')];
+    if(!rec) continue;
+    if(!el.__pfx) el.__pfx = {cu:el.querySelector(':scope > .td-pfx-u'), co:el.querySelector(':scope > .td-pfx-o')};
+    if(!el.__pfx.cu || !el.__pfx.co) continue;
+    var r = el.getBoundingClientRect();
+    list.push({el:el, rec:rec, w:el.clientWidth, h:el.clientHeight,
+               on:r.width > 0 && r.bottom > -r.height && r.top < vh + r.height && r.right > -r.width && r.left < vw + r.width});
+  }
+  var dpr = Math.min(2, window.devicePixelRatio || 1), n = 0;
+  list.forEach(function(d){
+    var P = d.el.__pfx, rec = d.rec;
+    if(!d.on || !d.w) return;
+    /* a burst: full strength, fading over its last 0.4 s, then done */
+    var left = rec.burst ? (rec.until - wall) / 1000 : 1;
+    if(rec.burst && left <= 0){ if(!P.cleared){ P.cleared = true; [P.cu, P.co].forEach(function(cv){ cv.getContext('2d').clearRect(0, 0, cv.width, cv.height); }); } return; }
+    n++;
+    var W = Math.round(d.w * (1 + PAD_X * 2)), H = Math.round(d.h * (1 + PAD_Y * 2));
+    if(P.w !== W || P.h !== H || P.d !== dpr){ P.w = W; P.h = H; P.d = dpr;
+      [P.cu, P.co].forEach(function(cv){ cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }); }
+    var cu = P.xu || (P.xu = P.cu.getContext('2d')), co = P.xo || (P.xo = P.co.getContext('2d'));
+    cu.setTransform(dpr, 0, 0, dpr, 0, 0); co.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cu.clearRect(0, 0, W, H); co.clearRect(0, 0, W, H);
+    var R = {x:d.w * PAD_X, y:d.h * PAD_Y, w:d.w, h:d.h}; R.cx = R.x + R.w / 2; R.cy = R.y + R.h / 2;
+    var S = {el:d.el}, fade = rec.burst ? clamp(left / .4, 0, 1) : 1;
+    P.cu.style.opacity = P.co.style.opacity = fade < 1 ? fade.toFixed(3) : '';
+    rec.inst.forEach(function(q){
+      cu.save(); co.save();
+      try{ q.draw(cu, co, R, Math.max(0, (now - q.t0) / 1000), dt, q.cols, S); }catch(_){}
+      cu.restore(); co.restore();
+    });
+    /* whatever lies over the card's face is 25% see-through (the author) */
+    co.save(); co.globalCompositeOperation = 'destination-out'; co.fillStyle = 'rgba(0,0,0,.25)'; rrect(co, R.x, R.y, R.w, R.h, 6); co.fill(); co.restore();
+  });
+  return n;
+};
+/* for the checks */
+window.tdPfxStats = function(){
+  var out = {};
+  Object.keys(TDPFX.cards).forEach(function(u){ var r = TDPFX.cards[u];
+    out[u] = {keys:r.keys.slice(), kw:r.kw.slice(), pool:r.pool, burst:r.burst, until:r.until, at:r.at}; });
+  return out;
+};
+window.tdPfxSlots = function(){ return Object.keys(SLOTS); };
+})();
 /* ═══════════════════════════════════════════════════════════════════════════
    BROWSE SORT
    _sortPrimary {key,dir} is the "Sort by" dropdown in the page bar. It is the
