@@ -7551,15 +7551,8 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
 .td-card.td-fx-myth{overflow:visible;animation:tdFxMyth 2.2s ease-out}
 @keyframes tdFxMyth{0%{box-shadow:0 0 0 2px #fff,0 0 30px 9px #ffd86b}
   40%{box-shadow:0 0 0 2px hsl(300 90% 70%),0 0 26px 8px hsl(200 90% 60%)}100%{box-shadow:none}}
-/* ── Unique: two laps of a white running border with a half-strength prism
-   edge - a RING over the card, the middle cut away so the face stays readable */
-.td-fx-urun{position:fixed;border-radius:9px;overflow:hidden;z-index:8690;pointer-events:none;padding:4px;box-sizing:border-box;
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
-  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
-.td-fx-usp{position:absolute;left:50%;top:50%;width:300%;height:300%;margin:-150% 0 0 -150%;
-  background:conic-gradient(from 0deg,transparent 0 52%,rgba(255,255,255,.35) 62%,#ffffff 70%,rgba(255,90,122,.5) 73%,
-    rgba(255,179,64,.5) 75.5%,rgba(255,233,90,.5) 78%,rgba(79,224,143,.5) 80.5%,rgba(74,184,255,.5) 83%,
-    rgba(154,107,255,.5) 85.5%,#ffffff 88%,transparent 96%)}
+/* ── Unique: the Prism Comet, drawn on the board's canvas (tdFxUniqueComet,
+   session 69) - it replaced session 61's running border and its two rules ── */
 
 /* ── THE ATTACK KEYWORDS on a declared attacker (session 66) - only for a
    keyword the card really has: its keyword line, an ability line that starts
@@ -7623,9 +7616,45 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
 .td-fx-ghost.td-fx-ash{-webkit-mask-image:linear-gradient(to top,transparent calc(var(--burn,0) * 1%),#000 calc(var(--burn,0) * 1% + 9%));
   mask-image:linear-gradient(to top,transparent calc(var(--burn,0) * 1%),#000 calc(var(--burn,0) * 1% + 9%))}
 
-/* ── An Ongoing Action's Rune Circle or Spell's Turning Seal, for five seconds ── */
-.td-fx-circle{position:fixed;z-index:8690;pointer-events:none}
+/* ── An Ongoing Action's Rune Circle or Spell's Turning Seal, for five seconds ──
+   ⚠ BEHIND THE CARD (the author, session 71): in the card's resting box
+   (.td-pfx-rest), at 29 - under the card raised to 30 for its burst, over the
+   board. It was a fixed layer over the whole page, on top of the card.
+   ⚠ DRAWN FROM --fx-age, minus the time since it began, so a redraw lands it
+   mid-way. The same draw, glyphs, glow and turn tdFxOngoing played by script
+   before; the turn is on the HTML wrapper so the compositor turns it. */
+.td-fx-circle{position:absolute;left:50%;top:50%;aspect-ratio:1;transform:translate(-50%,-50%);z-index:29;pointer-events:none;
+  animation:tdFxCiGlow 5s linear both;animation-delay:var(--fx-age,0ms)}
+.td-fx-circle.td-fx-runes{height:130%}
+.td-fx-circle.td-fx-seal{height:142%}
+.td-fx-turn{width:100%;height:100%}
 .td-fx-circle svg{width:100%;height:100%;display:block;overflow:visible}
+.td-fx-circle .td-fx-draw{animation:tdFxCiDraw .9s ease-out both;animation-delay:calc(var(--fx-age,0ms) + var(--i,0) * 120ms)}
+.td-fx-circle .td-fx-glyph{animation:tdFxCiGlyph .2s linear both;animation-delay:calc(var(--fx-age,0ms) + 300ms + var(--i,0) * 30ms)}
+.td-fx-circle.td-fx-runes .td-fx-turn{animation:tdFxCiTurnR 5s cubic-bezier(.3,0,.4,1) both;animation-delay:var(--fx-age,0ms)}
+.td-fx-circle.td-fx-seal .td-fx-turn{animation:tdFxCiTurnS 5s cubic-bezier(.3,0,.4,1) both;animation-delay:var(--fx-age,0ms)}
+@keyframes tdFxCiDraw{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+@keyframes tdFxCiGlyph{from{opacity:0}to{opacity:.9}}
+@keyframes tdFxCiTurnR{from{transform:rotate(0)}to{transform:rotate(120deg)}}
+@keyframes tdFxCiTurnS{from{transform:rotate(0)}to{transform:rotate(-150deg)}}
+@keyframes tdFxCiGlow{0%{filter:drop-shadow(0 0 3px var(--c0));opacity:1}20%{filter:drop-shadow(0 0 14px var(--c1)) brightness(1.5)}
+  82%{filter:drop-shadow(0 0 6px var(--c0));opacity:1}100%{filter:drop-shadow(0 0 2px var(--c0));opacity:0}}
+/* ⚠ THE SAME CIRCLE UNDER A NON-ONGOING ACTION OR SPELL (the author, session
+   71), lying on the ground the ripple, the whirlpool and the necromancer's
+   share (cat_playfx.js ground(): centred 116% down the card, 95% of its width
+   each way, squashed to .24) - its outer ring (94 or 96 of the SVG's 100) on
+   that ellipse's edge. It draws in as the Ongoing one does when the card
+   lands, its glow rises and settles as in the Ongoing one's first 82%, then
+   it turns for as long as the card stays: the Rune Circle once in 15 s, the
+   Seal once in 12 s the other way - the Ongoing turns' own average pace. */
+.td-fx-circle.td-fx-ground{top:116%;height:auto;transform:translate(-50%,-50%) scaleY(.24);animation:tdFxCiGlowIn 4.1s linear both;animation-delay:var(--fx-age,0ms)}
+.td-fx-circle.td-fx-ground.td-fx-runes{width:202.1%}
+.td-fx-circle.td-fx-ground.td-fx-seal{width:197.9%}
+.td-fx-circle.td-fx-ground.td-fx-runes .td-fx-turn{animation:tdFxCiSpinR 15s linear infinite;animation-delay:var(--fx-age,0ms)}
+.td-fx-circle.td-fx-ground.td-fx-seal .td-fx-turn{animation:tdFxCiSpinS 12s linear infinite;animation-delay:var(--fx-age,0ms)}
+@keyframes tdFxCiSpinR{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes tdFxCiSpinS{from{transform:rotate(0)}to{transform:rotate(-360deg)}}
+@keyframes tdFxCiGlowIn{0%{filter:drop-shadow(0 0 3px var(--c0))}24.4%{filter:drop-shadow(0 0 14px var(--c1)) brightness(1.5)}100%{filter:drop-shadow(0 0 6px var(--c0))}}
 
 /* ── Swift: the two Declare Swords, opposite each other through the card ── */
 .td-fx-pswd{position:fixed;aspect-ratio:24/32;z-index:8696;pointer-events:none;color:#ff3b3b;
@@ -7642,8 +7671,18 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
 .td-pfx-u,.td-pfx-o{position:absolute;left:-110%;top:-75%;width:320%;height:250%;pointer-events:none}
 .td-pfx-u{z-index:-1}
 .td-pfx-o{z-index:9}
-/* Resolve: under the card, its owner's only */
-.td-resolve{position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);z-index:14;white-space:nowrap;
+/* ⚠ WHAT STAYS WHERE THE CARD RESTS (session 70): a card-sized box right after
+   the card, at its left and top (tdFxAfterRender), that neither floats nor
+   tilts. No z-index of its own, so its children sit among the cards: the
+   ground behind the floating card (29), its front and Resolve in front. The
+   circle (above) comes first in it, so the ground's back canvas draws over
+   it at the same 29 (session 71). */
+.td-pfx-rest{position:absolute;width:var(--td-cw);height:var(--td-ch);pointer-events:none}
+.td-pfx-gb,.td-pfx-gf{position:absolute;left:-110%;top:-75%;width:320%;height:250%;pointer-events:none}
+.td-pfx-gb{z-index:29}
+.td-pfx-gf{z-index:31}
+/* Resolve: under the card, its owner's only, and still while the card floats */
+.td-resolve{position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);z-index:32;pointer-events:auto;white-space:nowrap;
   font-family:Cinzel,serif;font-weight:600;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;
   padding:3px 12px;border-radius:999px;border:1px solid #f0d488;background:linear-gradient(#e8c96a,#b8902f);color:#1a1206;
   box-shadow:0 2px 8px rgba(0,0,0,.55);cursor:pointer}
@@ -7662,6 +7701,8 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
   .td-fx-icon,.td-fx-stat,.td-fx-dia,.td-fx-gem.td-fx-pop{animation:none}
   .td-card.td-fx-myth{animation:none}
   .td-fx-fangs.td-fx-top,.td-fx-fangs.td-fx-bot,.td-fx-flag,.td-fx-vw{animation:none}
+  .td-fx-circle.td-fx-runes .td-fx-turn,.td-fx-circle.td-fx-seal .td-fx-turn,
+  .td-fx-circle.td-fx-ground.td-fx-runes .td-fx-turn,.td-fx-circle.td-fx-ground.td-fx-seal .td-fx-turn{animation:none}
 }
 /* ═══════════════════════════════════════════════════════════════════════════
    THE CARD BACK, AS THE APP WEARS IT
@@ -19974,7 +20015,10 @@ function tdCardHTML(item, zone, opts){
     + (opts.stackAt != null ? ' td-attached' : '') + "'"
     + " data-uid='" + item.uid + "' data-zone='" + zone.id + "'"
     + pos + " title='" + (c && !item.anon ? e(c.name) : 'Face down') + "'>"
-    + face + stuck + (fx ? fx.html : '') + "</div>";
+    + face + stuck + (fx ? fx.html : '') + "</div>"
+    /* what must stay where the card rests while the card itself floats - an
+       Action or Spell's Resolve button and its ground (session 70) */
+    + (fx && fx.after ? fx.after : '');
 }
 
 /* ── CONNECTED CARDS ─────────────────────────────────────────────────────────
@@ -29072,19 +29116,230 @@ function tdFxMythicOn(el){
                 {life:.8, r:5, spin:2.25, color:tdFxHue(i * 37, 80), blur:10, fade:'sin'});
     }, i * 40);
   })(i);
+  /* and 1-3 pairs of Twin Sparks on its glowing edge (sessions 69, 71) */
+  tdFxTwinSparks(el);
 }
-function tdFxUniqueRunner(el){
-  var B = tdFxRect(el), u = document.createElement('div');
-  u.className = 'td-fx-urun';
-  u.style.left = (B.x - 4) + 'px'; u.style.top = (B.y - 4) + 'px';
-  u.style.width = (B.w + 8) + 'px'; u.style.height = (B.h + 8) + 'px';
-  u.innerHTML = "<div class='td-fx-usp'></div>";
-  document.body.appendChild(u);
-  if(!u.animate){ setTimeout(function(){ u.remove(); }, 3400); return; }
-  u.animate([{opacity:0}, {opacity:1, offset:.06}, {opacity:1, offset:.9}, {opacity:0}], {duration:3400, fill:'forwards'});
-  u.firstChild.animate([{transform:'rotate(0deg)'}, {transform:'rotate(720deg)'}], {duration:3200, easing:'linear', fill:'forwards'})
-    .finished.then(function(){ setTimeout(function(){ u.remove(); }, 260); });
+/* ═════ UNIQUE: THE PRISM COMET (the author, session 69 - FX Lab IV) ═════
+   One bright star circles the card once, passing behind it and in front: a
+   gold head, the rainbow just behind it, and the rest of its tail - most of
+   it - white (the author's correction, the same session). Random each
+   play: which way it circles, the height it circles at (30% of the card above
+   its middle to 25% below), the circle's size (70-105% of the card's width
+   each way), its tilt (±15°), where it starts and the tail's length. It
+   replaces session 61's running border. The painter is shared with
+   cat_playfx.js, which draws it on a card's own canvases. */
+var TDFX_HUES = ['#ff5a7a', '#ffb340', '#ffe95a', '#4fe08f', '#4ab8ff', '#9a6bff'];
+function tdFxCometRoll(){
+  return {dir:Math.random() < .5 ? -1 : 1, tilt:tdFxRnd(-.26, .26), a0:tdFxRnd(0, Math.PI * 2), tail:Math.floor(tdFxRnd(34, 49)),
+          hy:tdFxRnd(-.3, .25), rx:tdFxRnd(.7, 1.05), ry:tdFxRnd(.14, .22)};
 }
+/* one moment (k, 0..1) of the comet round the card box R; `which` is 'back'
+   (only the part behind the card) or 'front'. ⚠ THE AUTHOR'S COLOURS: a gold
+   head, the rainbow just behind it, and the rest of the tail - most of it -
+   white. Stroked twice - wide and faint, then the line - rather than blurred
+   (session 64). */
+function tdFxCometColour(f){
+  if(f >= .4) return '#ffffff';
+  return TDFX_HUES[Math.min(5, Math.floor(f / .4 * 6))];
+}
+function tdFxCometPaint(c, R, k, q, which){
+  var TAU = Math.PI * 2, fade = k < .1 ? k / .1 : k > .85 ? 1 - (k - .85) / .15 : 1;
+  var head = q.a0 + q.dir * tdFxEaseOut(k) * TAU * 1.05, back = which === 'back';
+  function at(ang){ var z = Math.sin(ang), x0 = Math.cos(ang) * R.w * q.rx, y0 = z * R.h * q.ry;
+    return [R.cx + x0 * Math.cos(q.tilt) - y0 * Math.sin(q.tilt), R.cy + q.hy * R.h + x0 * Math.sin(q.tilt) + y0 * Math.cos(q.tilt), z]; }
+  c.lineCap = 'round';
+  for(var j = q.tail; j >= 1; j--){
+    var p0 = at(head - q.dir * j * .04), p1 = at(head - q.dir * (j - 1) * .04);
+    if((p0[2] < 0) !== back) continue;
+    var f = j / q.tail, w = 5 * (1 - f) + 1, a = fade * (1 - f * .7);
+    c.strokeStyle = tdFxCometColour(f);
+    c.globalAlpha = a * .3; c.lineWidth = w + 6; c.beginPath(); c.moveTo(p0[0], p0[1]); c.lineTo(p1[0], p1[1]); c.stroke();
+    c.globalAlpha = a; c.lineWidth = w; c.beginPath(); c.moveTo(p0[0], p0[1]); c.lineTo(p1[0], p1[1]); c.stroke();
+  }
+  var h = at(head);
+  if((h[2] < 0) === back){
+    c.globalAlpha = fade; c.save(); c.translate(h[0], h[1]); c.rotate(k * 8);
+    tdFxBlit(c, tdFxSprite('star', '#ffe27a', '#ffc21a', 7, 12), 0, 0);
+    tdFxBlit(c, tdFxSprite('star', '#fff6d0', '#ffd24a', 3, 4), 0, 0); c.restore();
+  }
+  c.globalAlpha = 1;
+}
+/* on the board's own canvas, following the card: there is no "behind" there,
+   so the part behind the card is drawn with the card's own box cut out */
+function tdFxUniqueComet(el){
+  if(tdFxReduced()) return;
+  var uid = el.getAttribute('data-uid'), q = tdFxCometRoll();
+  TDFX.fired.unique = (TDFX.fired.unique || 0) + 1;
+  var p = tdFxCustom(3.6, function(c, p, k){
+    var e = (uid && tdFxEl(uid)) || el;
+    if(!e.isConnected) return;
+    var R = tdFxRect(e);
+    c.save(); c.beginPath(); c.rect(0, 0, TDFX.W, TDFX.H); c.rect(R.x, R.y, R.w, R.h); c.clip('evenodd');
+    tdFxCometPaint(c, R, k, q, 'back'); c.restore();
+    tdFxCometPaint(c, R, k, q, 'front');
+  });
+  p.blend = 'source-over'; p.comet = true;
+}
+
+/* ═════ MYTHIC'S TWIN SPARKS (the author, sessions 69 and 71) ═════
+   With the edge glow and the stars: the Twin Sparks exactly as FX Lab IV
+   drew them - two gold sparks set off from the bottom middle of the card and
+   race round its edge in opposite directions, to meet at the top middle in a
+   white flash. ⚠ ONLY THE NUMBER OF PAIRS IS RANDOM - 1 to 3 (the author,
+   session 71; it was 2-8): every pair takes the same path, ends at the same
+   spot and is the same gold; they set off one after another, 0.22 s apart, so
+   each is seen. ⚠ ON THE GLOWING EDGE (session 71): they ride the Mythic
+   shimmer's own bright 2px ring (tdFxMyth's `0 0 0 2px`), 1px out - the lab
+   ran them 4-8px outside it, and the author saw a track of their own outside
+   the effect. The size of the flash is still rolled each play. The painter is
+   stateless - the time says everything - so cat_playfx.js draws it too. */
+var TDFX_TWIN_GOLD = ['#ffd24a', '#fff2b8', '#c9962a'];
+var TDFX_TWIN_RUN = 1.8, TDFX_TWIN_GAP = .22, TDFX_TWIN_FLASH = .75, TDFX_TWIN_RIM = 1;
+function tdFxTwinRoll(){
+  var n = 1 + Math.floor(Math.random() * 3), big = tdFxRnd(.8, 1.3), out = [];
+  for(var i = 0; i < n; i++) out.push({at:i * TDFX_TWIN_GAP, off:TDFX_TWIN_RIM, big:big});
+  return out;
+}
+/* how long a set of pairs takes, start to last flash */
+function tdFxTwinLen(pairs){ return (pairs.length - 1) * TDFX_TWIN_GAP + TDFX_TWIN_RUN + TDFX_TWIN_FLASH; }
+/* a point on the border box grown by `off`, from the top middle clockwise */
+/* (the corners are square, the card's 6px rounded: at 1px out a spark rounds
+   a corner at most 3px off the ring, inside the glow's own 30px blur) */
+function tdFxRim(R, off, u){
+  var x0 = R.x - off, y0 = R.y - off, w = R.w + 2 * off, h = R.h + 2 * off, P = 2 * (w + h);
+  var d = ((u * P + w / 2) % P + P) % P;
+  if(d < w) return [x0 + d, y0]; d -= w;
+  if(d < h) return [x0 + w, y0 + d]; d -= h;
+  if(d < w) return [x0 + w - d, y0 + h]; d -= w;
+  return [x0, y0 + h - d];
+}
+/* the pairs at time t (seconds) round the card box R */
+function tdFxTwinPaint(c, R, t, pairs){
+  var G = TDFX_TWIN_GOLD;
+  pairs.forEach(function(p){
+    var s = t - p.at;
+    if(s < 0) return;
+    var run = tdFxEaseOut(Math.min(1, s / TDFX_TWIN_RUN));
+    /* from the bottom middle (.5) both ways round to the top middle (0) */
+    [1, -1].forEach(function(d){
+      for(var j = 12; j >= 1; j--){
+        var q = tdFxRim(R, p.off, .5 + d * Math.max(0, run - j * .012) * .5);
+        c.globalAlpha = (1 - j / 13) * .7; tdFxBlit(c, tdFxSprite('dot', G[j % 3], G[j % 3], 2.2 * (1 - j / 14), 0), q[0], q[1]);
+      }
+      if(run < 1){ var hd = tdFxRim(R, p.off, .5 + d * run * .5); c.globalAlpha = 1; tdFxBlit(c, tdFxSprite('star', '#fff2b8', G[0], 5, 9), hd[0], hd[1]); }
+    });
+    if(run >= 1){
+      var f = Math.min(1, (s - TDFX_TWIN_RUN) / TDFX_TWIN_FLASH), m = tdFxRim(R, p.off, 0);
+      if(f < 1){
+        c.globalAlpha = 1 - f; tdFxBlit(c, tdFxSprite('star', '#ffffff', '#ffffff', 12 * p.big * (1 - f * .5), 12), m[0], m[1]);
+        for(var i = 0; i < 18; i++){ var an = i / 18 * Math.PI * 2, r = (6 + f * 40) * p.big;
+          tdFxBlit(c, tdFxSprite('dot', G[i % 3], G[i % 3], 1.3, 0), m[0] + Math.cos(an) * r, m[1] + Math.sin(an) * r); }
+      }
+    }
+  });
+  c.globalAlpha = 1;
+}
+function tdFxTwinSparks(el){
+  if(tdFxReduced()) return;
+  var uid = el.getAttribute('data-uid'), pairs = tdFxTwinRoll(), T = tdFxTwinLen(pairs);
+  TDFX.fired.twins = (TDFX.fired.twins || 0) + 1; TDFX.lastTwins = pairs.length;
+  tdFxCustom(T, function(c, p, k){
+    var e = (uid && tdFxEl(uid)) || el;
+    if(!e.isConnected) return;
+    tdFxTwinPaint(c, tdFxRect(e), k * T, pairs);
+  });
+}
+
+/* ═════ TURN-STEP TRIGGERS: THE RIBBON BANNER (the author, session 69) ═════
+   A card in play whose line STARTS with a turn step - the way Arrive and
+   Demise count (§66.1) - has a short gold ribbon with a star on it unfurl
+   under it when the game reaches that step:
+     "Your Onset —"                      its owner's tracker reaches Onset;
+     "Each Offset —", "Each Player's …"  anyone's tracker reaches it;
+     "Each Opponent's …", "Each other player's …"   another player's does.
+   Measured on the published cards: Your Onset 65, Your Offset 21, Each
+   Offset 13, Each Onset 8, and one each of Each Unlock Phase, Each Player's
+   Onset, Each Opponent's Onset and Each other player's Onset.
+   ⚠ REACHED, NOT LANDED ON. The tracker can be clicked straight past a step
+   (Unlock to Draw) - a step passed over going forward in the same turn is
+   reached too, and a new turn reaches everything up to where it lands. Going
+   back reaches nothing. Each player's half has its own tracker. */
+var TDFX_STEP_RX = /^\s*(your|each(?:\s+(?:player|opponent|other player)['’]s)?|your\s+opponent['’]s|opponent['’]s)\s+(unlock|onset|draw|key|start|declare attackers|declare blockers|battle damage|offset)(?:\s+(?:phase|step))?\s*[—–:\-]/i;
+var TDFX_STEP_ID = {unlock:'unlock', onset:'onset', draw:'draw', key:'key', start:'start',
+                    'declare attackers':'attack', 'declare blockers':'block', 'battle damage':'damage', offset:'offset'};
+function tdFxStepTriggers(c){
+  var r = String((c && c.ruleText) || '');
+  if(c.__fxSteps && c.__fxSteps.r === r) return c.__fxSteps.v;
+  var v = [];
+  r.split(/\r?\n/).forEach(function(line){
+    var m = TDFX_STEP_RX.exec(line);
+    if(!m) return;
+    var w = m[1].toLowerCase().replace(/\s+/g, ' ');
+    v.push({who:w === 'your' ? 'own' : /opponent|other/.test(w) ? 'other' : 'any', ph:TDFX_STEP_ID[m[2].toLowerCase().replace(/\s+/g, ' ')]});
+  });
+  c.__fxSteps = {r:r, v:v};
+  return v;
+}
+/* the tracker's place as one number, Unlock first */
+function tdFxTurnIndex(t){
+  var steps = tdSteps(), n = 0;
+  for(var i = 0; i < steps.length; i++){
+    if(steps[i].id === t.step) return n + t.phase;
+    n += steps[i].phases.length;
+  }
+  return 0;
+}
+function tdFxStepRibbons(board, pre, a){
+  if(!pre || tdFxReduced()) return;
+  var now = tdTurnOf(board), to = tdFxTurnIndex(now), from = now.n > pre.n || a.newTurn ? -1 : tdFxTurnIndex(pre);
+  if(to <= from) return;
+  var reached = {}, steps = tdSteps(), i = 0;
+  steps.forEach(function(s){ s.phases.forEach(function(p){ if(i > from && i <= to) reached[p.id] = 1; i++; }); });
+  [TD.board].concat(tdFoeList()).forEach(function(half){
+    if(!half || !half.zones) return;
+    ['field', 'essarea', 'lord'].forEach(function(z){
+      (half.zones[z] || []).forEach(function(it){
+        if(!it.card || it.anon || it.down) return;
+        var hit = tdFxStepTriggers(it.card).some(function(t){
+          return reached[t.ph] && (t.who === 'any' || (t.who === 'own') === (half === board)); });
+        if(hit) tdFxRibbon(it.uid, Object.keys(reached));
+      });
+    });
+  });
+}
+/* the Ribbon Banner (FX Lab IV, round 2): a short gold ribbon with a star on
+   it unfurls under the card, ripples, and rolls back up. Random each play:
+   whether it unfurls from the middle or one end, and how much it ripples. */
+function tdFxRibbon(uid, reached){
+  var el = tdFxEl(uid);
+  if(!el) return;
+  var from = ['mid', 'left', 'right'][Math.floor(Math.random() * 3)], wav = tdFxRnd(1.5, 3.5);
+  TDFX.fired.ribbon = (TDFX.fired.ribbon || 0) + 1;
+  (TDFX.ribbons = TDFX.ribbons || []).push({uid:uid, steps:reached});
+  if(TDFX.ribbons.length > 40) TDFX.ribbons.shift();
+  var p = tdFxCustom(3.8, function(c, p, k){
+    var e = tdFxEl(uid);
+    if(!e) return;
+    var R = tdFxRect(e), open = k < .25 ? tdFxEaseInOut(k / .25) : k > .78 ? 1 - tdFxEaseInOut((k - .78) / .22) : 1;
+    var W = R.w * 1.1 * open, h = R.w * .14, y = R.y + R.h + 8, N = 24;
+    if(W < 2) return;
+    var x0 = from === 'left' ? R.cx - R.w * .55 : from === 'right' ? R.cx + R.w * .55 - W : R.cx - W / 2;
+    function top(i){ return [x0 + W * i / N, y + Math.sin(i / N * Math.PI * 2 + k * 10) * wav]; }
+    c.globalAlpha = Math.min(1, open * 3);
+    [[-1, x0], [1, x0 + W]].forEach(function(s){ var sd = s[0], ex = s[1], ey = top(sd < 0 ? 0 : N)[1];
+      c.fillStyle = '#7a5a1c'; c.beginPath(); c.moveTo(ex, ey + 3); c.lineTo(ex + sd * h * .9, ey + 3); c.lineTo(ex + sd * h * .5, ey + h / 2 + 3);
+      c.lineTo(ex + sd * h * .9, ey + h + 3); c.lineTo(ex, ey + h + 3); c.fill(); });
+    function band(dy){ c.beginPath(); for(var i = 0; i <= N; i++){ var q = top(i); if(i) c.lineTo(q[0], q[1] + dy); else c.moveTo(q[0], q[1] + dy); }
+      for(var j = N; j >= 0; j--){ var q2 = top(j); c.lineTo(q2[0], q2[1] + h + dy); } c.closePath(); }
+    c.fillStyle = 'rgba(0,0,0,.35)'; band(3); c.fill();
+    var g = c.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, '#fff2b8'); g.addColorStop(.5, '#ffd24a'); g.addColorStop(1, '#c9962a');
+    c.fillStyle = g; band(0); c.fill();
+    if(open > .6){ var m = top(N / 2); c.fillStyle = '#ffffff'; tdFxStar(c, x0 + W / 2, m[1] + h / 2, h * .38, 0); }
+    c.globalAlpha = 1;
+  });
+  p.blend = 'source-over';
+}
+
 function tdFxSlam(uid, pre){
   var el = tdFxEl(uid);
   if(!el || !el.animate) return;
@@ -29218,7 +29473,7 @@ function tdFxStatFor(card, want){
 
 /* What tdCardHTML adds to one card: classes, style and markup. */
 function tdFxCard(item, zone, c, board){
-  var out = {cls:'', style:'', html:''};
+  var out = {cls:'', style:'', html:'', after:''};
   if(!item || !zone) return out;
   var now = Date.now(), hold = TDFX.hold[item.uid];
   if(hold){
@@ -29228,7 +29483,7 @@ function tdFxCard(item, zone, c, board){
   /* an Action or Spell on the Field: the float, its effects' canvases and the
      owner's Resolve button (session 68, cat_playfx.js) */
   var P = (typeof tdPfxCard === 'function') ? tdPfxCard(item, zone, c, board) : null;
-  if(P){ out.cls += P.cls; out.style += P.style; out.html += P.html; }
+  if(P){ out.cls += P.cls; out.style += P.style; out.html += P.html; out.after += P.after || ''; }
   if(zone.id !== 'field') delete TDFX.since[item.uid];
   if(zone.id === 'field'){
     var role = tdFxRoleOf(item);
@@ -29300,6 +29555,15 @@ function tdFxAfterRender(host){
   var els = host.querySelectorAll('.td-card.td-fx-decl, .td-card.td-fx-gemcard');
   for(var i = 0; i < els.length; i++)
     els[i].style.setProperty('--fx-art', (tdFxArtFrac(els[i]) * 100).toFixed(1) + '%');
+  /* what stays where an Action or Spell rests - its Resolve button and its
+     ground - takes the card's own place (session 70, cat_playfx.js) */
+  var rests = host.querySelectorAll('.td-pfx-rest[data-for]');
+  for(var r = 0; r < rests.length; r++){
+    var card = host.querySelector(".td-card[data-uid='" + rests[r].getAttribute('data-for') + "']");
+    if(!card){ rests[r].remove(); continue; }
+    rests[r].style.left = card.style.left || card.offsetLeft + 'px';
+    rests[r].style.top = card.style.top || card.offsetTop + 'px';
+  }
   if(host.querySelector('.td-fx-decl, .td-fx-play, .td-pfx-burst')) tdFxKick();
 }
 
@@ -29741,59 +30005,64 @@ function tdFxRattle(B){
    A play effect only - nothing stays. An Action draws the Rune Circle, a Spell
    the Turning Seal (the Seal when it is both), in the card's colours - a
    gradient when it has more than one - turning and glowing for five seconds,
-   then gone. Absolute, Unique and Mythic add the finishes a Character gets. */
+   then gone. Absolute, Unique and Mythic add the finishes a Character gets.
+
+   ⚠ BEHIND THE CARD (the author, session 71): the circle is drawn in the
+   card's own resting box (cat_playfx.js, tdPfxCard), under the card and over
+   the board - it was a fixed layer over the whole page, on top of the card.
+   Its Seal rings and Rune sparks go behind with it, on that box's ground
+   canvas. And a non-Ongoing Action or Spell has the same circle lying on the
+   ground under it, turning for as long as it stays (td-fx-ground).
+
+   ⚠ CSS DRAWS IT, FROM --fx-age (boardfx.css), as the declared float does: a
+   redraw of the board replaces the box, and the new circle lands at the same
+   moment of its draw, its glyphs, its glow and its turn. The turn is on an
+   HTML wrapper (.td-fx-turn), so the compositor turns it - the SVG inside is
+   drawn once. */
 var TDFX_RUNES = 'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ';
 function tdFxCircleSVG(kind, cols){
-  var id = 'tdFxCi' + (++TDFX.uid), cs = cols.length > 1 ? cols : [cols[0], cols[0]];
+  var id = 'tdFxCi' + (++TDFX.uid), cs = cols.length > 1 ? cols : [cols[0], cols[0]], nd = 0;
   var defs = '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="0">'
     + cs.map(function(c, i){ return '<stop offset="' + (i / (cs.length - 1)) + '" stop-color="' + c + '"/>'; }).join('') + '</linearGradient></defs>';
-  var st = 'stroke="url(#' + id + ')"', draw = ' pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" class="td-fx-draw"';
-  var t = '<svg viewBox="-100 -100 200 200" fill="none">' + defs + '<g class="td-fx-spin">';
+  /* each line draws itself 120ms after the one before, each glyph lights 30ms after the one before (--i) */
+  var st = 'stroke="url(#' + id + ')"';
+  function draw(){ return ' pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" class="td-fx-draw" style="--i:' + (nd++) + '"'; }
+  var t = '<svg viewBox="-100 -100 200 200" fill="none">' + defs + '<g>';
   if(kind === 'runes'){
-    t += '<circle r="94" ' + st + ' stroke-width="1.6"' + draw + '/><circle r="72" ' + st + ' stroke-width="1"' + draw + '/>';
+    t += '<circle r="94" ' + st + ' stroke-width="1.6"' + draw() + '/><circle r="72" ' + st + ' stroke-width="1"' + draw() + '/>';
     for(var i = 0; i < 24; i++){ var a = i / 24 * Math.PI * 2, x = (Math.cos(a) * 83).toFixed(1), y = (Math.sin(a) * 83).toFixed(1);
-      t += '<text x="' + x + '" y="' + (+y + 4) + '" font-size="11" fill="url(#' + id + ')" text-anchor="middle" opacity="0" class="td-fx-glyph" transform="rotate('
+      t += '<text x="' + x + '" y="' + (+y + 4) + '" font-size="11" fill="url(#' + id + ')" text-anchor="middle" opacity="0" class="td-fx-glyph" style="--i:' + i + '" transform="rotate('
         + (a * 180 / Math.PI + 90).toFixed(1) + ' ' + x + ' ' + y + ')">' + TDFX_RUNES[i] + '</text>'; }
   } else {
-    t += '<circle r="96" ' + st + ' stroke-width="2"' + draw + '/><circle r="84" ' + st + ' stroke-width=".8"' + draw + '/><circle r="40" ' + st + ' stroke-width="1.2"' + draw + '/>'
-      + '<path d="M0-84 72.7 42-72.7 42Z M0 84-72.7-42 72.7-42Z" ' + st + ' stroke-width="1.3"' + draw + '/>';
+    t += '<circle r="96" ' + st + ' stroke-width="2"' + draw() + '/><circle r="84" ' + st + ' stroke-width=".8"' + draw() + '/><circle r="40" ' + st + ' stroke-width="1.2"' + draw() + '/>'
+      + '<path d="M0-84 72.7 42-72.7 42Z M0 84-72.7-42 72.7-42Z" ' + st + ' stroke-width="1.3"' + draw() + '/>';
     for(var j = 0; j < 12; j++){ var b = j / 12 * Math.PI * 2;
-      t += '<circle cx="' + (Math.cos(b) * 90).toFixed(1) + '" cy="' + (Math.sin(b) * 90).toFixed(1) + '" r="2.6" fill="url(#' + id + ')" opacity="0" class="td-fx-glyph"/>'; }
+      t += '<circle cx="' + (Math.cos(b) * 90).toFixed(1) + '" cy="' + (Math.sin(b) * 90).toFixed(1) + '" r="2.6" fill="url(#' + id + ')" opacity="0" class="td-fx-glyph" style="--i:' + j + '"/>'; }
   }
   return t + '</g></svg>';
+}
+/* which circle: the Turning Seal for a Spell (and an Action Spell), the Rune Circle for an Action */
+function tdFxCircleKind(c){ return tdFxHasSuper(c, 'spell') ? 'seal' : 'runes'; }
+/* the circle's markup, `ageMs` after it began: standing behind an Ongoing
+   card, or (ground) lying on the ground under an Action or Spell that stays */
+function tdFxCircleHTML(kind, cols, ageMs, ground){
+  return "<div class='td-fx-circle td-fx-" + kind + (ground ? ' td-fx-ground' : '') + "' aria-hidden='true' style='--fx-age:" + Math.round(-ageMs)
+    + 'ms;--c0:' + cols[0] + ';--c1:' + cols[cols.length - 1] + "'><div class='td-fx-turn'>" + tdFxCircleSVG(kind, cols) + '</div></div>';
 }
 function tdFxIsOngoing(c){
   return tdFxHasSuper(c, 'ongoing') && (tdFxHasSuper(c, 'action') || tdFxHasSuper(c, 'spell')) && !tdIsCharacterCard(c);
 }
+/* the play itself: the card drops in, and the finishes. The circle, its rings
+   and its sparks are the burst's (tdPfxBurst, set up before this redraw). */
 function tdFxOngoing(uid){
   var el = tdFxEl(uid), half = tdFxHalfOf(uid), at = tdFindIn(half, uid), item = at && at.item, c = item && item.card;
   if(!el || !c) return;
   var B = tdFxRect(el);
   if(!B.w) return;
-  var kind = tdFxHasSuper(c, 'spell') ? 'seal' : 'runes', cols = tdFxPalette(c), FIVE = 5000;
+  var kind = tdFxCircleKind(c);
   TDFX.fired['ongoing-' + kind] = (TDFX.fired['ongoing-' + kind] || 0) + 1;
   if(!tdFxReduced() && el.animate) el.animate([{translate:'0 -40px', opacity:0}, {translate:'0 0', opacity:1}], {duration:420, easing:'cubic-bezier(.2,1.2,.4,1)'});
-  setTimeout(function(){
-    var D = B.h * (kind === 'runes' ? 1.3 : 1.42), fx = document.createElement('div');
-    fx.className = 'td-fx-circle td-fx-' + kind;
-    fx.style.left = (B.cx - D / 2) + 'px'; fx.style.top = (B.cy - D / 2) + 'px'; fx.style.width = fx.style.height = D + 'px';
-    fx.innerHTML = tdFxCircleSVG(kind, cols);
-    document.body.appendChild(fx);
-    if(!fx.animate){ setTimeout(function(){ fx.remove(); }, FIVE); return; }
-    Array.prototype.forEach.call(fx.querySelectorAll('.td-fx-draw'), function(n, i){
-      n.animate([{strokeDashoffset:100}, {strokeDashoffset:0}], {duration:900, delay:i * 120, fill:'forwards', easing:'ease-out'}); });
-    Array.prototype.forEach.call(fx.querySelectorAll('.td-fx-glyph'), function(n, i){
-      n.animate([{opacity:0}, {opacity:.9}], {duration:200, delay:300 + i * 30, fill:'forwards'}); });
-    if(!tdFxReduced()) fx.querySelector('.td-fx-spin').animate([{transform:'rotate(0)'}, {transform:'rotate(' + (kind === 'runes' ? 120 : -150) + 'deg)'}],
-      {duration:FIVE, easing:'cubic-bezier(.3,0,.4,1)', fill:'forwards'});
-    fx.animate([{filter:'drop-shadow(0 0 3px ' + cols[0] + ')', opacity:1}, {filter:'drop-shadow(0 0 14px ' + cols[cols.length - 1] + ') brightness(1.5)', offset:.2},
-                {filter:'drop-shadow(0 0 6px ' + cols[0] + ')', opacity:1, offset:.82}, {filter:'drop-shadow(0 0 2px ' + cols[0] + ')', opacity:0}],
-      {duration:FIVE, fill:'forwards'}).finished.then(function(){ fx.remove(); });
-    if(kind === 'seal') [0, 1].forEach(function(i){ setTimeout(function(){ tdFxRing(B.cx, B.cy, cols[0], {r0:B.h * .4, r1:B.h * 1.15, w:3, life:.9, cols:cols.length > 1 ? cols : null}); }, 600 + i * 1600); });
-    else for(var s = 0; s < 26; s++) setTimeout(function(){ var an = tdFxRnd(0, 7);
-      tdFxSpark(B.cx + Math.cos(an) * D * .47, B.cy + Math.sin(an) * D * .47, 0, -tdFxRnd(15, 40), tdFxPick(cols), {life:tdFxRnd(.8, 1.3), size:1.6, drag:.99}); }, 400 + s * 150);
-    tdFxFinishes(uid, item, half, c, B.w / 132, 300);
-  }, 380);
+  setTimeout(function(){ tdFxFinishes(uid, item, half, c, B.w / 132, 300); }, 380);
 }
 /* Absolute's diamonds, Unique's running border, Mythic's prismatic edge - by the
    keyword rule - for a Character's slam and an Ongoing card's play alike */
@@ -29806,7 +30075,7 @@ function tdFxFinishes(uid, item, half, c, sc, delay){
     if(abs){ tdFxDiamonds(B.cx, B.cy, 260 * sc); wait += 220; }
     setTimeout(function(){
       var n2 = tdFxEl(uid);
-      if(n2 && uni) tdFxUniqueRunner(n2);
+      if(n2 && uni) tdFxUniqueComet(n2);
       setTimeout(function(){ var n3 = tdFxEl(uid); if(n3 && myth) tdFxMythicOn(n3); }, (n2 && uni) ? 220 : 0);
     }, wait);
   }, delay);
@@ -30075,9 +30344,12 @@ function tdFxGemFlight(fromArt, target, cols, eCard, er, T, unique, done){
 
 /* ═════ the doors: just before an action, and as it happens ═════
    Before: only what the action is about to take away - a card leaving the
-   Field loses its keyword counters, and Demise can be one. */
+   Field loses its keyword counters, and Demise can be one - and where a turn
+   tracker was before it moves. */
 function tdFxBefore(board, a, before){
   TDFX.pre = null;
+  /* where this half's turn tracker was, for the step triggers (session 69) */
+  TDFX.preTurn = (a && a.t === 'phase' && board) ? tdTurnOf(board) : null;
   try{
     if(!a || a.t !== 'move' || before !== 'field' || a.to === 'field') return;
     var at = tdFindIn(board, a.uid);
@@ -30108,8 +30380,9 @@ function tdFxAction(board, a, before){
         setTimeout(function(){ tdFxSlam(a.uid, pre); }, 0);
       }
       else if(at && at.item.card && !at.item.down && !at.item.anon && tdFxIsOngoing(at.item.card)){
-        /* and its colour effects for 2.5 seconds (session 68, cat_playfx.js) -
-           set up here, before the redraw that draws their canvases */
+        /* its circle behind it and its colour effects, for 5.38 seconds
+           (sessions 68, 70, 71, cat_playfx.js) - set up here, before the
+           redraw that draws them */
         if(typeof tdPfxBurst === 'function') tdPfxBurst(board, a.uid);
         setTimeout(function(){ tdFxOngoing(a.uid); }, 0);
       }
@@ -30120,6 +30393,10 @@ function tdFxAction(board, a, before){
       /* an Action or Spell resolved - or sent to the Grave any other way (session 68) */
       else if(dead && dead.item.card && !dead.item.anon && typeof tdPfxKind === 'function'
               && tdPfxKind(dead.item.card) === 'loop') tdPfxResolved(board, a);
+    } else if(a.t === 'phase'){
+      /* the Ribbon Banner under every card in play whose line starts with a
+         step this tracker has just reached (session 69) */
+      tdFxStepRibbons(board, TDFX.preTurn, a);
     } else if(a.t === 'crystal'){
       tdFxCrystal(board, a);
     } else if(a.t === 'appear' && a.fx === 'crystal' && a.zone === 'essarea'){
@@ -30144,16 +30421,27 @@ window.tdFxStats = function(){
        owner - gets a "Resolve" button under it that sends it to the Grave;
      - the 3 are picked at random ONCE, when it arrives on the Field, from its
        colours × its types (Red Spell, Blue Action...). A card with no colour
-       has the one colourless effect, the dust;
+       has the one colourless effect, the dust. ⚠ FROM DIFFERENT COLOURS
+       first (session 71): an Action Spell never gets both the Action and the
+       Spell effect of one colour while it has another colour to give - so 3
+       colours or more give 3 different colours; 1 or 2 may repeat one;
      - each effect is drawn in ITS OWN colour only - a red-and-yellow Action's
        swords are red and its shield is yellow;
      - Unique (by the keyword rule, tdCardHasKw), Mythic and Absolute play the
        app's own effects at half speed, never counted in the 3: each plays,
        waits 5 seconds, and plays again;
      - whatever is drawn over the card's face is 25% see-through;
-     - an ONGOING Action or Spell plays the same colour effects for 2.5 seconds
-       right after it is played, then stops (as well as its Rune Circle or
-       Turning Seal and its finishes, cat_boardfx.js).
+     - an ONGOING Action or Spell plays the same colour effects right after it
+       is played, BEHIND the card, for as long as its Rune Circle or Turning
+       Seal lasts (5.38 s - session 70; it was 2.5 s in session 68), then stops;
+     - ⚠ that Rune Circle or Turning Seal is BEHIND the card too, its rings
+       and sparks with it (session 71 - it was over the card); and a
+       NON-Ongoing one has the same circle lying on the ground under it,
+       drawn in when it lands and turning for as long as it stays, in the
+       card's colours (tdFxCircleHTML, cat_boardfx.js);
+     - the Resolve button and the effects that come out of the ground (the
+       ripple, the whirlpool, the necromancer's) stay where the card rests -
+       they neither float nor tilt with it - and share one ground (session 70).
 
    HOW IT IS DRAWN. Each such card carries two canvases of its own (from
    tdFxCard's markup): .td-pfx-u at z-index -1 - inside the card's stacking
@@ -30171,7 +30459,10 @@ window.tdFxStats = function(){
 var TDPFX = {cards:{}};
 (function(){
 
-var TAU = Math.PI * 2, SLOW = 2, GAP = 5, BURST = 2.5;
+/* ⚠ AN ONGOING CARD'S BURST LASTS AS LONG AS ITS RUNE CIRCLE OR TURNING SEAL
+   (the author, session 70): the circle starts 0.38 s after the play and lasts
+   5 s (tdFxOngoing), and the burst fades out with it over its last 0.9 s */
+var TAU = Math.PI * 2, SLOW = 2, GAP = 5, BURST = 5.38, BURST_FADE = .9;
 var PAD_X = 1.1, PAD_Y = .75;          /* the canvases' margin round the card, in cards */
 var GREY = ['#d3d7de', '#8f96a1'];
 
@@ -30208,11 +30499,57 @@ function perim(R, off, u){
   return [x0, y0 + h - d];
 }
 function emit(st, key, rate, dt, fn){ st[key] = (st[key] || 0) + rate * dt; while(st[key] >= 1){ st[key]--; fn(); } }
+
+/* ⚠ NO shadowBlur AND NO NEW GRADIENT ON EVERY FRAME (session 71's
+   optimization pass - the rule session 64 set for the board's own canvas).
+   A blurred draw is blurred again from scratch every frame, and a radial
+   gradient is made and shaded again. MEASURED on six cards of one effect at
+   2x (HANDOFF §71.5): the glow blurs cost the crystals 2.1 ms a frame and the
+   necromancer 2.0, the swords 1.3, the cogs and the crescents 0.9, the bow
+   0.7, the shield and the cleric's crosses 0.6; the gradients cost the mist
+   1.45 ms and the fireflies 0.8. So:
+     - a shape that keeps its form - a sword, a cog, a crystal, the shield,
+       the bow, a crescent, a cross, a skull, a hand at one curl - is drawn
+       ONCE with its glow into a sprite at the screen's pixel size (baked) and
+       blitted under its own move and turn. The blur is the same number, in
+       the screen's pixels, as the shadowBlur it replaces, so it glows the
+       same; a size that changes goes by quarter pixels;
+     - a soft round glow is the board's one radial sprite (tdFxPuffSprite) -
+       the same fade from the colour to nothing - drawn at its alpha.
+   The blades were measured too and gained nothing; they are as they were. */
+var SPR = {}, SPRN = 0, DPR = 1;
+/* the box x0..y1 is in the canvas's own units round the shape's origin; the
+   painter draws the shape there, its own scale included */
+function baked(key, x0, y0, x1, y1, blur, paint){
+  key += '|' + DPR;
+  var s = SPR[key];
+  if(s) return s;
+  if(SPRN > 1500){ SPR = {}; SPRN = 0; }      // a bound, never reached in play
+  var pad = blur * 1.6 / DPR + 1, cv = document.createElement('canvas');
+  cv.width = Math.max(1, Math.ceil((x1 - x0 + pad * 2) * DPR)); cv.height = Math.max(1, Math.ceil((y1 - y0 + pad * 2) * DPR));
+  var c = cv.getContext('2d');
+  c.setTransform(DPR, 0, 0, DPR, (pad - x0) * DPR, (pad - y0) * DPR);
+  paint(c);
+  s = {cv:cv, x:x0 - pad, y:y0 - pad, w:cv.width / DPR, h:cv.height / DPR};
+  SPR[key] = s; SPRN++;
+  return s;
+}
+function blit(c, s){ c.drawImage(s.cv, s.x, s.y, s.w, s.h); }
+function q4(v){ return Math.max(.25, Math.round(v * 4) / 4); }
+/* a soft glow round a bright dot */
 function glowDot(c, x, y, r, col, a){
-  var g = c.createRadialGradient(x, y, 0, x, y, r * 4); g.addColorStop(0, hexA(col, .45 * a)); g.addColorStop(1, hexA(col, 0));
-  c.fillStyle = g; c.beginPath(); c.arc(x, y, r * 4, 0, TAU); c.fill();
+  var ga = c.globalAlpha;
+  c.globalAlpha = ga * .45 * a; c.drawImage(tdFxPuffSprite(col).cv, x - r * 4, y - r * 4, r * 8, r * 8); c.globalAlpha = ga;
   c.fillStyle = hexA(light(col, .5), a); c.beginPath(); c.arc(x, y, r, 0, TAU); c.fill();
 }
+/* ⚠ ONE GROUND FOR EVERY EFFECT THAT COMES OUT OF IT (the author, session 70):
+   the ripple, the whirlpool, the necromancer's grave glow and the hands and
+   skulls all sit on the same ellipse, at the same perspective - centred under
+   the card, 16% of its height below it, 95% of its width each way, seen at
+   the same squash. They are drawn on the ground canvases (S.gb behind the
+   card, S.gf in front), which stay where the card rests: they neither float
+   nor tilt with it. */
+function ground(R){ return {cx:R.cx, cy:R.y + R.h * 1.16, rx:R.w * .95, k:.24}; }
 function wander(q, t, sp){
   return [Math.sin(t * q.fx * sp + q.a) * .6 + Math.sin(t * q.fx * 1.7 * sp + q.b) * .35,
           Math.sin(t * q.fy * sp + q.c) * .6 + Math.cos(t * q.fy * 1.3 * sp + q.a) * .3];
@@ -30249,10 +30586,12 @@ var DRAW = {
   streak:function(c, p, k){ var a = (1 - k) * (p.a == null ? 1 : p.a), sp = Math.hypot(p.vx, p.vy) || 1, L = p.len || 14;
     c.strokeStyle = hexA(p.col, a); c.lineWidth = p.w || 1.6; c.lineCap = 'round';
     c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(p.x - p.vx / sp * L, p.y - p.vy / sp * L); c.stroke(); },
-  plus:function(c, p, k){ var a = Math.sin(Math.PI * k), s = p.r * (.7 + .3 * k);
-    c.save(); c.translate(p.x, p.y); c.rotate(p.rot); c.shadowColor = p.col; c.shadowBlur = 6;
-    c.fillStyle = hexA(p.col, a); c.fillRect(-s, -s * .3, s * 2, s * .6); c.fillRect(-s * .3, -s, s * .6, s * 2);
-    c.shadowBlur = 0; c.fillStyle = 'rgba(255,255,255,' + (a * .8).toFixed(3) + ')'; c.fillRect(-s * .7, -s * .1, s * 1.4, s * .2); c.fillRect(-s * .1, -s * .7, s * .2, s * 1.4); c.restore(); }
+  /* the cleric's cross, baked with its glow and drawn at its alpha */
+  plus:function(c, p, k){ var a = Math.sin(Math.PI * k), s = q4(p.r * (.7 + .3 * k));
+    var sp = baked('plus|' + p.col + '|' + s, -s, -s, s, s, 6, function(b){ b.shadowColor = p.col; b.shadowBlur = 6;
+      b.fillStyle = p.col; b.fillRect(-s, -s * .3, s * 2, s * .6); b.fillRect(-s * .3, -s, s * .6, s * 2);
+      b.shadowBlur = 0; b.fillStyle = 'rgba(255,255,255,.8)'; b.fillRect(-s * .7, -s * .1, s * 1.4, s * .2); b.fillRect(-s * .1, -s * .7, s * .2, s * 1.4); });
+    c.save(); c.translate(p.x, p.y); c.rotate(p.rot); c.globalAlpha *= a; blit(c, sp); c.restore(); }
 };
 
 /* ── shapes, in their own units ── */
@@ -30290,17 +30629,17 @@ function shapes(){
     head:new Path2D('M0 0L-11 -5L-8 0L-11 5Z'),
     /* the app's Demise skull (24x24), eyes cut out */
     skull:new Path2D('M12 2C7 2 3.5 5.6 3.5 10.2c0 2.8 1.3 4.6 2.9 5.7V19c0 .8.7 1.5 1.5 1.5h1.2V18h1.4v2.5h3V18h1.4v2.5h1.2c.8 0 1.5-.7 1.5-1.5v-3.1c1.6-1.1 2.9-2.9 2.9-5.7C20.5 5.6 17 2 12 2Zm-3.6 11.4a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2Zm7.2 0a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2Z'),
-    gears:[gear(10, .3), gear(7, .3), gear(8, .34), gear(12, .26)]
+    gears:[gear(10, .3), gear(7, .3), gear(8, .34), gear(12, .26)].map(function(g, i){ g.id = i; return g; })
   };
   return SHAPES;
 }
-function drawGear(c, path, x, y, r, ang, cols){
-  c.save(); c.translate(x, y); c.rotate(ang); c.scale(r, r);
-  c.shadowColor = hexA(cols[0], .7); c.shadowBlur = 8;
-  c.fillStyle = lin(c, -1, -1, 1, 1, cols.map(function(k){ return dark(k, .1); })); c.fill(path, 'evenodd'); c.shadowBlur = 0;
-  c.strokeStyle = 'rgba(0,0,0,.45)'; c.lineWidth = 1.4 / r; c.stroke(path);
-  c.strokeStyle = 'rgba(255,255,255,.35)'; c.lineWidth = 1 / r; c.beginPath(); c.arc(0, 0, .58, 0, TAU); c.stroke();
-  c.restore();
+function drawGear(c, gear, x, y, r, ang, cols){
+  var sp = baked('gear|' + gear.id + '|' + cols.join() + '|' + r.toFixed(2), -r - 1, -r - 1, r + 1, r + 1, 8, function(b){
+    b.scale(r, r); b.shadowColor = hexA(cols[0], .7); b.shadowBlur = 8;
+    b.fillStyle = lin(b, -1, -1, 1, 1, cols.map(function(k){ return dark(k, .1); })); b.fill(gear.p, 'evenodd'); b.shadowBlur = 0;
+    b.strokeStyle = 'rgba(0,0,0,.45)'; b.lineWidth = 1.4 / r; b.stroke(gear.p);
+    b.strokeStyle = 'rgba(255,255,255,.35)'; b.lineWidth = 1 / r; b.beginPath(); b.arc(0, 0, .58, 0, TAU); b.stroke(); });
+  c.save(); c.translate(x, y); c.rotate(ang); blit(c, sp); c.restore();
 }
 function drawChain(c, px, py, L, ang, n, cols){
   for(var i = 0; i < n; i++){ var f = (i + .5) / n, a = ang * f * f, x = px + Math.sin(a) * L * f, y = py + Math.cos(a) * L * f;
@@ -30362,8 +30701,11 @@ E.tendrils = function(){ var corners = shuffle([0, 1, 2, 3]).slice(0, irnd(2, 4)
 E.mist = function(){ var P = new Parts(), st = {}, n = irnd(8, 14), dir = sgn(), sz = times(n, function(){ return rnd(.16, .26); });
   return function(cu, co, R, t, dt, cols){
     for(var i = 0; i < n; i++){ var u = ((dir * t * .035 + i / n) % 1 + 1) % 1, q = perim(R, 6, u), r = R.w * (sz[i] + .06 * Math.sin(t * .9 + i)), col = cols[i % cols.length];
-      [[cu, .2], [co, .09]].forEach(function(L){ var c = L[0], g = c.createRadialGradient(q[0], q[1], 0, q[0], q[1], r);
-        g.addColorStop(0, hexA(col, L[1] * (.7 + .3 * Math.sin(t + i)))); g.addColorStop(1, hexA(col, 0)); c.fillStyle = g; c.beginPath(); c.arc(q[0], q[1], r, 0, TAU); c.fill(); }); }
+      /* each puff the board's radial sprite - its colour fading to nothing - behind the card and, fainter, in front */
+      var pv = tdFxPuffSprite(col).cv, pa = .7 + .3 * Math.sin(t + i);
+      cu.globalAlpha = .2 * pa; cu.drawImage(pv, q[0] - r, q[1] - r, r * 2, r * 2);
+      co.globalAlpha = .09 * pa; co.drawImage(pv, q[0] - r, q[1] - r, r * 2, r * 2); }
+    cu.globalAlpha = co.globalAlpha = 1;
     emit(st, 'm', 3.5, dt, function(){ var q = perim(R, rnd(-4, 14), Math.random()); P.add({k:'dot', x:q[0], y:q[1], vx:rnd(-8, 8), vy:-rnd(4, 14), r:rnd(.8, 1.4), life:rnd(1.5, 2.5), fade:'sin', col:light(pick(cols), .3)}); });
     P.step(dt); P.draw(co); }; };
 E.chains = function(){ var nc = irnd(2, 3), ch = times(nc, function(i){ return {f:(i + rnd(.2, .8)) / nc, len:rnd(.35, .6), sp:rnd(1, 1.6), ph:rnd(0, 7)}; });
@@ -30385,19 +30727,20 @@ E.constellation = function(){ var pts = null, gen = -1, n = irnd(7, 11), T = rnd
     co.fillStyle = hexA(cols[0], .3 * tw); co.beginPath(); co.arc(x, y, r * 3, 0, TAU); co.fill();
     co.strokeStyle = 'rgba(255,255,255,' + (.7 * tw).toFixed(3) + ')'; co.lineWidth = .8; co.beginPath(); co.moveTo(x - r * 2.4, y); co.lineTo(x + r * 2.4, y); co.moveTo(x, y - r * 2.4); co.lineTo(x, y + r * 2.4); co.stroke();
     co.fillStyle = 'rgba(255,255,255,' + tw.toFixed(3) + ')'; co.beginPath(); co.arc(x, y, r * .7, 0, TAU); co.fill(); }); }; };
-E.ripple = function(){ var rings = irnd(2, 4), sp = rnd(.32, .5); return function(cu, co, R, t, dt, cols){
-  for(var i = 0; i < rings; i++){ var k = ((t * sp) + i / rings) % 1, rx = R.w * (.35 + .75 * k);
-    cu.strokeStyle = hexA(cols[0], (1 - k) * .65); cu.lineWidth = 1.6; cu.beginPath(); cu.ellipse(R.cx, R.y + R.h + 8, rx, rx * .2, 0, 0, TAU); cu.stroke(); } }; };
+E.ripple = function(){ var rings = irnd(2, 4), sp = rnd(.32, .5); return function(cu, co, R, t, dt, cols, S){
+  var c = S.gb, g = ground(R);
+  for(var i = 0; i < rings; i++){ var k = ((t * sp) + i / rings) % 1, rx = g.rx * (.35 + .8 * k);
+    c.strokeStyle = hexA(cols[0], (1 - k) * .65); c.lineWidth = 1.6; c.beginPath(); c.ellipse(g.cx, g.cy, rx, rx * g.k, 0, 0, TAU); c.stroke(); } }; };
 E.whirlpool = function(){ var arms = irnd(3, 5), dir = sgn(), sp = rnd(.8, 1.4), foam = times(14, function(){ return {r:rnd(.2, .95), a:rnd(0, TAU)}; });
-  return function(cu, co, R, t, dt, cols){
-    var cx = R.cx, cy = R.y + R.h + R.h * .06, sq = .28;
-    function at(s, i){ var r = s * R.w * .95, a = dir * (s * 4.2 - t * sp) + i * TAU / arms; return [cx + Math.cos(a) * r, cy + Math.sin(a) * r * sq]; }
+  return function(cu0, co, R, t, dt, cols, S){
+    var cu = S.gb, g = ground(R), cx = g.cx, cy = g.cy, sq = g.k;
+    function at(s, i){ var r = s * g.rx, a = dir * (s * 4.2 - t * sp) + i * TAU / arms; return [cx + Math.cos(a) * r, cy + Math.sin(a) * r * sq]; }
     cu.lineCap = 'round';
     for(var i = 0; i < arms; i++) for(var j = 1; j <= 30; j++){ var s0 = (j - 1) / 30, p0 = at(s0, i), p1 = at(j / 30, i);
       cu.strokeStyle = hexA(j % 3 ? cols[0] : light(cols[0], .5), (1 - s0) * .75); cu.lineWidth = 2.6 * (1 - s0) + .5;
       cu.beginPath(); cu.moveTo(p0[0], p0[1]); cu.lineTo(p1[0], p1[1]); cu.stroke(); }
     foam.forEach(function(f){ var a = f.a - dir * t * sp * (1.3 - f.r); cu.fillStyle = 'rgba(255,255,255,' + (.6 * (1 - f.r)).toFixed(3) + ')';
-      cu.beginPath(); cu.arc(cx + Math.cos(a) * f.r * R.w * .95, cy + Math.sin(a) * f.r * R.w * .95 * sq, 1.3, 0, TAU); cu.fill(); }); }; };
+      cu.beginPath(); cu.arc(cx + Math.cos(a) * f.r * g.rx, cy + Math.sin(a) * f.r * g.rx * sq, 1.3, 0, TAU); cu.fill(); }); }; };
 E.fireflies = function(){ var n = irnd(6, 12), sp = rnd(.6, 1.1), f = times(n, function(){ return {a:rnd(0, 7), b:rnd(0, 7), c:rnd(0, 7), fx:rnd(.3, .7), fy:rnd(.3, .7), blink:rnd(1.2, 2.6), bp:rnd(0, 7)}; });
   return function(cu, co, R, t, dt, cols){ f.forEach(function(q){ var w = wander(q, t, sp), b = Math.pow(.5 + .5 * Math.sin(t * TAU / q.blink + q.bp), 3);
     glowDot(co, R.cx + w[0] * R.w * .95, R.cy + w[1] * R.h * .8, 2.3, cols[0], .2 + .8 * b); }); }; };
@@ -30412,9 +30755,10 @@ E.swords = function(){ var per = rnd(2.8, 4), amp = rnd(.21, .35), sw = times(2,
       var q = sw[si], s = R.h * q.len / 115, px = sd < 0 ? R.x - R.w * .27 : R.x + R.w * 1.27, py = R.y + R.h * q.h;
       /* opposite directions at the same time (the author, round 3) */
       var ang = sd * Math.sin(t * TAU / per) * amp;
-      co.save(); co.translate(px, py); co.rotate(Math.PI + ang); co.scale(s, s);
-      co.shadowColor = hexA(cols[0], .9); co.shadowBlur = 10; co.fillStyle = lin(co, 0, 0, 0, 114, cols.map(function(k){ return light(k, .1); })); co.fill(S.sword);
-      co.beginPath(); co.arc(0, -4, 4.2, 0, TAU); co.fill(); co.shadowBlur = 0; co.fillStyle = 'rgba(255,255,255,.4)'; co.fill(S.swordHL); co.restore();
+      var sp = baked('sword|' + cols.join() + '|' + s.toFixed(4), -15 * s, -8.2 * s, 15 * s, 113.5 * s, 10, function(b){ b.scale(s, s);
+        b.shadowColor = hexA(cols[0], .9); b.shadowBlur = 10; b.fillStyle = lin(b, 0, 0, 0, 114, cols.map(function(k){ return light(k, .1); })); b.fill(S.sword);
+        b.beginPath(); b.arc(0, -4, 4.2, 0, TAU); b.fill(); b.shadowBlur = 0; b.fillStyle = 'rgba(255,255,255,.4)'; b.fill(S.swordHL); });
+      co.save(); co.translate(px, py); co.rotate(Math.PI + ang); blit(co, sp); co.restore();
     }); }; };
 E.prisms = function(){ var dir = sgn(), q = times(irnd(4, 8), function(){ return {ph:rnd(0, TAU), sp:rnd(.35, .6), h:rnd(-.35, .35), s:rnd(.8, 1.2), next:rnd(.5, 3), beam:-9}; });
   return function(cu, co, R, t, dt, cols){ q.forEach(function(c){
@@ -30423,10 +30767,11 @@ E.prisms = function(){ var dir = sgn(), q = times(irnd(4, 8), function(){ return
     var bk = clamp(1 - (t - c.beam) / .5, 0, 1);
     if(bk > 0){ var g = co.createLinearGradient(x, y, R.cx, R.cy); g.addColorStop(0, 'rgba(255,255,255,' + (.7 * bk).toFixed(3) + ')'); g.addColorStop(1, hexA(cols[0], 0));
       co.strokeStyle = g; co.lineWidth = 3; co.beginPath(); co.moveTo(x, y); co.lineTo(R.cx + (R.cx - x) * .3, R.cy + (R.cy - y) * .3); co.stroke(); }
-    cx.save(); cx.translate(x, y); cx.rotate(t * .6 + c.ph); cx.shadowColor = cols[0]; cx.shadowBlur = 8;
-    cx.fillStyle = lin(cx, -s, -s, s, s, [light(cols[0], .7), cols[0], dark(cols[0], .2)]); cx.beginPath();
-    for(var i = 0; i < 6; i++){ var b = i / 6 * TAU; cx.lineTo(Math.cos(b) * s * (i % 3 ? .6 : 1), Math.sin(b) * s * 1.5 * (i % 3 ? 1 : .2)); }
-    cx.closePath(); cx.fill(); cx.shadowBlur = 0; cx.strokeStyle = 'rgba(255,255,255,.7)'; cx.lineWidth = .8; cx.stroke(); cx.restore(); }); }; };
+    var sq = q4(s), sp = baked('prism|' + cols[0] + '|' + sq, -sq, -sq * 1.5, sq, sq * 1.5, 8, function(k){ k.shadowColor = cols[0]; k.shadowBlur = 8;
+      k.fillStyle = lin(k, -sq, -sq, sq, sq, [light(cols[0], .7), cols[0], dark(cols[0], .2)]); k.beginPath();
+      for(var i = 0; i < 6; i++){ var b = i / 6 * TAU; k.lineTo(Math.cos(b) * sq * (i % 3 ? .6 : 1), Math.sin(b) * sq * 1.5 * (i % 3 ? 1 : .2)); }
+      k.closePath(); k.fill(); k.shadowBlur = 0; k.strokeStyle = 'rgba(255,255,255,.7)'; k.lineWidth = .8; k.stroke(); });
+    cx.save(); cx.translate(x, y); cx.rotate(t * .6 + c.ph); blit(cx, sp); cx.restore(); }); }; };
 E.cogs = function(){
   var SPOTS = [[-.08, .18], [-.12, .55], [-.06, .9], [1.08, .16], [1.12, .5], [1.06, .86], [.5, -.1], [.5, 1.08]];
   var gears = shapes().gears, n = irnd(2, 4);
@@ -30440,13 +30785,14 @@ E.cogs = function(){
       if(i === 0){ x = x0; y = y0; ang = tick(q); }
       else if(i === 1){ x = x0 + Math.cos(mAng) * (r0 + r) * .93; y = y0 + Math.sin(mAng) * (r0 + r) * .93; ang = -tick(a0) * r0 / r + .2; }
       else { x = R.x + R.w * q.sp[0]; y = R.y + R.h * q.sp[1] - bob; ang = tick(q); }
-      drawGear(cu, i === 1 ? a0.gear.p : q.gear.p, x, y, r, ang, cols); }); }; };
+      drawGear(cu, i === 1 ? a0.gear : q.gear, x, y, r, ang, cols); }); }; };
 E.shield = function(){ var keys = ['heater', 'round', 'kite'], shape = pick(keys), bob = rnd(1, 1.6), lean = sgn();
   return function(cu, co, R, t, dt, cols){ var P = shapes().shields[shape], s = R.h * 1.22 / 124;
-    cu.save(); cu.translate(R.cx, R.cy - R.h * .02 + Math.sin(t * bob) * 4); cu.rotate(lean * Math.sin(t * .8) * .04); cu.scale(s, s);
-    cu.shadowColor = hexA(cols[0], .8); cu.shadowBlur = 18; cu.fillStyle = lin(cu, 0, -60, 0, 64, cols.map(function(k){ return dark(k, .15); })); cu.fill(P[0], 'evenodd'); cu.shadowBlur = 0;
-    cu.fillStyle = 'rgba(0,0,0,.25)'; cu.fill(P[1], 'evenodd');
-    cu.strokeStyle = lin(cu, -48, -60, 48, 64, cols.map(function(k){ return light(k, .55); })); cu.lineWidth = 3; cu.stroke(P[0]); cu.lineWidth = 1.5; cu.stroke(P[1]); cu.restore(); }; };
+    var sp = baked('shield|' + shape + '|' + cols.join() + '|' + s.toFixed(4), -55.5 * s, -67.5 * s, 55.5 * s, 73.5 * s, 18, function(b){ b.scale(s, s);
+      b.shadowColor = hexA(cols[0], .8); b.shadowBlur = 18; b.fillStyle = lin(b, 0, -60, 0, 64, cols.map(function(k){ return dark(k, .15); })); b.fill(P[0], 'evenodd'); b.shadowBlur = 0;
+      b.fillStyle = 'rgba(0,0,0,.25)'; b.fill(P[1], 'evenodd');
+      b.strokeStyle = lin(b, -48, -60, 48, 64, cols.map(function(k){ return light(k, .55); })); b.lineWidth = 3; b.stroke(P[0]); b.lineWidth = 1.5; b.stroke(P[1]); });
+    cu.save(); cu.translate(R.cx, R.cy - R.h * .02 + Math.sin(t * bob) * 4); cu.rotate(lean * Math.sin(t * .8) * .04); blit(cu, sp); cu.restore(); }; };
 E.bow = function(){ var dir = sgn(), flying = [];
   function aim(t){ return {at:t, per:rnd(1.6, 2.4), y:rnd(-.08, .08), ang:rnd(-.09, .09)}; }
   var shot = aim(0);
@@ -30458,10 +30804,13 @@ E.bow = function(){ var dir = sgn(), flying = [];
       var r = k - 1.1; pull = 22 * Math.exp(-r * 14) * Math.cos(r * 40); }
     if(k > shot.per) shot = aim(t);
     var ny = shot.y * R.h / s;
+    var limb = baked('bow|' + cols.join() + '|' + s.toFixed(4), -43 * s, -75 * s, 9 * s, 75 * s, 12, function(b){ b.scale(s, s);
+      b.shadowColor = hexA(cols[0], .9); b.shadowBlur = 12; b.lineCap = 'round';
+      b.strokeStyle = lin(b, 0, -72, 0, 72, cols.map(function(c2){ return light(c2, .05); })); b.lineWidth = 6; b.stroke(S.bow); });
     cu.save(); cu.translate(bx, by); cu.scale(dir * s, s);
     cu.strokeStyle = 'rgba(240,240,230,.8)'; cu.lineWidth = .9; cu.beginPath(); cu.moveTo(6, -72); cu.lineTo(6 + pull, ny); cu.lineTo(6, 72); cu.stroke();
-    cu.shadowColor = hexA(cols[0], .9); cu.shadowBlur = 12; cu.lineCap = 'round';
-    cu.strokeStyle = lin(cu, 0, -72, 0, 72, cols.map(function(c2){ return light(c2, .05); })); cu.lineWidth = 6; cu.stroke(S.bow); cu.shadowBlur = 0;
+    /* the limb over the string, mirrored with the bow */
+    cu.save(); cu.scale(1 / s, 1 / s); blit(cu, limb); cu.restore();
     cu.fillStyle = lin(cu, 0, -12, 0, 12, cols.map(function(c2){ return dark(c2, .45); })); cu.fillRect(-44, -11, 9, 22);
     if(nocked){ cu.save(); cu.globalAlpha = clamp(k / .15, 0, 1); cu.translate(6 + pull - 66, ny); cu.rotate(Math.PI); drawArrow(cu, cols); cu.restore(); }
     cu.restore();
@@ -30515,36 +30864,52 @@ E.crescents = function(){ var n = irnd(2, 4), dir = sgn(), sp = rnd(.8, 1.4), ti
     for(var i = 0; i < n; i++) for(var j = 4; j >= 0; j--){
       var a = dir * (t * sp - j * .09) + i * TAU / n, z = Math.sin(a), c = z < 0 ? cu : co, sc = (R.w / 110) * (.82 + .18 * z);
       var x = Math.cos(a) * R.w * .88, y = z * R.h * .2;
-      c.save(); c.translate(R.cx + x * Math.cos(tilt) - y * Math.sin(tilt), R.cy - R.h * .05 + x * Math.sin(tilt) + y * Math.cos(tilt)); c.rotate(dir * t * 5 - j * .3); c.scale(sc, sc);
-      c.globalAlpha = j ? .22 / j : 1; if(!j){ c.shadowColor = cols[0]; c.shadowBlur = 10; }
-      c.fillStyle = lin(c, -16, -16, 0, 16, cols.map(function(k){ return light(k, .2); })); c.fill(S.crescent); c.restore(); } }; };
+      c.save(); c.translate(R.cx + x * Math.cos(tilt) - y * Math.sin(tilt), R.cy - R.h * .05 + x * Math.sin(tilt) + y * Math.cos(tilt)); c.rotate(dir * t * 5 - j * .3);
+      /* the head, glowing, is baked (its size by the 40th); the four faint copies behind it are drawn plain */
+      if(!j){ var hs = Math.round(sc * 40) / 40;
+        blit(c, baked('crescent|' + cols.join() + '|' + hs, -16 * hs, -16 * hs, 0, 16 * hs, 10, function(b){ b.scale(hs, hs);
+          b.shadowColor = cols[0]; b.shadowBlur = 10; b.fillStyle = lin(b, -16, -16, 0, 16, cols.map(function(k){ return light(k, .2); })); b.fill(S.crescent); })); }
+      else { c.scale(sc, sc); c.globalAlpha = .22 / j;
+        c.fillStyle = lin(c, -16, -16, 0, 16, cols.map(function(k){ return light(k, .2); })); c.fill(S.crescent); }
+      c.restore(); } }; };
 E.necro = function(){ var nh = irnd(2, 3), nk = irnd(1, 2), slots = shuffle(times(nh + nk, function(i){ return (i + rnd(.25, .75)) / (nh + nk); }));
-  var hands = slots.slice(0, nh).map(function(f){ return {f:f, per:rnd(5.5, 7.5), ph:rnd(0, 7), lean:rnd(-.25, .25), sz:rnd(.9, 1.15)}; });
-  var skulls = slots.slice(nh).map(function(f){ return {f:f, per:rnd(6, 8), ph:rnd(0, 7), lean:rnd(-.2, .2), sz:rnd(.9, 1.2)}; });
-  return function(cu, co, R, t, dt, cols){
-    var gy = R.y + R.h * 1.2, S = shapes();
-    var g = cu.createRadialGradient(R.cx, gy, 0, R.cx, gy, R.w * .9); g.addColorStop(0, hexA(dark(cols[0], .3), .55)); g.addColorStop(1, hexA(cols[0], 0));
-    cu.fillStyle = g; cu.beginPath(); cu.ellipse(R.cx, gy, R.w * .95, R.h * .12, 0, 0, TAU); cu.fill();
-    cu.strokeStyle = hexA(cols[0], .35); cu.lineWidth = 1.2; cu.beginPath(); cu.ellipse(R.cx, gy, R.w * .8, R.h * .07, 0, 0, TAU); cu.stroke();
-    function ground(){ co.beginPath(); co.rect(0, 0, co.canvas.width, gy); co.clip(); }
+  /* each hand and skull stands at its own depth on the ground ellipse (-1 the
+     far edge, 1 the near), so they come up out of the same ground as the glow */
+  var hands = slots.slice(0, nh).map(function(f){ return {f:f, d:rnd(-.5, .6), per:rnd(5.5, 7.5), ph:rnd(0, 7), lean:rnd(-.25, .25), sz:rnd(.9, 1.15)}; });
+  var skulls = slots.slice(nh).map(function(f){ return {f:f, d:rnd(-.5, .6), per:rnd(6, 8), ph:rnd(0, 7), lean:rnd(-.2, .2), sz:rnd(.9, 1.2)}; });
+  return function(cu, co0, R, t, dt, cols, S){
+    var g = ground(R), gb = S.gb, co = S.gf, Sh = shapes(), ry = g.rx * g.k;
+    var glow = gb.createRadialGradient(g.cx, g.cy, 0, g.cx, g.cy, g.rx); glow.addColorStop(0, hexA(dark(cols[0], .3), .55)); glow.addColorStop(1, hexA(cols[0], 0));
+    /* the glow squashed onto the ground: drawn as a circle under a vertical squash */
+    gb.save(); gb.translate(g.cx, g.cy); gb.scale(1, g.k); gb.translate(-g.cx, -g.cy);
+    gb.fillStyle = glow; gb.beginPath(); gb.arc(g.cx, g.cy, g.rx, 0, TAU); gb.fill(); gb.restore();
+    gb.strokeStyle = hexA(cols[0], .35); gb.lineWidth = 1.2; gb.beginPath(); gb.ellipse(g.cx, g.cy, g.rx * .82, ry * .82, 0, 0, TAU); gb.stroke();
+    /* where on the ground a thing stands: across it by f, at depth d */
+    function spot(f, d){ var x = g.cx + (f * 2 - 1) * g.rx * .8, u = (x - g.cx) / g.rx; return [x, g.cy + d * ry * Math.sqrt(Math.max(0, 1 - u * u))]; }
     hands.forEach(function(h){
       var k = ((t + h.ph) % h.per) / h.per, rise = k < .25 ? ease(k / .25) : k < .75 ? 1 : 1 - ease((k - .75) / .25);
-      var curl = .25 + .55 * (.5 + .5 * Math.sin(t * 2.4 + h.ph)), s = R.w / 95 * h.sz, x = R.x + R.w * (-.1 + 1.2 * h.f), base = gy - rise * 34 * s;
-      co.save(); ground(); co.translate(x, base); co.rotate(h.lean);
-      co.strokeStyle = light(cols[0], .78); co.shadowColor = cols[0]; co.shadowBlur = 8; co.lineCap = 'round';
-      co.lineWidth = 3 * s; co.beginPath(); co.moveTo(-3 * s, 0); co.lineTo(-4 * s, 40 * s); co.moveTo(3 * s, 0); co.lineTo(4 * s, 40 * s); co.stroke();
-      co.fillStyle = light(cols[0], .7); rrect(co, -7 * s, -12 * s, 14 * s, 12 * s, 3 * s); co.fill();
-      co.lineWidth = 2.4 * s;
-      [-5.5, -1.8, 1.8, 5.5].forEach(function(fx, i){ var a0 = -Math.PI / 2 + fx * .05, l1 = (i === 0 || i === 3 ? 8 : 10) * s, l2 = 7 * s;
-        var x1 = fx * s + Math.cos(a0) * l1, y1 = -12 * s + Math.sin(a0) * l1, a1 = a0 + curl * 1.3;
-        co.beginPath(); co.moveTo(fx * s, -12 * s); co.lineTo(x1, y1); co.lineTo(x1 + Math.cos(a1) * l2, y1 + Math.sin(a1) * l2); co.stroke(); });
-      var ta = -2.5 + curl * .8; co.beginPath(); co.moveTo(-7 * s, -5 * s); co.lineTo(-7 * s + Math.cos(ta) * 8 * s, -5 * s + Math.sin(ta) * 8 * s); co.stroke();
+      var s = R.w / 95 * h.sz * (1 + h.d * .12), b = spot(h.f, h.d), base = b[1] - rise * 34 * s;
+      /* the hand is baked at each of 16 curls - a finger tip moves well under a pixel from one to the next */
+      var cq = Math.round(15 * (.5 + .5 * Math.sin(t * 2.4 + h.ph))), curl = .25 + .55 * cq / 15;
+      var sp = baked('hand|' + cols[0] + '|' + s.toFixed(4) + '|' + cq, -19.5 * s, -32.5 * s, 19.5 * s, 43.5 * s, 8, function(c){
+        c.strokeStyle = light(cols[0], .78); c.shadowColor = cols[0]; c.shadowBlur = 8; c.lineCap = 'round';
+        c.lineWidth = 3 * s; c.beginPath(); c.moveTo(-3 * s, 0); c.lineTo(-4 * s, 40 * s); c.moveTo(3 * s, 0); c.lineTo(4 * s, 40 * s); c.stroke();
+        c.fillStyle = light(cols[0], .7); rrect(c, -7 * s, -12 * s, 14 * s, 12 * s, 3 * s); c.fill();
+        c.lineWidth = 2.4 * s;
+        [-5.5, -1.8, 1.8, 5.5].forEach(function(fx, i){ var a0 = -Math.PI / 2 + fx * .05, l1 = (i === 0 || i === 3 ? 8 : 10) * s, l2 = 7 * s;
+          var x1 = fx * s + Math.cos(a0) * l1, y1 = -12 * s + Math.sin(a0) * l1, a1 = a0 + curl * 1.3;
+          c.beginPath(); c.moveTo(fx * s, -12 * s); c.lineTo(x1, y1); c.lineTo(x1 + Math.cos(a1) * l2, y1 + Math.sin(a1) * l2); c.stroke(); });
+        var ta = -2.5 + curl * .8; c.beginPath(); c.moveTo(-7 * s, -5 * s); c.lineTo(-7 * s + Math.cos(ta) * 8 * s, -5 * s + Math.sin(ta) * 8 * s); c.stroke(); });
+      co.save(); co.beginPath(); co.rect(0, 0, co.canvas.width, b[1]); co.clip(); co.translate(b[0], base); co.rotate(h.lean); blit(co, sp);
       co.restore(); });
     skulls.forEach(function(h){
       var k = ((t + h.ph) % h.per) / h.per, rise = k < .3 ? ease(k / .3) : k < .72 ? 1 : 1 - ease((k - .72) / .28);
-      var s = R.w / 95 * h.sz, x = R.x + R.w * (-.1 + 1.2 * h.f), base = gy + 6 * s - rise * 30 * s, look = Math.sin(t * 1.3 + h.ph) * .12;
-      co.save(); ground(); co.translate(x, base); co.rotate(h.lean + look); co.scale(s * 1.15, s * 1.15); co.translate(-12, -22);
-      co.shadowColor = cols[0]; co.shadowBlur = 10; co.fillStyle = light(cols[0], .78); co.fill(S.skull); co.shadowBlur = 0;
+      var s = R.w / 95 * h.sz * (1 + h.d * .12), b = spot(h.f, h.d), base = b[1] + 6 * s - rise * 30 * s, look = Math.sin(t * 1.3 + h.ph) * .12, m = s * 1.15;
+      var sp = baked('skull|' + cols[0] + '|' + m.toFixed(4), -12 * m, -20 * m, 12 * m, -1.5 * m, 10, function(c){ c.scale(m, m); c.translate(-12, -22);
+        c.shadowColor = cols[0]; c.shadowBlur = 10; c.fillStyle = light(cols[0], .78); c.fill(Sh.skull); });
+      co.save(); co.beginPath(); co.rect(0, 0, co.canvas.width, b[1]); co.clip(); co.translate(b[0], base); co.rotate(h.lean + look); blit(co, sp);
+      /* the eyes glow on their own beat, drawn live */
+      co.scale(m, m); co.translate(-12, -22);
       co.fillStyle = hexA(cols[0], .5 + .4 * Math.sin(t * 3 + h.ph)); co.beginPath(); co.arc(8.4, 11.3, 1.1, 0, TAU); co.arc(15.6, 11.3, 1.1, 0, TAU); co.fill();
       co.restore(); }); }; };
 E.blades = function(){ var P = new Parts(), st = {}, used = [];
@@ -30596,25 +30961,24 @@ E['kw-absolute'] = function(){ var cyc = -1, ds = [];
       c.save(); c.translate(R.cx, R.cy); c.rotate(Math.PI / 4);
       c.strokeStyle = '#ffd24a'; c.globalAlpha = (1 - k) * .3; c.lineWidth = d.lw + 8; c.strokeRect(-s / 2, -s / 2, s, s);
       c.strokeStyle = d.col; c.globalAlpha = 1 - k; c.lineWidth = d.lw; c.strokeRect(-s / 2, -s / 2, s, s); c.restore(); }); }; };
-/* tdFxUniqueRunner, slowed: two laps of the white running border with its prism edge */
-E['kw-unique'] = function(){ return function(cu, co, R, t){
-  var run = 3.4 * SLOW, L = run + GAP, k0 = t % L; if(k0 > run || !co.createConicGradient) return;
-  var f = k0 / run, op = f < .06 ? f / .06 : f > .9 ? (1 - f) / .1 : 1, spin = clamp(k0 / (3.2 * SLOW), 0, 1) * 720;
-  co.save(); co.globalAlpha = op; co.beginPath();
-  if(co.roundRect){ co.roundRect(R.x - 4, R.y - 4, R.w + 8, R.h + 8, 9); co.roundRect(R.x, R.y, R.w, R.h, 6); } else { co.rect(R.x - 4, R.y - 4, R.w + 8, R.h + 8); co.rect(R.x, R.y, R.w, R.h); }
-  co.clip('evenodd');
-  var g = co.createConicGradient(-Math.PI / 2 + spin * Math.PI / 180, R.cx, R.cy);
-  [[0, 'rgba(0,0,0,0)'], [.52, 'rgba(0,0,0,0)'], [.62, 'rgba(255,255,255,.35)'], [.70, '#ffffff'], [.73, 'rgba(255,90,122,.5)'], [.755, 'rgba(255,179,64,.5)'],
-   [.78, 'rgba(255,233,90,.5)'], [.805, 'rgba(79,224,143,.5)'], [.83, 'rgba(74,184,255,.5)'], [.855, 'rgba(154,107,255,.5)'], [.88, '#ffffff'], [.96, 'rgba(0,0,0,0)'], [1, 'rgba(0,0,0,0)']]
-    .forEach(function(s){ g.addColorStop(s[0], s[1]); });
-  co.fillStyle = g; co.fillRect(R.x - 6, R.y - 6, R.w + 12, R.h + 12); co.restore(); }; };
+/* Unique's Prism Comet (tdFxCometPaint, cat_boardfx.js), slowed - behind the
+   card on its own back canvas, in front on the front one; new random choices
+   each time it plays */
+E['kw-unique'] = function(){ var cyc = -1, q = null;
+  return function(cu, co, R, t){
+    var run = 3.6 * SLOW, L = run + GAP, id = Math.floor(t / L), k0 = t % L;
+    if(id !== cyc){ cyc = id; q = tdFxCometRoll(); }
+    if(k0 > run) return;
+    tdFxCometPaint(cu, R, k0 / run, q, 'back'); tdFxCometPaint(co, R, k0 / run, q, 'front'); }; };
 /* tdFxMythicOn, slowed: the prismatic edge glow on the card (td-fx-myth's
-   keyframes) and its 38 rainbow stars. ⚠ A REDRAW REPLACES THE CARD ELEMENT,
+   keyframes), its 38 rainbow stars and its 1-3 pairs of gold Twin Sparks on
+   the glowing edge (session 71). ⚠ A REDRAW REPLACES THE CARD ELEMENT,
    so a glow in progress is started again on the new one, at the same moment. */
-E['kw-mythic'] = function(){ var stars = [], cyc = -1, spawned = 0, anim = null, animEl = null;
+E['kw-mythic'] = function(){ var stars = [], cyc = -1, spawned = 0, anim = null, animEl = null, twins = null;
   return function(cu, co, R, t, dt, cols, S){
     var L = 2.3 * SLOW + GAP, id = Math.floor(t / L), k0 = t % L, GLOW = 2.2 * SLOW;
-    if(id !== cyc){ cyc = id; spawned = 0; animEl = null; }
+    if(id !== cyc){ cyc = id; spawned = 0; animEl = null; twins = tdFxTwinRoll(); }
+    if(k0 / SLOW < tdFxTwinLen(twins)) tdFxTwinPaint(co, R, k0 / SLOW, twins);
     if(k0 < GLOW && S.el && S.el !== animEl && S.el.animate){
       if(anim) anim.cancel(); animEl = S.el;
       anim = S.el.animate([{boxShadow:'0 0 0 2px #fff,0 0 30px 9px #ffd86b'}, {boxShadow:'0 0 0 2px hsl(300 90% 70%),0 0 26px 8px hsl(200 90% 60%)', offset:.4}, {boxShadow:'none'}],
@@ -30624,6 +30988,37 @@ E['kw-mythic'] = function(){ var stars = [], cyc = -1, spawned = 0, anim = null,
       stars.push({dx:Math.cos(a) * r, dy:Math.sin(a) * r, age:0, life:.8 * SLOW, col:'hsl(' + ((Math.round(i * 37 / 15) * 15) % 360) + ',100%,80%)'}); }
     for(var j = stars.length - 1; j >= 0; j--){ var p = stars[j]; p.age += dt; if(p.age >= p.life){ stars.splice(j, 1); continue; }
       var k = p.age / p.life; co.save(); co.globalAlpha = Math.sin(Math.PI * k); co.translate(R.cx + p.dx, R.cy + p.dy); co.rotate(2.25 * k); co.drawImage(starSprite(p.col), -22, -22); co.restore(); } }; };
+
+/* ── an Ongoing card's circle: what tdFxOngoing drew round it on the board's
+   canvas - the Turning Seal's two rings, the Rune Circle's 26 rising sparks -
+   now behind the card with the circle itself (session 71), on the ground's
+   back canvas over it, at the same moments: the circle starts 0.38 s after
+   the play, the rings 0.6 s and 2.2 s into it for 0.9 s each, the sparks from
+   0.4 s, one each 0.15 s. Added like lighter, as the board's canvas draws. ── */
+var CIRCLE_AT = .38;
+E['circle-seal'] = function(){ var grad = null, gx = -1, gy = -1;
+  return function(cu, co, R, t, dt, cols, S){ var c = S.gb;
+    c.globalCompositeOperation = 'lighter';
+    [.6, 2.2].forEach(function(at){ var k = (t - CIRCLE_AT - at) / .9; if(k < 0 || k >= 1) return;
+      var r = R.h * (.4 + .75 * easeOut(k)), lw = 3 * (1 - k) + .5;
+      if(cols.length > 1 && c.createConicGradient){
+        if(!grad || gx !== R.cx || gy !== R.cy){ gx = R.cx; gy = R.cy; grad = c.createConicGradient(-Math.PI / 2, gx, gy);
+          var cs = cols.concat([cols[0]]); cs.forEach(function(col, i){ grad.addColorStop(i / (cs.length - 1), col); }); }
+        c.strokeStyle = grad;
+      } else c.strokeStyle = cols[0];
+      c.beginPath(); c.arc(R.cx, R.cy, r, 0, TAU);
+      c.globalAlpha = (1 - k) * .28; c.lineWidth = lw + 7; c.stroke();
+      c.globalAlpha = 1 - k; c.lineWidth = lw; c.stroke(); }); }; };
+E['circle-runes'] = function(){ var P = [], made = 0;
+  return function(cu, co, R, t, dt, cols, S){ var c = S.gb, D = R.h * 1.3;
+    while(made < 26 && t >= CIRCLE_AT + .4 + made * .15){ made++; var an = rnd(0, 7);
+      P.push({dx:Math.cos(an) * D * .47, dy:Math.sin(an) * D * .47, vy:-rnd(15, 40), age:0, life:rnd(.8, 1.3), col:pick(cols)}); }
+    c.globalCompositeOperation = 'lighter';
+    for(var i = P.length - 1; i >= 0; i--){ var p = P[i]; p.age += dt;
+      if(p.age >= p.life){ P.splice(i, 1); continue; }
+      p.vy *= Math.pow(.99, dt * 60); p.dy += p.vy * dt;
+      var k = p.age / p.life; c.globalAlpha = 1 - k;
+      tdFxBlit(c, tdFxSprite('dot', p.col, p.col, 1.6 * (1 - k * .5), 8), R.cx + p.dx, R.cy + p.dy); } }; };
 
 /* ── the slots: colour × type, as the author settled them ── */
 var SLOTS = {
@@ -30659,9 +31054,22 @@ function tdPfxPool(c){
   return out;
 }
 function tdPfxColsOf(key){ var k = key.split('-')[0]; return k === 'grey' ? GREY : [TDFX_COL[k]]; }
-/* a new record: the 3 picked now, once, and the rarity effects beside them */
+/* the slots that draw on the ground canvases - a card with none of them has none */
+var GROUND_KEYS = ['blue-spell', 'violet-spell'];
+/* ⚠ THE 3, FROM DIFFERENT COLOURS FIRST (the author, session 71): in a random
+   order, one effect of each colour not yet used, and only then - for a card
+   of 1 or 2 colours - the rest. A card of one type is unchanged by it: each
+   of its effects is a colour of its own. */
+function pick3(pool){
+  var order = shuffle(pool.slice()), out = [], used = {};
+  order.forEach(function(k){ var col = k.split('-')[0]; if(out.length < 3 && !used[col]){ used[col] = 1; out.push(k); } });
+  order.forEach(function(k){ if(out.length < 3 && out.indexOf(k) < 0) out.push(k); });
+  return out;
+}
+/* a new record: the 3 picked now, once, and the rarity effects beside them;
+   for an Ongoing card's burst, its circle's rings or sparks */
 function tdPfxNew(item, c, board, burst){
-  var pool = tdPfxPool(c), keys = shuffle(pool.slice()).slice(0, 3), kw = [];
+  var pool = tdPfxPool(c), keys = pick3(pool), kw = [], circle = tdFxCircleKind(c), pal = tdFxPalette(c);
   if(!burst){
     if(tdCardHasKw(item, 'Unique', board)) kw.push('kw-unique');
     if(tdFxHasSuper(c, 'mythic')) kw.push('kw-mythic');
@@ -30670,14 +31078,22 @@ function tdPfxNew(item, c, board, burst){
   var now = performance.now();
   var inst = keys.map(function(k){ return {key:k, cols:tdPfxColsOf(k), draw:SLOTS[k](), t0:now}; })
     .concat(kw.map(function(k){ return {key:k, cols:GREY, draw:E[k](), t0:now}; }));
+  if(burst) inst.push({key:'circle', cols:pal, draw:E['circle-' + circle](), t0:now});
   return {at:Date.now(), keys:keys, kw:kw, pool:pool.length, inst:inst, burst:!!burst,
-          until:burst ? Date.now() + BURST * 1000 : 0};
+          until:burst ? Date.now() + BURST * 1000 : 0, circle:circle, pal:pal,
+          ground:keys.some(function(k){ return GROUND_KEYS.indexOf(k) >= 0; })};
 }
 function tdPfxMine(item, board){
   board = board || tdFxHalfOf(item.uid);
   return board === TD.board;
 }
 var CANVASES = "<canvas class='td-pfx-u' aria-hidden='true'></canvas><canvas class='td-pfx-o' aria-hidden='true'></canvas>";
+var GROUNDS = "<canvas class='td-pfx-gb' aria-hidden='true'></canvas><canvas class='td-pfx-gf' aria-hidden='true'></canvas>";
+/* ⚠ WHAT MUST NOT FLOAT GOES BESIDE THE CARD, NOT IN IT (the author, session
+   70): the Resolve button and the ground effects stay where the card rests.
+   tdCardHTML puts this right after the card; tdFxAfterRender gives it the
+   card's left and top. */
+function rest(uid, inner){ return "<div class='td-pfx-rest' data-for='" + uid + "'>" + inner + '</div>'; }
 
 /* What tdFxCard adds to a card in any zone: the float, the canvases and the
    Resolve button for an Action or Spell on the Field; nothing anywhere else
@@ -30693,12 +31109,14 @@ window.tdPfxCard = function(item, zone, c, board){
   if(kind){ var half = board || tdFxHalfOf(uid);
     if(item.connectedTo || ((half && half.zones && half.zones.field) || []).some(function(k){ return k.connectedTo === uid; })) kind = ''; }
   if(!kind){ if(rec) delete TDPFX.cards[uid]; return null; }
-  var reduced = tdFxReduced();
+  var reduced = tdFxReduced(), now = Date.now();
   if(kind === 'ongoing'){
-    /* only the 2.5-second burst a play set off (tdPfxBurst) */
-    if(!rec || !rec.burst || reduced) return null;
-    if(Date.now() > rec.until){ delete TDPFX.cards[uid]; return null; }
-    return {cls:' td-pfx-burst', style:'', html:CANVASES};
+    /* only the burst a play set off (tdPfxBurst): its circle behind it - which
+       draws in and glows with reduced motion too, unturned - and its effects */
+    if(!rec || !rec.burst) return null;
+    if(now > rec.until){ delete TDPFX.cards[uid]; return null; }
+    var ci = tdFxCircleHTML(rec.circle, rec.pal, now - rec.at - CIRCLE_AT * 1000, false);
+    return {cls:' td-pfx-burst', style:'', html:reduced ? '' : CANVASES, after:rest(uid, ci + (reduced ? '' : GROUNDS))};
   }
   if(!rec || rec.burst) rec = TDPFX.cards[uid] = tdPfxNew(item, c, board, false);
   /* ⚠ THE OWNER ONLY. The other player sees the card float and its effects,
@@ -30706,14 +31124,28 @@ window.tdPfxCard = function(item, zone, c, board){
   var btn = tdPfxMine(item, board)
     ? "<button type='button' class='td-resolve' title='Resolve: send it to the Grave' onclick=\"tdPfxResolve('" + uid + "')\">Resolve</button>"
     : '';
-  return {cls:' td-fx-play', style:'--fx-age:' + (-(Date.now() - rec.at)) + 'ms;', html:(reduced ? '' : CANVASES) + btn};
+  if(reduced) return {cls:' td-fx-play', style:'--fx-age:' + (-(now - rec.at)) + 'ms;', html:'', after:rest(uid, btn)};
+  /* its circle on the ground under it, from when it landed (session 71); the
+     ground's canvases only when one of its effects draws there */
+  return {cls:' td-fx-play', style:'--fx-age:' + (-(now - rec.at)) + 'ms;', html:CANVASES,
+          after:rest(uid, tdFxCircleHTML(rec.circle, rec.pal, now - rec.at, true) + (rec.ground ? GROUNDS : '') + btn)};
 };
 /* an Ongoing Action or Spell was just played - called from tdFxAction, before
-   the redraw that draws it */
+   the redraw that draws it. With reduced motion asked for, the record is made
+   all the same - the circle still draws in and glows - but nothing is drawn
+   on its canvases (tdPfxTick). */
 window.tdPfxBurst = function(board, uid){
   var at = tdFindIn(board, uid);
-  if(!at || !at.item.card || tdFxReduced()) return;
-  TDPFX.cards[uid] = tdPfxNew(at.item, at.item.card, board, true);
+  if(!at || !at.item.card) return;
+  var rec = TDPFX.cards[uid] = tdPfxNew(at.item, at.item.card, board, true);
+  /* the circle goes when the burst ends, without waiting for a redraw - unless
+     the card has been played again since, with a burst of its own */
+  setTimeout(function(){
+    var now = TDPFX.cards[uid];
+    if(now && now !== rec) return;
+    var n = document.querySelector(".td-pfx-rest[data-for='" + uid + "'] > .td-fx-circle");
+    if(n) n.remove();
+  }, BURST * 1000 + 50);
 };
 window.tdPfxKind = tdPfxKind;
 /* the Resolve button: the same move as the menu's "Send to Grave" */
@@ -30764,39 +31196,49 @@ window.tdPfxTick = function(dt){
   for(i = 0; i < els.length; i++){
     var el = els[i], rec = TDPFX.cards[el.getAttribute('data-uid')];
     if(!rec) continue;
-    if(!el.__pfx) el.__pfx = {cu:el.querySelector(':scope > .td-pfx-u'), co:el.querySelector(':scope > .td-pfx-o')};
+    if(!el.__pfx){ var rs = host.querySelector(".td-pfx-rest[data-for='" + el.getAttribute('data-uid') + "']");
+      el.__pfx = {cu:el.querySelector(':scope > .td-pfx-u'), co:el.querySelector(':scope > .td-pfx-o'),
+                  gb:rs && rs.querySelector(':scope > .td-pfx-gb'), gf:rs && rs.querySelector(':scope > .td-pfx-gf')}; }
+    /* the ground's two canvases are there only when something draws on them */
     if(!el.__pfx.cu || !el.__pfx.co) continue;
     var r = el.getBoundingClientRect();
     list.push({el:el, rec:rec, w:el.clientWidth, h:el.clientHeight,
                on:r.width > 0 && r.bottom > -r.height && r.top < vh + r.height && r.right > -r.width && r.left < vw + r.width});
   }
   var dpr = Math.min(2, window.devicePixelRatio || 1), n = 0;
+  DPR = dpr;
   list.forEach(function(d){
     var P = d.el.__pfx, rec = d.rec;
     if(!d.on || !d.w) return;
-    /* a burst: full strength, fading over its last 0.4 s, then done */
+    var cvs = [P.cu, P.co, P.gb, P.gf].filter(Boolean);
+    /* a burst: full strength, fading over its last 0.9 s, then done */
     var left = rec.burst ? (rec.until - wall) / 1000 : 1;
-    if(rec.burst && left <= 0){ if(!P.cleared){ P.cleared = true; [P.cu, P.co].forEach(function(cv){ cv.getContext('2d').clearRect(0, 0, cv.width, cv.height); }); } return; }
+    if(rec.burst && left <= 0){ if(!P.cleared){ P.cleared = true; cvs.forEach(function(cv){ cv.getContext('2d').clearRect(0, 0, cv.width, cv.height); }); } return; }
     n++;
     var W = Math.round(d.w * (1 + PAD_X * 2)), H = Math.round(d.h * (1 + PAD_Y * 2));
     if(P.w !== W || P.h !== H || P.d !== dpr){ P.w = W; P.h = H; P.d = dpr;
-      [P.cu, P.co].forEach(function(cv){ cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }); }
+      cvs.forEach(function(cv){ cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }); }
     var cu = P.xu || (P.xu = P.cu.getContext('2d')), co = P.xo || (P.xo = P.co.getContext('2d'));
-    cu.setTransform(dpr, 0, 0, dpr, 0, 0); co.setTransform(dpr, 0, 0, dpr, 0, 0);
-    cu.clearRect(0, 0, W, H); co.clearRect(0, 0, W, H);
+    var gb = P.gb ? P.xgb || (P.xgb = P.gb.getContext('2d')) : null, gf = P.gf ? P.xgf || (P.xgf = P.gf.getContext('2d')) : null;
+    var ctx = [cu, co, gb, gf].filter(Boolean);
+    ctx.forEach(function(c){ c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, W, H); });
     var R = {x:d.w * PAD_X, y:d.h * PAD_Y, w:d.w, h:d.h}; R.cx = R.x + R.w / 2; R.cy = R.y + R.h / 2;
-    var S = {el:d.el}, fade = rec.burst ? clamp(left / .4, 0, 1) : 1;
-    P.cu.style.opacity = P.co.style.opacity = fade < 1 ? fade.toFixed(3) : '';
+    /* ⚠ AN ONGOING CARD'S BURST IS ALL BEHIND IT (the author, session 70): what
+       would be in front is drawn on the back canvases too */
+    var front = rec.burst ? cu : co, gfront = rec.burst ? gb : gf;
+    var S = {el:d.el, gb:gb, gf:gfront}, fade = rec.burst ? clamp(left / BURST_FADE, 0, 1) : 1, op = fade < 1 ? fade.toFixed(3) : '';
+    cvs.forEach(function(cv){ cv.style.opacity = op; });
     rec.inst.forEach(function(q){
-      cu.save(); co.save();
-      try{ q.draw(cu, co, R, Math.max(0, (now - q.t0) / 1000), dt, q.cols, S); }catch(_){}
-      cu.restore(); co.restore();
+      ctx.forEach(function(c){ c.save(); });
+      try{ q.draw(cu, front, R, Math.max(0, (now - q.t0) / 1000), dt, q.cols, S); }catch(_){}
+      ctx.forEach(function(c){ c.restore(); });
     });
     /* whatever lies over the card's face is 25% see-through (the author) */
-    co.save(); co.globalCompositeOperation = 'destination-out'; co.fillStyle = 'rgba(0,0,0,.25)'; rrect(co, R.x, R.y, R.w, R.h, 6); co.fill(); co.restore();
+    if(!rec.burst) [co, gf].forEach(function(c){ if(!c) return; c.save(); c.globalCompositeOperation = 'destination-out'; c.fillStyle = 'rgba(0,0,0,.25)'; rrect(c, R.x, R.y, R.w, R.h, 6); c.fill(); c.restore(); });
   });
   return n;
 };
+window.tdPfxPick = pick3;
 /* for the checks */
 window.tdPfxStats = function(){
   var out = {};
