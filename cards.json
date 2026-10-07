@@ -2,7 +2,7 @@
  "manifest": {
   "name": "Conjure UCG",
   "format": 2,
-  "cardCount": 1597,
+  "cardCount": 1593,
   "keywordCount": 108,
   "lookSlots": 0,
   "markCount": 1,
@@ -1423,7 +1423,7 @@
    "attack": "7",
    "health": "6",
    "arcane": "",
-   "ruleText": "Overwhelm\nOther Giant Characters you control gain +1 Attack.",
+   "ruleText": "Overwhelm\nOther Giant Characters you control gain +3 Attack.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -1431,7 +1431,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -2185,7 +2185,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "This card costs {1} less for each Field Card you control with Lucky.\nYour Onset — If there are 9 or more instances of Lucky among Characters you control,\ngain 1 Victory Point.",
+   "ruleText": "This card costs {1} less for each Field Card you control with Lucky.\nYour Onset — If there are 9 or more instances of Lucky among Characters you control, gain 1 Victory Point.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -2193,7 +2193,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -2663,7 +2663,6 @@
     "violet"
    ],
    "superTypes": [
-    "Mythic",
     "Action"
    ],
    "subTypes": [
@@ -2700,7 +2699,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -6632,7 +6631,7 @@
   {
    "name": "Outlive",
    "manaCost": "RV/Y1",
-   "cmc": "4",
+   "cmc": "3",
    "colors": [
     "red",
     "yellow",
@@ -6672,7 +6671,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -7604,7 +7603,7 @@
    "attack": "6",
    "health": "5",
    "arcane": "",
-   "ruleText": "Firebreathing, Meditate, Overwhelm, Thaumaturge\nAmass name— Pyro, Cryo or Elemental Characters",
+   "ruleText": "Amass — Pyro, Cryo or Elemental Characters\nFirebreathing, Meditate, Overwhelm, Thaumaturge",
    "flavor": "\"The absolute catastrophe of opposing forces.\"",
    "imageUrl": "",
    "art": "",
@@ -7612,7 +7611,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-08",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -8011,7 +8010,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Attached Object gains\n\"{L}: Deal 1 damage to any target.\"\nIf Attached Object is a Character, it gains Firebreathing and +1 Attack.\nAttach: {1}",
+   "ruleText": "Attached Object gains \"{L}: Deal 1 damage to any target.\"\nIf Attached Object is a Character, it gains Firebreathing and +1 Attack.\nAttach: {1}",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -8019,7 +8018,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -8046,7 +8045,7 @@
   {
    "name": "Soul Sorcery",
    "manaCost": "B/RV",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "red",
     "blue",
@@ -8081,7 +8080,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass — Necro\nYou may play Spells at Quick speed.\nWhenever you play a Spell, lose Life equal to it’s Mana Cost.",
+   "ruleText": "Amass — Necro Field Cards\nYou may play Spells at Quick speed.\nWhenever you play a Spell, lose Life equal to it’s Mana Cost.",
    "flavor": "\"The greatest spells demand a price paid not in mana.\"",
    "imageUrl": "",
    "art": "",
@@ -8089,7 +8088,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -8102,7 +8101,8 @@
    "sagaId": "Beginnings",
    "id": "cms47zh8b5y3f9",
    "_src": "mse",
-   "cid": "c0bmhp1j1g9inin"
+   "cid": "c0bmhp1j1g9inin",
+   "flavorRows": 1
   },
   {
    "name": "Cattle Heeler",
@@ -8268,7 +8268,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Sacrifice a Character, create X{mana in any combination of V} or {R},\nwhere X is the sacrificed Character’s Attack.\nCrystallize: Dual Ire Gris Essence,\nit Arrives Locked.",
+   "ruleText": "Sacrifice a Character, create X{mana in any combination of V} or {R}, where X is the sacrificed Character’s Attack.\nCrystallize: Dual Ire Gris Essence, it Arrives Locked.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -8276,7 +8276,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -8640,14 +8640,14 @@
    "health": "",
    "arcane": "",
    "ruleText": "Amplify: {IR} — Copy this card.\nEach Character deals 1 damage to its controller.",
-   "flavor": "\"I think something is controlling me? I can hear it...\nGET IT OUT!\"",
+   "flavor": "\"I think something is controlling me? I can hear it... GET IT OUT!\"",
    "imageUrl": "",
    "art": "",
    "saga": "Beginnings",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -8660,7 +8660,8 @@
    "sagaId": "Beginnings",
    "id": "cms47zh8bd15yf",
    "_src": "mse",
-   "cid": "c1kwl6xm1ty74zq"
+   "cid": "c1kwl6xm1ty74zq",
+   "flavorRows": ""
   },
   {
    "name": "Grey Hide Wulf",
@@ -9681,7 +9682,7 @@
   {
    "name": "Supply Termination",
    "manaCost": "R/O1",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "red",
     "orange"
@@ -9714,7 +9715,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Characters you control gain\n\"Raid — Deal damage equal to this card’s Attack to another target Character that dealt damage to you this turn.\"\nthis turn.",
+   "ruleText": "Characters you control gain \"Raid — Deal damage equal to this card’s Attack to another target Character that dealt damage to you this turn.\"\nthis turn.",
    "flavor": "\"Destroying their supply route will win us this war.\"",
    "imageUrl": "",
    "art": "",
@@ -9722,7 +9723,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -9735,7 +9736,8 @@
    "sagaId": "Beginnings",
    "id": "cms47zh8c0ocr5",
    "_src": "mse",
-   "cid": "c0k8rudw12ud1u8"
+   "cid": "c0k8rudw12ud1u8",
+   "flavorRows": 1
   },
   {
    "name": "Rising Blaze",
@@ -10923,7 +10925,9 @@
    "superTypes": [
     "Action"
    ],
-   "subTypes": [],
+   "subTypes": [
+    "Giant"
+   ],
    "orbs": [
     {
      "type": "hidden",
@@ -10945,7 +10949,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass — Giant\nDeal 3 damage to each Character.\n(Amass Giant — For each mana in this card’s Mana Cost you may Lock an Unlocked Giant Field Card to pay for a mana in the cost of a matching color to that card’s own color or 1 colorless mana.)",
+   "ruleText": "Amass — Giant Field Cards\nDeal 3 damage to each Character.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -10953,7 +10957,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -10966,7 +10970,10 @@
    "sagaId": "Beginnings",
    "id": "cms47zh8cxil8l",
    "_src": "mse",
-   "cid": "c0f2fs651a8372j"
+   "cid": "c0f2fs651a8372j",
+   "kwReminders": [
+    "Amass"
+   ]
   },
   {
    "name": "Star Shooter",
@@ -12093,7 +12100,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -12106,7 +12113,8 @@
    "sagaId": "Beginnings",
    "id": "cms47zh8dy14yv",
    "_src": "mse",
-   "cid": "c0ck7j7k02elche"
+   "cid": "c0ck7j7k02elche",
+   "flavorRows": 1
   },
   {
    "name": "Faces of Vanity",
@@ -12458,7 +12466,10 @@
     "Quick",
     "Action"
    ],
-   "subTypes": [],
+   "subTypes": [
+    "Sword",
+    "Warrior"
+   ],
    "orbs": [
     {
      "type": "hidden",
@@ -12488,7 +12499,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -12520,7 +12531,10 @@
     "Quick",
     "Action"
    ],
-   "subTypes": [],
+   "subTypes": [
+    "Sword",
+    "Warrior"
+   ],
    "orbs": [
     {
      "type": "hidden",
@@ -12550,7 +12564,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -12808,7 +12822,11 @@
     "Quick",
     "Action"
    ],
-   "subTypes": [],
+   "subTypes": [
+    "Sword",
+    "Warrior",
+    "Hero"
+   ],
    "orbs": [
     {
      "type": "hidden",
@@ -12838,7 +12856,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -12991,7 +13009,9 @@
    "superTypes": [
     "Action"
    ],
-   "subTypes": [],
+   "subTypes": [
+    "Bard"
+   ],
    "orbs": [
     {
      "type": "hidden",
@@ -13013,7 +13033,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Gain control of target Character this turn,\nit gains Swift this turn.\nIts owner Draws 1.",
+   "ruleText": "Gain control of target Character this turn, it gains Swift this turn. Its owner Draws 1.",
    "flavor": "\"Best price around. Just don’t look around...\"",
    "imageUrl": "",
    "art": "",
@@ -13021,7 +13041,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -13191,7 +13211,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Deal D4 damage to each opponent. If you roll a 1 this way, also deal 3 damage to yourself. (Roll a 4-Sided Die to determine \"D4\".)",
+   "ruleText": "Deal D4 damage to each opponent. If you roll a 1 this way, also deal 3 damage to yourself.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -13199,7 +13219,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -13212,7 +13232,10 @@
    "sagaId": "Beginnings",
    "id": "cms47zh8egqliy",
    "_src": "mse",
-   "cid": "c13si9xf0sh4zzp"
+   "cid": "c13si9xf0sh4zzp",
+   "kwReminders": [
+    "D4"
+   ]
   },
   {
    "name": "Eglan, Rosey Thorn",
@@ -13626,7 +13649,7 @@
    "attack": "2",
    "health": "5",
    "arcane": "3",
-   "ruleText": "Fury, Lethal, Snare, Gouge\nOther Insect Characters you control gain Snare and Gouge.\nWhenever a Character you don’t control dies,\nSuspend it with a Web counter and gain 1 Life.\nSlow — Banish a card Suspended with a Web counter: Put a +1 counter on this card.",
+   "ruleText": "Fury, Lethal, Snare, Gouge\nOther Insect Characters you control gain Snare and Gouge.\nWhenever a Character you don’t control dies, Suspend it with a Web counter and gain 1 Life.\nBanish a card Suspended with a Web counter: Put a +1 counter on this card.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -13634,7 +13657,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -13860,7 +13883,8 @@
    ],
    "subTypes": [
     "Aspect",
-    "Monk"
+    "Monk",
+    "Shield"
    ],
    "orbs": [
     {
@@ -13883,7 +13907,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Imbue Character\nImbued Character gains\n\"Battlecry — This card gains Volley and Sustain this turn.\"\nIf the Imbued Character would die, instead Heal it and Banish this card.",
+   "ruleText": "Imbue Character\nImbued Character gains \"Battlecry — This card gains Volley and Sustain this turn.\"\nIf the Imbued Character would die, instead Heal it and Banish this card.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -13891,7 +13915,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -14810,7 +14834,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Draw 1. Each opponent reveals the top card of their Deck, then each opponent may Draw 1. For each player who does, put a +1 counter on any target Character and create 1 mana of any color among Essence you control.\nThis mana doesn’t disappear.",
+   "ruleText": "Draw 1. Each opponent reveals the top card of their Deck, then each opponent may Draw 1. For each player who does, put a +1 counter on any target Character and create 1 mana of any color among Essence you control. This mana doesn’t disappear.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -14818,7 +14842,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -15909,7 +15933,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Only play this card if you’re attacking with at least 3 Characters that each have\n3 Attack or greater.\nDraw 2.",
+   "ruleText": "Only play this card if you’re attacking with at least 3 Characters that each have 3 Attack or greater.\nDraw 2.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -15917,7 +15941,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -16003,9 +16027,7 @@
    "superTypes": [
     "Action"
    ],
-   "subTypes": [
-    "Ancient"
-   ],
+   "subTypes": [],
    "orbs": [
     {
      "type": "hidden",
@@ -16035,7 +16057,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-06",
    "variants": [
     {
      "id": "v1",
@@ -16939,7 +16961,7 @@
   {
    "name": "Compound Extractions",
    "manaCost": "R/GG/BG",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "red",
     "green",
@@ -16974,7 +16996,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass name— Alchemist Characters\nYou may Crystallize Potion cards as Dual Essence that share both colors with the Crystallized card.\nThose Essence arrive Locked.",
+   "ruleText": "Amass — Alchemist Characters\nYou may Crystallize Potion cards as Dual Essence that share both colors with the Crystallized card. Those Essence Arrive Locked.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -16982,7 +17004,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -19901,7 +19923,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Imbue Ranger Character\nImbued Character gains\n\"{L}: This card deals damage equal to its Attack to another target Character.\"",
+   "ruleText": "Imbue Ranger Character\nImbued Character gains \"{L}: This card deals damage equal to its Attack to another target Character.\"",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -19909,7 +19931,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -20287,7 +20309,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-10-01",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -20306,7 +20328,8 @@
    "sagaId": "Beginnings",
    "id": "cms47zh8j51x3h",
    "_src": "mse",
-   "cid": "c0w0kitv0r4xzhn"
+   "cid": "c0w0kitv0r4xzhn",
+   "flavorRows": 1
   },
   {
    "name": "Dearg Ravanger",
@@ -20670,7 +20693,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Whenever a Character with Shade, Intimidate, or Unblockable deals damage to a player,\ninstead they deal double that much damage.",
+   "ruleText": "Whenever a Character with Shade, Intimidate, or Unblockable deals damage to a player, instead they deal double that much damage.",
    "flavor": "\"In a world without gold, we might have been heros.\"",
    "imageUrl": "",
    "art": "",
@@ -20678,7 +20701,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -21551,7 +21574,7 @@
   {
    "name": "Power Overwhelming",
    "manaCost": "R/O/GR/O/G",
-   "cmc": "6",
+   "cmc": "2",
    "colors": [
     "red",
     "orange",
@@ -21585,15 +21608,15 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass — Giant\nOverwhelm\nGiant cards you control gain Overwhelm.",
+   "ruleText": "Amass — Giant Field cards\nOverwhelm\nGiant Field cards you control gain Overwhelm.",
    "flavor": "\"Our swords shall sing!\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -21603,10 +21626,15 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms47zh8jttwgf",
    "_src": "mse",
-   "cid": "c0bju3y90pvftnd"
+   "cid": "c0bju3y90pvftnd",
+   "flavorRows": 1,
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Detonation Charge",
@@ -21748,6 +21776,7 @@
     "red"
    ],
    "superTypes": [
+    "Quick",
     "Ongoing",
     "Action"
    ],
@@ -21775,7 +21804,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "You may play this card\nfor {R1}. If you do,\nSacrifice it at the next Offset.\nCharacters you control gains Swift.",
+   "ruleText": "You may play this card for {R1}. If you do, Sacrifice it at the next Offset.\nCharacters you control gains Swift.",
    "flavor": "\"Run! Run until you can’t feel your legs!\"",
    "imageUrl": "",
    "art": "",
@@ -21783,7 +21812,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -22333,7 +22362,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -22512,7 +22541,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -23169,7 +23198,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass Divine and Pyro Field Cards\nArrive — Deal 1 damage to any target.\nDivine and Pyro Action and Spells you control gain \"If a Character dealt damage by this card would die this turn, instead Banish it.\"\n",
+   "ruleText": "Amass — Divine and Pyro Field Cards\nArrive — Deal 1 damage to any target.\nDivine and Pyro Action and Spells you control gain \"If a Character dealt damage by this card would die this turn, instead Banish it.\"\n",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -23177,7 +23206,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -23202,7 +23231,7 @@
   {
    "name": "Traitor’s Reward",
    "manaCost": "V/R1",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "red",
     "violet"
@@ -23236,7 +23265,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Additional Cost — Discard 1 or sacrifice a Character.\nIf you play this card during your turn, it costs {1} less.\nDraw 1.",
+   "ruleText": "Additional Cost — Discard 1 or sacrifice a Character. If you play this card during your turn, it costs {1} less.\nDraw 1.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -23244,7 +23273,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -23370,7 +23399,7 @@
    "attack": "1",
    "health": "1",
    "arcane": "",
-   "ruleText": "Arrive - Ignite 1.\nDemise - Ignite 1.",
+   "ruleText": "Arrive — Ignite 1.\nDemise — Ignite 1.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -23378,7 +23407,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -23818,7 +23847,8 @@
    ],
    "subTypes": [
     "Aspect",
-    "Warrior"
+    "Warrior",
+    "Curse"
    ],
    "orbs": [
     {
@@ -23841,7 +23871,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Imbue Character\nImbued Character gains Bloodlust.",
+   "ruleText": "Imbue Character\nCursed Character gains Bloodlust.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -23849,7 +23879,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-08",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -24351,7 +24381,7 @@
    "attack": "2",
    "health": "2",
    "arcane": "",
-   "ruleText": "Swift\nYour Offset - Donate this card to target opponent.",
+   "ruleText": "Swift\nYour Offset — Donate this card to target opponent.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -24359,7 +24389,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -24707,7 +24737,8 @@
     "Action"
    ],
    "subTypes": [
-    "Wild"
+    "Wild",
+    "Warrior"
    ],
    "orbs": [
     {
@@ -24730,7 +24761,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Roll a D4\n1 — Draw 1.\n2 — Ignite 2.\n3 — Destroy target Object.\n4 — Deal 4 damage to target player.",
+   "ruleText": "1 — \nDraw 1.\n\n2 — Ignite 2.\n\n3 — Destroy target Object.\n\n4 — Deal 4 damage to target player.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -24738,21 +24769,61 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image873.webp",
-     "fit": "contain"
+     "fit": "contain",
+     "artXf": {
+      "z": 1.2,
+      "x": 0,
+      "y": 6,
+      "r": 0,
+      "f": 1
+     }
     }
    ],
    "variant": "v1",
    "sagaId": "Beginnings",
    "id": "cms47zh8mlzetz",
    "_src": "mse",
-   "cid": "c1wpkuzp0wb5mjd"
+   "cid": "c1wpkuzp0wb5mjd",
+   "rulesSplit": 4,
+   "sections": [
+    {
+     "text": "1 — \nDraw 1.",
+     "name": "",
+     "manaCost": "",
+     "superTypes": [],
+     "subTypes": []
+    },
+    {
+     "text": "2 — Ignite 2.",
+     "name": "",
+     "manaCost": "",
+     "superTypes": [],
+     "subTypes": []
+    },
+    {
+     "text": "3 — Destroy target Object.",
+     "name": "",
+     "manaCost": "",
+     "superTypes": [],
+     "subTypes": []
+    },
+    {
+     "text": "4 — Deal 4 damage to target player.",
+     "name": "",
+     "manaCost": "",
+     "superTypes": [],
+     "subTypes": []
+    }
+   ],
+   "splitChoice": true,
+   "choiceText": "Roll a D4"
   },
   {
    "name": "Impulsive Huntsman",
@@ -25020,7 +25091,7 @@
   {
    "name": "Skymarch Crest",
    "manaCost": "R/OO/Y",
-   "cmc": "4",
+   "cmc": "2",
    "colors": [
     "red",
     "orange",
@@ -25056,7 +25127,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Soldier Characters you control gain +1.\nCrystallize: Dual Essence with any combination of Ire, Vig, or Lux,\nit Arrives Locked.",
+   "ruleText": "Soldier Characters you control gain +1.\nCrystallize: Dual Essence with any combination of Ire, Vig, or Lux, it Arrives Locked.",
    "flavor": "\"As long as the Skymarch’s banner stands around the King, so does the Skymarch’s protection!\"",
    "imageUrl": "",
    "art": "",
@@ -25064,7 +25135,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -25077,7 +25148,8 @@
    "sagaId": "Beginnings",
    "id": "cms47zh8mqr1ii",
    "_src": "mse",
-   "cid": "c0ahbjz40a0b2c6"
+   "cid": "c0ahbjz40a0b2c6",
+   "flavorRows": 2
   },
   {
    "name": "Roise the Viscera Smith",
@@ -25118,7 +25190,7 @@
    "attack": "1",
    "health": "2",
    "arcane": "3",
-   "ruleText": "Your Onset - For each Unarmed Armament you control, create a copy of [[Makeshift Mass]] which gains Swift and Bloodlust this turn. Then Arm that Armament to it.",
+   "ruleText": "Your Onset — For each Unarmed Armament you control, create a copy of [[Makeshift Mass]] which gains Swift and Bloodlust this turn. Then Arm that Armament to it.",
    "flavor": "\"The blood of demon may course through my veins, but that does not mean the fire of the forge has left them.\"",
    "imageUrl": "",
    "art": "",
@@ -25126,7 +25198,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -25184,7 +25256,7 @@
    "attack": "1",
    "health": "1",
    "arcane": "",
-   "ruleText": "Raid - You may sacrifice this card. If you do, create {RRR}.",
+   "ruleText": "Raid — You may sacrifice this card. If you do, create {RRR}.",
    "flavor": "\"Just one spark burned the whole house down.\"",
    "imageUrl": "",
    "art": "",
@@ -25192,7 +25264,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -25589,7 +25661,7 @@
   {
    "name": "Mountain Maneuver",
    "manaCost": "OR/O",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "red",
     "orange"
@@ -25622,7 +25694,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass name— Warrior Characters\nCharacters you control with Overwhelm gain \"Raid — You may Switch a card in your Hand with a Crystallized card.\" this turn.",
+   "ruleText": "Amass — Warrior Characters\nCharacters you control with Overwhelm gain \"Raid — You may Switch a card in your Hand with a Crystallized card.\" this turn.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -25630,7 +25702,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -29960,7 +30032,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Additional Cost: Lock 1 or more Objects or Artificer Field Cards.\nCreate a copy of this card for each card Locked to pay the Additional Cost, the copies lose this ability.\nObject Characters you control gain +1 this turn.",
+   "ruleText": "Amplify: Lock 1 or more Objects or Artificer Field Cards. — Create a copy of this card.\nObject Characters you control gain +1 this turn.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -29968,7 +30040,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -30157,7 +30229,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Switch 1 card in your Hand with 1 card you’ve Crystallized.\nCrystallize: Dual Vig Essence,\nit Arrives Locked.",
+   "ruleText": "Switch 1 card in your Hand with 1 card you’ve Crystallized.\nCrystallize: Dual Vig Essence, it Arrives Locked.",
    "flavor": "\"If we stop them at this point, we might be able to cut off their supplies.\"",
    "imageUrl": "",
    "art": "",
@@ -30165,7 +30237,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -30178,7 +30250,8 @@
    "sagaId": "Beginnings",
    "id": "cms5ftx0gdc6vz",
    "_src": "mse",
-   "cid": "c03oic7q1sui050"
+   "cid": "c03oic7q1sui050",
+   "flavorRows": 1
   },
   {
    "name": "Book Thief",
@@ -30581,11 +30654,11 @@
    "orbs": [
     {
      "type": "attack",
-     "value": "2"
+     "value": "3"
     },
     {
      "type": "health",
-     "value": "2"
+     "value": "3"
     },
     {
      "type": "hidden",
@@ -30596,10 +30669,10 @@
      "value": ""
     }
    ],
-   "attack": "2",
-   "health": "2",
+   "attack": "3",
+   "health": "3",
    "arcane": "",
-   "ruleText": "Amass name— Artificer and Bard Characters\nThis card can’t attack or block alone.",
+   "ruleText": "Amass — Artificer and Bard Characters\nThis card can’t attack or block alone.",
    "flavor": "\"Dexterity was always an important skill for artificers, even though that Stout thought it was annoying to learn, he ended up being pretty happy with how his apprenticeship tuned out.\"",
    "imageUrl": "",
    "art": "",
@@ -30607,7 +30680,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -30634,7 +30707,8 @@
    "id": "cms5ftx0gjnj9b",
    "_src": "mse",
    "flavorRows": 3,
-   "cid": "c04vwrmg0lntykw"
+   "cid": "c04vwrmg0lntykw",
+   "range": ""
   },
   {
    "name": "Casted to Eternity",
@@ -32170,7 +32244,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "You may Crystallize Objects this turn.\nEssence you control gain \"{L}: Create 1 mana of any color among Essence you control.\" this turn.\nCrystallize: Dual Vig Lux Essence, it Arrives Locked.",
+   "ruleText": "You may Crystallize Objects this turn. Essence you control gain \"{L}: Create 1 mana of any color among Essence you control.\" this turn.\nCrystallize: Dual Vig Lux Essence, it Arrives Locked.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -32178,7 +32252,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -34346,7 +34420,7 @@
    "attack": "1",
    "health": "2",
    "arcane": "6",
-   "ruleText": "Shade\nAmass name— Illusion or cards with Illusion\nEach other Character without Illusion gains Illusion and each Character with Illusion loses Illusion.",
+   "ruleText": "Shade\nAmass — Field Cards with Illusion\nEach other Character without Illusion gains Illusion and each Character with Illusion loses Illusion.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -34354,7 +34428,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -34544,7 +34618,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Imbue Rogue Character\nImbued Character gains Shade.\nIf this card leaves the Field, sacrifice the Imbued Character.",
+   "ruleText": "Illusion\nImbue Rogue Character\nImbued Character gains Shade. If this card leaves the Field, sacrifice the Imbued Character.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -34552,7 +34626,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -34947,7 +35021,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Arrive — Put a Thaumaturge counter on target Character you control.\nEach Onset — You may have target Character you control lose Thaumaturge this turn.\nIf you do, that card gains +1 this turn.",
+   "ruleText": "Arrive — Put a Thaumaturge counter on target Character you control.\nEach Onset — You may have target Character you control lose Thaumaturge this turn. If you do, that card gains +1 this turn.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -34955,7 +35029,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -35146,7 +35220,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Hero Characters you control gain \"This Character can only attack alone.\"\nand\n\"Raid — Gain 1 Victory Point.\"",
+   "ruleText": "Hero Characters you control gain \"This Character can only attack alone.\" and \"Raid — Gain 1 Victory Point.\"",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -35154,7 +35228,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -35786,7 +35860,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Your Onset — Put a +1 counter on each Character you control.\nSlow — Remove 5 +1 counters from among Characters you control:\nYou may Crystallize an additional time this turn.",
+   "ruleText": "Your Onset — Put a +1 counter on each Character you control.\nSlow — Remove 5 +1 counters from among Characters you control: You may Crystallize an additional time this turn.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -35794,7 +35868,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -35853,7 +35927,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass name— Cryo and Necro Characters\n-1 counters are also Impede counters.\nImpede counters are also -1 counters.",
+   "ruleText": "Amass — Cryo and Necro Characters\n-1 counters are also Impede counters.\nImpede counters are also -1 counters.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -35861,7 +35935,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-08",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -35916,7 +35990,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass name— Wizard Characters\nCancel target Non-Action card.",
+   "ruleText": "Amass — Wizard Characters\nCancel target Non-Action card.",
    "flavor": "\"Most spells where impossible to counteract, but Archmages had something special for that.\"",
    "imageUrl": "",
    "art": "",
@@ -35924,7 +35998,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -40567,7 +40641,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-08-09",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -41430,7 +41504,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-25",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -43661,7 +43735,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Target Character gains - D4 this turn.",
+   "ruleText": "Target Character gains — D4 this turn.",
    "flavor": "\"Just a simple glance sends you mind to the Space Between Space.\"",
    "imageUrl": "",
    "art": "",
@@ -43669,7 +43743,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -44197,7 +44271,7 @@
    "attack": "2",
    "health": "4",
    "arcane": "4",
-   "ruleText": "Your Onset - If an opponent controls more Essence than you, you may Wish a Core Lux Essence to the Field. If you don’t, you may put a Seal counter on target Character.",
+   "ruleText": "Your Onset — If an opponent controls more Essence than you, you may Wish a Core Lux Essence to the Field. If you don’t, you may put a Seal counter on target Character.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -44205,7 +44279,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -44460,7 +44534,7 @@
    "attack": "2",
    "health": "2",
    "arcane": "",
-   "ruleText": "Airborne, Sustain, Gouge\nArrive - Each player gains 1 Life.",
+   "ruleText": "Airborne, Sustain, Gouge\nArrive — Each player gains 1 Life.",
    "flavor": "\"The neophyte sat deep in study when an Atlas Moth landed on his robes. It’s deep hues blended in with his robe, it’s legs pulling on the fabric under its surprisingly heavy weight. He wondered how it flew so gracefully with that weight.\"",
    "imageUrl": "",
    "art": "",
@@ -44468,7 +44542,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -44560,7 +44634,7 @@
   {
    "name": "Cross Range Maneuver",
    "manaCost": "OO/G",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "orange",
     "green"
@@ -44593,7 +44667,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass name— Ranger Characters\nCharacters you control with Snare gain \"Raid — You may Switch a card in your Hand with a Crystallized card.\" this turn.",
+   "ruleText": "Amass — Ranger Characters\nCharacters you control with Snare gain \"Raid — You may Switch a card in your Hand with a Crystallized card.\" this turn.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -44601,7 +44675,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -45093,7 +45167,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -45106,7 +45180,10 @@
    "sagaId": "Beginnings",
    "id": "cms5g01qpc399s",
    "_src": "mse",
-   "cid": "c1n8x2wt1335pqz"
+   "cid": "c1n8x2wt1335pqz",
+   "kwReminders": [
+    "Volley"
+   ]
   },
   {
    "name": "Holdfast",
@@ -45119,7 +45196,11 @@
     "Quick",
     "Action"
    ],
-   "subTypes": [],
+   "subTypes": [
+    "Soldier",
+    "Cleric",
+    "Hero"
+   ],
    "orbs": [
     {
      "type": "hidden",
@@ -45142,14 +45223,14 @@
    "health": "",
    "arcane": "",
    "ruleText": "Target Character gains Invulnerable this turn.",
-   "flavor": "",
+   "flavor": "\"Holdfast in the face of the enemy my hero, for you shall see the new dawn rise.\"",
    "imageUrl": "",
    "art": "",
    "saga": "Beginnings",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -46603,15 +46684,15 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Target Character gains Snare this turn. If they already have Snare, instead it gains Lethal this turn.\nIf they also have Lethal,\ninstead they gain +4 this turn.",
-   "flavor": "\"Shoot now!\"",
+   "ruleText": "Target Character gains Snare this turn. If they already have Snare, instead it gains Lethal this turn. If they also have Lethal, instead they gain +4 this turn.",
+   "flavor": "",
    "imageUrl": "",
    "art": "",
    "saga": "Beginnings",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -46624,7 +46705,8 @@
    "sagaId": "Beginnings",
    "id": "cms5g01qqvuepy",
    "_src": "mse",
-   "cid": "c0y2org00mc59ne"
+   "cid": "c0y2org00mc59ne",
+   "flavorRows": ""
   },
   {
    "name": "Hex Sabotage",
@@ -46728,7 +46810,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -46741,7 +46823,8 @@
    "sagaId": "Beginnings",
    "id": "cms5g01qr3wprs",
    "_src": "mse",
-   "cid": "c1o2txt10hqs7fj"
+   "cid": "c1o2txt10hqs7fj",
+   "flavorRows": 2
   },
   {
    "name": "Eniv, Golem Tech",
@@ -47395,7 +47478,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -47959,7 +48042,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "This turn, whenever a player would Draw any number of cards after their first card, instead you lose 2 times that much Life.\n(That player doesn’t Draw any cards.)",
+   "ruleText": "This turn, whenever a player would Draw any number of cards after their first card, instead you lose 2 times that much Life. (That player doesn’t Draw any cards.)",
    "flavor": "\"Come on, don’t act like you’re better than me!\"",
    "imageUrl": "",
    "art": "",
@@ -47967,7 +48050,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -47980,7 +48063,8 @@
    "sagaId": "Beginnings",
    "id": "cms5g01qslmfb8",
    "_src": "mse",
-   "cid": "c0yqw79b0ollrob"
+   "cid": "c0yqw79b0ollrob",
+   "flavorRows": ""
   },
   {
    "name": "Guilty Conscience",
@@ -48176,7 +48260,10 @@
     "Quick",
     "Action"
    ],
-   "subTypes": [],
+   "subTypes": [
+    "Soldier",
+    "Hero"
+   ],
    "orbs": [
     {
      "type": "hidden",
@@ -48206,7 +48293,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -49159,7 +49246,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass name— Armament Objects\nArmament Field Cards you control that aren’t connected gain Barrier.",
+   "ruleText": "Amass — Armament Objects\nArmament Field Cards you control that aren’t connected gain Barrier and Invulnerable.",
    "flavor": "\"Where did they hide those ballistas?!\"",
    "imageUrl": "",
    "art": "",
@@ -49167,7 +49254,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-10-01",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -49180,7 +49267,8 @@
    "sagaId": "Beginnings",
    "id": "cms5g01qtogr6l",
    "_src": "mse",
-   "cid": "c1gdi0n70phfapf"
+   "cid": "c1gdi0n70phfapf",
+   "flavorRows": 1
   },
   {
    "name": "Flourish Together",
@@ -49452,7 +49540,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "{L},{B}: Lock target Character with Mana Cost 5 or less.\nIf that Character is a Swimming Beast, Draw 1.",
+   "ruleText": "{L},{B}: Lock target Character with Mana Cost 5 or less. If that Character is a Swimming Beast, Draw 1.",
    "flavor": "\"These are great for catching fish. But they have other uses too.\"",
    "imageUrl": "",
    "art": "",
@@ -49460,7 +49548,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -49943,7 +50031,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Banish target Character, or target Character being played. Banish each card with the same name in each Grave.\nCrystallize: Dual Essence with any combintaion of Lux, Arch, or Gris,\nit Arrives Locked.",
+   "ruleText": "Banish target Character, or target Character being played. Banish each card with the same name in each Grave.\nCrystallize: Dual Essence with any combination of Lux, Arch, or Gris, it Arrives Locked.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -49951,7 +50039,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -50362,7 +50450,7 @@
   {
    "name": "Familial Bond",
    "manaCost": "O/G",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "orange",
     "green"
@@ -50395,7 +50483,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Whenever a Familiar Character Arrives under your control, you may Bond it with a Non-Familiar Character you control.\nBonded Characters\nyou control gain +1.",
+   "ruleText": "Whenever a Familiar Character Arrives under your control, you may Connect it with a Non-Familiar Character you control, and vice versa.\nCharacters you control Connected to other Characters gain +1.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -50403,7 +50491,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -50589,7 +50677,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass name— Characters with Airborne\nWhenever a Character has Airborne 3 or more, its controller sacrifices that Character.",
+   "ruleText": "Amass — Characters with Airborne\nWhenever a Character has Airborne 3 or more, its controller sacrifices that Character.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -50597,7 +50685,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -50769,7 +50857,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Create X{mana in any combination of G} or {B}, where X is the Mana Cost of target Alchemist Field Card you control. This mana doesn’t disappear.",
+   "ruleText": "Create X mana in any combination of {G} or {B}, where X is the Mana Cost of target Alchemist Field Card you control. This mana doesn’t disappear.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -50777,7 +50865,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -51547,7 +51635,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Illusion\nWhen you play this card,\nSuspend target Non-Ongoing Spell card you’re playing.\nYour Onset — Play a copy of the Suspended card.",
+   "ruleText": "Illusion\nWhen you play this card, Suspend target Non-Ongoing Spell card you’re playing.\nYour Onset — Play a copy of the Suspended card.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -51555,7 +51643,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -53092,7 +53180,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -53436,7 +53524,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Activate an ability of an Object you control without paying its activation costs.\nSacrifice that card.",
+   "ruleText": "Activate an ability of an Object you control without paying its activation costs. Sacrifice that card.",
    "flavor": "\"Only one way to figure out how this thing works.\"",
    "imageUrl": "",
    "art": "",
@@ -53444,7 +53532,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-10-01",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -54299,13 +54387,18 @@
    "flavor": "\"May the light illuminate your path, follow it to victory!\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "_src": "mse",
-   "cid": "c1s2eifw0hp8976"
+   "cid": "c1s2eifw0hp8976",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "sagaId": "Infinite",
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Ester of Shadows",
@@ -54697,7 +54790,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Dredge\nAnother target player gains 1 Victory Point,\nthat player loses Life equal to\n3 times the number of\nVictory Points they have.",
+   "ruleText": "Dredge\nAnother target player gains 1 Victory Point, that player loses Life equal to 3 times the number of Victory Points they have.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -54705,7 +54798,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -54822,7 +54915,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -54835,7 +54928,8 @@
    "sagaId": "Beginnings",
    "id": "cms5g01qzfdspq",
    "_src": "mse",
-   "cid": "c1cpc0sg0v695s2"
+   "cid": "c1cpc0sg0v695s2",
+   "flavorRows": 1
   },
   {
    "name": "Delusion Animus",
@@ -54900,7 +54994,7 @@
   {
    "name": "Fey Deception",
    "manaCost": "Y/IG",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "yellow",
     "green",
@@ -54937,7 +55031,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Imbue Character\nCursed Character’s\nBase Attack and Health becomes 1.",
+   "ruleText": "Imbue Character\nCursed Character’s Base Attack and Health becomes 1.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -54945,7 +55039,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -55184,7 +55278,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Another target player gains 1 Victory Point.\nDraw 2.",
+   "ruleText": "Each opponent gains 1 Victory Point.\nDraw 2.",
    "flavor": "\"Everyone can always use a helping hand.\"",
    "imageUrl": "",
    "art": "",
@@ -55192,7 +55286,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -56882,8 +56976,8 @@
     "Action"
    ],
    "subTypes": [
-    "Monk",
     "Soldier",
+    "Monk",
     "Shield"
    ],
    "orbs": [
@@ -56915,7 +57009,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -57117,7 +57211,7 @@
    "attack": "4",
    "health": "4",
    "arcane": "4",
-   "ruleText": "Arrive - Recover target card with Mana Cost less than the number of Essence you control.\nThis card gains each ability of each Essence you control.",
+   "ruleText": "Arrive — Recover target card with Mana Cost less than the number of Essence you control.\nThis card gains each ability of each Essence you control.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -57125,7 +57219,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-08-27",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -57184,7 +57278,7 @@
    "attack": "4",
    "health": "4",
    "arcane": "5",
-   "ruleText": "Arrive - Put 3 -1 counters on this card.\nRemove a -1 counter from this card, {L}: Create {G} or {V}.",
+   "ruleText": "Arrive — Put 3 -1 counters on this card.\nRemove a -1 counter from this card, {L}: Create {G} or {V}.",
    "flavor": "\"This plant looks so sickly, poor thing!\"",
    "imageUrl": "",
    "art": "",
@@ -57192,7 +57286,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -57675,7 +57769,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Barrier, Invulnerable\nWhenever an Opponent\ndeals Battle damage to you,\nthey gain control of this card.\nYour Offset — Draw 1.",
+   "ruleText": "Barrier, Invulnerable\nWhenever an Opponent deals Battle damage to you, they gain control of this card.\nYour Offset — Draw 1.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -57683,7 +57777,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -58842,7 +58936,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -58893,7 +58987,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Your Onset - Gain Life equal to the total Sustain among Field Cards you control.",
+   "ruleText": "Your Onset — Gain Life equal to the total Sustain among Field Cards you control.",
    "flavor": "\"We will continue to hum the will of life.\"",
    "imageUrl": "",
    "art": "",
@@ -58901,7 +58995,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -58951,7 +59045,7 @@
    "attack": "2",
    "health": "3",
    "arcane": "",
-   "ruleText": "Arrive - If an opponent controls more Essence than you, you may Wish a Core Lux Essence to the Field. If you don't, put a Steadfast counter on this card.",
+   "ruleText": "Arrive — If an opponent controls more Essence than you, you may Wish a Core Lux Essence to the Field. If you don't, put a Steadfast counter on this card.",
    "flavor": "\"We raise our shields to our shared brighter future!\"",
    "imageUrl": "",
    "art": "",
@@ -58959,7 +59053,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -59124,7 +59218,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Characters you control gain +1.\nCoalesce - Create a copy of this card.",
+   "ruleText": "Characters you control gain +1.\nCoalesce — Create a copy of this card.",
    "flavor": "\"The plants remember the path to the sun; we need only follow their lead.\"",
    "imageUrl": "",
    "art": "",
@@ -59132,7 +59226,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -59182,7 +59276,7 @@
    "attack": "3",
    "health": "4",
    "arcane": "",
-   "ruleText": "Airborne\nArrive - If an opponent controls more Essence than you, you may Wish a Core Lux Essence to the Field. If you don’t, put a Fortify counter on this card.",
+   "ruleText": "Airborne\nArrive — If an opponent controls more Essence than you, you may Wish a Core Lux Essence to the Field. If you don’t, put a Fortify counter on this card.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -59190,7 +59284,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -59303,7 +59397,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Prismatic - Revive target Character with Mana Cost X or less, where X is the number of colors of mana used to play this card.",
+   "ruleText": "Prismatic — Revive target Character with Mana Cost X or less, where X is the number of colors of mana used to play this card.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -59311,7 +59405,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -59427,7 +59521,7 @@
    "subTypes": [
     "Aspect",
     "Giant",
-    "Cleric"
+    "Monk"
    ],
    "orbs": [
     {
@@ -59458,7 +59552,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -61486,7 +61580,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Imbue Clawed Character\nImbued Character can block Characters with Unblockable.\nWhenever Imbued Character blocks, put a +1 counter on it.",
+   "ruleText": "Imbue Clawed Character\nImbued Character can block Characters with Unblockable. Whenever Imbued Character blocks, put a +1 counter on it.",
    "flavor": "\"Stalking in the dark of night.\"",
    "imageUrl": "",
    "art": "",
@@ -61494,7 +61588,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -61507,7 +61601,8 @@
    "sagaId": "Beginnings",
    "id": "cms5g5x6qzrw3y",
    "_src": "mse",
-   "cid": "c1bcio3z0scirxp"
+   "cid": "c1bcio3z0scirxp",
+   "flavorRows": 1
   },
   {
    "name": "Infuraiting Homunculus",
@@ -63997,7 +64092,7 @@
   {
    "name": "Mind Dominus",
    "manaCost": "B/IB/IB/I3",
-   "cmc": "9",
+   "cmc": "6",
    "colors": [
     "blue",
     "indigo"
@@ -64009,7 +64104,7 @@
    "subTypes": [
     "Aspect",
     "Esper",
-    "Shaman"
+    "Curse"
    ],
    "orbs": [
     {
@@ -64032,7 +64127,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Imbue Field Card\nYou gain control of\nImbued card.",
+   "ruleText": "Imbue Field Card\nYou gain control of Cursed card.",
    "flavor": "\"You are ignorant to your own free will.\"",
    "imageUrl": "",
    "art": "",
@@ -64040,7 +64135,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -64159,7 +64254,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass name— Beast and Familiar Characters\nOnly play this card if you played a Beast or Familiar Character this turn.\nDraw 1. Gain 1 Life.",
+   "ruleText": "Amass — Beast and Familiar Characters\nOnly play this card if you played a Beast or Familiar Character this turn.\nDraw 1. Gain 1 Life.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -64167,7 +64262,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -69372,7 +69467,9 @@
     "Ongoing",
     "Action"
    ],
-   "subTypes": [],
+   "subTypes": [
+    "Horror"
+   ],
    "orbs": [
     {
      "type": "hidden",
@@ -69394,7 +69491,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "If you have an even\nnumber of cards in your Hand,\nCharacters you control gain +1.\nIf you have an odd\nnumber of cards in your Hand,\nCharacters you control gain -1.\n(0 is even.)",
+   "ruleText": "Amplify: {IO} — Create a copy of this card.\nIf you have an even number of cards in your Hand, Characters you control gain +1. \nIf you have an odd number of cards in your Hand, Characters you control gain -1. (<i>0 is even.</i>)",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -69402,7 +69499,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -71257,7 +71354,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Target player gets\n1 Wound counter.",
+   "ruleText": "Target player gets 1 Wound counter.",
    "flavor": "\"Just a little taste.\"",
    "imageUrl": "",
    "art": "",
@@ -71265,7 +71362,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-10-01",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -72221,7 +72318,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Your Onset - If you control or are tied for the most Essence, gain 3 Life. Otherwise, Draw 1.\nCrystallize: Dual Lux Essence that shares a color with another Essence you control,\nit Arrives Locked with an Impede counter.",
+   "ruleText": "Your Onset — If you control or are tied for the most Essence, gain 3 Life. Otherwise, Draw 1.\nCrystallize: Dual Lux Essence that shares a color with another Essence you control,\nit Arrives Locked with an Impede counter.",
    "flavor": "\"The Imierian shine bright, may their radiance guide you!\"",
    "imageUrl": "",
    "art": "",
@@ -72229,7 +72326,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -72256,6 +72353,8 @@
     "Action"
    ],
    "subTypes": [
+    "Wild",
+    "Druid",
     "Beast"
    ],
    "orbs": [
@@ -72287,7 +72386,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -72300,7 +72399,8 @@
    "sagaId": "Beginnings",
    "id": "cms5g5x71x972s",
    "_src": "mse",
-   "cid": "c0zb5qv41rp2vbe"
+   "cid": "c0zb5qv41rp2vbe",
+   "flavorRows": 1
   },
   {
    "name": "Jade Bagpipes",
@@ -72533,7 +72633,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -72724,15 +72824,15 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass name— Undead Characters\nCancel target card.\nDesperation 10 — This card costs {3} less.",
+   "ruleText": "Amass — Undead Characters\nDesperation 10 — This card costs {3} less.\nCancel target card.",
    "flavor": "\"I’ll be happy to use you as an ingredient if you insist.\"",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -72742,10 +72842,14 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms5g5x72g8o1t",
    "_src": "mse",
-   "cid": "c1oehqvi1fnyfwq"
+   "cid": "c1oehqvi1fnyfwq",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Narrartor of the Glintfield",
@@ -73103,7 +73207,7 @@
   {
    "name": "Lowland Maneuver",
    "manaCost": "OO/Y",
-   "cmc": "3",
+   "cmc": "2",
    "colors": [
     "orange",
     "yellow"
@@ -73136,7 +73240,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass name— Soldier Characters\nCharacters you control with Steadfast gain \"Raid — You may Switch a card in your Hand with a Crystallized card.\" this turn.",
+   "ruleText": "Amass — Soldier Characters\nCharacters you control with Steadfast gain \"Raid — You may Switch a card in your Hand with a Crystallized card.\" this turn.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -73144,7 +73248,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -75152,7 +75256,7 @@
   {
    "name": "Pick Clean",
    "manaCost": "G/V",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "green",
     "violet"
@@ -75161,7 +75265,11 @@
     "Quick",
     "Action"
    ],
-   "subTypes": [],
+   "subTypes": [
+    "Necro",
+    "Plant",
+    "Druid"
+   ],
    "orbs": [
     {
      "type": "hidden",
@@ -75183,7 +75291,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Banish target Character in a Grave that was put there this turn.\nGain Life equal to that\ncard’s Mana Cost.",
+   "ruleText": "Banish target Character in a Grave that was put there this turn.\nGain Life equal to that card’s Mana Cost.",
    "flavor": "\"The cycle of life, even the mightiest return to the soil.\"",
    "imageUrl": "",
    "art": "",
@@ -75191,7 +75299,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -76181,7 +76289,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -78046,7 +78154,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -78749,7 +78857,7 @@
   {
    "name": "Play a Tune",
    "manaCost": "Y/G",
-   "cmc": "2",
+   "cmc": "1",
    "colors": [
     "yellow",
     "green"
@@ -78782,15 +78890,15 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass — Instrument or Bard Characters\nBard Characters and Characters you control Armed with an Instrument gain\n\"{L}: Create 1 mana of any color among Field Cards you control.\"\nthis turn",
+   "ruleText": "Amass — Instrument or Bard Characters\nBard Characters and Characters you control Armed with an Instrument gain \"{L}: Create 1 mana of any color among Field Cards you control.\"\nthis turn",
    "flavor": "",
    "imageUrl": "",
    "art": "",
-   "saga": "Beginnings",
+   "saga": "Infinite",
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -78800,10 +78908,14 @@
     }
    ],
    "variant": "v1",
-   "sagaId": "Beginnings",
+   "sagaId": "Infinite",
    "id": "cms66fm9ggwknr",
    "_src": "mse",
-   "cid": "c1tn0ksw1sdv1gm"
+   "cid": "c1tn0ksw1sdv1gm",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z"
   },
   {
    "name": "Patrolling Pangolin",
@@ -80963,7 +81075,7 @@
    "attack": "4",
    "health": "5",
    "arcane": "",
-   "ruleText": "Amass — Druid Characters\nYou may pay {G} to activate Meditate from Characters you control.",
+   "ruleText": "Amass — Druid Characters\nYou may pay {G} to activate Meditate of Characters you control.",
    "flavor": "\"The Earth is scattered with lost knowledge, let the Earth return these forgotten things and build anew.\"",
    "imageUrl": "",
    "art": "",
@@ -80971,7 +81083,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -83087,7 +83199,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -83718,7 +83830,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -85542,7 +85654,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Target Rogue Character\nyou control gains\nUnblockable this turn.",
+   "ruleText": "Target Rogue Character you control gains Unblockable this turn.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -85550,7 +85662,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -88326,7 +88438,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Puppeteer - Put a +1 counter on target Object Character.",
+   "ruleText": "Puppeteer — Put a +1 counter on target Object Character.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -88334,7 +88446,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -90806,7 +90918,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Amass name— Aqua, Plant, and\nPotion\n{L}: Create {G} or {B}, only use this mana on Aqua, Plant, or Potion cards.",
+   "ruleText": "Amass — Aqua, Plant, and Potion Field Cards\n{L}: Create {G} or {B}, only use this mana on Aqua, Plant, or Potion cards.",
    "flavor": "\"Sat on that shelf for over a century. The specimens kept inside were a treasure to find.\"",
    "imageUrl": "",
    "art": "",
@@ -90814,7 +90926,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -90827,7 +90939,8 @@
    "sagaId": "Beginnings",
    "id": "cms66imo323t47",
    "_src": "mse",
-   "cid": "c0p0khot0opd9i5"
+   "cid": "c0p0khot0opd9i5",
+   "flavorRows": 2
   },
   {
    "name": "Vow of Silence",
@@ -90954,67 +91067,6 @@
    "id": "cms66imo34cowr",
    "_src": "mse",
    "cid": "c0jzctn311ykhnt"
-  },
-  {
-   "id": "cms66imo35mdd1",
-   "name": "Vast Speaker Aesidi",
-   "manaCost": "YGBI",
-   "cmc": "4",
-   "colors": [
-    "yellow",
-    "green",
-    "blue",
-    "indigo"
-   ],
-   "superTypes": [
-    "Mythic",
-    "Character"
-   ],
-   "subTypes": [
-    "Horned",
-    "Cleric",
-    "Shaman"
-   ],
-   "orbs": [
-    {
-     "type": "attack",
-     "value": "1"
-    },
-    {
-     "type": "health",
-     "value": "4"
-    },
-    {
-     "type": "arcane",
-     "value": "5"
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "attack": "1",
-   "health": "4",
-   "arcane": "5",
-   "ruleText": "Amass name— Characters with Barrier\nCharacters and Ongoing Spells you control without Barrier gain \"Barrier {X} — X is equal to this card’s Mana Cost.\"\nIf you target a Field Card you control with Barrier that has an additional cost, you must pay that additional cost.",
-   "flavor": "",
-   "imageUrl": "",
-   "art": "",
-   "saga": "Creators",
-   "revision": "Rev 1.0",
-   "artist": "Lain Lines",
-   "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-08",
-   "_src": "mse",
-   "artXf": {
-    "z": 1.66,
-    "x": 0,
-    "y": 21.5,
-    "r": 0,
-    "f": 1
-   },
-   "fit": "contain",
-   "cid": "c10uuhjo15262fa"
   },
   {
    "name": "Void Bellows",
@@ -91638,7 +91690,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -91651,7 +91703,8 @@
    "sagaId": "Beginnings",
    "id": "cms66imo3r7f1r",
    "_src": "mse",
-   "cid": "c1ounqmf1h5rnhx"
+   "cid": "c1ounqmf1h5rnhx",
+   "flavorRows": ""
   },
   {
    "name": "Wandering Rhinodon",
@@ -92864,7 +92917,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -93900,7 +93953,7 @@
    "cid": "c1x6z6n70pvob6x"
   },
   {
-   "name": "The Dominus, Sab’Toth",
+   "name": "The Dominus Sab’Toth",
    "manaCost": "IIII2",
    "cmc": "6",
    "colors": [
@@ -93943,7 +93996,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-08",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -95069,7 +95122,8 @@
     "Action"
    ],
    "subTypes": [
-    "Aspect"
+    "Aspect",
+    "Monk"
    ],
    "orbs": [
     {
@@ -95092,7 +95146,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Imbue Character\nPrevent the first 1 damage dealt to the Imbued Character\neach turn.",
+   "ruleText": "Imbue Character\nWhenever damage is dealt to the Imbued card, prevent 1 of that damage.",
    "flavor": "\"Even in the face of resistance, I’ll stand by my ideals.\"",
    "imageUrl": "",
    "art": "",
@@ -95100,7 +95154,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -99452,7 +99506,7 @@
    "attack": "2",
    "health": "3",
    "arcane": "",
-   "ruleText": "Lucky, Thaumaturge\nYour Onset - Choose a player. This turn, that player plays with their Hand revealed and you may spend mana as any color to play the revealed cards. If that player is an opponent, they can't play cards this turn.",
+   "ruleText": "Lucky, Thaumaturge\nYour Onset — Choose a player. This turn, that player plays with their Hand revealed and you may spend mana as any color to play the revealed cards. If that player is an opponent, they can't play cards this turn.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -99460,7 +99514,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -99649,7 +99703,7 @@
    "attack": "5",
    "health": "8",
    "arcane": "",
-   "ruleText": "Empower - Another target Character you control gains +X Arcane this turn, where X is the Mana Cost of the Spell you played.\nImpede counters can't be removed from Field Cards. (They won't Unlock as long as they have Impede counters.)",
+   "ruleText": "Empower — Another target Character you control gains +X Arcane this turn, where X is the Mana Cost of the Spell you played.\nImpede counters can't be removed from Field Cards. (They won't Unlock as long as they have Impede counters.)",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -99657,7 +99711,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-08",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -100944,7 +100998,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Your Onset - If you control the Character with the greatest Arcane, gain 1 Victory Point.",
+   "ruleText": "Your Onset — If you control the Character with the greatest Arcane, gain 1 Victory Point.",
    "flavor": "\"The Moon changes just as you do, even though it has had eons to decide its emotions, they still change with the world around it. Find solace in it.\"",
    "imageUrl": "",
    "art": "",
@@ -100952,7 +101006,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-08",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -101656,123 +101710,6 @@
    "mark": "wm_cmudw0ix3xj34z"
   },
   {
-   "name": "Astasia, Ichor Web",
-   "manaCost": "GIVR1",
-   "cmc": "5",
-   "colors": [
-    "red",
-    "green",
-    "indigo",
-    "violet"
-   ],
-   "superTypes": [
-    "Mythic",
-    "Character"
-   ],
-   "subTypes": [
-    "Demonic",
-    "Fanged",
-    "Insect"
-   ],
-   "attack": "2",
-   "health": "5",
-   "arcane": "3",
-   "ruleText": "Fury, Lethal, Snare\n Insect Characters you control gain Snare and Gouge.\n Whenever a Character you don’t control dies,  Suspend it with a Web counter and lose 1 Life.\n Slow — Banish a card Suspended with a Web counter: Put a +1 counter on this card.",
-   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_2060.webp",
-   "lastUpdated": "2026-10-01",
-   "art": "",
-   "saga": "Beginnings",
-   "designer": "Conjure UCG LLC 2026",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "sagaId": "Beginnings",
-   "flavor": "",
-   "orbs": [
-    {
-     "type": "attack",
-     "value": "2"
-    },
-    {
-     "type": "health",
-     "value": "5"
-    },
-    {
-     "type": "arcane",
-     "value": "3"
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "id": "cmt476n3hk31zt",
-   "fit": "contain",
-   "artXf": {
-    "z": 2.07,
-    "x": -5.5,
-    "y": 27,
-    "r": 0,
-    "f": 1
-   },
-   "cid": "c1ry1bnm0rrro6a"
-  },
-  {
-   "name": "Archer Ambush",
-   "manaCost": "G",
-   "cmc": "1",
-   "colors": [
-    "green"
-   ],
-   "superTypes": [
-    "Quick",
-    "Action"
-   ],
-   "subTypes": [
-    "Ranger"
-   ],
-   "attack": "",
-   "health": "",
-   "arcane": "",
-   "ruleText": "Target Character gains Snare this turn. If they already have Snare, instead they gain Lethal this turn. \n If they also have Lethal, \n instead they gain +4 this turn.",
-   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_2010.webp",
-   "lastUpdated": "2026-09-07",
-   "art": "",
-   "saga": "Beginnings",
-   "designer": "Conjure UCG LLC 2026",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "sagaId": "Beginnings",
-   "flavor": "",
-   "orbs": [
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "artXf": {
-    "z": 2.04,
-    "x": 0,
-    "y": 27.5,
-    "r": 0,
-    "f": 1
-   },
-   "fit": "contain",
-   "id": "cmt9l21hesq67k",
-   "cid": "c10y8y1e1wj2z90"
-  },
-  {
    "name": "Font of Eternal Youth",
    "manaCost": "YY4",
    "cmc": "6",
@@ -101981,7 +101918,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-08",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",
@@ -102006,13 +101943,30 @@
      "id": "v3",
      "label": "Art 3",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1345.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1345.webp",
+     "artXf": {
+      "z": 1.58,
+      "x": 0,
+      "y": 21.5,
+      "r": 0,
+      "f": 1
+     },
+     "fit": "contain"
     }
    ],
    "variant": "v1",
    "sagaId": "Beginnings",
    "id": "cmtrxbgm7rdjtv",
-   "cid": "c1q5mjit0y5vm9j"
+   "cid": "c1q5mjit0y5vm9j",
+   "sagaIds": [
+    "Beginnings",
+    "Creators"
+   ],
+   "sagaFields": {
+    "Creators": {
+     "artist": "Lain Lines"
+    }
+   }
   },
   {
    "name": "Direkit Head Brandy",
@@ -102171,37 +102125,7 @@
    "cid": "c10v9aji021o3ua"
   },
   {
-   "name": "Mind Dominance",
-   "manaCost": "B/IB/IB/I3",
-   "cmc": "6",
-   "colors": [
-    "blue",
-    "indigo"
-   ],
-   "superTypes": [
-    "Ongoing",
-    "Spell"
-   ],
-   "subTypes": [
-    "Aspect"
-   ],
-   "attack": "",
-   "health": "",
-   "arcane": "",
-   "ruleText": "Imbue Non-Essence Field Card\n You gain control of Imbued card.",
-   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_2054.webp",
-   "lastUpdated": "2026-06-13",
-   "art": "",
-   "saga": "Beginnings",
-   "designer": "Conjure UCG LLC 2026",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "sagaId": "Beginnings",
-   "id": "cmuaki60789xwi",
-   "cid": "c0dyn16b1bzvsx1"
-  },
-  {
-   "name": "Guiding Light",
+   "name": "Revealing Light",
    "manaCost": "Y",
    "cmc": "1",
    "colors": [
@@ -102244,7 +102168,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-07",
    "variants": [
     {
      "id": "v1",

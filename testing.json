@@ -3,7 +3,7 @@
   "name": "Conjure UCG",
   "format": 2,
   "testing": true,
-  "cardCount": 9
+  "cardCount": 10
  },
  "cards": [
   {
@@ -179,7 +179,7 @@
    ],
    "sagaId": "Beginnings",
    "range": "",
-   "lastUpdated": "2026-10-03",
+   "lastUpdated": "2026-10-07",
    "testing": 1
   },
   {
@@ -344,7 +344,7 @@
     "Infinite"
    ],
    "sagaId": "Infinite",
-   "lastUpdated": "2026-10-03",
+   "lastUpdated": "2026-10-07",
    "testing": 1,
    "mark": "wm_cmudw0ix3xj34z"
   },
@@ -516,6 +516,58 @@
    ],
    "sagaId": "Beginnings",
    "testing": 1
+  },
+  {
+   "id": "cmuy7jzc48xwc1",
+   "name": "New Dawn Templar",
+   "manaCost": "OY5",
+   "cmc": "7",
+   "colors": [
+    "orange",
+    "yellow"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Giant",
+    "Cleric",
+    "Soldier",
+    "Hero"
+   ],
+   "attack": "8",
+   "health": "8",
+   "arcane": "",
+   "ruleText": "Whenever you play a Hero card, this card gains +1 this turn.\nWhenever you play a Yellow Hero card, this card gains Sustain this turn.\nWhenever you play an Orange Hero card, this card gains Volley this turn.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuy7jzc4io8d2d632txt",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "8"
+    },
+    {
+     "type": "health",
+     "value": "8"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "testing": 1,
+   "range": "",
+   "lastUpdated": "2026-10-07"
   }
  ]
 }
