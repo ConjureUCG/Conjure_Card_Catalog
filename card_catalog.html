@@ -1866,8 +1866,13 @@ body.pin-none  .mcard{--pin:linear-gradient(transparent,transparent)!important}
    neither can drift as the row's contents change. Back to catalog takes the
    first three. Save and Save All share one cell, half each. */
 .ed2-btngrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;font-size:.78rem}
-/* two columns since session 59 - Duplicate has the third, beside it */
-.ed2-btngrid .ed2-bg-back{grid-column:span 2}
+/* two columns since session 59 - Duplicate has the third, beside it.
+   ⚠ ONE COLUMN SINCE SESSION 72: the author's Autosave toggle sits directly to
+   its right, in the column it gave up, so the corners still do not move. */
+.ed2-btngrid .ed2-bg-back{grid-column:span 1}
+/* Autosave, lit green while it is on (the author, session 72) */
+.ed2-btngrid .ed2-bg-auto.on{background:#0f3a24;border-color:#2fbf71;color:#9ff0c2;
+  box-shadow:inset 0 0 0 1px rgba(47,191,113,.35)}
 /* the Test toggle, lit amber while the card is a Test card */
 .ed2-btngrid .ed2-bg-test.on{background:#4a3608;border-color:#e0a020;color:#ffd77a;
   box-shadow:inset 0 0 0 1px rgba(224,160,32,.35)}
@@ -7589,6 +7594,17 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
 .td-fx-gwrap.td-fx-a3{
   -webkit-mask-image:linear-gradient(to bottom,transparent calc(20px + (100% - 40px)*.55),#000 calc(100% - 20px));
   mask-image:linear-gradient(to bottom,transparent calc(20px + (100% - 40px)*.55),#000 calc(100% - 20px))}
+/* ⚠ LETHAL AND SHADE: THE ATTACKER'S RED ON TOP (the author, session 72). The
+   red is the Thaumaturge's own top band (.td-fx-top, solid to 37.5%, gone by
+   62.5%); the keyword's two lighter colours share the bottom half - the first
+   rising over the same middle quarter and fading out by the bottom edge, the
+   second rising from 62.5% to the bottom. */
+.td-fx-gwrap.td-fx-b2{
+  -webkit-mask-image:linear-gradient(to bottom,transparent calc(20px + (100% - 40px)*.375),#000 calc(20px + (100% - 40px)*.625),transparent calc(100% - 20px));
+  mask-image:linear-gradient(to bottom,transparent calc(20px + (100% - 40px)*.375),#000 calc(20px + (100% - 40px)*.625),transparent calc(100% - 20px))}
+.td-fx-gwrap.td-fx-b3{
+  -webkit-mask-image:linear-gradient(to bottom,transparent calc(20px + (100% - 40px)*.625),#000 calc(100% - 20px));
+  mask-image:linear-gradient(to bottom,transparent calc(20px + (100% - 40px)*.625),#000 calc(100% - 20px))}
 /* Overwhelm: wolf fangs over the top and bottom - 25% bigger than the lab's,
    further out from the card, and biting with half again the travel */
 .td-fx-fangs{position:absolute;left:-21.25%;width:142.5%;height:18.75%;z-index:7;pointer-events:none;color:#f4efe4;
@@ -29501,9 +29517,17 @@ function tdFxCard(item, zone, c, board){
        the same .td-fx-gwrap/.td-fx-glow three times over, each masked to its
        band, so its ring, blur, spread and pulse are the plain attacker's */
     var aura = (A && role === 'atk' && A.set.aura) ? TDFX_AURA[A.set.aura] : null;
-    out.html += aura
-      ? aura.map(function(g, i){
-          return "<div class='td-fx-gwrap td-fx-a" + (i + 1) + "' style='--g:" + g + ';' + lag + "'><div class='td-fx-glow'></div></div>"; }).join('')
+    /* ⚠ LETHAL AND SHADE KEEP THE ATTACKER'S RED ON TOP (the author, session
+       72): the top half is the red every attacker glows, blending over the
+       middle quarter - as the Thaumaturge's two colours do - into the
+       keyword's own two lighter colours below. Unblockable's aura is all its
+       own, top to bottom, as before. */
+    var bands = !aura ? null
+      : A.set.aura === 'ub' ? aura.map(function(g, i){ return [g, 'a' + (i + 1)]; })
+      : [[R.top, 'top'], [aura[1], 'b2'], [aura[2], 'b3']];
+    out.html += bands
+      ? bands.map(function(b){
+          return "<div class='td-fx-gwrap td-fx-" + b[1] + "' style='--g:" + b[0] + ';' + lag + "'><div class='td-fx-glow'></div></div>"; }).join('')
       : R.top === R.bot
       ? "<div class='td-fx-gwrap' style='--g:" + R.top + ';' + lag + "'><div class='td-fx-glow'></div></div>"
       : "<div class='td-fx-gwrap td-fx-top' style='--g:" + R.top + ';' + lag + "'><div class='td-fx-glow'></div></div>"
@@ -30036,8 +30060,13 @@ function tdFxCircleSVG(kind, cols){
   } else {
     t += '<circle r="96" ' + st + ' stroke-width="2"' + draw() + '/><circle r="84" ' + st + ' stroke-width=".8"' + draw() + '/><circle r="40" ' + st + ' stroke-width="1.2"' + draw() + '/>'
       + '<path d="M0-84 72.7 42-72.7 42Z M0 84-72.7-42 72.7-42Z" ' + st + ' stroke-width="1.3"' + draw() + '/>';
-    for(var j = 0; j < 12; j++){ var b = j / 12 * Math.PI * 2;
-      t += '<circle cx="' + (Math.cos(b) * 90).toFixed(1) + '" cy="' + (Math.sin(b) * 90).toFixed(1) + '" r="2.6" fill="url(#' + id + ')" opacity="0" class="td-fx-glyph" style="--i:' + j + '"/>'; }
+    /* ⚠ THE TWELVE SMALL CIRCLES JUST INSIDE THE OUTER RING ARE WHITE, each in
+       a very faint white glow (the author, session 72) - on every Turning
+       Seal, whatever its colours. They light in turn as before. */
+    for(var j = 0; j < 12; j++){ var b = j / 12 * Math.PI * 2, cx = (Math.cos(b) * 90).toFixed(1), cy = (Math.sin(b) * 90).toFixed(1);
+      t += '<g opacity="0" class="td-fx-glyph td-fx-dot" style="--i:' + j + '"><circle cx="' + cx + '" cy="' + cy + '" r="6.5" fill="url(#' + id + 'w)"/>'
+        + '<circle cx="' + cx + '" cy="' + cy + '" r="2.6" fill="#fff"/></g>'; }
+    t = t.replace('</defs>', '<radialGradient id="' + id + 'w"><stop offset="0" stop-color="#fff" stop-opacity=".32"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>');
   }
   return t + '</g></svg>';
 }
@@ -30441,7 +30470,12 @@ window.tdFxStats = function(){
        card's colours (tdFxCircleHTML, cat_boardfx.js);
      - the Resolve button and the effects that come out of the ground (the
        ripple, the whirlpool, the necromancer's) stay where the card rests -
-       they neither float nor tilt with it - and share one ground (session 70).
+       they neither float nor tilt with it - and share one ground (session 70);
+     - ⚠ every coloured Spell has its own effect on that ground (session 73,
+       FX Lab V): Red the Lava Pool, Orange the Rising Plates, Yellow the
+       Radiant Ring in pairs, Green the Animal Tracks, Indigo the Void Rift
+       with the tethered chains (and no chains hanging from the card any
+       more) - with Blue's whirlpool and Violet's grave from before.
 
    HOW IT IS DRAWN. Each such card carries two canvases of its own (from
    tdFxCard's markup): .td-pfx-u at z-index -1 - inside the card's stacking
@@ -30580,9 +30614,10 @@ var DRAW = {
   petal:function(c, p, k){ var a = Math.sin(Math.PI * k) * .9;
     c.save(); c.translate(p.x, p.y); c.rotate(p.rot + p.age * p.spin); c.scale(1, .4 + .6 * Math.abs(Math.sin(p.age * p.flip + p.ph)));
     c.fillStyle = hexA(light(p.col, .45), a); c.beginPath(); c.ellipse(0, 0, p.r * .65, p.r * .42, 0, 0, TAU); c.fill(); c.restore(); },
-  puff:function(c, p, k){ var a = Math.sin(Math.PI * k) * (p.a == null ? .2 : p.a), r = p.r0 + (p.r1 - p.r0) * k;
-    var g = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, r); g.addColorStop(0, hexA(p.col, a)); g.addColorStop(1, hexA(p.col, 0));
-    c.fillStyle = g; c.beginPath(); c.arc(p.x, p.y, r, 0, TAU); c.fill(); },
+  /* the board's radial sprite, at the puff's alpha (session 72: the
+     necromancer's smoke made enough of these to be worth it) */
+  puff:function(c, p, k){ var a = Math.sin(Math.PI * k) * (p.a == null ? .2 : p.a), r = p.r0 + (p.r1 - p.r0) * k, ga = c.globalAlpha;
+    c.globalAlpha = ga * a; c.drawImage(tdFxPuffSprite(p.col).cv, p.x - r, p.y - r, r * 2, r * 2); c.globalAlpha = ga; },
   streak:function(c, p, k){ var a = (1 - k) * (p.a == null ? 1 : p.a), sp = Math.hypot(p.vx, p.vy) || 1, L = p.len || 14;
     c.strokeStyle = hexA(p.col, a); c.lineWidth = p.w || 1.6; c.lineCap = 'round';
     c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(p.x - p.vx / sp * L, p.y - p.vy / sp * L); c.stroke(); },
@@ -30607,7 +30642,16 @@ function shapes(){
     }
     p.closePath(); p.moveTo(hole, 0); p.arc(0, 0, hole, 0, TAU); return {p:p, n:n};
   }
-  function circle(r, hole){ var p = new Path2D(); p.arc(0, 0, r, 0, TAU); if(hole){ p.moveTo(hole, 0); p.arc(0, 0, hole, 0, TAU); } return p; }
+  /* ⚠ THE POLISH SHIELD (the author, session 72 - it replaced the round one):
+     Armoria's own "polish" shield outline (MIT, github.com/Azgaar/Armoria),
+     drawn in its 200x200 box, brought to the heater's size and middle - 124
+     units tall, centred at y 2 - and its inner panel the same outline, inset */
+  function polish(inset){
+    var src = new Path2D('m 100,10 c 0,0 -2.5,-3.7 -9.7,-3.7 -12.7,0 -20.7,10.9 -40.5,14 0,11.8 -4.9,23.5 -11.4,31.1 0,0 12.7,6 12.7,19.3 C 51.1,90.8 30,90.8 30,90.8 c 0,0 -3.6,7.4 -3.6,22.4 0,34.3 23.1,60.2 40.7,68.2 17.6,8 27.7,11.4 32.9,18.6 5.2,-7.3 15.3,-10.7 32.8,-18.6 17.6,-8 40.7,-33.9 40.7,-68.2 0,-15 -3.6,-22.4 -3.6,-22.4 0,0 -21.1,0 -21.1,-20.1 0,-13.3 12.7,-19.3 12.7,-19.3 C 155.1,43.7 150.2,32.1 150.2,20.3 130.4,17.2 122.5,6.3 109.7,6.3 102.5,6.3 100,10 100,10 z');
+    var p = new Path2D(), k = 124 / 193.7 * inset;
+    p.addPath(src, new DOMMatrix().translate(0, 2).scale(k).translate(-100, -103.15));
+    return p;
+  }
   function bottle(kind){ var p = new Path2D();
     if(kind === 'flask'){ p.arc(0, 8, 18, 0, TAU); p.rect(-5, -22, 10, 16); }
     else if(kind === 'vial'){ if(p.roundRect) p.roundRect(-9, -12, 18, 40, 8); else p.rect(-9, -12, 18, 40); p.rect(-4, -22, 8, 12); }
@@ -30618,7 +30662,7 @@ function shapes(){
     swordHL:new Path2D('M-1 25h2l-.4 74h-1.2Z'),
     shields:{
       heater:[new Path2D('M0 -60L48 -44V-6C48 30 26 52 0 64C-26 52 -48 30 -48 -6V-44Z'), new Path2D('M0 -46L34 -34V-6C34 20 18 38 0 48C-18 38 -34 20 -34 -6V-34Z')],
-      round:[circle(54), circle(40, 14)],
+      polish:[polish(1), polish(.74)],
       kite:[new Path2D('M0 -66C30 -62 46 -42 46 -16C46 20 22 46 0 72C-22 46 -46 20 -46 -16C-46 -42 -30 -62 0 -66Z'), new Path2D('M0 -52C20 -49 32 -36 32 -16C32 12 16 32 0 52C-16 32 -32 12 -32 -16C-32 -36 -20 -49 0 -52Z')]
     },
     bow:new Path2D('M6 -72Q0 -66 -6 -58Q-40 -24 -40 0Q-40 24 -6 58Q0 66 6 72'),
@@ -30641,11 +30685,6 @@ function drawGear(c, gear, x, y, r, ang, cols){
     b.strokeStyle = 'rgba(255,255,255,.35)'; b.lineWidth = 1 / r; b.beginPath(); b.arc(0, 0, .58, 0, TAU); b.stroke(); });
   c.save(); c.translate(x, y); c.rotate(ang); blit(c, sp); c.restore();
 }
-function drawChain(c, px, py, L, ang, n, cols){
-  for(var i = 0; i < n; i++){ var f = (i + .5) / n, a = ang * f * f, x = px + Math.sin(a) * L * f, y = py + Math.cos(a) * L * f;
-    c.save(); c.translate(x, y); c.rotate(-a + (i % 2 ? Math.PI / 2 : 0)); c.strokeStyle = cols[i % cols.length]; c.lineWidth = 1.8;
-    c.beginPath(); c.ellipse(0, 0, (i % 2 ? 2.2 : 3.4), (i % 2 ? 3.4 : 4.6), 0, 0, TAU); c.stroke(); c.restore(); }
-}
 function drawArrow(c, cols){
   var S = shapes();
   c.fillStyle = lin(c, -66, 0, 0, 0, cols.map(function(k){ return dark(k, .2); })); c.fillRect(-66, -1.6, 58, 3.2);
@@ -30657,8 +30696,9 @@ function drawArrow(c, cols){
    draw(cu, co, R, t, dt, cols, S) paints behind the card (cu) and in front
    (co); R is the card in the canvases' own coordinates; S.el is the card. */
 var E = {};
-function combo(keys){ return function(){ var parts = keys.map(function(k){ return E[k](); });
-  return function(cu, co){ var args = arguments; parts.forEach(function(p){ cu.save(); co.save(); p.apply(null, args); cu.restore(); co.restore(); }); }; }; }
+function combo(keys){ var make = function(){ var parts = keys.map(function(k){ return E[k](); });
+  return function(cu, co){ var args = arguments; parts.forEach(function(p){ cu.save(); co.save(); p.apply(null, args); cu.restore(); co.restore(); }); }; };
+  make.parts = keys.slice(); return make; }
 
 /* ── the parts several slots share ── */
 E.lightning = function(){ var bolts = [], next = 0; return function(cu, co, R, t, dt, cols){
@@ -30708,9 +30748,6 @@ E.mist = function(){ var P = new Parts(), st = {}, n = irnd(8, 14), dir = sgn(),
     cu.globalAlpha = co.globalAlpha = 1;
     emit(st, 'm', 3.5, dt, function(){ var q = perim(R, rnd(-4, 14), Math.random()); P.add({k:'dot', x:q[0], y:q[1], vx:rnd(-8, 8), vy:-rnd(4, 14), r:rnd(.8, 1.4), life:rnd(1.5, 2.5), fade:'sin', col:light(pick(cols), .3)}); });
     P.step(dt); P.draw(co); }; };
-E.chains = function(){ var nc = irnd(2, 3), ch = times(nc, function(i){ return {f:(i + rnd(.2, .8)) / nc, len:rnd(.35, .6), sp:rnd(1, 1.6), ph:rnd(0, 7)}; });
-  return function(cu, co, R, t, dt, cols){ ch.forEach(function(q){ var L = R.h * q.len;
-    drawChain(co, R.x + R.w * (.1 + .8 * q.f), R.y + R.h - 2, L, Math.sin(t * q.sp + q.ph) * .3, Math.round(L / 7), cols); }); }; };
 E.plus = function(){ var P = new Parts(), st = {}, rate = rnd(2.5, 4.5); return function(cu, co, R, t, dt, cols){
   emit(st, 'p', rate, dt, function(){ var sd = sgn(); P.add({k:'plus', x:sd < 0 ? R.x - rnd(4, R.w * .35) : R.x + R.w + rnd(4, R.w * .35), y:R.y + R.h * rnd(.1, 1), vx:rnd(-4, 4), vy:-rnd(18, 30), life:rnd(1.6, 2.4), r:rnd(3, 5), rot:rnd(-.2, .2), col:pick(cols)}); });
   P.step(dt); P.draw(co); }; };
@@ -30747,6 +30784,39 @@ E.fireflies = function(){ var n = irnd(6, 12), sp = rnd(.6, 1.1), f = times(n, f
 E.dust = function(){ var P = new Parts(), st = {}, rate = rnd(5, 9), drift = pick([[-6, -2], [6, -2], [0, -7]]); return function(cu, co, R, t, dt, cols){
   emit(st, 'd', rate, dt, function(){ P.add({k:'dot', x:R.cx + rnd(-.9, .9) * R.w, y:R.cy + rnd(-.75, .75) * R.h, vx:drift[0] + rnd(-3, 3), vy:drift[1] + rnd(-3, 3), r:rnd(.6, 1.3), life:rnd(2.5, 4), fade:'sin', a:.85, col:light(pick(cols), .4)}); });
   P.step(dt); P.draw(co); }; };
+
+/* ⚠ THE FLOATING CHALK RUNES - ONLY 3 TO 5 (the author, session 72; FX Lab
+   III's Chalk Runes, part of the Blue Spell in round 3): faint runes sketch
+   themselves stroke by stroke round the card, float a little, fade, and come
+   back elsewhere. 3-5 of them at most, the number rolled each play; each its
+   own glyph, size, spot, drift and wait before it comes back. */
+var RUNES = [ [[[0, 1], [0, 0], [.6, .35], [0, .6]]], [[[0, 0], [.5, 1], [1, 0]], [[.25, .5], [.75, .5]]],
+  [[[.5, 0], [.5, 1]], [[0, .3], [1, .7]]], [[[0, 0], [1, 1]], [[1, 0], [0, 1]], [[.5, 0], [.5, 1]]],
+  [[[0, 1], [.5, 0], [1, 1]], [[.2, .65], [.8, .65]]], [[[.2, 0], [.2, 1], [.8, .7], [.2, .4]]] ];
+/* a rune drawn up to `prog` (0..1) of its strokes, centred on x,y, s wide */
+function drawRune(c, x, y, s, rune, prog){
+  var segs = rune.reduce(function(n, l){ return n + l.length - 1; }, 0), left = prog * segs;
+  c.beginPath();
+  rune.forEach(function(l){ for(var i = 1; i < l.length && left > 0; i++){
+    var f = Math.min(1, left), ax = l[i - 1][0], ay = l[i - 1][1], bx = l[i][0], by = l[i][1]; left -= 1;
+    c.moveTo(x + (ax - .5) * s, y + (ay - .5) * s); c.lineTo(x + (ax - .5 + (bx - ax) * f) * s, y + (ay - .5 + (by - ay) * f) * s); } });
+  c.stroke();
+}
+E.runes = function(){ var slots = times(irnd(3, 5), function(){ return {next:rnd(0, 1.6), q:null}; }), LIFE = 3.2;
+  var draw = function(cu, co, R, t, dt, cols){
+    co.lineCap = 'round'; co.lineWidth = 1.5;
+    slots.forEach(function(sl){
+      if(!sl.q && t >= sl.next){ var a = rnd(0, TAU);
+        sl.q = {dx:Math.cos(a) * rnd(.72, .9), dy:Math.sin(a) * rnd(.6, .72), r:pick(RUNES), born:t, s:rnd(.14, .2), rise:rnd(3, 8), ph:rnd(0, 7)}; }
+      var q = sl.q; if(!q) return;
+      var age = t - q.born;
+      if(age > LIFE){ sl.q = null; sl.next = t + rnd(.3, 1.4); return; }
+      var x = R.cx + q.dx * R.w + Math.sin(age * 1.3 + q.ph) * 2, y = R.cy + q.dy * R.h - age * q.rise;
+      co.strokeStyle = hexA(cols[0], age < 1.2 ? .75 : .75 * (1 - (age - 1.2) / 2));
+      drawRune(co, x, y, R.w * q.s, q.r, clamp(age / .55, 0, 1));
+      draw.shown = slots.filter(function(z){ return z.q; }).length; }); };
+  draw.slots = slots.length; draw.shown = 0;
+  return draw; };
 
 /* ── whole effects ── */
 E.swords = function(){ var per = rnd(2.8, 4), amp = rnd(.21, .35), sw = times(2, function(){ return {h:rnd(.72, 1.02), len:rnd(.5, .75)}; });
@@ -30786,22 +30856,27 @@ E.cogs = function(){
       else if(i === 1){ x = x0 + Math.cos(mAng) * (r0 + r) * .93; y = y0 + Math.sin(mAng) * (r0 + r) * .93; ang = -tick(a0) * r0 / r + .2; }
       else { x = R.x + R.w * q.sp[0]; y = R.y + R.h * q.sp[1] - bob; ang = tick(q); }
       drawGear(cu, i === 1 ? a0.gear : q.gear, x, y, r, ang, cols); }); }; };
-E.shield = function(){ var keys = ['heater', 'round', 'kite'], shape = pick(keys), bob = rnd(1, 1.6), lean = sgn();
+E.shield = function(){ var keys = ['heater', 'polish', 'kite'], shape = pick(keys), bob = rnd(1, 1.6), lean = sgn();
   return function(cu, co, R, t, dt, cols){ var P = shapes().shields[shape], s = R.h * 1.22 / 124;
     var sp = baked('shield|' + shape + '|' + cols.join() + '|' + s.toFixed(4), -55.5 * s, -67.5 * s, 55.5 * s, 73.5 * s, 18, function(b){ b.scale(s, s);
       b.shadowColor = hexA(cols[0], .8); b.shadowBlur = 18; b.fillStyle = lin(b, 0, -60, 0, 64, cols.map(function(k){ return dark(k, .15); })); b.fill(P[0], 'evenodd'); b.shadowBlur = 0;
       b.fillStyle = 'rgba(0,0,0,.25)'; b.fill(P[1], 'evenodd');
       b.strokeStyle = lin(b, -48, -60, 48, 64, cols.map(function(k){ return light(k, .55); })); b.lineWidth = 3; b.stroke(P[0]); b.lineWidth = 1.5; b.stroke(P[1]); });
     cu.save(); cu.translate(R.cx, R.cy - R.h * .02 + Math.sin(t * bob) * 4); cu.rotate(lean * Math.sin(t * .8) * .04); blit(cu, sp); cu.restore(); }; };
-E.bow = function(){ var dir = sgn(), flying = [];
-  function aim(t){ return {at:t, per:rnd(1.6, 2.4), y:rnd(-.08, .08), ang:rnd(-.09, .09)}; }
+/* ⚠ HALF AS MANY SHOTS, AND THE DRAW TAKES THE TIME BETWEEN (the author,
+   session 72): a shot every 3.2-4.8 s (it was 1.6-2.4), and all of the time
+   added goes into pulling the string back - the arrow is drawn slowly, held
+   for the same beat, loosed, and the bow settles for as long as it did. */
+function bowAim(t){ var base = rnd(1.6, 2.4); return {at:t, per:base * 2, draw:.8 + base, y:rnd(-.08, .08), ang:rnd(-.09, .09)}; }
+E.bow = function(){ var dir = sgn(), flying = [], aim = bowAim;
   var shot = aim(0);
   return function(cu, co, R, t, dt, cols){
     var S = shapes(), s = R.h * 1.5 / 144, k = t - shot.at, bx = R.cx - dir * R.w * .22, by = R.cy + Math.sin(t * 1.1) * 3, pull = 0, nocked = true;
-    if(k < .15) pull = 0; else if(k < .95) pull = ease((k - .15) / .8) * 22; else if(k < 1.1) pull = 22 + Math.sin(k * 70) * .4;
+    var drawn = .15 + shot.draw, loose = drawn + .15;
+    if(k < .15) pull = 0; else if(k < drawn) pull = ease((k - .15) / shot.draw) * 22; else if(k < loose) pull = 22 + Math.sin(k * 70) * .4;
     else { nocked = false;
       if(!shot.fired){ shot.fired = true; flying.push({x0:bx - dir * 30 * s, x:bx - dir * 30 * s, y:by + shot.y * R.h, vx:-dir * 820 * Math.cos(shot.ang), vy:820 * Math.sin(shot.ang)}); }
-      var r = k - 1.1; pull = 22 * Math.exp(-r * 14) * Math.cos(r * 40); }
+      var r = k - loose; pull = 22 * Math.exp(-r * 14) * Math.cos(r * 40); }
     if(k > shot.per) shot = aim(t);
     var ny = shot.y * R.h / s;
     var limb = baked('bow|' + cols.join() + '|' + s.toFixed(4), -43 * s, -75 * s, 9 * s, 75 * s, 12, function(b){ b.scale(s, s);
@@ -30872,12 +30947,37 @@ E.crescents = function(){ var n = irnd(2, 4), dir = sgn(), sp = rnd(.8, 1.4), ti
       else { c.scale(sc, sc); c.globalAlpha = .22 / j;
         c.fillStyle = lin(c, -16, -16, 0, 16, cols.map(function(k){ return light(k, .2); })); c.fill(S.crescent); }
       c.restore(); } }; };
+/* ⚠ OUT OF THE GROUND, NOT CUT OFF BY IT (the author, session 72). A hand or
+   a skull was clipped at its foot, a hard line across it; now each is drawn
+   into a scratch canvas (one, reused), faded out over the last few pixels
+   above its foot, and laid on the ground from there. And smoke - the Violet
+   Action's own, where its knife goes in - curls up at the foot of whatever is
+   out of the ground. */
+var RISE_FADE = 8;                    /* the fade's height, in the thing's own scale */
+var _scr = null;
+function fromGround(co, bx, foot, halfW, top, s, paint){
+  var w = halfW * 2, h = foot - top;
+  if(h <= 0) return;
+  var pw = Math.ceil(w * DPR), ph = Math.ceil(h * DPR);
+  if(!_scr) _scr = document.createElement('canvas');
+  if(_scr.width < pw || _scr.height < ph){ _scr.width = Math.max(_scr.width, pw); _scr.height = Math.max(_scr.height, ph); }
+  var x = _scr.getContext('2d'), f = Math.min(h, RISE_FADE * s);
+  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, pw, ph);
+  x.setTransform(DPR, 0, 0, DPR, -(bx - halfW) * DPR, -top * DPR);
+  x.save(); paint(x); x.restore();
+  x.globalCompositeOperation = 'destination-out';
+  var g = x.createLinearGradient(0, foot - f, 0, foot); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,1)');
+  x.fillStyle = g; x.fillRect(bx - halfW, foot - f, w, f);
+  x.globalCompositeOperation = 'source-over';
+  co.drawImage(_scr, 0, 0, pw, ph, bx - halfW, top, pw / DPR, ph / DPR);
+}
 E.necro = function(){ var nh = irnd(2, 3), nk = irnd(1, 2), slots = shuffle(times(nh + nk, function(i){ return (i + rnd(.25, .75)) / (nh + nk); }));
+  var P = new Parts(), st = {}, me = null;
   /* each hand and skull stands at its own depth on the ground ellipse (-1 the
      far edge, 1 the near), so they come up out of the same ground as the glow */
   var hands = slots.slice(0, nh).map(function(f){ return {f:f, d:rnd(-.5, .6), per:rnd(5.5, 7.5), ph:rnd(0, 7), lean:rnd(-.25, .25), sz:rnd(.9, 1.15)}; });
   var skulls = slots.slice(nh).map(function(f){ return {f:f, d:rnd(-.5, .6), per:rnd(6, 8), ph:rnd(0, 7), lean:rnd(-.2, .2), sz:rnd(.9, 1.2)}; });
-  return function(cu, co0, R, t, dt, cols, S){
+  return (me = function(cu, co0, R, t, dt, cols, S){
     var g = ground(R), gb = S.gb, co = S.gf, Sh = shapes(), ry = g.rx * g.k;
     var glow = gb.createRadialGradient(g.cx, g.cy, 0, g.cx, g.cy, g.rx); glow.addColorStop(0, hexA(dark(cols[0], .3), .55)); glow.addColorStop(1, hexA(cols[0], 0));
     /* the glow squashed onto the ground: drawn as a circle under a vertical squash */
@@ -30886,7 +30986,12 @@ E.necro = function(){ var nh = irnd(2, 3), nk = irnd(1, 2), slots = shuffle(time
     gb.strokeStyle = hexA(cols[0], .35); gb.lineWidth = 1.2; gb.beginPath(); gb.ellipse(g.cx, g.cy, g.rx * .82, ry * .82, 0, 0, TAU); gb.stroke();
     /* where on the ground a thing stands: across it by f, at depth d */
     function spot(f, d){ var x = g.cx + (f * 2 - 1) * g.rx * .8, u = (x - g.cx) / g.rx; return [x, g.cy + d * ry * Math.sqrt(Math.max(0, 1 - u * u))]; }
-    hands.forEach(function(h){
+    /* the blades' smoke (E.blades), at a foot, while what stands there is out */
+    function smoke(key, x, y, s, rise){
+      emit(st, key, 11 * Math.min(1, rise * 3), dt, function(){
+        P.add({k:Math.random() < .5 ? 'dot' : 'puff', x:x + rnd(-11, 11) * s, y:y + rnd(-2, 1) * s, vx:rnd(-16, 16), vy:-rnd(6, 20),
+               r:1.2, r0:2, r1:13, a:.55, life:rnd(.6, 1.1), col:Math.random() < .5 ? '#2a1830' : light(cols[0], .25)}); }); }
+    hands.forEach(function(h, hi){
       var k = ((t + h.ph) % h.per) / h.per, rise = k < .25 ? ease(k / .25) : k < .75 ? 1 : 1 - ease((k - .75) / .25);
       var s = R.w / 95 * h.sz * (1 + h.d * .12), b = spot(h.f, h.d), base = b[1] - rise * 34 * s;
       /* the hand is baked at each of 16 curls - a finger tip moves well under a pixel from one to the next */
@@ -30900,18 +31005,19 @@ E.necro = function(){ var nh = irnd(2, 3), nk = irnd(1, 2), slots = shuffle(time
           var x1 = fx * s + Math.cos(a0) * l1, y1 = -12 * s + Math.sin(a0) * l1, a1 = a0 + curl * 1.3;
           c.beginPath(); c.moveTo(fx * s, -12 * s); c.lineTo(x1, y1); c.lineTo(x1 + Math.cos(a1) * l2, y1 + Math.sin(a1) * l2); c.stroke(); });
         var ta = -2.5 + curl * .8; c.beginPath(); c.moveTo(-7 * s, -5 * s); c.lineTo(-7 * s + Math.cos(ta) * 8 * s, -5 * s + Math.sin(ta) * 8 * s); c.stroke(); });
-      co.save(); co.beginPath(); co.rect(0, 0, co.canvas.width, b[1]); co.clip(); co.translate(b[0], base); co.rotate(h.lean); blit(co, sp);
-      co.restore(); });
-    skulls.forEach(function(h){
+      fromGround(co, b[0], b[1], 28 * s, base - 40 * s, s, function(c){ c.translate(b[0], base); c.rotate(h.lean); blit(c, sp); });
+      if(rise > .02) smoke('h' + hi, b[0], b[1], s, rise); });
+    skulls.forEach(function(h, ki){
       var k = ((t + h.ph) % h.per) / h.per, rise = k < .3 ? ease(k / .3) : k < .72 ? 1 : 1 - ease((k - .72) / .28);
       var s = R.w / 95 * h.sz * (1 + h.d * .12), b = spot(h.f, h.d), base = b[1] + 6 * s - rise * 30 * s, look = Math.sin(t * 1.3 + h.ph) * .12, m = s * 1.15;
       var sp = baked('skull|' + cols[0] + '|' + m.toFixed(4), -12 * m, -20 * m, 12 * m, -1.5 * m, 10, function(c){ c.scale(m, m); c.translate(-12, -22);
         c.shadowColor = cols[0]; c.shadowBlur = 10; c.fillStyle = light(cols[0], .78); c.fill(Sh.skull); });
-      co.save(); co.beginPath(); co.rect(0, 0, co.canvas.width, b[1]); co.clip(); co.translate(b[0], base); co.rotate(h.lean + look); blit(co, sp);
-      /* the eyes glow on their own beat, drawn live */
-      co.scale(m, m); co.translate(-12, -22);
-      co.fillStyle = hexA(cols[0], .5 + .4 * Math.sin(t * 3 + h.ph)); co.beginPath(); co.arc(8.4, 11.3, 1.1, 0, TAU); co.arc(15.6, 11.3, 1.1, 0, TAU); co.fill();
-      co.restore(); }); }; };
+      fromGround(co, b[0], b[1], 18 * s, base - 27 * s, s, function(c){ c.translate(b[0], base); c.rotate(h.lean + look); blit(c, sp);
+        /* the eyes glow on their own beat, drawn live */
+        c.scale(m, m); c.translate(-12, -22);
+        c.fillStyle = hexA(cols[0], .5 + .4 * Math.sin(t * 3 + h.ph)); c.beginPath(); c.arc(8.4, 11.3, 1.1, 0, TAU); c.arc(15.6, 11.3, 1.1, 0, TAU); c.fill(); });
+      if(rise > .02) smoke('k' + ki, b[0], b[1], s, rise); });
+    P.step(dt); P.draw(co); me.smoke = P.a.length; }); };
 E.blades = function(){ var P = new Parts(), st = {}, used = [];
   /* each blade's spot is chosen once - it stabs the same place every time */
   var blades = times(irnd(1, 3), function(){ var side, hgt, tries = 0;
@@ -31020,14 +31126,238 @@ E['circle-runes'] = function(){ var P = [], made = 0;
       var k = p.age / p.life; c.globalAlpha = 1 - k;
       tdFxBlit(c, tdFxSprite('dot', p.col, p.col, 1.6 * (1 - k * .5), 8), R.cx + p.dx, R.cy + p.dy); } }; };
 
+/* ═════ THE GROUND UNDER EACH SPELL (the author, session 73 - FX Lab V,
+   https://claude.ai/artifact/FkgqtKUtoy3oBwWGmUY4EU) ═════
+   Blue had its whirlpool and Violet its grave; the author picked one for each
+   of the others:
+     Red     the Lava Pool;
+     Orange  the Rising Plates;
+     Yellow  the Radiant Ring - with a second ring: each pulse goes out as a
+             pair, the second a beat behind the first;
+     Green   the Animal Tracks;
+     Indigo  the Void Rift with JUST the chains of "Tethered Chains and
+             Tentacles" (no tentacles) - the chains taken off the card, so
+             the Indigo Spell no longer hangs any from its bottom edge.
+   All on the one ground (ground()). Flat things lie on its back canvas; a
+   thing that rises is behind the card on the ground's far half and in front
+   of it on the near half. Tuned on an 84px card in the lab - absolute sizes
+   go by U = the card's width / 84. Gradients are made once and kept, glows
+   are the board's radial sprite (session 71's rule). */
+function gp(g, u, v){ return [g.cx + u * g.rx, g.cy + v * g.rx * g.k]; }
+function nearOf(S, v){ return v < 0 ? S.gb : S.gf; }
+function depthScale(v){ return .82 + .126 * (v + 1); }
+function groundGlow(c, g, col, a, r){
+  var rr = g.rx * (r || 1);
+  c.save(); c.translate(g.cx, g.cy); c.scale(1, g.k); c.globalAlpha = clamp(a, 0, 1);
+  c.drawImage(tdFxPuffSprite(col).cv, -rr, -rr, rr * 2, rr * 2); c.restore();
+}
+/* a gradient kept for as long as its canvas and its size stay the same */
+function keepGrad(box, c, key, make){
+  if(box.c !== c || box.key !== key){ box.c = c; box.key = key; box.g = make(); }
+  return box.g;
+}
+/* links along a curve, each turned a quarter from the last */
+function chainAlong(c, pts, cols, sc, a){
+  var acc = 0, next = 0, step = 6.5 * sc;
+  for(var i = 1; i < pts.length; i++){
+    var x0 = pts[i - 1][0], y0 = pts[i - 1][1], x1 = pts[i][0], y1 = pts[i][1], d = Math.hypot(x1 - x0, y1 - y0), ang = Math.atan2(y1 - y0, x1 - x0);
+    while(next <= acc + d){
+      var f = (next - acc) / (d || 1), n = Math.round(next / step);
+      c.save(); c.translate(x0 + (x1 - x0) * f, y0 + (y1 - y0) * f); c.rotate(ang); c.globalAlpha = a;
+      c.strokeStyle = n % 2 ? light(cols[0], .25) : mixHex('#9aa3b5', cols[0], .35); c.lineWidth = 1.7 * sc;
+      c.beginPath(); c.ellipse(0, 0, 4.2 * sc, (n % 2 ? 1.6 : 2.8) * sc, 0, 0, TAU); c.stroke(); c.restore();
+      next += step;
+    }
+    acc += d;
+  }
+}
+var EMBER = ['#ffcf6b', '#ff7a1a', '#ff3b1a'];
+/* Red: a pool of lava - crust plates drifting on it, bubbles swelling and
+   popping, embers rising off it */
+E.lava = function(){
+  var plates = times(irnd(5, 9), function(){ var a = rnd(0, TAU), r = Math.sqrt(Math.random()) * .6;
+    return {u:Math.cos(a) * r, v:Math.sin(a) * r, r:rnd(.1, .19), rot:rnd(0, TAU), sp:rnd(-.25, .25), du:rnd(-.025, .025), dv:rnd(-.025, .025),
+            sh:times(irnd(5, 7), function(){ return rnd(.72, 1.15); })}; });
+  var bubbles = [], drops = [], embers = [], st = {}, rate = rnd(1.4, 2.8), kept = {};
+  var draw = function(cu, co, R, t, dt, cols, S){
+    var g = ground(R), c = S.gb, U = R.w / 84, i;
+    var pool = keepGrad(kept, c, g.rx, function(){ var gr = c.createRadialGradient(0, 0, 0, 0, 0, g.rx);
+      gr.addColorStop(0, '#ffb347'); gr.addColorStop(.55, '#ff5a10'); gr.addColorStop(.86, '#7a1a06'); gr.addColorStop(1, 'rgba(40,10,4,0)'); return gr; });
+    c.save(); c.translate(g.cx, g.cy); c.scale(1, g.k); c.fillStyle = pool; c.globalAlpha = .9 + .1 * Math.sin(t * 1.3); c.beginPath(); c.arc(0, 0, g.rx, 0, TAU); c.fill(); c.restore();
+    plates.forEach(function(p){
+      p.u += p.du * dt; p.v += p.dv * dt; if(p.u * p.u + p.v * p.v > .5){ p.du *= -1; p.dv *= -1; } p.rot += p.sp * dt;
+      var ctr = gp(g, p.u, p.v);
+      c.beginPath();
+      p.sh.forEach(function(m, j){ var a = p.rot + j / p.sh.length * TAU, x = ctr[0] + Math.cos(a) * p.r * m * g.rx, y = ctr[1] + Math.sin(a) * p.r * m * g.rx * g.k;
+        if(j) c.lineTo(x, y); else c.moveTo(x, y); });
+      c.closePath(); c.fillStyle = '#2a0d06'; c.fill(); c.strokeStyle = 'rgba(255,122,42,.7)'; c.lineWidth = 1.2; c.stroke(); });
+    emit(st, 'b', rate, dt, function(){ var a = rnd(0, TAU), r = Math.sqrt(Math.random()) * .75;
+      bubbles.push({u:Math.cos(a) * r, v:Math.sin(a) * r, age:0, grow:rnd(.5, 1), max:rnd(3, 6.5) * U}); });
+    for(i = bubbles.length - 1; i >= 0; i--){ var b = bubbles[i], p = gp(g, b.u, b.v); b.age += dt;
+      if(b.age < b.grow){ var r = b.max * easeOut(b.age / b.grow);
+        c.fillStyle = 'rgba(255,214,140,.85)'; c.beginPath(); c.ellipse(p[0], p[1] - r * .4, r, r * .7, 0, 0, TAU); c.fill();
+        c.strokeStyle = 'rgba(120,30,8,.8)'; c.lineWidth = .8; c.stroke(); }
+      else if(b.age < b.grow + .35){ var k = (b.age - b.grow) / .35;
+        c.strokeStyle = hexA('#ffe1a0', 1 - k); c.lineWidth = 1.3; c.beginPath(); c.ellipse(p[0], p[1], b.max * (1 + k * 1.6), b.max * (1 + k * 1.6) * .45, 0, 0, TAU); c.stroke();
+        if(!b.popped){ b.popped = true;
+          for(var j = 0, n = irnd(3, 6); j < n; j++) drops.push({x:p[0], y:p[1], v:b.v, vx:rnd(-40, 40) * U, vy:-rnd(50, 95) * U, age:0, life:rnd(.4, .7)}); } }
+      else bubbles.splice(i, 1); }
+    for(i = drops.length - 1; i >= 0; i--){ var q = drops[i]; q.age += dt; if(q.age >= q.life){ drops.splice(i, 1); continue; }
+      q.vy += 320 * U * dt; q.x += q.vx * dt; q.y += q.vy * dt;
+      var dc = nearOf(S, q.v); dc.fillStyle = hexA('#ffb030', 1 - q.age / q.life); dc.beginPath(); dc.arc(q.x, q.y, 1.3 * U, 0, TAU); dc.fill(); }
+    emit(st, 'e', 6, dt, function(){ var a = rnd(0, TAU), r = Math.sqrt(Math.random()) * .8, v = Math.sin(a) * r, p = gp(g, Math.cos(a) * r, v);
+      embers.push({x:p[0], y:p[1], vx:rnd(-6, 6) * U, vy:-rnd(28, 60) * U, r:rnd(.7, 1.3) * U, age:0, life:rnd(1, 1.9), col:pick(EMBER), v:v}); });
+    for(i = embers.length - 1; i >= 0; i--){ var e = embers[i]; e.age += dt; if(e.age >= e.life){ embers.splice(i, 1); continue; }
+      e.x += e.vx * dt; e.y += e.vy * dt;
+      var ec = nearOf(S, e.v); ec.fillStyle = hexA(e.col, Math.sin(Math.PI * e.age / e.life)); ec.beginPath(); ec.arc(e.x, e.y, e.r, 0, TAU); ec.fill(); }
+  };
+  draw.plates = plates.length;
+  return draw;
+};
+/* Orange: the ground under the card broken into plates - one at a time they
+   lift on the light underneath them, seams blazing, and settle with a puff */
+E.plates = function(){
+  var n = irnd(6, 9), inner = rnd(.18, .32), dust = [], kept = {};
+  var cuts = times(n, function(i){ return (i + rnd(.15, .85)) / n * TAU; }).sort(function(a, b){ return a - b; });
+  var plates = cuts.map(function(a, i){ return {a0:a, a1:i < n - 1 ? cuts[i + 1] : cuts[0] + TAU, lift:0, t0:rnd(.2, 4), dur:rnd(1.3, 2.2), h:rnd(4, 8), tip:rnd(-.08, .08), puffed:false}; });
+  var draw = function(cu, co, R, t, dt, cols, S){
+    var g = ground(R), c = S.gb, U = R.w / 84, i;
+    c.save(); c.translate(g.cx, g.cy); c.scale(1, g.k); c.fillStyle = 'rgba(28,20,12,.85)'; c.beginPath(); c.arc(0, 0, g.rx, 0, TAU); c.fill(); c.restore();
+    groundGlow(c, g, '#ffb347', .14, .5);
+    plates.forEach(function(p){ var a = t - p.t0;
+      if(a > p.dur){ p.t0 = t + rnd(.6, 3.2); p.dur = rnd(1.3, 2.2); p.h = rnd(4, 8); p.tip = rnd(-.08, .08); p.puffed = false; a = -1; }
+      p.lift = a < 0 ? 0 : Math.sin(Math.PI * clamp(a / p.dur, 0, 1));
+      if(a > p.dur * .85 && !p.puffed){ p.puffed = true; var m = (p.a0 + p.a1) / 2, q = gp(g, Math.cos(m) * .6, Math.sin(m) * .6);
+        for(var j = 0; j < 10; j++) dust.push({x:q[0] + rnd(-12, 12) * U, y:q[1], vx:rnd(-25, 25) * U, vy:-rnd(4, 14) * U, r:rnd(.8, 1.5) * U, age:0, life:rnd(.6, 1.1), v:Math.sin(m)}); } });
+    var fill = keepGrad(kept, c, g.cy + '|' + U, function(){ return lin(c, 0, g.cy - 14 * U, 0, g.cy + 20 * U, ['#5a4128', '#2e2014']); });
+    plates.slice().sort(function(x, y){ return Math.sin((x.a0 + x.a1) / 2) - Math.sin((y.a0 + y.a1) / 2); }).forEach(function(p){
+      var pts = [], m = 10, j, lift = p.lift * p.h * U;
+      for(j = 0; j <= m; j++){ var a = p.a0 + (p.a1 - p.a0) * j / m; pts.push([Math.cos(a), Math.sin(a)]); }
+      for(j = m; j >= 0; j--){ var b = p.a0 + (p.a1 - p.a0) * j / m; pts.push([Math.cos(b) * inner, Math.sin(b) * inner]); }
+      if(p.lift > .02){ var mid = (p.a0 + p.a1) / 2, gl = gp(g, Math.cos(mid) * .6, Math.sin(mid) * .6), gr = g.rx * .7;
+        c.save(); c.globalCompositeOperation = 'lighter'; c.globalAlpha = .5 * p.lift;
+        c.drawImage(tdFxPuffSprite('#ffd696').cv, gl[0] - gr, gl[1] - gr, gr * 2, gr * 2); c.restore(); }
+      c.beginPath();
+      pts.forEach(function(q, k){ var s = gp(g, q[0] * .97, q[1] * .97), x = s[0], y = s[1] - lift - q[0] * p.tip * lift * 4; if(k) c.lineTo(x, y); else c.moveTo(x, y); });
+      c.closePath(); c.fillStyle = fill; c.fill();
+      c.strokeStyle = p.lift > .02 ? 'rgba(255,236,190,' + (.35 + .6 * p.lift).toFixed(3) + ')' : 'rgba(255,170,80,.28)'; c.lineWidth = 1 + 1.5 * p.lift; c.stroke(); });
+    c.save(); c.translate(g.cx, g.cy); c.scale(1, g.k); c.fillStyle = 'rgba(255,190,110,.5)'; c.beginPath(); c.arc(0, 0, g.rx * inner * .9, 0, TAU); c.fill(); c.restore();
+    for(i = dust.length - 1; i >= 0; i--){ var d = dust[i]; d.age += dt; if(d.age >= d.life){ dust.splice(i, 1); continue; }
+      d.x += d.vx * dt; d.y += d.vy * dt; var k = d.age / d.life, dc = nearOf(S, d.v);
+      dc.fillStyle = hexA('#c9a27a', .6 * (1 - k)); dc.beginPath(); dc.arc(d.x, d.y, d.r * (1 + k), 0, TAU); dc.fill(); }
+  };
+  draw.plates = n;
+  return draw;
+};
+/* Yellow: a soft golden light on the ground; every so often a bright ring
+   pulses out across it - ⚠ TWO RINGS (the author): each pulse is a pair, the
+   second a beat behind the first - and motes of light drift up and twinkle out */
+E.radiant = function(){
+  var rings = [], motes = [], st = {}, next = rnd(.2, .8), rate = rnd(4, 8), most = 0;
+  var draw = function(cu, co, R, t, dt, cols, S){
+    var g = ground(R), c = S.gb, U = R.w / 84, i;
+    groundGlow(c, g, '#ffe14a', .2 + .06 * Math.sin(t * 1.6), .95);
+    if(t >= next){ next = t + rnd(1.2, 2.5); var max = rnd(.85, 1.1);
+      rings.push({at:t, max:max}, {at:t + rnd(.22, .4), max:max * rnd(.86, 1)}); }
+    var live = 0;
+    for(i = rings.length - 1; i >= 0; i--){ var r = rings[i], k = (t - r.at) / 1.3;
+      if(k > 1){ rings.splice(i, 1); continue; } if(k < 0) continue;
+      live++;
+      var rr = g.rx * r.max * (.2 + .8 * easeOut(k));
+      c.beginPath(); c.ellipse(g.cx, g.cy, rr, rr * g.k, 0, 0, TAU);
+      c.strokeStyle = 'rgba(255,214,90,' + (.25 * (1 - k)).toFixed(3) + ')'; c.lineWidth = (8 * (1 - k) + 2) * U; c.stroke();
+      c.strokeStyle = 'rgba(255,240,170,' + (.9 * (1 - k)).toFixed(3) + ')'; c.lineWidth = (2.4 * (1 - k) + .6) * U; c.stroke(); }
+    most = Math.max(most, live); draw.most = most;
+    emit(st, 'm', rate, dt, function(){ var a = rnd(0, TAU), r = Math.sqrt(Math.random()) * .9, v = Math.sin(a) * r, p = gp(g, Math.cos(a) * r, v);
+      motes.push({x:p[0], y:p[1], vx:rnd(-5, 5) * U, vy:-rnd(18, 42) * U, r:rnd(.8, 1.6) * U, age:0, life:rnd(1.4, 2.6), col:pick(['#fff6cc', '#ffe14a', '#ffffff']), v:v, tw:rnd(4, 9)}); });
+    for(i = motes.length - 1; i >= 0; i--){ var m = motes[i]; m.age += dt; if(m.age >= m.life){ motes.splice(i, 1); continue; }
+      m.x += m.vx * dt; m.y += m.vy * dt;
+      var a = Math.sin(Math.PI * m.age / m.life) * (.6 + .4 * Math.sin(m.age * m.tw)), mc = nearOf(S, m.v);
+      mc.fillStyle = hexA(m.col, a * .3); mc.beginPath(); mc.arc(m.x, m.y, m.r * 3, 0, TAU); mc.fill();
+      mc.fillStyle = hexA(m.col, a); mc.beginPath(); mc.arc(m.x, m.y, m.r, 0, TAU); mc.fill(); }
+  };
+  draw.most = 0;
+  return draw;
+};
+/* a footprint in the ground's own plane, heading along +x */
+function drawPrint(c, kind, s, col, a){
+  c.globalAlpha = a; c.fillStyle = col;
+  if(kind === 'paw'){ c.beginPath(); c.ellipse(0, 0, s * .55, s * .62, 0, 0, TAU); c.fill();
+    [[.85, -.62], [1.05, -.2], [1.05, .2], [.85, .62]].forEach(function(q){ c.beginPath(); c.ellipse(q[0] * s, q[1] * s, s * .22, s * .26, 0, 0, TAU); c.fill(); }); }
+  else if(kind === 'hoof'){ [-1, 1].forEach(function(sd){ c.beginPath(); c.ellipse(s * .15, sd * s * .3, s * .7, s * .26, sd * .12, 0, TAU); c.fill(); }); }
+  else { c.lineCap = 'round'; c.strokeStyle = col; c.lineWidth = s * .2;
+    [[1.1, -.55], [1.25, 0], [1.1, .55], [-.6, 0]].forEach(function(q){ c.beginPath(); c.moveTo(0, 0); c.lineTo(q[0] * s, q[1] * s); c.stroke(); }); }
+  c.globalAlpha = 1;
+}
+var TRACKS = ['paw', 'hoof', 'bird'];
+/* Green: tracks walking round the circle one print at a time, left and
+   right, fading behind - one or two animals */
+E.tracks = function(){
+  var walkers = times(Math.random() < .55 ? 1 : 2, function(){ return {kind:pick(TRACKS), dir:sgn(), a:rnd(0, TAU), stride:rnd(.17, .26), every:rnd(.32, .55),
+    rr:rnd(.62, .88), gait:rnd(.045, .07), fade:rnd(2.2, 3.8), foot:1, next:0, size:rnd(.1, .135), prints:[]}; });
+  var draw = function(cu, co, R, t, dt, cols, S){
+    var g = ground(R), c = S.gb, n = 0;
+    groundGlow(c, g, cols[0], .1, .95);
+    walkers.forEach(function(w){
+      if(t >= w.next){ w.next = t + w.every; w.a += w.dir * w.stride; w.foot = -w.foot;
+        var off = w.foot * w.gait; w.prints.push({u:Math.cos(w.a) * (w.rr + off), v:Math.sin(w.a) * (w.rr + off), head:w.a + w.dir * Math.PI / 2, born:t}); }
+      for(var i = w.prints.length - 1; i >= 0; i--){ var p = w.prints[i], age = t - p.born;
+        if(age > w.fade){ w.prints.splice(i, 1); continue; }
+        var a = Math.min(1, age / .15) * (1 - age / w.fade), s = q4(R.w * w.size * depthScale(p.v)), q = gp(g, p.u, p.v);
+        /* one print, both its layers, baked once per animal, size and colour -
+           a print is the same shape every time, only turned and faded */
+        var sp = baked('print|' + w.kind + '|' + cols[0] + '|' + s, -1.9 * s, -1.9 * s, 1.9 * s, 1.9 * s, 0, function(b){
+          drawPrint(b, w.kind, s * 1.45, hexA(cols[0], .3), 1);
+          drawPrint(b, w.kind, s, hexA(light(cols[0], .35), .92), 1); });
+        c.save(); c.translate(q[0], q[1]); c.scale(1, g.k * 1.6); c.rotate(p.head); c.globalAlpha = a; blit(c, sp);
+        c.restore(); n++; }
+    });
+    draw.prints = n;
+  };
+  draw.kinds = walkers.map(function(w){ return w.kind; }); draw.prints = 0;
+  return draw;
+};
+/* Indigo: a rift in the ground - black at its heart, a pulsing rim, motes
+   drawn spiralling in - and the chains, tethered to rings in the ground and
+   floating up beside the card, slack and swaying, nearer ones larger and in
+   front (the author: JUST the chains, no tentacles) */
+E.rift = function(){
+  var size = rnd(.5, .7), dir = sgn(), kept = {};
+  var motes = times(irnd(14, 24), function(){ return {a:rnd(0, TAU), r:rnd(.3, 1), sp:rnd(.4, .9)}; });
+  var chains = times(irnd(2, 4), function(i){ var a = (i + rnd(.15, .85)) / 3.4 * TAU + rnd(0, 1);
+    return {a:a, rr:rnd(.55, .9), h:rnd(.55, .95), side:Math.cos(a) < 0 ? -1 : 1, sw:rnd(.7, 1.3), ph:rnd(0, 7), sag:rnd(.12, .3)}; });
+  var draw = function(cu, co, R, t, dt, cols, S){
+    var g = ground(R), c = S.gb, U = R.w / 84, pulse = .5 + .5 * Math.sin(t * 2.2), rx = g.rx * size;
+    groundGlow(c, g, cols[0], .16 + .08 * pulse, Math.min(1, size * 1.6));
+    var hole = keepGrad(kept, c, rx + '|' + cols[0], function(){ var gr = c.createRadialGradient(0, 0, 0, 0, 0, rx);
+      gr.addColorStop(0, '#000'); gr.addColorStop(.72, '#05030f'); gr.addColorStop(.92, hexA(dark(cols[0], .3), .9)); gr.addColorStop(1, hexA(cols[0], 0)); return gr; });
+    c.save(); c.translate(g.cx, g.cy); c.scale(1, g.k); c.fillStyle = hole; c.beginPath(); c.arc(0, 0, rx, 0, TAU); c.fill();
+    c.strokeStyle = hexA(light(cols[0], .35), .55 + .35 * pulse); c.lineWidth = 2 * U; c.beginPath(); c.arc(0, 0, rx * .9, 0, TAU); c.stroke(); c.restore();
+    motes.forEach(function(m){ m.r -= dt * .18 * m.sp; m.a += dir * dt * m.sp * (1.6 / Math.max(.2, m.r)); if(m.r < .05){ m.r = 1; m.a = rnd(0, TAU); }
+      var R1 = size * 1.5 * m.r, v = Math.sin(m.a) * R1, p = gp(g, Math.cos(m.a) * R1, v), a = Math.min(1, (1 - m.r) * 3) * Math.min(1, m.r * 4), mc = nearOf(S, v);
+      mc.fillStyle = hexA(light(cols[0], .5), .8 * a); mc.beginPath(); mc.arc(p[0], p[1], 1.3 * U, 0, TAU); mc.fill(); });
+    chains.map(function(ch){ return {ch:ch, v:Math.sin(ch.a) * ch.rr}; }).sort(function(x, y){ return x.v - y.v; }).forEach(function(it){
+      var ch = it.ch, v = it.v, cc = nearOf(S, v), sc = depthScale(v) * U, base = gp(g, Math.cos(ch.a) * ch.rr, v);
+      var top = [g.cx + ch.side * R.w * (.62 + .12 * Math.sin(t * ch.sw * .7 + ch.ph)), base[1] - R.h * ch.h * depthScale(v) + Math.sin(t * ch.sw + ch.ph) * 5 * U];
+      var mid = [(base[0] + top[0]) / 2 + ch.side * R.w * ch.sag * Math.sin(t * ch.sw * .8 + ch.ph), (base[1] + top[1]) / 2 + R.h * ch.sag * .4];
+      var pts = times(24, function(i){ var f = i / 23;
+        return [(1 - f) * (1 - f) * base[0] + 2 * (1 - f) * f * mid[0] + f * f * top[0], (1 - f) * (1 - f) * base[1] + 2 * (1 - f) * f * mid[1] + f * f * top[1]]; });
+      cc.save(); cc.translate(base[0], base[1]); cc.scale(1, .35); cc.strokeStyle = hexA(light(cols[0], .2), .8); cc.lineWidth = 2.2 * U; cc.beginPath(); cc.arc(0, 0, 6 * sc, 0, TAU); cc.stroke(); cc.restore();
+      chainAlong(cc, pts, cols, sc, .55 + .45 * depthScale(v));
+      cc.fillStyle = hexA(light(cols[0], .4), .5); cc.beginPath(); cc.arc(top[0], top[1], 2.4 * sc, 0, TAU); cc.fill(); });
+  };
+  draw.chains = chains.length; draw.tentacles = 0;
+  return draw;
+};
+
 /* ── the slots: colour × type, as the author settled them ── */
 var SLOTS = {
-  'red-spell':combo(['lightning', 'anvil', 'orbs']),      'red-action':E.swords,
-  'orange-spell':E.prisms,                                 'orange-action':E.cogs,
-  'yellow-spell':combo(['plus', 'constellation']),        'yellow-action':E.shield,
-  'green-spell':combo(['whirl', 'falling']),              'green-action':E.bow,
+  'red-spell':combo(['lightning', 'anvil', 'orbs', 'lava']),       'red-action':E.swords,
+  'orange-spell':combo(['prisms', 'runes', 'plates']),             'orange-action':E.cogs,
+  'yellow-spell':combo(['plus', 'constellation', 'radiant']),      'yellow-action':E.shield,
+  'green-spell':combo(['whirl', 'falling', 'tracks']),             'green-action':E.bow,
   'blue-spell':combo(['ripple', 'whirlpool', 'fireflies']), 'blue-action':E.potions,
-  'indigo-spell':combo(['tendrils', 'mist', 'chains']),   'indigo-action':E.crescents,
+  'indigo-spell':combo(['tendrils', 'mist', 'rift']),             'indigo-action':E.crescents,
   'violet-spell':E.necro,                                  'violet-action':E.blades,
   'grey':E.dust
 };
@@ -31055,7 +31385,8 @@ function tdPfxPool(c){
 }
 function tdPfxColsOf(key){ var k = key.split('-')[0]; return k === 'grey' ? GREY : [TDFX_COL[k]]; }
 /* the slots that draw on the ground canvases - a card with none of them has none */
-var GROUND_KEYS = ['blue-spell', 'violet-spell'];
+/* every coloured Spell has its ground since session 73 (Blue and Violet before it) */
+var GROUND_KEYS = ['red-spell', 'orange-spell', 'yellow-spell', 'green-spell', 'blue-spell', 'indigo-spell', 'violet-spell'];
 /* ⚠ THE 3, FROM DIFFERENT COLOURS FIRST (the author, session 71): in a random
    order, one effect of each colour not yet used, and only then - for a card
    of 1 or 2 colours - the rest. A card of one type is unchanged by it: each
@@ -31239,6 +31570,21 @@ window.tdPfxTick = function(dt){
   return n;
 };
 window.tdPfxPick = pick3;
+/* for the checks only - nothing in the app calls these (session 72) */
+window.tdPfxCheck = {
+  make:function(k){ return E[k](); },
+  parts:function(slot){ return (SLOTS[slot] && SLOTS[slot].parts) || null; },
+  shields:function(){ return Object.keys(shapes().shields); },
+  bowAim:function(){ return bowAim(0); },
+  /* a solid block drawn up out of the ground through fromGround, read back:
+     the alpha at the foot, half the fade up, and above the fade */
+  fade:function(){ var cv = document.createElement('canvas'); cv.width = cv.height = 200; var c = cv.getContext('2d');
+    var keep = DPR; DPR = 1; c.setTransform(1, 0, 0, 1, 0, 0);
+    fromGround(c, 100, 150, 30, 60, 1, function(x){ x.fillStyle = '#ffffff'; x.fillRect(70, 40, 60, 160); });
+    DPR = keep;
+    var a = function(y){ return c.getImageData(100, y, 1, 1).data[3]; };
+    return {foot:a(149), mid:a(146), above:a(130), below:a(160)}; }
+};
 /* for the checks */
 window.tdPfxStats = function(){
   var out = {};
@@ -35197,10 +35543,30 @@ function effectiveArtXf(c){
 function cardVariants(c){
   return (c && Array.isArray(c.variants) && c.variants.length) ? c.variants : null;
 }
+/* ⚠ WHICH LOOK THIS DRAWING SHOWS, PER SAGA (the author, session 72). The
+   choice is a saga field (SAGA_FIELDS, ed2_sagas.js): c.variant is the primary
+   saga's, c.sagaFields[sid].variant another saga's where it differs. A copy
+   from cardForSaga() is already that saga's and says so (__drawSaga); the
+   card itself asks edDrawSaga() which saga it is being drawn for. */
+function chosenVariantId(c){
+  if(!c)return null;
+  if(c.__drawSaga!==undefined||!c.sagaFields)return c.variant;
+  var sid=null;
+  try{ if(typeof window.edDrawSaga==='function')sid=window.edDrawSaga(c); }catch(_){}
+  var ov=sid&&c.sagaFields[sid];
+  return (ov&&ov.variant!==undefined)?ov.variant:c.variant;
+}
+/* writing the choice: through the saga write point, for the saga being edited */
+function setVariantChoice(c,id){
+  var sid=null;
+  try{ if(typeof window.edEditingSaga==='function')sid=window.edEditingSaga(); }catch(_){}
+  if(sid&&typeof window.edSetSagaField==='function')window.edSetSagaField(c,sid,'variant',id);
+  else c.variant=id;
+}
 function variantOf(c){
   var vs=cardVariants(c);
   if(!vs)return c;
-  var v=null, want=c.variant;
+  var v=null, want=chosenVariantId(c);
   for(var i=0;i<vs.length;i++){ if(vs[i] && vs[i].id===want){ v=vs[i]; break; } }
   if(!v)v=vs[0];
   /* The variant supplies visuals, the card supplies everything else. This is a
@@ -35242,18 +35608,22 @@ function variantOf(c){
    data is never written here. */
 function visualTarget(c){
   var vs=cardVariants(c); if(!vs)return c;
-  for(var i=0;i<vs.length;i++) if(vs[i].id===c.variant) return vs[i];
+  var want=chosenVariantId(c);
+  for(var i=0;i<vs.length;i++) if(vs[i].id===want) return vs[i];
   return vs[0];
 }
 window.edVariants=function(c){ return cardVariants(c)||[]; };
 window.edActiveVariant=function(c){
   var vs=cardVariants(c); if(!vs)return null;
-  for(var i=0;i<vs.length;i++) if(vs[i].id===c.variant) return vs[i];
+  var want=chosenVariantId(c);
+  for(var i=0;i<vs.length;i++) if(vs[i].id===want) return vs[i];
   return vs[0];
 };
+window.edChosenVariantId=function(c){ return chosenVariantId(c); };
+/* the dropdown: the saga being edited takes this look - the others keep theirs */
 window.edSetVariant=function(id){
   var c=curCard(); if(!c||!cardVariants(c))return;
-  c.variant=id; markDirty(c);
+  setVariantChoice(c,id); markDirty(c);
   renderPreview(c); try{ window.edRenderArtPanel(); }catch(_){}
   try{ scheduleFace(); }catch(_){}
 };
@@ -35272,7 +35642,8 @@ window.edAddVariant=function(){
   }
   var n=vs.length+1;
   vs.push({id:'v'+n+'_'+uid(),label:'Art '+n,art:'',imageUrl:'',artXf:null,holo:null,mark:''});
-  c.variant=vs[vs.length-1].id; markDirty(c);
+  /* the new look is chosen for the saga being edited (session 72) */
+  setVariantChoice(c,vs[vs.length-1].id); markDirty(c);
   renderPreview(c); try{ window.edRenderArtPanel(); }catch(_){}
 };
 window.edDeleteVariant=function(){
@@ -35280,7 +35651,19 @@ window.edDeleteVariant=function(){
   var cur=window.edActiveVariant(c);
   if(!confirm('Delete variant "'+(cur.label||cur.id)+'"? The card itself is not affected.'))return;
   c.variants=vs.filter(function(v){return v.id!==cur.id;});
-  c.variant=c.variants[0].id; markDirty(c);
+  /* every saga that showed it goes back to the first look (session 72) */
+  var first=c.variants[0].id;
+  if(c.variant===cur.id||!c.variant)c.variant=first;
+  /* written back through the saga write point, which drops a choice that is
+     now the same as the primary's - so nothing is left carrying a copy */
+  if(c.sagaFields)Object.keys(c.sagaFields).forEach(function(sid){
+    var bag=c.sagaFields&&c.sagaFields[sid];
+    if(!bag||bag.variant===undefined)return;
+    var to=(bag.variant===cur.id)?first:bag.variant;
+    if(typeof window.edSetSagaField==='function')window.edSetSagaField(c,sid,'variant',to);
+    else if(to===c.variant)delete bag.variant;
+  });
+  markDirty(c);
   renderPreview(c); try{ window.edRenderArtPanel(); }catch(_){}
 };
 window.edRenameVariant=function(){
@@ -35440,7 +35823,8 @@ function markIdOf(c,sagaId){
   try{
     if(typeof window.edCardForSaga==='function'){
       var sid=(sagaId!==undefined&&sagaId!==null)?sagaId
-             :((typeof window.edSagaOf==='function')?window.edSagaOf(c):null);
+             :((typeof window.edDrawSaga==='function')?window.edDrawSaga(c)
+              :(typeof window.edSagaOf==='function')?window.edSagaOf(c):null);
       if(sid)f=window.edCardForSaga(c,sid)||c;
     }
   }catch(_){}
@@ -36408,16 +36792,26 @@ window.edRemoveCardSaga=function(id){
    The watermark went the other way: it is part of how a version is PRINTED,
    like its flavour and its artist, so two sagas can carry the same card with
    different watermarks, or with none. */
-var SAGA_FIELDS=['flavor','flavorRows','artist','designer','mark'];
+/* ⚠ THE ART CHOICE IS PER SAGA TOO (the author, session 72): `variant` - which
+   of the card's looks ("Art 1", "Art 2") a saga prints - is a saga field like
+   the artist, so the artist credited can match the art shown. The looks
+   themselves stay ONE list on the card (c.variants); only the choice is per
+   saga. Read through variantOf() -> chosenVariantId() (ed2_core.js), which
+   asks edDrawSaga() which saga the drawing is for. */
+var SAGA_FIELDS=['flavor','flavorRows','artist','designer','mark','variant'];
 /* THE read point. Returns the card as THAT saga prints it. Mirrors variantOf():
-   a synthesised object, never a mutation, and the card itself when there is
-   nothing to override - so the common case allocates nothing. */
+   a synthesised object, never a mutation, and the card itself when it has no
+   per-saga values at all - so the common case allocates nothing.
+   ⚠ THE COPY KNOWS WHICH SAGA IT IS (session 72): a hidden `__drawSaga`, so
+   variantOf() takes the variant already resolved here instead of resolving it
+   again for whichever saga happens to be on screen. Not enumerable, so no
+   export, record or comparison ever sees it. */
 function cardForSaga(c,sagaId){
-  if(!c)return c;
-  var ov=c.sagaFields&&sagaId&&c.sagaFields[sagaId];
-  if(!ov)return c;
+  if(!c||!c.sagaFields||!sagaId)return c;
+  var ov=c.sagaFields[sagaId]||{};
   var out=Object.assign({},c);
   SAGA_FIELDS.forEach(function(f){ if(ov[f]!==undefined)out[f]=ov[f]; });
+  try{ Object.defineProperty(out,'__drawSaga',{value:sagaId,enumerable:false}); }catch(_){}
   return out;
 }
 /* THE write point. Writing the primary saga's value writes the card itself,
@@ -36448,6 +36842,9 @@ function captureSagaFields(dst,src,sagaId){
   if(!dst||!src||!sagaId||sagaId===sagaIdOf(dst))return 0;
   var n=0;
   SAGA_FIELDS.forEach(function(f){
+    /* a variant id names a look in the SOURCE's own list - meaningless on
+       dst. The picture it showed is matched instead (selectSagaVariant). */
+    if(f==='variant')return;
     var v=src[f];
     if(v===undefined||v===''||v===null)return;
     if(String(dst[f]==null?'':dst[f])===String(v))return;
@@ -36472,6 +36869,35 @@ window.edEditSaga=function(id){
   try{ renderPreview(c); }catch(_){}
 };
 window.edCardForSaga=function(c,id){ return cardForSaga(c,id); };
+/* ⚠ WHICH SAGA A DRAWING OF THE CARD IS FOR (session 72). In the editor, the
+   card being edited is drawn as the saga being edited - so picking "Art 2"
+   for a saga, or its flavour or artist, shows on the preview at once.
+   Everywhere else it is the saga the card is shown under (edSagaOf). The
+   catalogue's own filtering keeps asking edSagaOf: this is for drawing. */
+window.edDrawSaga=function(c){
+  try{
+    var cur=curCard();
+    if(cur&&c&&c.__id===cur.__id&&document.body.classList.contains('editor-active')){
+      var sid=window.edEditingSaga();
+      if(sid&&inSaga(cur,sid))return sid;
+    }
+  }catch(_){}
+  return window.edSagaOf(c);
+};
+/* The look a saga prints that shows THIS picture, if the card has one - the
+   share merge uses it, so each saga folded in goes on printing its own art. */
+function selectSagaVariant(c,sagaId,key){
+  var vs=cardVariants(c);
+  if(!vs||!key||!sagaId||!inSaga(c,sagaId))return false;
+  var hit=vs.filter(function(v){ return v&&(v.imageUrl===key||v.art===key); })[0];
+  if(!hit)return false;
+  return setSagaField(c,sagaId,'variant',hit.id);
+}
+/* the picture a card shows as one saga prints it */
+function sagaPictureOf(c,sagaId){
+  var v=variantOf(cardForSaga(c,sagaId));
+  return (v&&(v.imageUrl||v.art))||'';
+}
 window.edSetSagaField=function(c,id,f,v){ return setSagaField(c,id,f,v); };
 window.edSagaFieldList=function(){ return SAGA_FIELDS.slice(); };
 
@@ -37506,6 +37932,8 @@ function shareIntoExisting(ex,nc,sagaId){
     vs.push({id:'v'+n,label:'Art '+n,art:key,imageUrl:url});
   });
   if(vs.length>1){ ex.variants=vs; if(!ex.variant)ex.variant=vs[0].id; }
+  /* that saga goes on printing the picture it printed (session 72) */
+  selectSagaVariant(ex,sagaId,sagaPictureOf(nc,sagaIdOf(nc)));
   markDirty(ex);
   return true;
 }
@@ -38098,25 +38526,10 @@ window.edScanShared=function(){
     if(coll.length>30)h+="<i class='tpl-hint'>…and "+(coll.length-30)+" more.</i>";
     h+="</div>";
   }
-  /* cards that are ALREADY shared, with the way back out of it */
-  var live=(window.CARDS||[]).filter(isShared);
-  if(live.length){
-    h+="<div class='tpl-sec'><h4>Currently shared ("+live.length+")</h4>"
-      +"<i class='tpl-hint'>One record, several sagas — editing it changes it in all of "
-      +"them. <b>Split off</b> gives that one saga its own copy to diverge from here on; "
-      +"nothing is lost either way.</i><div class='dup-list'>";
-    live.slice(0,60).forEach(function(c){
-      h+="<div class='dup-row orph-row'><span class='dup-tag'>shared</span><b>"+e(c.name)+"</b>"
-        +sagaIdsOf(c).map(function(id){
-            var sg=sagaById(id);
-            return "<button class='ed2-btn tiny' title='Give "+e((sg&&sg.name)||id)
-              +" its own separate copy' onclick=\"edUnshareCard('"+e(c.__id)+"','"+e(id)
-              +"')\">Split off "+e((sg&&sg.name)||id)+"</button>"; }).join('')
-        +"</div>";
-    });
-    if(live.length>60)h+="<i class='tpl-hint'>…and "+(live.length-60)+" more.</i>";
-    h+="</div></div>";
-  }
+  /* ⚠ NO "CURRENTLY SHARED" LIST, AND NO SPLIT OFF (the author, session 72):
+     "the point is to share cards" - a card shared between sagas stays one
+     card. Each saga still prints its own flavour, artist, watermark and art
+     choice (SAGA_FIELDS), which is what a saga ever needed to differ in. */
   host.innerHTML=h;
   return groups;
 };
@@ -38161,6 +38574,8 @@ window.edMergeShared=function(){
           captureSagaFields(keep,cardForSaga(c,id),id);
         });
         shareIntoExisting(keep,c,sagaIdOf(c));
+        /* and every saga the copy was in prints the picture it printed (session 72) */
+        sagaIdsOf(c).forEach(function(id){ selectSagaVariant(keep,id,sagaPictureOf(c,id)); });
         tombs.push({id:c.id||uid(),__id:c.__id,name:c.name,cid:cardCid(c),
                     sagaId:sagaIdOf(c),saga:c.saga,__deleted:true});
       });
@@ -38191,41 +38606,6 @@ window.edMergeShared=function(){
       });
   });
 };
-/* The way back. Without it, sharing is a one-way door the first time one saga's
-   version needs to differ. Forks a private copy for that saga and drops the
-   membership - it creates a card and destroys nothing, so it is not gated. */
-window.edUnshareCard=function(id,sagaId){
-  var c=(window.CARDS||[]).find(function(x){return x.__id===id;});
-  if(!c||!sagaId||!inSaga(c,sagaId))return;
-  if(sagaIdsOf(c).length<2){ alert('"'+c.name+'" is only in one saga already.'); return; }
-  var sg=sagaById(sagaId);
-  /* the fork takes the values THAT saga was printing, resolved, as its own -
-     otherwise splitting off would silently hand it the primary's flavour */
-  var copy=JSON.parse(JSON.stringify(stripArt(cardForSaga(c,sagaId))));
-  copy.__id=uid(); copy.id=uid();
-  /* \u26a0 A FORK IS ANOTHER CARD, SO IT CANNOT KEEP THE ORIGINAL'S ID. The
-     clone above copies every field, cid included, and two live cards sharing
-     one id is the one thing the id model cannot survive - the boot merge
-     indexes by it. A random id of its own (session 57) - working it out from
-     this copy's saga and name could land on the original's own id. */
-  copy.cid=newCid();
-  copy.sagaId=sagaId; copy.saga=(sg&&sg.name)||sagaId;
-  copy.sagaIds=[sagaId]; delete copy.sagaFields;
-  /* and the original stops carrying overrides for a saga it no longer has */
-  if(c.sagaFields){ delete c.sagaFields[sagaId];
-    if(!Object.keys(c.sagaFields).length)delete c.sagaFields; }
-  /* the fork keeps the art it can see; ART[] is keyed, so both point at the
-     same blob rather than duplicating it */
-  var idx=window.CARDS.indexOf(c);
-  window.CARDS.splice(idx+1,0,copy);
-  removeSagaMembership(c,sagaId); markDirty(c);
-  Promise.all([persistCard(c),persistCard(copy)]).then(ensureSagaRecords).then(function(){
-    applyToCatalog(); refreshSagaFilter();
-    try{ window.edRenderSagaPage(); window.edScanShared(); }catch(_){}
-    toast('"'+c.name+'" now has its own copy in '+((sg&&sg.name)||sagaId));
-  });
-};
-
 /* ── SAGA PACKAGE (.zip) ─────────────────────────────────────────────────────
    Everything the spreadsheet cannot carry. cards.csv rides along so the zip is
    still human-editable; cards.json is the authoritative copy.
@@ -38751,9 +39131,15 @@ function buildFaceHTML(c, opts){
      sagas that is enabled. Guarded - editor-data merges after this section, and
      without it `f` is just the card, exactly as before. */
   var f=c;
+  /* ⚠ edDrawSaga, not edSagaOf (session 72): in the editor the card is drawn
+     as the saga being edited, so its flavour, artist, saga line and art all
+     show that saga's version together */
+  var _drawSid=null;
   try{
-    if(typeof window.edCardForSaga==='function' && typeof window.edSagaOf==='function')
-      f=window.edCardForSaga(c,window.edSagaOf(c))||c;
+    _drawSid=(typeof window.edDrawSaga==='function')?window.edDrawSaga(c)
+            :(typeof window.edSagaOf==='function')?window.edSagaOf(c):null;
+    if(typeof window.edCardForSaga==='function' && _drawSid)
+      f=window.edCardForSaga(c,_drawSid)||c;
   }catch(_){}
   /* parseFloat, not parseInt: flavorRows accepts halves (0.5, 1.5, ...) and it
      is a MULTIPLIER on line-height in fitFace, not a count of anything
@@ -38771,8 +39157,8 @@ function buildFaceHTML(c, opts){
      credit beside it was already correct. */
   var saga=c.saga||SETINFO.saga||'';
   try{
-    if(typeof window.edSagaOf==='function' && typeof window.edSagas==='function'){
-      var _sid=window.edSagaOf(c);
+    if(_drawSid && typeof window.edSagas==='function'){
+      var _sid=_drawSid;
       var _sg=window.edSagas().filter(function(s){return s.id===_sid;})[0];
       if(_sg)saga=_sg.name||_sid||saga;
     }
@@ -39574,7 +39960,8 @@ window.edSetSection=function(i,field,val){
 function variantPickerHTML(c){
   var vs=cardVariants(c);
   var opts=(vs||[]).map(function(v){
-    return "<option value='"+e(v.id)+"'"+(v.id===c.variant?' selected':'')+">"+e(v.label||v.id)+"</option>";
+    /* the choice of the saga being edited (session 72) */
+    return "<option value='"+e(v.id)+"'"+(v.id===chosenVariantId(c)?' selected':'')+">"+e(v.label||v.id)+"</option>";
   }).join('');
   return "<div class='ed2-var-row'>"
     +"<label class='ed2-var-h'>Variant</label>"
@@ -40734,6 +41121,12 @@ function renderFields(){
        Duplicate's old place on row two. The corners do not move. */
     +"<div class='ed2-btngrid'>"
       +"<button class='ed2-btn info ed2-bg-back' onclick='edCloseEditor()'>&larr; Back to catalog</button>"
+      /* ⚠ AUTOSAVE, RIGHT OF BACK TO CATALOG (the author, session 72): on by
+         default; off stores a card only on Save, Save All and leaving it */
+      +(function(){ var on=(typeof window.edAutosaveOn==='function')?window.edAutosaveOn():true;
+          return "<button class='ed2-btn ed2-bg-auto"+(on?' on':'')+"' id='edAutoBtn' aria-pressed='"+(on?'true':'false')+"'"
+            +" title='Autosave: every change is stored by itself a moment after you make it. Turn it off to store only when you press Save.'"
+            +" onclick='edToggleAutosave()'>Autosave</button>"; })()
       +"<button class='ed2-btn ed2-btn-pur' onclick='edDuplicate()'>Duplicate</button>"
       +"<button class='ed2-btn ed2-btn-pur' onclick=\"showTab('keywords')\">▬ Keywords</button>"
       +"<button class='ed2-btn ed2-bg-fix' onclick='edOpenFix()'>⚙ Fix</button>"
@@ -43197,6 +43590,14 @@ function dashAt(text, i, isFlavor){
   }
   return {len: len, asDash: asDash, rep: rep};
 }
+/* ⚠ NOT EVEN LISTED (the author, session 72): a dash right after the word
+   "Non" or "Sub" (Non-Ongoing, Sub-type) and a dash right before a number
+   (-1 counter, 2–3) are never a dash to fix - Fix — leaves them out
+   altogether rather than listing them unticked. */
+function dashIgnored(text, i, len){
+  if(/[0-9]/.test(text[i + len] || '')) return true;
+  return /(^|[^A-Za-z])(non|sub)$/i.test(text.slice(Math.max(0, i - 4), i));
+}
 function dashScan(){
   var dash = [], word = [];
   (window.CARDS || []).forEach(function(c){
@@ -43207,6 +43608,7 @@ function dashScan(){
       for(var i = 0; i < t.length; i++){
         if(DASH_SET.indexOf(t[i]) < 0) continue;
         var d = dashAt(t, i, !!f.flavor);
+        if(dashIgnored(t, i, d.len)){ i += d.len - 1; continue; }
         var o = {card: c, field: f, pos: i, len: d.len, asDash: d.asDash, rep: d.rep, on: d.asDash};
         (d.asDash ? dash : word).push(o);
         i += d.len - 1;
@@ -43737,7 +44139,68 @@ window.edLiveQuiet=function(fn){
 };
 function markDirty(c){ if(_liveQuiet) return; _dirty[c.__id]=true;
   try{ if(typeof window.edBackupProofStale==='function') window.edBackupProofStale(); }catch(_){}
-  try{ edSyncSaveBtns(); }catch(_){} }
+  try{ edSyncSaveBtns(); }catch(_){}
+  autosaveSoon(); }
+
+/* ── AUTOSAVE (the author, session 72) ─────────────────────────────────────
+   "Make sure the website is properly saving ANY AND ALL changes to cards."
+   Every change already lands in the card in memory at once (edLive, and every
+   other writer through markDirty); it reached the STORE only on Save, Save
+   All or leaving the card - so a refresh in between lost it, and the publish
+   count read before the refresh counted changes the store never had.
+
+   So every change is stored by itself half a second after the last one, and
+   whatever is waiting is stored when the tab is hidden or closed. The Save
+   buttons stay, and still say what is waiting.
+
+   ⚠ A TOGGLE, ON BY DEFAULT (the author): the Autosave button right of Back
+   to catalog. Off is exactly the old behaviour - Save, Save All and leaving a
+   card. Kept in the meta store ('autosave'), read at boot (edLoadAutosave).
+
+   ⚠ IT NEVER CALLS edLive. Typing has already put the field into the card,
+   and edLive marks the card dirty - from here that would schedule the next
+   autosave for ever. */
+var AUTOSAVE = true, _autoT = 0;
+function autosaveSoon(){
+  if(!AUTOSAVE) return;
+  clearTimeout(_autoT);
+  _autoT = setTimeout(autosaveNow, 500);
+}
+function autosaveNow(){
+  clearTimeout(_autoT); _autoT = 0;
+  if(!AUTOSAVE) return Promise.resolve(0);
+  var cards = (window.CARDS || []).filter(function(x){ return _dirty[x.__id]; });
+  if(!cards.length) return Promise.resolve(0);
+  return Promise.all(cards.map(edStoreCard)).then(function(res){
+    return res.filter(Boolean).length;
+  });
+}
+window.edAutosaveNow = autosaveNow;
+window.edAutosaveOn = function(){ return AUTOSAVE; };
+window.edToggleAutosave = function(on){
+  AUTOSAVE = (on === undefined) ? !AUTOSAVE : !!on;
+  try{ setMetaSafe('autosave', AUTOSAVE, 'the Autosave switch'); }catch(_){}
+  var b = document.getElementById('edAutoBtn');
+  if(b){ b.classList.toggle('on', AUTOSAVE); b.setAttribute('aria-pressed', AUTOSAVE ? 'true' : 'false'); }
+  /* turned on with changes waiting: store them now */
+  if(AUTOSAVE) autosaveNow();
+  toast(AUTOSAVE ? 'Autosave on - every change is stored as you make it' : 'Autosave off - press Save to store a change');
+  return AUTOSAVE;
+};
+/* at boot: the stored answer, if there is one - absent means on */
+window.edLoadAutosave = function(){
+  try{
+    return getMeta('autosave').then(function(v){
+      AUTOSAVE = (v === false) ? false : true;
+      var b = document.getElementById('edAutoBtn');
+      if(b){ b.classList.toggle('on', AUTOSAVE); b.setAttribute('aria-pressed', AUTOSAVE ? 'true' : 'false'); }
+      return AUTOSAVE;
+    }, function(){ return AUTOSAVE; });
+  }catch(_){ return Promise.resolve(AUTOSAVE); }
+};
+/* hidden or closing: whatever is waiting goes now, not in half a second */
+document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'hidden') autosaveNow(); });
+addEventListener('pagehide', function(){ autosaveNow(); });
 
 /* ---- open editor on a specific catalog card (from Edit button) ---- */
 window.edEditCard=function(nameOrId){
@@ -43932,8 +44395,11 @@ window.edDuplicate=function(){ var c=curCard(); if(!c)return;
    comment in ed2_face.js records exactly that. It also swallowed its own
    failure with .catch(function(){}). Use edDeleteCard, which writes a proper
    tombstone. */
+/* ⚠ A NEW STORE KEY FOR EVERY UPLOAD (session 72): Publish names the copy it
+   uploads after the key (ghLocalArtUploads, ed2_publish.js), so a replaced
+   picture has to be a new name or the old one already up would stand. */
 window.edArtUpload=function(file){ var c=curCard(); if(!c||!file)return;
-  var rd=new FileReader(); rd.onload=function(ev){ var d=ev.target.result; var key='userart_'+(c.__id);
+  var rd=new FileReader(); rd.onload=function(ev){ var d=ev.target.result; var key='userart_'+(c.__id)+'_'+Date.now().toString(36);
     var vt=visualTarget(c); vt.art=key; vt.imageUrl=d; ART[key]=d; markDirty(c);
     var _b=dataUrlToBlob(d); if(_b)artPut(key,_b); else put('art',{key:key,dataUrl:d});
     renderPreview(c); try{ window.edRenderArtPanel(); }catch(_){}
@@ -46867,11 +47333,34 @@ function ghCdnBase(){
 function ghBuildCards(){
   return (window.CARDS||[]).filter(function(c){ return c&&!c.testing; }).map(ghPublishedForm);
 }
+/* the published form of the catalogue - what "What changed…" compares (session 72's
+   reload checks read it before and after a refresh) */
+window.edGhBuildCards=function(){ return ghBuildCards(); };
 function ghBuildTesting(){
   return (window.CARDS||[]).filter(function(c){ return c&&c.testing; }).map(ghPublishedForm);
 }
 /* One card as it is published - shared by both files, so a card moving in or
    out of Test reads the same in either. */
+/* ⚠ A PICTURE THAT LIVES ONLY IN THIS BROWSER (session 72). The editor's
+   Upload stores the image in IndexedDB under a key, and the card holds that
+   key and - until the next reload - a data: URL of the image. This form used
+   to blank the key and pass the data: URL straight into cards.json: before a
+   refresh the card published a whole image inlined into the JSON, and after
+   one it published NO picture at all - which is the "What changed" count
+   falling after a refresh. A data: or blob: URL is never published now; a
+   card whose picture is only here points at the copy Publish uploads beside
+   the catalogue (ghLocalArtUploads), the same before and after a reload.
+
+   ⚠ art-uploads/, NOT art/. The CLI owns art/ and deletes from it anything
+   not in the art/ folder on disk (github_sync.py, OWNED_DIRS) - a picture
+   uploaded from here would be gone on its next run. */
+var GH_UPLOAD_DIR='art-uploads', GH_ART_WIDTH=1600, GH_ART_QUALITY=.82;
+function ghLocalArtKey(b){
+  var k=b&&b.art;
+  if(!k||/[\/:]/.test(k))return '';               /* a path or an address is not a store key */
+  return (typeof ART!=='undefined'&&ART[k])?k:'';
+}
+function ghVolatile(u){ u=String(u||''); return u.indexOf('data:')===0||u.indexOf('blob:')===0; }
 function ghPublishedForm(c){
   var base=ghCdnBase();
   var o=JSON.parse(JSON.stringify(c));
@@ -46883,14 +47372,65 @@ function ghPublishedForm(c){
      the set's card wherever it lands. */
   delete o.local;
   artBearers(o).forEach(function(b){
+    var local=ghLocalArtKey(b);
     ['art','imageUrl'].forEach(function(f){
       var v=b[f]||'';
-      if(!v||v.indexOf('http')===0||v.indexOf('data:')===0||v.indexOf('blob:')===0)return;
+      if(!v||v.indexOf('http')===0)return;
+      if(ghVolatile(v)){ b[f]=''; return; }          /* never published (session 72) */
       if(f==='imageUrl')b[f]=base+'/art/'+ghOutName(v);
       else b[f]='';   /* an IndexedDB key on THIS machine, meaningless elsewhere */
     });
+    /* only here: the copy Publish uploads (a picture on disk, art/..., wins) */
+    if(local&&!b.imageUrl)b.imageUrl=base+'/'+GH_UPLOAD_DIR+'/'+ghOutName(local);
   });
   return o;
+}
+/* every picture the published cards point at that only this browser has */
+function ghLocalArtUploads(){
+  var out=[], seen={};
+  (window.CARDS||[]).forEach(function(c){
+    if(!c||c.__deleted)return;
+    artBearers(c).forEach(function(b){
+      var k=ghLocalArtKey(b);
+      if(!k)return;
+      var u=String(b.imageUrl||'');
+      if(u&&!ghVolatile(u))return;                    /* it has a real address already */
+      var path=GH_UPLOAD_DIR+'/'+ghOutName(k);
+      if(seen[path])return;
+      seen[path]=1; out.push({key:k,path:path});
+    });
+  });
+  return out;
+}
+window.edGhLocalArtUploads=function(){ return ghLocalArtUploads(); };
+/* one stored picture as the CLI would publish it: WebP, 1600px wide at most, q82 */
+function ghWebpBytes(key){
+  var src=ART[key];
+  if(!src)return Promise.reject(new Error('the picture "'+key+'" is not in this browser'));
+  return fetch(src).then(function(r){ return r.blob(); }).then(function(bl){ return createImageBitmap(bl); })
+    .then(function(bm){
+      var w=Math.min(GH_ART_WIDTH,bm.width), h=Math.max(1,Math.round(bm.height*w/bm.width));
+      var cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+      cv.getContext('2d').drawImage(bm,0,0,w,h);
+      return new Promise(function(res,rej){
+        cv.toBlob(function(out){ if(out)res(out); else rej(new Error('could not encode "'+key+'"')); },'image/webp',GH_ART_QUALITY);
+      });
+    }).then(function(out){ return out.arrayBuffer(); }).then(function(ab){ return new Uint8Array(ab); });
+}
+window.edGhWebpBytes=function(key){ return ghWebpBytes(key); };
+/* The pictures still missing from the repository, encoded and hashed into
+   `local` beside the text files, their paths returned. Named by the store key,
+   which is new for every upload (edArtUpload) - so a picture replaced is a new
+   file, and one already up is never sent twice. */
+function ghAddLocalArt(rt,local){
+  var todo=ghLocalArtUploads().filter(function(u){ return !(rt&&rt.paths&&rt.paths[u.path]); });
+  return todo.reduce(function(p,u){
+    return p.then(function(done){
+      return ghWebpBytes(u.key).then(function(bytes){
+        return ghBlobSha(bytes).then(function(sha){ local[u.path]={sha:sha,bytes:bytes}; done.push(u.path); return done; });
+      });
+    });
+  },Promise.resolve([]));
 }
 
 /* ⚠ THE BUTTON DOES NOT UPLOAD THE APP ITSELF, ON PURPOSE.
@@ -47435,6 +47975,8 @@ window.edGhPreview=function(){
     return ghBlobSha(bytes).then(function(s){ local[n]={sha:s,bytes:bytes}; });
   })).then(ghRemoteTree).then(function(rt){
     var up=names.filter(function(n){ return rt.paths[n]!==local[n].sha; });
+    /* and the pictures only this browser has, not yet up (session 72) */
+    ghLocalArtUploads().forEach(function(u){ if(!rt.paths[u.path])up.push(u.path); });
     _ghBusy=false;
     ghPushStatus(up.length
       ? 'Would upload: '+up.join(', ')+'. Nothing else is touched.'
@@ -47492,6 +48034,10 @@ window.edGhPublish=function(){
     var bytes=enc.encode(files[n]);
     return ghBlobSha(bytes).then(function(s){ local[n]={sha:s,bytes:bytes}; });
   })).then(ghRemoteTree).then(function(rt){
+    /* the pictures only this browser has go up in the same commit (session 72) */
+    ghPushStatus('Preparing pictures…');
+    return ghAddLocalArt(rt,local).then(function(paths){ paths.forEach(function(n){ names.push(n); }); return rt; });
+  }).then(function(rt){
     var up=names.filter(function(n){ return rt.paths[n]!==local[n].sha; });
     if(!up.length){ _ghBusy=false; ghPushStatus('Already up to date - nothing to do.'); return; }
     ghPushStatus('Uploading '+up.length+' file(s)…');
@@ -48389,6 +48935,8 @@ function boot(){ if(_inited)return; _inited=true;
     return Promise.all([getAll('cards'),getAll('art'),getMeta('setInfo'),getMeta('cardsLight'),getMeta('customTemplate'),getMeta('layoutMode'),getMeta('bleedOn'),tplAll(),getMeta('edgeMode'),getMeta('alignRules'),getMeta('kwStyles'),getMeta('pillsOn'),getMeta('kwHover'),kwCustomAll(),getMeta('pinMode'),marksAll(),sagasAll(),getMeta('fitMode'),getMeta('sagaGroups'),getMeta('tplDefaults'),getMeta('alignBase')]).then(function(r){
       var cards=r[0],art=r[1],si=r[2],tpl=r[4],bleed=r[6];
       artHydrate(art);
+      /* the Autosave switch (session 72) - on unless it was turned off */
+      try{ window.edLoadAutosave(); }catch(_){}
       if(si)SETINFO=Object.assign(SETINFO,si);
       /* r[3] (cardsLight) and r[5] (layoutMode) are still READ, and then
          deliberately thrown away. Classic and Dark are the only look there is
