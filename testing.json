@@ -3,9 +3,68 @@
   "name": "Conjure UCG",
   "format": 2,
   "testing": true,
-  "cardCount": 10
+  "cardCount": 11
  },
  "cards": [
+  {
+   "name": "_Bash",
+   "manaCost": "R",
+   "cmc": "1",
+   "colors": [
+    "red"
+   ],
+   "superTypes": [
+    "Quick",
+    "Action"
+   ],
+   "subTypes": [
+    "Warrior"
+   ],
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "This card costs {R} less if you control an Ire Essence and a Warrior Field Card.\nDeal 1 damage to any target Field Card.",
+   "flavor": "",
+   "imageUrl": "",
+   "art": "",
+   "saga": "Beginnings",
+   "revision": "Rev 1.0",
+   "artist": "Midjourney",
+   "designer": "ConjureUCG LLC 2026",
+   "lastUpdated": "2026-10-07",
+   "variants": [
+    {
+     "id": "v1",
+     "label": "Default",
+     "art": "",
+     "imageUrl": ""
+    }
+   ],
+   "variant": "v1",
+   "sagaId": "Beginnings",
+   "id": "cmuy9t6g16zron",
+   "_src": "mse",
+   "cid": "cmuy9t6g152nxg4b0eh6u",
+   "testing": 1
+  },
   {
    "id": "cmtup123b1g75c",
    "name": "_New Card",
@@ -313,7 +372,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Coalesce — Arm this card.\nAs long as this card is Armed, it gains \n\"{L}: Create 1 mana of any color among the Armed card's colors.\"",
+   "ruleText": "Coalesce — Arm this card.\nAs long as this card is Armed, it gains  \"{L}: Create 1 mana of any color among the Armed card's colors.\"",
    "flavor": "",
    "saga": "",
    "revision": "",
