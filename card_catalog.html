@@ -25453,8 +25453,11 @@ function tblStale(){
 function tblLinkWords(){
   if(!tblOn() || TBL.watch || !tblHasOthers()) return '';
   if(tblStale()) return 'not answering';
-  if(!TBL.rtt) return '';
-  return TBL.rtt + ' ms';
+  /* ⚠ MEASURED IS rttAt, NOT A NON-ZERO rtt (session 73). Two copies on one
+     machine answer each other inside a millisecond, and a round trip of 0 ms
+     read as "never measured" - the link said nothing at all. */
+  if(!TBL.rttAt) return '';
+  return (TBL.rtt || '<1') + ' ms';
 }
 
 /* One beat each way. A `beat` is answered immediately with a `beatback`
@@ -30471,11 +30474,16 @@ window.tdFxStats = function(){
      - the Resolve button and the effects that come out of the ground (the
        ripple, the whirlpool, the necromancer's) stay where the card rests -
        they neither float nor tilt with it - and share one ground (session 70);
-     - ⚠ every coloured Spell has its own effect on that ground (session 73,
-       FX Lab V): Red the Lava Pool, Orange the Rising Plates, Yellow the
-       Radiant Ring in pairs, Green the Animal Tracks, Indigo the Void Rift
-       with the tethered chains (and no chains hanging from the card any
-       more) - with Blue's whirlpool and Violet's grave from before.
+     - ⚠ every coloured Spell that is NOT Ongoing has its own effect on that
+       ground (session 73, FX Lab V): Red the Lava Pool (a third smaller
+       across), Orange the Rising Plates, Yellow the Radiant Ring in pairs,
+       Green the Animal Tracks round the outside of the circle, Indigo the
+       Void Rift with the tethered chains (and no chains hanging from the card
+       any more), Blue the whirlpool with its spray rising, Violet the hands
+       and skulls standing round the circle in depth;
+     - ⚠ an ONGOING Spell has none of the ground (session 73): its burst plays
+       the rest of its slot, and the Violet one's hands and skulls come up at
+       random round the card instead (burstParts, E.necroAround).
 
    HOW IT IS DRAWN. Each such card carries two canvases of its own (from
    tdFxCard's markup): .td-pfx-u at z-index -1 - inside the card's stacking
@@ -30768,16 +30776,38 @@ E.ripple = function(){ var rings = irnd(2, 4), sp = rnd(.32, .5); return functio
   var c = S.gb, g = ground(R);
   for(var i = 0; i < rings; i++){ var k = ((t * sp) + i / rings) % 1, rx = g.rx * (.35 + .8 * k);
     c.strokeStyle = hexA(cols[0], (1 - k) * .65); c.lineWidth = 1.6; c.beginPath(); c.ellipse(g.cx, g.cy, rx, rx * g.k, 0, 0, TAU); c.stroke(); } }; };
+/* ⚠ THE WHIRLPOOL RISES (the author, session 73: "more vertical 3D
+   dimensionality ... where the particles actually rise up as they spin
+   around"): spray spirals up off it, turning with it, going round behind the
+   card on the far side and in front of it on the near, fading as it climbs */
 E.whirlpool = function(){ var arms = irnd(3, 5), dir = sgn(), sp = rnd(.8, 1.4), foam = times(14, function(){ return {r:rnd(.2, .95), a:rnd(0, TAU)}; });
-  return function(cu0, co, R, t, dt, cols, S){
-    var cu = S.gb, g = ground(R), cx = g.cx, cy = g.cy, sq = g.k;
+  /* the spray turns faster than the water and leaves a short streak behind each
+     drop, along its way round and up, so the climb reads as a turning column
+     and not as loose sparks */
+  var lift = rnd(.45, .7), riser = function(h){ return {a:rnd(0, TAU), r:rnd(.3, .85), h:h, sp:rnd(.22, .38), sz:rnd(1, 1.8), white:Math.random() < .45}; };
+  var rising = times(irnd(28, 40), function(){ return riser(Math.random()); }), me = null;
+  return (me = function(cu0, co, R, t, dt, cols, S){
+    var cu = S.gb, g = ground(R), cx = g.cx, cy = g.cy, sq = g.k, U = R.w / 84, top = 0, spin = dir * sp * 1.5;
+    function spot(p, a, h){ var Y = Math.sin(a) * p.r * g.rx; return [cx + Math.cos(a) * p.r * g.rx, cy + Y * sq - h * R.h * lift, Y / g.rx]; }
+    rising.forEach(function(p, i){
+      var w = spin * (2.4 - p.r * 1.4);
+      p.h += dt * p.sp; p.a += dt * w; p.r = Math.max(.12, p.r - dt * .05);
+      if(p.h >= 1){ rising[i] = riser(0); return; }
+      var at = spot(p, p.a, p.h), tail = spot(p, p.a - w * .16, Math.max(0, p.h - p.sp * .16)), v = at[2], c = nearOf(S, v);
+      var x = at[0], y = at[1], a = Math.sin(Math.PI * p.h) * .9, rr = p.sz * U * depthScale(v), col = p.white ? '#ffffff' : light(cols[0], .45);
+      c.save(); c.globalAlpha = a * .6; c.drawImage(tdFxPuffSprite(cols[0]).cv, x - rr * 3, y - rr * 3, rr * 6, rr * 6); c.restore();
+      c.strokeStyle = hexA(light(cols[0], .3), a * .55); c.lineWidth = rr * 1.1; c.lineCap = 'round';
+      c.beginPath(); c.moveTo(tail[0], tail[1]); c.lineTo(x, y); c.stroke();
+      c.fillStyle = hexA(col, a); c.beginPath(); c.arc(x, y, rr, 0, TAU); c.fill();
+      top = Math.max(top, p.h * R.h * lift); });
+    me.rising = rising.length; me.top = top;
     function at(s, i){ var r = s * g.rx, a = dir * (s * 4.2 - t * sp) + i * TAU / arms; return [cx + Math.cos(a) * r, cy + Math.sin(a) * r * sq]; }
     cu.lineCap = 'round';
     for(var i = 0; i < arms; i++) for(var j = 1; j <= 30; j++){ var s0 = (j - 1) / 30, p0 = at(s0, i), p1 = at(j / 30, i);
       cu.strokeStyle = hexA(j % 3 ? cols[0] : light(cols[0], .5), (1 - s0) * .75); cu.lineWidth = 2.6 * (1 - s0) + .5;
       cu.beginPath(); cu.moveTo(p0[0], p0[1]); cu.lineTo(p1[0], p1[1]); cu.stroke(); }
     foam.forEach(function(f){ var a = f.a - dir * t * sp * (1.3 - f.r); cu.fillStyle = 'rgba(255,255,255,' + (.6 * (1 - f.r)).toFixed(3) + ')';
-      cu.beginPath(); cu.arc(cx + Math.cos(a) * f.r * g.rx, cy + Math.sin(a) * f.r * g.rx * sq, 1.3, 0, TAU); cu.fill(); }); }; };
+      cu.beginPath(); cu.arc(cx + Math.cos(a) * f.r * g.rx, cy + Math.sin(a) * f.r * g.rx * sq, 1.3, 0, TAU); cu.fill(); }); }); };
 E.fireflies = function(){ var n = irnd(6, 12), sp = rnd(.6, 1.1), f = times(n, function(){ return {a:rnd(0, 7), b:rnd(0, 7), c:rnd(0, 7), fx:rnd(.3, .7), fy:rnd(.3, .7), blink:rnd(1.2, 2.6), bp:rnd(0, 7)}; });
   return function(cu, co, R, t, dt, cols){ f.forEach(function(q){ var w = wander(q, t, sp), b = Math.pow(.5 + .5 * Math.sin(t * TAU / q.blink + q.bp), 3);
     glowDot(co, R.cx + w[0] * R.w * .95, R.cy + w[1] * R.h * .8, 2.3, cols[0], .2 + .8 * b); }); }; };
@@ -30971,53 +31001,105 @@ function fromGround(co, bx, foot, halfW, top, s, paint){
   x.globalCompositeOperation = 'source-over';
   co.drawImage(_scr, 0, 0, pw, ph, bx - halfW, top, pw / DPR, ph / DPR);
 }
-E.necro = function(){ var nh = irnd(2, 3), nk = irnd(1, 2), slots = shuffle(times(nh + nk, function(i){ return (i + rnd(.25, .75)) / (nh + nk); }));
-  var P = new Parts(), st = {}, me = null;
-  /* each hand and skull stands at its own depth on the ground ellipse (-1 the
-     far edge, 1 the near), so they come up out of the same ground as the glow */
-  var hands = slots.slice(0, nh).map(function(f){ return {f:f, d:rnd(-.5, .6), per:rnd(5.5, 7.5), ph:rnd(0, 7), lean:rnd(-.25, .25), sz:rnd(.9, 1.15)}; });
-  var skulls = slots.slice(nh).map(function(f){ return {f:f, d:rnd(-.5, .6), per:rnd(6, 8), ph:rnd(0, 7), lean:rnd(-.2, .2), sz:rnd(.9, 1.2)}; });
+/* ── the necromancer's hands and skulls, shared by the ground (E.necro) and an
+   Ongoing Violet Spell's burst (E.necroAround) ── */
+/* a hand at one of 16 curls, baked (a finger tip moves well under a pixel from one to the next) */
+function handSprite(cols, s, cq){
+  var curl = .25 + .55 * cq / 15;
+  return baked('hand|' + cols[0] + '|' + s.toFixed(4) + '|' + cq, -19.5 * s, -32.5 * s, 19.5 * s, 43.5 * s, 8, function(c){
+    c.strokeStyle = light(cols[0], .78); c.shadowColor = cols[0]; c.shadowBlur = 8; c.lineCap = 'round';
+    c.lineWidth = 3 * s; c.beginPath(); c.moveTo(-3 * s, 0); c.lineTo(-4 * s, 40 * s); c.moveTo(3 * s, 0); c.lineTo(4 * s, 40 * s); c.stroke();
+    c.fillStyle = light(cols[0], .7); rrect(c, -7 * s, -12 * s, 14 * s, 12 * s, 3 * s); c.fill();
+    c.lineWidth = 2.4 * s;
+    [-5.5, -1.8, 1.8, 5.5].forEach(function(fx, i){ var a0 = -Math.PI / 2 + fx * .05, l1 = (i === 0 || i === 3 ? 8 : 10) * s, l2 = 7 * s;
+      var x1 = fx * s + Math.cos(a0) * l1, y1 = -12 * s + Math.sin(a0) * l1, a1 = a0 + curl * 1.3;
+      c.beginPath(); c.moveTo(fx * s, -12 * s); c.lineTo(x1, y1); c.lineTo(x1 + Math.cos(a1) * l2, y1 + Math.sin(a1) * l2); c.stroke(); });
+    var ta = -2.5 + curl * .8; c.beginPath(); c.moveTo(-7 * s, -5 * s); c.lineTo(-7 * s + Math.cos(ta) * 8 * s, -5 * s + Math.sin(ta) * 8 * s); c.stroke(); });
+}
+function skullSprite(cols, m){
+  var Sh = shapes();
+  return baked('skull|' + cols[0] + '|' + m.toFixed(4), -12 * m, -20 * m, 12 * m, -1.5 * m, 10, function(c){ c.scale(m, m); c.translate(-12, -22);
+    c.shadowColor = cols[0]; c.shadowBlur = 10; c.fillStyle = light(cols[0], .78); c.fill(Sh.skull); });
+}
+/* one figure up out of the ground at (x, foot), `rise` 0..1 of the way out */
+function drawFigure(c, f, x, foot, s, rise, t, cols){
+  if(f.kind === 'hand'){
+    var base = foot - rise * 34 * s, cq = Math.round(15 * (.5 + .5 * Math.sin(t * 2.4 + f.ph))), sp = handSprite(cols, s, cq);
+    fromGround(c, x, foot, 28 * s, base - 40 * s, s, function(b){ b.translate(x, base); b.rotate(f.lean); blit(b, sp); });
+  } else {
+    var m = s * 1.15, sb = foot + 6 * s - rise * 30 * s, look = Math.sin(t * 1.3 + f.ph) * .12, sk = skullSprite(cols, m);
+    fromGround(c, x, foot, 18 * s, sb - 27 * s, s, function(b){ b.translate(x, sb); b.rotate(f.lean + look); blit(b, sk);
+      /* the eyes glow on their own beat, drawn live */
+      b.scale(m, m); b.translate(-12, -22);
+      b.fillStyle = hexA(cols[0], .5 + .4 * Math.sin(t * 3 + f.ph)); b.beginPath(); b.arc(8.4, 11.3, 1.1, 0, TAU); b.arc(15.6, 11.3, 1.1, 0, TAU); b.fill(); });
+  }
+}
+/* how far out of the ground a figure is at time t on its own cycle */
+function figureRise(f, t){
+  var k = ((t + f.ph) % f.per) / f.per;
+  return f.kind === 'hand' ? (k < .25 ? ease(k / .25) : k < .75 ? 1 : 1 - ease((k - .75) / .25))
+                           : (k < .3 ? ease(k / .3) : k < .72 ? 1 : 1 - ease((k - .72) / .28));
+}
+/* the blades' smoke (E.blades) at a figure's feet */
+function figureSmoke(P, st, key, x, y, s, rise, dt, cols){
+  emit(st, key, 11 * Math.min(1, rise * 3), dt, function(){
+    P.add({k:Math.random() < .5 ? 'dot' : 'puff', x:x + rnd(-11, 11) * s, y:y + rnd(-2, 1) * s, vx:rnd(-16, 16), vy:-rnd(6, 20),
+           r:1.2, r0:2, r1:13, a:.55, life:rnd(.6, 1.1), col:Math.random() < .5 ? '#2a1830' : light(cols[0], .25)}); });
+}
+/* ⚠ THE HANDS AND SKULLS STAND ROUND THE CIRCLE, IN DEPTH (the author, session
+   73: "some 3D dimensionality, like the chains of the indigo ... where they
+   sit around the circle"). Each comes up at its own place round the ground's
+   ring: on the far half it is smaller and behind the card, on the near half
+   larger and in front, the nearer drawn over the further. */
+E.necro = function(){ var nh = irnd(2, 3), nk = irnd(1, 2), n = nh + nk, off = rnd(0, TAU);
+  var Pb = new Parts(), Pf = new Parts(), st = {}, me = null;
+  var figs = shuffle(times(n, function(i){ return i < nh ? 'hand' : 'skull'; })).map(function(kind, i){
+    return {kind:kind, a:off + (i + rnd(.2, .8)) / n * TAU, rr:rnd(.8, .98), per:kind === 'hand' ? rnd(5.5, 7.5) : rnd(6, 8), ph:rnd(0, 7),
+            lean:kind === 'hand' ? rnd(-.25, .25) : rnd(-.2, .2), sz:kind === 'hand' ? rnd(.9, 1.15) : rnd(.9, 1.2)}; });
   return (me = function(cu, co0, R, t, dt, cols, S){
-    var g = ground(R), gb = S.gb, co = S.gf, Sh = shapes(), ry = g.rx * g.k;
+    var g = ground(R), gb = S.gb, ry = g.rx * g.k;
     var glow = gb.createRadialGradient(g.cx, g.cy, 0, g.cx, g.cy, g.rx); glow.addColorStop(0, hexA(dark(cols[0], .3), .55)); glow.addColorStop(1, hexA(cols[0], 0));
     /* the glow squashed onto the ground: drawn as a circle under a vertical squash */
     gb.save(); gb.translate(g.cx, g.cy); gb.scale(1, g.k); gb.translate(-g.cx, -g.cy);
     gb.fillStyle = glow; gb.beginPath(); gb.arc(g.cx, g.cy, g.rx, 0, TAU); gb.fill(); gb.restore();
     gb.strokeStyle = hexA(cols[0], .35); gb.lineWidth = 1.2; gb.beginPath(); gb.ellipse(g.cx, g.cy, g.rx * .82, ry * .82, 0, 0, TAU); gb.stroke();
-    /* where on the ground a thing stands: across it by f, at depth d */
-    function spot(f, d){ var x = g.cx + (f * 2 - 1) * g.rx * .8, u = (x - g.cx) / g.rx; return [x, g.cy + d * ry * Math.sqrt(Math.max(0, 1 - u * u))]; }
-    /* the blades' smoke (E.blades), at a foot, while what stands there is out */
-    function smoke(key, x, y, s, rise){
-      emit(st, key, 11 * Math.min(1, rise * 3), dt, function(){
-        P.add({k:Math.random() < .5 ? 'dot' : 'puff', x:x + rnd(-11, 11) * s, y:y + rnd(-2, 1) * s, vx:rnd(-16, 16), vy:-rnd(6, 20),
-               r:1.2, r0:2, r1:13, a:.55, life:rnd(.6, 1.1), col:Math.random() < .5 ? '#2a1830' : light(cols[0], .25)}); }); }
-    hands.forEach(function(h, hi){
-      var k = ((t + h.ph) % h.per) / h.per, rise = k < .25 ? ease(k / .25) : k < .75 ? 1 : 1 - ease((k - .75) / .25);
-      var s = R.w / 95 * h.sz * (1 + h.d * .12), b = spot(h.f, h.d), base = b[1] - rise * 34 * s;
-      /* the hand is baked at each of 16 curls - a finger tip moves well under a pixel from one to the next */
-      var cq = Math.round(15 * (.5 + .5 * Math.sin(t * 2.4 + h.ph))), curl = .25 + .55 * cq / 15;
-      var sp = baked('hand|' + cols[0] + '|' + s.toFixed(4) + '|' + cq, -19.5 * s, -32.5 * s, 19.5 * s, 43.5 * s, 8, function(c){
-        c.strokeStyle = light(cols[0], .78); c.shadowColor = cols[0]; c.shadowBlur = 8; c.lineCap = 'round';
-        c.lineWidth = 3 * s; c.beginPath(); c.moveTo(-3 * s, 0); c.lineTo(-4 * s, 40 * s); c.moveTo(3 * s, 0); c.lineTo(4 * s, 40 * s); c.stroke();
-        c.fillStyle = light(cols[0], .7); rrect(c, -7 * s, -12 * s, 14 * s, 12 * s, 3 * s); c.fill();
-        c.lineWidth = 2.4 * s;
-        [-5.5, -1.8, 1.8, 5.5].forEach(function(fx, i){ var a0 = -Math.PI / 2 + fx * .05, l1 = (i === 0 || i === 3 ? 8 : 10) * s, l2 = 7 * s;
-          var x1 = fx * s + Math.cos(a0) * l1, y1 = -12 * s + Math.sin(a0) * l1, a1 = a0 + curl * 1.3;
-          c.beginPath(); c.moveTo(fx * s, -12 * s); c.lineTo(x1, y1); c.lineTo(x1 + Math.cos(a1) * l2, y1 + Math.sin(a1) * l2); c.stroke(); });
-        var ta = -2.5 + curl * .8; c.beginPath(); c.moveTo(-7 * s, -5 * s); c.lineTo(-7 * s + Math.cos(ta) * 8 * s, -5 * s + Math.sin(ta) * 8 * s); c.stroke(); });
-      fromGround(co, b[0], b[1], 28 * s, base - 40 * s, s, function(c){ c.translate(b[0], base); c.rotate(h.lean); blit(c, sp); });
-      if(rise > .02) smoke('h' + hi, b[0], b[1], s, rise); });
-    skulls.forEach(function(h, ki){
-      var k = ((t + h.ph) % h.per) / h.per, rise = k < .3 ? ease(k / .3) : k < .72 ? 1 : 1 - ease((k - .72) / .28);
-      var s = R.w / 95 * h.sz * (1 + h.d * .12), b = spot(h.f, h.d), base = b[1] + 6 * s - rise * 30 * s, look = Math.sin(t * 1.3 + h.ph) * .12, m = s * 1.15;
-      var sp = baked('skull|' + cols[0] + '|' + m.toFixed(4), -12 * m, -20 * m, 12 * m, -1.5 * m, 10, function(c){ c.scale(m, m); c.translate(-12, -22);
-        c.shadowColor = cols[0]; c.shadowBlur = 10; c.fillStyle = light(cols[0], .78); c.fill(Sh.skull); });
-      fromGround(co, b[0], b[1], 18 * s, base - 27 * s, s, function(c){ c.translate(b[0], base); c.rotate(h.lean + look); blit(c, sp);
-        /* the eyes glow on their own beat, drawn live */
-        c.scale(m, m); c.translate(-12, -22);
-        c.fillStyle = hexA(cols[0], .5 + .4 * Math.sin(t * 3 + h.ph)); c.beginPath(); c.arc(8.4, 11.3, 1.1, 0, TAU); c.arc(15.6, 11.3, 1.1, 0, TAU); c.fill(); });
-      if(rise > .02) smoke('k' + ki, b[0], b[1], s, rise); });
-    P.step(dt); P.draw(co); me.smoke = P.a.length; }); };
+    var front = 0;
+    figs.map(function(f, i){ return {f:f, i:i, v:Math.sin(f.a) * f.rr}; }).sort(function(x, y){ return x.v - y.v; }).forEach(function(it){
+      var f = it.f, v = it.v, c = nearOf(S, v), P = v < 0 ? Pb : Pf, p = gp(g, Math.cos(f.a) * f.rr, v);
+      var s = R.w / 95 * f.sz * (.7 + .24 * (v + 1)), rise = figureRise(f, t);
+      if(v >= 0) front++;
+      c.save(); c.globalAlpha = .78 + .22 * (v + 1) / 2;
+      drawFigure(c, f, p[0], p[1], s, rise, t, cols); c.restore();
+      if(rise > .02) figureSmoke(P, st, 'f' + it.i, p[0], p[1], s, rise, dt, cols); });
+    Pb.step(dt); Pb.draw(gb); Pf.step(dt); Pf.draw(S.gf);
+    me.smoke = Pb.a.length + Pf.a.length; me.front = front; me.depths = figs.map(function(f){ return Math.sin(f.a) * f.rr; }); }); };
+/* ⚠ AN ONGOING VIOLET SPELL: THE HANDS AND SKULLS COME UP ROUND THE CARD (the
+   author, session 73 - the effects under the card are for Spells that are NOT
+   Ongoing). During the burst, at random moments and at random places round
+   the card's edge, a hand or a skull comes up out of nothing, lingers, and
+   sinks again - behind the card, as every part of an Ongoing burst is. */
+E.necroAround = function(){ var nh = irnd(3, 4), nk = irnd(1, 2), P = new Parts(), st = {}, me = null;
+  var figs = shuffle(times(nh + nk, function(i){ return i < nh ? 'hand' : 'skull'; })).map(function(kind){
+    return {kind:kind, u:Math.random(), off:rnd(.04, .14), at:rnd(.2, 3.1), stay:rnd(.8, 1.6), ph:rnd(0, 7),
+            lean:kind === 'hand' ? rnd(-.3, .3) : rnd(-.2, .2), sz:rnd(.85, 1.1)}; });
+  return (me = function(cu, co, R, t, dt, cols){
+    var shown = 0;
+    figs.forEach(function(f, i){
+      var a = t - f.at, L = .5 + f.stay + .5;
+      if(a < 0 || a > L) return;
+      var rise = a < .5 ? ease(a / .5) : a < .5 + f.stay ? 1 : 1 - ease((a - .5 - f.stay) / .5);
+      var p = perim(R, f.off * R.w, f.u), s = R.w / 95 * f.sz;
+      cu.save(); cu.globalAlpha = .9; groundGlowAt(cu, p[0], p[1], 22 * s, cols[0], .45 * rise);
+      drawFigure(cu, f, p[0], p[1], s, rise, t, cols); cu.restore();
+      shown++;
+      if(rise > .02) figureSmoke(P, st, 'a' + i, p[0], p[1], s, rise, dt, cols); });
+    P.step(dt); P.draw(cu); me.shown = Math.max(me.shown || 0, shown); me.smoke = P.a.length; }); };
+/* a small squashed glow on the ground at a point */
+function groundGlowAt(c, x, y, r, col, a){
+  if(a <= 0) return;
+  c.save(); c.translate(x, y); c.scale(1, .35); c.globalAlpha *= a;
+  c.drawImage(tdFxPuffSprite(dark(col, .3)).cv, -r, -r, r * 2, r * 2); c.restore();
+}
 E.blades = function(){ var P = new Parts(), st = {}, used = [];
   /* each blade's spot is chosen once - it stabs the same place every time */
   var blades = times(irnd(1, 3), function(){ var side, hgt, tries = 0;
@@ -31179,8 +31261,10 @@ E.lava = function(){
     return {u:Math.cos(a) * r, v:Math.sin(a) * r, r:rnd(.1, .19), rot:rnd(0, TAU), sp:rnd(-.25, .25), du:rnd(-.025, .025), dv:rnd(-.025, .025),
             sh:times(irnd(5, 7), function(){ return rnd(.72, 1.15); })}; });
   var bubbles = [], drops = [], embers = [], st = {}, rate = rnd(1.4, 2.8), kept = {};
+  /* ⚠ A THIRD SMALLER ACROSS (the author, session 73): the pool and all on it
+     sit on a ground 67% the size of the shared one, centred the same */
   var draw = function(cu, co, R, t, dt, cols, S){
-    var g = ground(R), c = S.gb, U = R.w / 84, i;
+    var g0 = ground(R), g = {cx:g0.cx, cy:g0.cy, rx:g0.rx * LAVA_R, k:g0.k}, c = S.gb, U = R.w / 84, i;
     var pool = keepGrad(kept, c, g.rx, function(){ var gr = c.createRadialGradient(0, 0, 0, 0, 0, g.rx);
       gr.addColorStop(0, '#ffb347'); gr.addColorStop(.55, '#ff5a10'); gr.addColorStop(.86, '#7a1a06'); gr.addColorStop(1, 'rgba(40,10,4,0)'); return gr; });
     c.save(); c.translate(g.cx, g.cy); c.scale(1, g.k); c.fillStyle = pool; c.globalAlpha = .9 + .1 * Math.sin(t * 1.3); c.beginPath(); c.arc(0, 0, g.rx, 0, TAU); c.fill(); c.restore();
@@ -31211,21 +31295,27 @@ E.lava = function(){
       e.x += e.vx * dt; e.y += e.vy * dt;
       var ec = nearOf(S, e.v); ec.fillStyle = hexA(e.col, Math.sin(Math.PI * e.age / e.life)); ec.beginPath(); ec.arc(e.x, e.y, e.r, 0, TAU); ec.fill(); }
   };
-  draw.plates = plates.length;
+  draw.plates = plates.length; draw.radius = LAVA_R;
   return draw;
 };
+var LAVA_R = .67;
 /* Orange: the ground under the card broken into plates - one at a time they
    lift on the light underneath them, seams blazing, and settle with a puff */
+/* ⚠ (the author, session 73) the inner circle 15% bigger, the outer 25%
+   smaller, and the plates move 25% less: they lift 3-6 units (it was 4-8) and
+   tip at most .06 (it was .08) */
+var PLATE_OUT = .75, PLATE_HUB = 1.15, PLATE_MOVE = .75;
 E.plates = function(){
-  var n = irnd(6, 9), inner = rnd(.18, .32), dust = [], kept = {};
+  var n = irnd(6, 9), inner = rnd(.18, .32) * PLATE_HUB / PLATE_OUT, dust = [], kept = {};
   var cuts = times(n, function(i){ return (i + rnd(.15, .85)) / n * TAU; }).sort(function(a, b){ return a - b; });
-  var plates = cuts.map(function(a, i){ return {a0:a, a1:i < n - 1 ? cuts[i + 1] : cuts[0] + TAU, lift:0, t0:rnd(.2, 4), dur:rnd(1.3, 2.2), h:rnd(4, 8), tip:rnd(-.08, .08), puffed:false}; });
+  var plates = cuts.map(function(a, i){ return {a0:a, a1:i < n - 1 ? cuts[i + 1] : cuts[0] + TAU, lift:0, t0:rnd(.2, 4), dur:rnd(1.3, 2.2),
+    h:rnd(4, 8) * PLATE_MOVE, tip:rnd(-.08, .08) * PLATE_MOVE, puffed:false}; });
   var draw = function(cu, co, R, t, dt, cols, S){
-    var g = ground(R), c = S.gb, U = R.w / 84, i;
+    var g0 = ground(R), g = {cx:g0.cx, cy:g0.cy, rx:g0.rx * PLATE_OUT, k:g0.k}, c = S.gb, U = R.w / 84, i;
     c.save(); c.translate(g.cx, g.cy); c.scale(1, g.k); c.fillStyle = 'rgba(28,20,12,.85)'; c.beginPath(); c.arc(0, 0, g.rx, 0, TAU); c.fill(); c.restore();
     groundGlow(c, g, '#ffb347', .14, .5);
     plates.forEach(function(p){ var a = t - p.t0;
-      if(a > p.dur){ p.t0 = t + rnd(.6, 3.2); p.dur = rnd(1.3, 2.2); p.h = rnd(4, 8); p.tip = rnd(-.08, .08); p.puffed = false; a = -1; }
+      if(a > p.dur){ p.t0 = t + rnd(.6, 3.2); p.dur = rnd(1.3, 2.2); p.h = rnd(4, 8) * PLATE_MOVE; p.tip = rnd(-.08, .08) * PLATE_MOVE; p.puffed = false; a = -1; }
       p.lift = a < 0 ? 0 : Math.sin(Math.PI * clamp(a / p.dur, 0, 1));
       if(a > p.dur * .85 && !p.puffed){ p.puffed = true; var m = (p.a0 + p.a1) / 2, q = gp(g, Math.cos(m) * .6, Math.sin(m) * .6);
         for(var j = 0; j < 10; j++) dust.push({x:q[0] + rnd(-12, 12) * U, y:q[1], vx:rnd(-25, 25) * U, vy:-rnd(4, 14) * U, r:rnd(.8, 1.5) * U, age:0, life:rnd(.6, 1.1), v:Math.sin(m)}); } });
@@ -31246,7 +31336,7 @@ E.plates = function(){
       d.x += d.vx * dt; d.y += d.vy * dt; var k = d.age / d.life, dc = nearOf(S, d.v);
       dc.fillStyle = hexA('#c9a27a', .6 * (1 - k)); dc.beginPath(); dc.arc(d.x, d.y, d.r * (1 + k), 0, TAU); dc.fill(); }
   };
-  draw.plates = n;
+  draw.plates = n; draw.outer = PLATE_OUT; draw.hub = inner * PLATE_OUT; draw.lifts = function(){ return plates.map(function(p){ return p.h; }); };
   return draw;
 };
 /* Yellow: a soft golden light on the ground; every so often a bright ring
@@ -31291,10 +31381,11 @@ function drawPrint(c, kind, s, col, a){
 }
 var TRACKS = ['paw', 'hoof', 'bird'];
 /* Green: tracks walking round the circle one print at a time, left and
-   right, fading behind - one or two animals */
+   right, fading behind - one or two animals. ⚠ ROUND THE OUTSIDE of the
+   circle (the author, session 73): their path is 110-124% of its radius */
 E.tracks = function(){
   var walkers = times(Math.random() < .55 ? 1 : 2, function(){ return {kind:pick(TRACKS), dir:sgn(), a:rnd(0, TAU), stride:rnd(.17, .26), every:rnd(.32, .55),
-    rr:rnd(.62, .88), gait:rnd(.045, .07), fade:rnd(2.2, 3.8), foot:1, next:0, size:rnd(.1, .135), prints:[]}; });
+    rr:rnd(1.1, 1.24), gait:rnd(.045, .07), fade:rnd(2.2, 3.8), foot:1, next:0, size:rnd(.1, .135), prints:[]}; });
   var draw = function(cu, co, R, t, dt, cols, S){
     var g = ground(R), c = S.gb, n = 0;
     groundGlow(c, g, cols[0], .1, .95);
@@ -31315,6 +31406,7 @@ E.tracks = function(){
     draw.prints = n;
   };
   draw.kinds = walkers.map(function(w){ return w.kind; }); draw.prints = 0;
+  draw.paths = walkers.map(function(w){ return w.rr - w.gait; });
   return draw;
 };
 /* Indigo: a rift in the ground - black at its heart, a pulsing rim, motes
@@ -31361,6 +31453,18 @@ var SLOTS = {
   'violet-spell':E.necro,                                  'violet-action':E.blades,
   'grey':E.dust
 };
+/* every effect knows its own name, so a slot's parts can be read back */
+Object.keys(E).forEach(function(k){ if(!E[k].parts) E[k].part = k; });
+function slotParts(key){ var f = SLOTS[key]; return f ? (f.parts || [f.part]) : []; }
+/* ⚠ NO GROUND UNDER AN ONGOING SPELL (the author, session 73): the effects
+   that come out of the ground under the card are for Spells that are NOT
+   Ongoing. An Ongoing card's burst plays the rest of its slot, and the Violet
+   Spell's hands and skulls come up round the card instead (E.necroAround). */
+var GROUND_PARTS = {ripple:1, whirlpool:1, necro:1, lava:1, plates:1, radiant:1, tracks:1, rift:1};
+var BURST_SWAP = {necro:'necroAround'};
+function burstParts(key){
+  return slotParts(key).map(function(k){ return BURST_SWAP[k] || k; }).filter(function(k){ return !GROUND_PARTS[k]; });
+}
 
 /* ═════ which cards, and what they play ═════ */
 /* 'loop' - an Action or Spell that is not Ongoing; 'ongoing' - one that is;
@@ -31407,7 +31511,7 @@ function tdPfxNew(item, c, board, burst){
     if(tdCardHasKw(item, 'Absolute', board)) kw.push('kw-absolute');
   }
   var now = performance.now();
-  var inst = keys.map(function(k){ return {key:k, cols:tdPfxColsOf(k), draw:SLOTS[k](), t0:now}; })
+  var inst = keys.map(function(k){ return {key:k, cols:tdPfxColsOf(k), draw:burst ? combo(burstParts(k))() : SLOTS[k](), t0:now}; })
     .concat(kw.map(function(k){ return {key:k, cols:GREY, draw:E[k](), t0:now}; }));
   if(burst) inst.push({key:'circle', cols:pal, draw:E['circle-' + circle](), t0:now});
   return {at:Date.now(), keys:keys, kw:kw, pool:pool.length, inst:inst, burst:!!burst,
@@ -31574,6 +31678,7 @@ window.tdPfxPick = pick3;
 window.tdPfxCheck = {
   make:function(k){ return E[k](); },
   parts:function(slot){ return (SLOTS[slot] && SLOTS[slot].parts) || null; },
+  burstParts:function(slot){ return burstParts(slot); },
   shields:function(){ return Object.keys(shapes().shields); },
   bowAim:function(){ return bowAim(0); },
   /* a solid block drawn up out of the ground through fromGround, read back:
