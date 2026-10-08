@@ -509,6 +509,52 @@ body.light .nf-atk select,body.light .nf-atk input{background:rgba(196,92,92,.07
 body.light .nf-hp  select,body.light .nf-hp  input{background:rgba(201,168,76,.07)}
 body.light .nf-arc select,body.light .nf-arc input{background:rgba(41,128,185,.07)}
 body.light .nf-rng select,body.light .nf-rng input{background:rgba(92,158,110,.07)}
+/* (session 75) a filter label on its control's own row, to its left: Saga,
+   Rule Text */
+.fl-row{display:flex;align-items:center;gap:8px}
+.fl-row .fl{margin-bottom:0}
+.fl-row select{flex:1 1 auto;min-width:0;width:auto}
+/* ⚠ RULE TEXT'S LABEL IS THE SMALLER ONE, as Updated Since's is: its longest
+   choice, "Include Any of These Words", needs about 175px of dropdown at the
+   panel's usual size, and beside a full-size label the row leaves it 125 - it
+   was cut off at "Include Any of The". The smaller label and type let all of it
+   show. */
+.fl-row-tight{gap:6px}
+.fl-sm{font-size:.74rem;letter-spacing:.02em}
+/* "Rg" keeps its case; every other filter label is set in capitals */
+.fl-keepcase{text-transform:none}
+/* the number box beside a "Contains" choice has nothing to say */
+.nf input[type=number]:disabled{opacity:.35;cursor:not-allowed}
+/* ── THE COMBINED-STAT BUTTONS (session 75, the author) ─────────────────────
+   Two toggles side by side - Attack + Arcane, Health + Arcane - in the card
+   editor's own gradient for that stat (.ed2-nf-atkarc / .ed2-nf-hparc): on the
+   border, and the same five stops faintly as the fill. Off, the whole button
+   is greyed out; on, it is in colour and its box holds a green tick. The
+   checkbox is still there, out of sight, so the keyboard and every reader of
+   it work as before. */
+.cbtn-row{display:flex;gap:6px;margin-top:7px}
+.cbtn{flex:1 1 0;min-width:0;display:flex;position:relative}
+.cbtn input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+.cbtn label{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:4px;padding:4px 5px;cursor:pointer;
+  font-family:'Crimson Pro',serif;font-size:.8rem;font-weight:600;line-height:1.1;color:var(--tx);
+  border:2px solid transparent;filter:grayscale(1);opacity:.45;transition:filter .15s,opacity .15s}
+.cbtn label:hover{opacity:.7}
+.cbtn input:checked+label{filter:none;opacity:1}
+.cbtn input:focus-visible+label{outline:2px solid var(--gd);outline-offset:2px}
+.cbtn-atk label{border-image:linear-gradient(90deg,#c45c5c 0%,#803030 30%,#1a2440 55%,#2980b9 80%,#7b9cda 100%) 1;
+  background:linear-gradient(90deg,rgba(196,92,92,.24) 0%,rgba(128,48,48,.24) 30%,rgba(26,36,64,.24) 55%,rgba(41,128,185,.24) 80%,rgba(123,156,218,.24) 100%)}
+.cbtn-hp label{border-image:linear-gradient(90deg,#c9a84c 0%,#7a6030 30%,#1a2440 55%,#2980b9 80%,#7b9cda 100%) 1;
+  background:linear-gradient(90deg,rgba(201,168,76,.24) 0%,rgba(122,96,48,.24) 30%,rgba(26,36,64,.24) 55%,rgba(41,128,185,.24) 80%,rgba(123,156,218,.24) 100%)}
+body.light .cbtn-atk label{background:linear-gradient(90deg,rgba(196,92,92,.14) 0%,rgba(128,48,48,.14) 30%,rgba(26,36,64,.14) 55%,rgba(41,128,185,.14) 80%,rgba(123,156,218,.14) 100%)}
+body.light .cbtn-hp label{background:linear-gradient(90deg,rgba(201,168,76,.14) 0%,rgba(122,96,48,.14) 30%,rgba(26,36,64,.14) 55%,rgba(41,128,185,.14) 80%,rgba(123,156,218,.14) 100%)}
+.cbtn-ck{flex:0 0 13px;width:13px;height:13px;box-sizing:border-box;border:1.5px solid var(--td);display:flex;align-items:center;justify-content:center}
+.cbtn input:checked+label .cbtn-ck{border-color:#5c9e6e;background:rgba(92,158,110,.22)}
+.cbtn input:checked+label .cbtn-ck::after{content:'\2713';color:#4cd07a;font-size:12px;font-weight:700;line-height:1}
+.cbtn-ico{flex:0 0 15px}
+.cbtn-t{min-width:0}
+/* the card-name suggestions under the search bar (catNameCombo) */
+.cat-ncombo{top:calc(100% + 3px);border-top:1px solid var(--b2);border-radius:6px;max-height:300px}
+.cat-ncombo b{color:var(--go);font-weight:700}
 .ck-row{display:flex;align-items:center;gap:5px;margin-top:5px}
 .ck-row input[type=checkbox]{width:13px;height:13px;cursor:pointer;accent-color:var(--go)}
 .ck-row label{font-family:'Crimson Pro',serif;font-size:.8rem;color:var(--td);cursor:pointer}
@@ -8420,9 +8466,9 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
     <div class='sbh' style='justify-content:flex-end'><button class='rb' onclick='reset()'>Reset</button><button class='sb-min' onclick='minimizeSidebar(true)'>Minimize</button></div>
     <div class='fs'><div style='position:relative'><span style='position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--tm);pointer-events:none'>&#8981;</span><input type='text' id='ns' placeholder='Search…' autocomplete='off' style='width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:18px;padding:6px 12px 6px 30px;color:var(--tx);font-family:"Crimson Pro",serif;font-size:1rem;outline:none'></div></div>
     <div class='fs' style='padding-bottom:6px'><button class='apply-btn' onclick='run()'>&#9654; Apply Filters</button></div>
+    <!-- (session 75) the label on the dropdown's own row, to its left -->
     <div class='fs'>
-      <div class='fl fl-left'>Saga</div>
-      <select class='ed2-input' id='fsaga' style='width:100%'><option value=''>All sagas</option></select>
+      <div class='fl-row'><span class='fl fl-inline'>Saga</span><select class='ed2-input' id='fsaga'><option value=''>All sagas</option></select></div>
     </div>
     <div class='fs'>
       <div class='csw' id='cswatches' style='display:flex;justify-content:center;flex-wrap:wrap;gap:4px;padding:4px 0'></div>
@@ -8452,35 +8498,45 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
         </div>
       </div>
     </div>
+    <!-- ⚠ (session 75, the author) "Contains X" and "Contains *" are no longer
+         checkboxes under each row: each is the LAST option of its row's own
+         dropdown, so a row asks one thing - a comparison or "contains" - and the
+         number box beside it greys out while "contains" is chosen
+         (syncOpInputs). catFilterPred reads the two new values, 'x' and 'star'. -->
     <div class='fs'>
-      <div class='nf nf-inline'><span class='fl fl-inline'>Mana Cost</span><select id='cop'><option value=''>Any</option><option value='eq'>Equal =</option><option value='lt'>Lesser &lt;</option><option value='gt'>Greater &gt;</option></select><input type='number' id='cval' min='0' placeholder='0'></div>
-      <div class='ck-row'><input type='checkbox' id='xfilter'><label for='xfilter'>Contains X</label></div></div>
+      <div class='nf nf-inline'><span class='fl fl-inline'>Mana Cost</span><select id='cop'><option value=''>Any</option><option value='eq'>Equal =</option><option value='lt'>Lesser &lt;</option><option value='gt'>Greater &gt;</option><option value='x'>Contains X</option></select><input type='number' id='cval' min='0' placeholder='0'></div></div>
     <div class='fs'>
-      <div class='nf nf-atk'><span class='fl fl-inbox'><svg width='14' height='14' viewBox='0 0 18 18' fill='none'><rect x='4' y='4' width='10' height='10' transform='rotate(45 9 9)' stroke='#c45c5c' stroke-width='3'/></svg> ATK</span><select id='aop'><option value=''>Any</option><option value='eq'>Equal =</option><option value='lt'>Lesser &lt;</option><option value='gt'>Greater &gt;</option></select><input type='number' id='aval' min='0' placeholder='0'></div>
-      <div class='ck-row'><input type='checkbox' id='atkany'><label for='atkany'>Contains *</label></div></div>
+      <div class='nf nf-atk'><span class='fl fl-inbox'><svg width='14' height='14' viewBox='0 0 18 18' fill='none'><rect x='4' y='4' width='10' height='10' transform='rotate(45 9 9)' stroke='#c45c5c' stroke-width='3'/></svg> ATK</span><select id='aop'><option value=''>Any</option><option value='eq'>Equal =</option><option value='lt'>Lesser &lt;</option><option value='gt'>Greater &gt;</option><option value='star'>Contains *</option></select><input type='number' id='aval' min='0' placeholder='0'></div></div>
     <div class='fs'>
-      <div class='nf nf-hp'><span class='fl fl-inbox'><svg width='14' height='14' viewBox='0 0 18 18' fill='none'><polygon points='9,1 17,5 17,13 9,17 1,13 1,5' stroke='#c9a84c' stroke-width='3'/></svg> HLTH</span><select id='hop'><option value=''>Any</option><option value='eq'>Equal =</option><option value='lt'>Lesser &lt;</option><option value='gt'>Greater &gt;</option></select><input type='number' id='hval' min='0' placeholder='0'></div>
-      <div class='ck-row'><input type='checkbox' id='hpany'><label for='hpany'>Contains *</label></div></div>
+      <div class='nf nf-hp'><span class='fl fl-inbox'><svg width='14' height='14' viewBox='0 0 18 18' fill='none'><polygon points='9,1 17,5 17,13 9,17 1,13 1,5' stroke='#c9a84c' stroke-width='3'/></svg> HLTH</span><select id='hop'><option value=''>Any</option><option value='eq'>Equal =</option><option value='lt'>Lesser &lt;</option><option value='gt'>Greater &gt;</option><option value='star'>Contains *</option></select><input type='number' id='hval' min='0' placeholder='0'></div></div>
+    <!-- Range: Rebirth's stat, so rb-only. Labelled "Rg" and ABOVE Arcane (the
+         author, session 75); its label keeps its own case, where every other
+         filter label is set in capitals. -->
+    <div class='fs rb-only'>
+      <div class='nf nf-rng'><span class='fl fl-inbox fl-keepcase'><svg width='14' height='14' viewBox='0 0 18 18' fill='none'><polygon points='9,2 16,15 2,15' stroke='#5c9e6e' stroke-width='3' stroke-linejoin='round'/></svg> Rg</span><select id='rop'><option value=''>Any</option><option value='eq'>Equal =</option><option value='lt'>Lesser &lt;</option><option value='gt'>Greater &gt;</option><option value='star'>Contains *</option></select><input type='number' id='rval' min='0' placeholder='0'></div></div>
     <div class='fs'>
-      <div class='nf nf-arc'><span class='fl fl-inbox'><svg width='14' height='14' viewBox='0 0 18 18' fill='none'><circle cx='9' cy='9' r='7' stroke='#2980b9' stroke-width='3'/></svg> ARC</span><select id='arop'><option value=''>Any</option><option value='eq'>Equal =</option><option value='lt'>Lesser &lt;</option><option value='gt'>Greater &gt;</option></select><input type='number' id='arval' min='0' placeholder='0'></div>
-      <!-- ⚠ arcany BELONGS TO ARC AND MUST STAY DIRECTLY UNDER IT. It used to sit
-           below the RNG row, so in Rebirth - the only mode where RNG is visible -
-           the sidebar read ARC / RNG / "Contains *", and the star checkbox looked
-           like Range's while filtering arcane. -->
-      <div class='ck-row'><input type='checkbox' id='arcany'><label for='arcany'>Contains *</label></div>
-      <!-- Range: Rebirth's stat, so rb-only. Same controls as the three above so
-           the filter code can treat it identically - including its own star box,
-           which was the one piece Range never got. -->
-      <div class='nf nf-rng rb-only'><span class='fl fl-inbox'><svg width='14' height='14' viewBox='0 0 18 18' fill='none'><polygon points='9,2 16,15 2,15' stroke='#5c9e6e' stroke-width='3' stroke-linejoin='round'/></svg> RNG</span><select id='rop'><option value=''>Any</option><option value='eq'>Equal =</option><option value='lt'>Lesser &lt;</option><option value='gt'>Greater &gt;</option></select><input type='number' id='rval' min='0' placeholder='0'></div>
-      <div class='ck-row rb-only'><input type='checkbox' id='rngany'><label for='rngany'>Contains *</label></div>
-      <div class='ck-row'><input type='checkbox' id='atkarc'><label for='atkarc'>Attack Combined <svg width='12' height='12' viewBox='0 0 18 18' fill='none' style='vertical-align:middle;margin:0 3px'><rect x='4' y='4' width='10' height='10' transform='rotate(45 9 9)' stroke='#c45c5c' stroke-width='3'/></svg><svg width='12' height='12' viewBox='0 0 18 18' fill='none' style='vertical-align:middle;margin:0 3px'><circle cx='9' cy='9' r='7' stroke='#2980b9' stroke-width='3'/></svg></label></div>
-      <div class='ck-row'><input type='checkbox' id='hparc'><label for='hparc'>Health Combined <svg width='12' height='12' viewBox='0 0 18 18' fill='none' style='vertical-align:middle;margin:0 3px'><polygon points='9,1 17,5 17,13 9,17 1,13 1,5' stroke='#c9a84c' stroke-width='3'/></svg><svg width='12' height='12' viewBox='0 0 18 18' fill='none' style='vertical-align:middle;margin:0 3px'><circle cx='9' cy='9' r='7' stroke='#2980b9' stroke-width='3'/></svg></label></div></div>
-    <div class='fs'><span class='fl fl-left'>Rule Text</span>
-      <select id='rtMode' style='background:var(--s2);border:1px solid var(--b1);border-radius:0;color:var(--tx);font-family:Crimson Pro,serif;font-size:.8rem;padding:3px 6px;width:100%;margin-bottom:4px;cursor:pointer'>
-        <option value='exact'>Includes Exact Phrase</option>
-        <option value='all'>Includes All Words</option>
+      <div class='nf nf-arc'><span class='fl fl-inbox'><svg width='14' height='14' viewBox='0 0 18 18' fill='none'><circle cx='9' cy='9' r='7' stroke='#2980b9' stroke-width='3'/></svg> ARC</span><select id='arop'><option value=''>Any</option><option value='eq'>Equal =</option><option value='lt'>Lesser &lt;</option><option value='gt'>Greater &gt;</option><option value='star'>Contains *</option></select><input type='number' id='arval' min='0' placeholder='0'></div>
+      <!-- ⚠ THE TWO COMBINED STATS ARE BUTTONS, SIDE BY SIDE (the author, session
+           75): "Attack + Arcane" on the left, "Health + Arcane" on the right,
+           each with its combined symbol, in the editor's own gradient for that
+           stat - on its border, and faintly as its fill. Off, the whole button is
+           greyed out; on, it is in colour with a green tick in its box. Each is
+           still the same checkbox underneath (atkarc / hparc), so run(), Reset
+           and the saved links read it exactly as before. -->
+      <div class='cbtn-row'>
+        <span class='cbtn cbtn-atk'><input type='checkbox' id='atkarc'><label for='atkarc'><span class='cbtn-ck' aria-hidden='true'></span><svg class='cbtn-ico' width='15' height='15' viewBox='0 0 18 18' fill='none' aria-hidden='true'><polyline points='1,9 9,1 17,9' stroke='#c45c5c' stroke-width='3' fill='none' stroke-linejoin='round'/><path d='M 2,9 A 7,7 0 0 0 16,9' stroke='#2980b9' stroke-width='3' fill='none'/></svg><span class='cbtn-t'>Attack + Arcane</span></label></span>
+        <span class='cbtn cbtn-hp'><input type='checkbox' id='hparc'><label for='hparc'><span class='cbtn-ck' aria-hidden='true'></span><svg class='cbtn-ico' width='15' height='15' viewBox='0 0 18 18' fill='none' aria-hidden='true'><polyline points='1,9 1,5 9,1 17,5 17,9' stroke='#c9a84c' stroke-width='3' fill='none' stroke-linejoin='round'/><path d='M 2,9 A 7,7 0 0 0 16,9' stroke='#2980b9' stroke-width='3' fill='none'/></svg><span class='cbtn-t'>Health + Arcane</span></label></span>
+      </div></div>
+    <!-- ⚠ (session 75, the author) the label on the dropdown's own row, the box
+         under them; "Include All Words" first and the default, then "Include
+         Any of These Words", then "Include Exact Phrase". -->
+    <div class='fs'>
+      <div class='fl-row fl-row-tight'><span class='fl fl-inline fl-sm'>Rule Text</span>
+      <select id='rtMode' style='background:var(--s2);border:1px solid var(--b1);border-radius:0;color:var(--tx);font-family:Crimson Pro,serif;font-size:.72rem;padding:3px 0 3px 4px;cursor:pointer'>
+        <option value='all' selected>Include All Words</option>
         <option value='any'>Include Any of These Words</option>
-      </select>
+        <option value='exact'>Include Exact Phrase</option>
+      </select></div>
       <input class='rt' type='text' id='rs' placeholder='e.g. Airborne…'></div>
     <div class='fs'><div class='upd-row'><span class='fl fl-upd'>Updated Since</span><input type='date' id='dateFilter' style='background:var(--s2);border:1px solid var(--b1);border-radius:0;color:var(--tx);font-family:Crimson Pro,serif;font-size:.85rem;padding:4px 6px;width:50%;cursor:pointer'></div></div>
     <div class='fs' style='border-bottom:none'><div class='ri' id='ri' style='font-size:.9rem;color:var(--td)'></div></div>
@@ -10494,6 +10550,107 @@ function runDebounced(){
 }
 window.runDebounced = runDebounced;
 
+/* ── CARD NAME SUGGESTIONS (session 75) ──────────────────────────────────────
+   The author: as you type in the search bar, show the names of the cards that
+   match the letters. The names are the catalogue's own - every card in an
+   enabled saga (in the chosen one, when the Saga box names one), and the names
+   of individual split sections, which the name search finds too - so a
+   suggestion is never a name that finds nothing. Those that START with what was
+   typed come first, the matched letters in bold. Picking one fills the bar and
+   searches, as Enter does; Enter with nothing picked still searches for exactly
+   what was typed. Nothing shows until a letter is typed. */
+function catNameVocab(){
+  var sel = (document.getElementById('fsaga') || {}).value || '';
+  var sagaOf = function(c){ return (typeof window.edSagaOf === 'function') ? window.edSagaOf(c) : (c.sagaId || c.saga || ''); };
+  var on = (typeof window.edSagaEnabled === 'function') ? function(c){
+    var sid = sagaOf(c);
+    return window.edSagaEnabled(sid) && (!sel || sid === sel);
+  } : function(){ return true; };
+  var seen = {}, out = [];
+  var add = function(n){ n = String(n || '').trim(); if(!n) return; var l = n.toLowerCase(); if(seen[l]) return; seen[l] = 1; out.push(n); };
+  (CARDS || []).forEach(function(c){
+    if(!c || !on(c)) return;
+    add(c.name);
+    var si = (typeof window.edAnyIdent === 'function') ? window.edAnyIdent(c) : !!c.splitIdent;
+    if(si && typeof window.edSplitFacets === 'function'){
+      var sf = window.edSplitFacets(c);
+      if(sf && sf.names) sf.names.forEach(add);
+    }
+  });
+  return out.sort(_cmpStr);
+}
+window.catNameVocab = catNameVocab;
+function catNameCombo(inp){
+  inp.setAttribute('autocomplete', 'off');
+  var list = document.createElement('div');
+  list.className = 'ed2-combo-list cat-ncombo hidden';
+  list.setAttribute('role', 'listbox');
+  inp.parentNode.appendChild(list);
+  var active = -1, vocab = null, vocabFor = null;
+  function hide(){ list.classList.add('hidden'); active = -1; }
+  function render(){
+    var f = inp.value.trim().toLowerCase();
+    active = -1;
+    if(!f){ list.innerHTML = ''; hide(); return; }
+    /* built again whenever the Saga box says something else - the bar can
+       keep the focus while it changes */
+    var sel = (document.getElementById('fsaga') || {}).value || '';
+    if(!vocab || vocabFor !== sel){ vocab = catNameVocab(); vocabFor = sel; }
+    var starts = [], inside = [];
+    vocab.forEach(function(n){ var i = n.toLowerCase().indexOf(f); if(i === 0) starts.push(n); else if(i > 0) inside.push(n); });
+    var show = starts.concat(inside).slice(0, 40);
+    if(!show.length){ list.innerHTML = ''; hide(); return; }
+    list.innerHTML = show.map(function(n){
+      var i = n.toLowerCase().indexOf(f);
+      return "<div class='ed2-combo-opt' role='option' data-v='" + e(n) + "'>" + e(n.slice(0, i)) + '<b>' + e(n.slice(i, i + f.length)) + '</b>' + e(n.slice(i + f.length)) + '</div>';
+    }).join('');
+    list.classList.remove('hidden');
+  }
+  function hi(){
+    Array.prototype.forEach.call(list.querySelectorAll('.ed2-combo-opt'), function(el, i){
+      el.classList.toggle('active', i === active);
+      if(i === active) el.scrollIntoView({block: 'nearest'});
+    });
+  }
+  function pick(v){ inp.value = v; list.innerHTML = ''; hide(); run(); }
+  list.addEventListener('mousedown', function(ev){
+    var o = ev.target && ev.target.closest && ev.target.closest('.ed2-combo-opt');
+    if(!o) return;
+    ev.preventDefault();
+    pick(o.getAttribute('data-v'));
+  });
+  inp.addEventListener('focus', function(){ vocab = null; render(); });
+  inp.addEventListener('input', render);
+  inp.addEventListener('blur', function(){ setTimeout(hide, 150); });
+  /* ⚠ ADDED BEFORE THE SEARCH BAR'S OWN Enter LISTENER, so that Enter on a
+     highlighted name picks it - and searches once, for that name - rather than
+     searching first for the half-typed letters */
+  inp.addEventListener('keydown', function(ev){
+    var items = list.querySelectorAll('.ed2-combo-opt');
+    var open = !list.classList.contains('hidden') && items.length;
+    if(ev.key === 'ArrowDown' && open){ ev.preventDefault(); active = Math.min(active + 1, items.length - 1); hi(); }
+    else if(ev.key === 'ArrowUp' && open){ ev.preventDefault(); active = Math.max(active - 1, 0); hi(); }
+    else if(ev.key === 'Enter' && open && active >= 0){ ev.preventDefault(); ev.stopImmediatePropagation(); pick(items[active].getAttribute('data-v')); }
+    else if(ev.key === 'Enter'){ hide(); }
+    else if(ev.key === 'Escape'){ hide(); }
+  });
+}
+catNameCombo(document.getElementById('ns'));
+
+/* The number box beside a row whose dropdown says "Contains" has nothing to
+   say, so it is greyed out while it does (session 75). Called on a change of
+   the dropdown, and by Reset and a loaded link, which set it in script. */
+var OP_PAIRS = [['cop','cval'],['aop','aval'],['hop','hval'],['arop','arval'],['rop','rval']];
+function syncOpInputs(){
+  OP_PAIRS.forEach(function(p){
+    var s = document.getElementById(p[0]), i = document.getElementById(p[1]);
+    if(!s || !i) return;
+    i.disabled = (s.value === 'x' || s.value === 'star');
+  });
+}
+window.syncOpInputs = syncOpInputs;
+OP_PAIRS.forEach(function(p){ var s = document.getElementById(p[0]); if(s) s.addEventListener('change', syncOpInputs); });
+
 // ── OTHER LISTENERS ──
 // All filters fire only on Apply Filters button click or Enter key
 document.getElementById('ns').addEventListener('keydown',function(e){if(e.key==='Enter')run();});
@@ -10769,6 +10926,17 @@ function catFilterPred(f){
   var xOnly=!!f.xOnly, atkAny=!!f.atkAny, hpAny=!!f.hpAny, arcAny=!!f.arcAny,
       rngAny=!!f.rngAny;
   var atkArc=!!f.atkArc, hpArc=!!f.hpArc, dateF=f.dateF||'', sc=scc;
+  /* ⚠ "CONTAINS X" AND "CONTAINS *" ARE DROPDOWN OPTIONS NOW (the author,
+     session 75): the last option of Mana Cost's dropdown is 'x', of each
+     stat's 'star'. Either one IS that row's question, so it turns its flag on
+     and the comparison off - numOk would otherwise read an op it does not know
+     as "Greater". The flags themselves are still taken as they were, for the
+     Rewards specification, which has its own boxes. */
+  if(cop==='x'){ xOnly=true; cop=''; }
+  if(aop==='star'){ atkAny=true; aop=''; }
+  if(hop==='star'){ hpAny=true; hop=''; }
+  if(arop==='star'){ arcAny=true; arop=''; }
+  if(rop==='star'){ rngAny=true; rop=''; }
   return function(c){
 
     /* A card whose rules box is split into sections that carry their OWN name,
@@ -10919,7 +11087,7 @@ function run(){
   /* Read ONCE, not once per card. These two used to be looked up inside the
      filter callback, which is 1601 getElementById calls per keystroke for a
      value that cannot change while the loop runs. */
-  var rtMode=(document.getElementById('rtMode')||{}).value||'exact';
+  var rtMode=(document.getElementById('rtMode')||{}).value||'all';
   var dateF=(document.getElementById('dateFilter')||{}).value||'';
   /* chk() does NOT lowercase, unlike getSUTerms/getSTTerms, so this map is
      real work - but it depends only on the checkboxes, so it belongs here
@@ -10928,17 +11096,13 @@ function run(){
   /* `sc` used to hold the same list unlowered and was read once, for its
      length. catFilterPred takes scc and asks its length itself. */
   /* ⚠ GUARDED, because run() rendering NOTHING is a far worse failure than a
-     filter quietly reading false. These five were bare
-     getElementById(...).checked while the lines above and below them used the
-     (…||{}) guard - and rngany right beside them is `rb-only`, i.e. exactly the
-     kind of conditional box that makes a bare read throw. One renamed or
-     mode-gated checkbox and the whole browse grid goes blank. */
+     filter quietly reading false. These were bare getElementById(...).checked
+     while the lines above and below them used the (…||{}) guard. One renamed or
+     mode-gated checkbox and the whole browse grid goes blank.
+     (Session 75: the five "Contains" boxes are gone - each is now the last
+     option of its row's dropdown, read with cop/aop/hop/arop/rop above and
+     handled in catFilterPred. These two are the combined-stat buttons.) */
   var ck=function(id){ return !!(document.getElementById(id)||{}).checked; };
-  var xOnly=ck('xfilter');
-  var atkAny=ck('atkany');
-  var hpAny=ck('hpany');
-  var arcAny=ck('arcany');
-  var rngAny=ck('rngany');      // Rebirth only - absent in the main game
   var atkArc=ck('atkarc');
   var hpArc=ck('hparc');
 
@@ -10966,7 +11130,6 @@ function run(){
     cm:cm, scc:scc, sm:sm, ss:ss, sbm:sbm, sbt:sbt,
     cop:cop, cval:cval, aop:aop, aval:aval, hop:hop, hval:hval,
     arop:arop, arval:arval, rop:rop, rval:rval,
-    xOnly:xOnly, atkAny:atkAny, hpAny:hpAny, arcAny:arcAny, rngAny:rngAny,
     atkArc:atkArc, hpArc:hpArc, dateF:dateF
   }));
   var sorted = applySorts(out);
@@ -10979,7 +11142,7 @@ function run(){
      moves everything, and the saga toggles are in it because turning one off
      removes cards from under you. */
   var sig = JSON.stringify([nq, rq, cm, sm, ss, sbm, sbt, cop, cval, aop, aval,
-    hop, hval, arop, arval, rop, rval, xOnly, atkAny, hpAny, arcAny, rngAny,
+    hop, hval, arop, arval, rop, rval,
     atkArc, hpArc, dateF, rtMode, scc, _enabledTotal,
     (typeof _sortPrimary !== 'undefined' ? _sortPrimary : null),
     (typeof sortCols !== 'undefined' ? sortCols : null)]);
@@ -32374,6 +32537,9 @@ function reset(){
      assuming it - the un-guarded version threw on the main game. */
   ['cop','aop','hop','arop','rop'].forEach(function(id){var el=document.getElementById(id); if(el)el.value='';});
   ['cval','aval','hval','arval','rval'].forEach(function(id){var el=document.getElementById(id); if(el)el.value='';});
+  /* the rule text mode back to its default, and the number boxes back on */
+  var rtm=document.getElementById('rtMode'); if(rtm)rtm.value='all';
+  if(typeof syncOpInputs==='function') syncOpInputs();
   var sf=document.getElementById('stf'); sf.innerHTML=''; sf.appendChild(makeSTRow(true));
   var suf=document.getElementById('suf'); if(suf){ suf.innerHTML=''; suf.appendChild(makeSURow(true)); }
   run();
@@ -33571,7 +33737,7 @@ function closeShortcutsPage(){
 var FILTER_FIELDS = [
   {k:'name',  id:'ns',         kind:'value'},
   {k:'rule',  id:'rs',         kind:'value'},
-  {k:'rtm',   id:'rtMode',     kind:'value', def:'exact'},
+  {k:'rtm',   id:'rtMode',     kind:'value', def:'all'},
   {k:'cm',    name:'cm',       kind:'radio', def:'any'},
   {k:'stm',   name:'stm',      kind:'radio', def:'any'},
   {k:'sbm',   name:'sbm',      kind:'radio', def:'any'},
@@ -33590,21 +33756,31 @@ var FILTER_FIELDS = [
   {k:'rval',  id:'rval',       kind:'value'},
   {k:'date',  id:'dateFilter', kind:'value'},
   {k:'saga',  id:'fsaga',      kind:'value'},
-  {k:'x',     id:'xfilter',    kind:'checked'},
-  {k:'atkA',  id:'atkany',     kind:'checked'},
-  {k:'hpA',   id:'hpany',      kind:'checked'},
-  {k:'arcA',  id:'arcany',     kind:'checked'},
   {k:'atkC',  id:'atkarc',     kind:'checked'},
-  {k:'hpC',   id:'hparc',      kind:'checked'},
-  /* ⚠ THE ONE THAT WAS MISSING. run() reads seven checkboxes and this
-     table carried six: Range-is-* was left out, so a Rebirth filter that used
-     it came back different after a reload and a copied link dropped it - while
-     the Range OPERATOR beside it, rop/rval, travelled fine. Rebirth-only, which
-     is why nobody adding a row to this main-game table noticed. _filterRead
-     guards a missing element, so this row is inert in the main game rather
-     than needing a mode test. */
-  {k:'rngA',  id:'rngany',     kind:'checked'}
+  {k:'hpC',   id:'hparc',      kind:'checked'}
+  /* (session 75) x / atkA / hpA / arcA / rngA - the five "Contains" boxes - are
+     gone: each is now the last option of its row's dropdown, so it travels as
+     cop / aop / hop / arop / rop above. A link saved before still loads them
+     (_filterLegacy). */
 ];
+/* ⚠ A LINK SAVED BEFORE SESSION 75 MEANS WHAT IT MEANT THEN. Two things
+   changed under it: the rule text mode's default went from Exact Phrase to All
+   Words, and a link leaves a control out when it is at its default - so an old
+   link with rule text and no mode meant Exact Phrase, and would now read as All
+   Words; and the five "Contains" boxes became dropdown options. New links carry
+   v:2, so an old one is told apart and read as it was written. (An old link
+   with BOTH a comparison and its "Contains" box on keeps the comparison - one
+   row asks one thing now.) */
+var FILTER_LEGACY_CONTAINS = {x:['cop','x'], atkA:['aop','star'], hpA:['hop','star'], arcA:['arop','star'], rngA:['rop','star']};
+function _filterLegacy(f){
+  if(f.v) return f;
+  if(f.rule && !f.rtm) f.rtm = 'exact';
+  Object.keys(FILTER_LEGACY_CONTAINS).forEach(function(k){
+    var to = FILTER_LEGACY_CONTAINS[k];
+    if(f[k] && !f[to[0]]) f[to[0]] = to[1];
+  });
+  return f;
+}
 
 function _filterRead(fd){
   if(fd.kind === 'value'){
@@ -33659,6 +33835,7 @@ function _hashSaveFilters(){
     if(_sortPrimary) f.sort = _sortPrimary.key + '-' + _sortPrimary.dir;
     if(sortCols.length) f.sc = sortCols.map(function(s){ return s.key + '-' + s.dir; });
     if(Object.keys(f).length){
+      f.v = 2;                          /* see _filterLegacy */
       var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(f))));
       // Merge with existing hash
       var hash = window.location.hash;
@@ -33676,10 +33853,11 @@ function _hashLoadFilters(){
     var hash = window.location.hash;
     var m = hash.match(/filters=([A-Za-z0-9+/=]+)/);
     if(!m) return;
-    var f = JSON.parse(decodeURIComponent(escape(atob(m[1]))));
+    var f = _filterLegacy(JSON.parse(decodeURIComponent(escape(atob(m[1])))));
     FILTER_FIELDS.forEach(function(fd){
       if(f[fd.k] !== undefined && f[fd.k] !== null) _filterWrite(fd, f[fd.k]);
     });
+    if(typeof syncOpInputs === 'function') syncOpInputs();
     var parseSpec = function(s){
       var mm = String(s).match(/^(.+)-(asc|desc)$/);
       return (mm && SORT_BY_KEY[mm[1]]) ? {key:mm[1], dir:mm[2]} : null;
