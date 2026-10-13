@@ -19,10 +19,10 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    THE FRONT DOOR FOR playconjure.com
    ═══════════════════════════════════════════════════════════════════════════
-   Not the app. The app is card_catalog.html, about 15 MB, and this page's job
-   is to be the thing that loads instead of it - Pages allows a soft 100 GB a
-   month, which at 15 MB is roughly 6,500 loads counting every crawler and link
-   preview, so only a deliberate click should cost that.
+   Not the app. The app is card_catalog.html, several megabytes, and this
+   page's job is to be the thing that loads instead of it - GitHub Pages has a
+   soft monthly bandwidth limit, and every crawler and link preview counts
+   against it, so only a deliberate click should load the app.
 
    Every colour, ramp and font stack here is lifted from src/catalog.css so the
    page and the app are one object. Nothing is fetched from anywhere: no Google
@@ -50,9 +50,9 @@
      gold   = catalog.css .tabs::after / .hdr-online
      lunar  = catalog.css :root --hdr-metal  (the Main side of the switch)
      fiery  = catalog.css body.rebirth --hdr-metal  (the Rebirth side)
-     Written out rather than read from --hdr-metal, for the reason the header
-     buttons are: that variable is redefined by body.rebirth, body.light and
-     body.light.rebirth, and a value read from it would be four values. */
+     Written out as three ramps rather than read from one variable: the app's
+     --hdr-metal is redefined by body.rebirth, and this page shows both
+     games' metal at once. */
   --gold-ramp:linear-gradient(180deg,#4a3818 0%,#7a6030 15%,#f5ecd0 40%,
     #e8c96a 50%,#c9a84c 60%,#7a6030 85%,#4a3818 100%);
   --lunar-ramp:linear-gradient(180deg,#101c33 0%,#2b4a7a 15%,#e8f4ff 40%,
@@ -119,14 +119,14 @@ main{width:100%; max-width:600px}
 h1{
   font-family:var(--disp); font-weight:700;
   font-size:clamp(.72rem,2.5vw,.92rem); letter-spacing:.22em;
-  text-transform:uppercase; color:var(--td);
+   color:var(--td);
   margin-bottom:20px;
 }
 
 /* ── the bar, edge to edge ───────────────────────────────────────────────── */
-/* The app's own 4px gold ramp, the one on header::after and .tabs::after, and
-   it crosses the whole window rather than stopping at the column. Broken out
-   of the centred column with a 100vw width and a negative half-gutter. */
+/* The app's own 4px gold ramp, the one on .tabs::after, and it crosses the
+   whole window rather than stopping at the column. Broken out of the centred
+   column with a 100vw width and a negative half-gutter. */
 .rule{
   height:4px; width:100vw; margin:0 0 30px calc(50% - 50vw);
   background:var(--gold-ramp);
@@ -145,7 +145,7 @@ h1{
 
 .mbtn{
   display:flex; align-items:center; justify-content:center; gap:9px;
-  font-family:var(--disp); font-weight:700; text-transform:uppercase;
+  font-family:var(--disp); font-weight:700; 
   text-decoration:none; letter-spacing:.13em; text-align:center;
   border:2px solid transparent;
   background:var(--fill) padding-box, var(--ramp) border-box;
@@ -232,8 +232,8 @@ footer a:hover,footer a:focus-visible{border-bottom-color:currentColor}
 }
 
 /* ── THE TWO SIDES, ALIVE (the author, session 55l) ─────────────────────────
-   Main's side of the window - the left, where its button is - breathes an icy
-   blue-green glow and gives off small light-blue and very light green sparks;
+   Main's side of the window - the left, where its button is - glows icy
+   blue-green and gives off small light-blue and very light green sparks;
    Rebirth's side, the right, a fiery red-yellow glow with red and yellow
    sparks. The pointer stirs them as it moves. Hovering a Main button makes the
    left side brighter and busier; a Rebirth button, the right.
@@ -319,8 +319,8 @@ main{position:relative; z-index:1}
    The one script on the page, inline - nothing is fetched. Sparks are born
    along each side's edge and drift inward, fading before they reach the
    middle; the pointer pushes them along the way it is moving and a little
-   away from itself. A Main button hovered makes the left side emit three
-   times as many, brighter and quicker; a Rebirth button, the right.
+   away from itself. A Main button hovered makes the left side emit nearly
+   four times as many, brighter and quicker; a Rebirth button, the right.
    Each spark is a small pre-drawn glow blended additively, so a few hundred
    of them cost next to nothing, and requestAnimationFrame stops the whole
    thing while the tab is hidden. */
