@@ -1,15 +1,6 @@
 # Conjure UCG - Card Catalog
 
-The card database for Conjure, a trading card game by Conjure UCG LLC.
-
-This repository holds the published set: every card, its rules text and stats,
-the keyword glossary, and web-sized art for all of it. It is generated - nothing
-here is edited by hand. It is also the website: playconjure.com is served from
-here.
-
-Plain ASCII on purpose, so no editor can reformat it.
-
----
+Card database for Conjure
 
 ## What is in here
 
@@ -36,16 +27,29 @@ https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/
 
 ---
 
-## Just want to browse the cards?
+## Rules and Design Documentaion
 
-Open playconjure.com, or download `card_catalog.html` and open it. That is the
-whole install: browsing, searching, filtering, deck building and a card editor,
-in one file, with no account.
+Any Rules and Design documentation are sync with the Live Google Docs.
 
-The cards are not inside the file. It reads them from this repository when it
-opens - so the first open needs the internet - and keeps them in your browser.
-Card art loads straight from this repository's CDN. Nothing to set up and
-nothing to press.
+Main Rules
+```
+[[https://raw.githubusercontent.com/ConjureUCG/Conjure_Card_Catalog/main/cards.json](https://docs.google.com/document/d/1vzLQ9KgSXl2yDXYujoO-mojf5xwyCm058ErZQTnS5dk/edit?usp=sharing)](https://docs.google.com/document/d/1vzLQ9KgSXl2yDXYujoO-mojf5xwyCm058ErZQTnS5dk/edit?usp=sharing)
+```
+
+Main Design
+```
+[https://raw.githubusercontent.com/ConjureUCG/Conjure_Card_Catalog/main/cards.json](https://docs.google.com/document/d/1vzLQ9KgSXl2yDXYujoO-mojf5xwyCm058ErZQTnS5dk/edit?usp=sharing)
+```
+
+Rebirth Rules
+```
+https://docs.google.com/document/d/1LVBez910a6SfVtRwCzIbtKuB8KmYI88e/edit?usp=sharing&ouid=107803157592510169473&rtpof=true&sd=true
+```
+
+Rebirth Design
+```
+[[https://raw.githubusercontent.com/ConjureUCG/Conjure_Card_Catalog/main/cards.json](https://docs.google.com/document/d/1vzLQ9KgSXl2yDXYujoO-mojf5xwyCm058ErZQTnS5dk/edit?usp=sharing)](https://docs.google.com/document/d/1KMIThypVuAIer4Gqmkc8bwbZqzmEwla4/edit?usp=sharing&ouid=107803157592510169473&rtpof=true&sd=true)
+```
 
 The Rules and Design documents are read from their Google Docs when you open
 them, rather than being built into the file - so they are never out of date,
@@ -54,28 +58,17 @@ shown with the date on it if it cannot be reached.
 
 ---
 
-## Following the set
+## Following New Sagas
 
-The catalog already knows this address:
+The website has the official Conjure sets built in
 
 ```
 https://raw.githubusercontent.com/ConjureUCG/Conjure_Card_Catalog/main/cards.json
 ```
 
-It shows up as "Official" on the Sagas page with no setup, and the link is shown
-there but cannot be edited - so you can always see where your cards came from.
+It shows up as "Official" on the Sagas page.
 
-When new cards or a whole new saga are published here, the app takes them as it
-opens - there is nothing to press. Cards removed here are removed from your copy
-too. It stops and asks first in one case only: when the update would overwrite a
-card **you** are allowed to edit, because applying it replaces your own work in
-any field the source also sets. On an ordinary copy the official cards are
-read-only, so that never comes up.
-
-You can switch this off on the Owner Sync page ("Enable Automatic Updates on
-Open"), and it never runs by itself in owner mode.
-
-Each set has its own on/off switch, and each repository has a master switch, so
+Each Saga has its own on/off switch, and each repository has a master switch, so
 you can exclude a whole source without losing which individual sets you had
 turned on.
 
@@ -89,8 +82,7 @@ Sync page at it.
 
 Anyone can then follow your set from the Follow row at the foot of the Sagas
 page. It becomes its own group in their catalog, alongside Official, with its
-own on/off switch. Publishing your set does not ship a copy of the app - that
-only happens for the official repository.
+own on/off switch.
 
 ---
 
@@ -107,11 +99,6 @@ only happens for the official repository.
   "marks": null
 }
 ```
-
-A card's picture is on its variants (its printings). Every `imageUrl` that is
-set is an absolute CDN address, so you can build against this without cloning
-anything.
-
 ---
 
 ## A note on the art
@@ -125,20 +112,24 @@ your own files instead of the CDN, and keep working with no internet.
 
 ---
 
-## Two games in one file
+## Main Version and Rebirth Version
 
-The app carries **Conjure** and **Conjure Rebirth**, switched by a toggle in the
-header. They are separate games and share no data at all: separate card
-databases, separate saved decks, separate sets.
+The website hosts both the main version of Conjure and **Conjure Rebirth**, which is the Table Top Role Playing Game version of Conjure.
 
-A saga belongs to exactly one of them and never crosses over. This repository
-publishes the main game. Rebirth's official set comes from its own repository,
-ConjureUCG/Conjure_Rebirth_Catalog, which the app follows the same way when it
-is in Rebirth.
+Both versions are separate, such as cards, Sagas, rules, etc. But both versions can be hosted in the same framework, but otherwise are separate games.
 
 ---
 
-## Licence
+## License - "Open Game License"
 
-Not yet chosen. Until one is added here, all rights are reserved by
-Conjure UCG LLC - please ask before redistributing the card data or the art.
+If you adhere to these terms, you are allowed to publish works based upon and/or declare compatibility with CONJURE without express permission from Conjure UCG, LLC (“Conjure,” “we,” “us,” or “our”).
+
+You agree not to copy or reproduce any official art unless you have our explicit permission in writing.
+
+You may use our visual designs as inspiration to create your own original illustrations or works.
+
+You can reuse and freely reference the CONJURE text, mechanics, and game rules, including proper names, locations, and characters.
+
+Your product cannot use the Conjure logo or Conjure UCG, LLC logo unless you have our explicit permission in writing.
+
+You are allowed and encouraged (but not required) to use the CONJURE compatibility logo.
