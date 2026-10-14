@@ -1,44 +1,19 @@
 # Conjure UCG - Card Catalog
 
-Card database for Conjure
-
-## What is in here
-
-| File | What it is |
-|---|---|
-| `cards.json` | Every card. Names, costs, stats, rules text, and the art of each printing |
-| `sagas.json` | Which sets ("sagas") this repository publishes, and how big each is |
-| `keywords.json` | The keyword, keyterm, counter and dice glossary |
-| `look.json` | The official look (keyword pill styles, template pictures) and the watermarks |
-| `testing.json` | Cards still being tested. The app does not show them to anyone using it normally |
-| `manifest.json` | Card and keyword counts, and where the art is served from |
-| `art/` | Web-sized card art, WebP at 1600px wide |
-| `art-uploads/` | Pictures added from inside the app, WebP at most 1600px wide |
-| `card_catalog.html` | The catalog app itself - open it in a browser |
-| `index.html` | The front page of playconjure.com |
-| `cards.html` | Every card as a plain page that search engines can read; each name opens that card in the app |
-| `sitemap.xml`, `robots.txt` | What search engines should read |
-
-Art is served through jsDelivr:
-
-```
-https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/
-```
-
----
+Catalog · Deck Builder · Digital Tabletop
 
 ## Rules and Design Documentaion
 
-Any Rules and Design documentation are sync with the Live Google Docs.
+Any Rules and Design documentation are sync with the Live Google Docs
 
 Main Rules
 ```
-[[https://raw.githubusercontent.com/ConjureUCG/Conjure_Card_Catalog/main/cards.json](https://docs.google.com/document/d/1vzLQ9KgSXl2yDXYujoO-mojf5xwyCm058ErZQTnS5dk/edit?usp=sharing)](https://docs.google.com/document/d/1vzLQ9KgSXl2yDXYujoO-mojf5xwyCm058ErZQTnS5dk/edit?usp=sharing)
+https://docs.google.com/document/d/1vzLQ9KgSXl2yDXYujoO-mojf5xwyCm058ErZQTnS5dk/edit?usp=sharing)
 ```
 
 Main Design
 ```
-[https://raw.githubusercontent.com/ConjureUCG/Conjure_Card_Catalog/main/cards.json](https://docs.google.com/document/d/1vzLQ9KgSXl2yDXYujoO-mojf5xwyCm058ErZQTnS5dk/edit?usp=sharing)
+https://docs.google.com/document/d/1vzLQ9KgSXl2yDXYujoO-mojf5xwyCm058ErZQTnS5dk/edit?usp=sharing)
 ```
 
 Rebirth Rules
@@ -48,14 +23,31 @@ https://docs.google.com/document/d/1LVBez910a6SfVtRwCzIbtKuB8KmYI88e/edit?usp=sh
 
 Rebirth Design
 ```
-[[https://raw.githubusercontent.com/ConjureUCG/Conjure_Card_Catalog/main/cards.json](https://docs.google.com/document/d/1vzLQ9KgSXl2yDXYujoO-mojf5xwyCm058ErZQTnS5dk/edit?usp=sharing)](https://docs.google.com/document/d/1KMIThypVuAIer4Gqmkc8bwbZqzmEwla4/edit?usp=sharing&ouid=107803157592510169473&rtpof=true&sd=true)
+https://docs.google.com/document/d/1KMIThypVuAIer4Gqmkc8bwbZqzmEwla4/edit?usp=sharing&ouid=107803157592510169473&rtpof=true&sd=true
 ```
 
-The Rules and Design documents are read from their Google Docs when you open
-them, rather than being built into the file - so they are never out of date,
-and they need the internet. A document you have opened before is kept, and is
-shown with the date on it if it cannot be reached.
+---
 
+## File Contents
+
+| Filename | Definition |
+|---|---|
+| `cards.json` | name, cost, stat, rules text, art |
+| `sagas.json` | Sagas - Sets of cards |
+| `keywords.json` | keyword, keyterm, counter glossary |
+| `look.json` | Default looks - pill styles, templates, watermarks |
+| `manifest.json` | Card and keyword counts, where the art is sourced |
+| `art/` | Web-sized card art, WebP at 1600px wide |
+| `art-uploads/` | WebP - 1600px wide |
+| `card_catalog.html` | Website File |
+| `index.html` | Homepage |
+| `cards.html` | Cards in plain text - Used for searches |
+| `sitemap.xml`, `robots.txt` | What search engines read |
+
+Art is served through jsDelivr:
+```
+https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/
+```
 ---
 
 ## Following New Sagas
@@ -76,19 +68,15 @@ turned on.
 
 ## Making your own set
 
-The same app publishes anyone's cards, not just ours. You need a public GitHub
-repository and a fine-grained access token limited to it, then point the Owner
-Sync page at it.
+You can use the website to self publish cards, user other people's cards, and curate your own sets
 
-Anyone can then follow your set from the Follow row at the foot of the Sagas
-page. It becomes its own group in their catalog, alongside Official, with its
-own on/off switch.
+To publish and host your own set, you need to set up a public GitHub repo, using a fine-grained access token as access to editing and updating your set. Then use that GitHub repo as the link for others to use to be able to use and play with your Cards and Sagas.
 
 ---
 
 ## Using the data directly
 
-`cards.json` is plain JSON, shaped:
+`cards.json` format:
 
 ```json
 {
@@ -99,16 +87,6 @@ own on/off switch.
   "marks": null
 }
 ```
----
-
-## A note on the art
-
-What is here is a web-sized copy: WebP at 1600px wide, about 0.29 GB for 1830
-pictures. The print-resolution originals are roughly 8 GB and are not published.
-
-If you are the set's owner and have those originals in an `art/` folder beside
-the app, turn on **owner mode** on the Owner Sync page. Cards then draw from
-your own files instead of the CDN, and keep working with no internet.
 
 ---
 
