@@ -272,8 +272,6 @@ body.testdeck-active .sb-show,body.testdeck-active .dp-show{
 .sti-x:hover{background:var(--re);color:#fff}
 .sti:focus{border-color:var(--gd)}
 .sti::placeholder{color:var(--tm)}
-.sta{width:24px;height:24px;border-radius:50%;flex-shrink:0;background:var(--s3);border:1px solid var(--b2);color:var(--td);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:all .15s}
-.sta:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
 .nf{display:flex;align-items:center;gap:4px;margin-top:5px}
 .nf select,.nf input[type=number]{background:var(--s2);border:1px solid var(--b1);border-radius:0;color:var(--tx);font-family:'Crimson Pro',serif;font-size:.85rem;padding:4px 6px;outline:none}
 .nf select{flex:1;cursor:pointer}
@@ -529,8 +527,6 @@ body.light .ci-qbtn{background:var(--s2)}
 .madd[data-deck='essence']:hover{background:rgba(92,158,110,.22);color:#fff;
   border:2px solid;border-image:linear-gradient(180deg,#1a3a22 0%,#2d6b3e 15%,#b8f0c8 40%,#5c9e6e 50%,#3d7a4e 60%,#2d6b3e 85%,#1a3a22 100%) 1;border-radius:0;
   box-shadow:0 0 8px rgba(92,158,110,.25)}
-.kw-tab-btn{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:600;letter-spacing:.1em;padding:12px 33px;border:1px solid var(--b2);border-radius:10px;background:var(--s2);color:var(--td);cursor:pointer;transition:all .2s}
-.kw-tab-btn:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
 .kw-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:2000;align-items:flex-start;justify-content:center;padding:20px;backdrop-filter:blur(6px)}
 .kw-overlay.on{display:flex}
 .kw-page{background:var(--s1);border:1px solid var(--b2);border-radius:0;width:100%;max-width:700px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 28px 90px rgba(0,0,0,.7);animation:mi .18s ease;margin-top:10px}
@@ -1262,9 +1258,13 @@ body.light .ed2-modal .ed2-btn.close-x:hover{background:rgba(128,48,48,.75);colo
   box-shadow:inset 0 0 0 1px rgba(224,160,32,.35)}
 .ed2-btngrid .ed2-bg-fix{grid-column:5;grid-row:1}
 .ed2-btngrid .ed2-bg-del{grid-column:5;grid-row:2}
-.ed2-btngrid .ed2-bg-pair{display:flex;gap:4px;min-width:0}
+.ed2-btngrid .ed2-bg-pair{display:flex;gap:4px;min-width:0;position:relative}
 .ed2-btnbox .ed2-btngrid .ed2-bg-pair .ed2-btn{flex:1 1 0;min-width:0;padding:6px .2em}
 .ed2-btnbox .ed2-btngrid .ed2-btn{width:100%;padding:6px .35em;white-space:nowrap;overflow:hidden}
+.ed2-btngrid .ed2-count{position:absolute;top:-5px;right:-5px;z-index:1;min-width:13px;height:13px;
+  box-sizing:border-box;padding:0 3px;border-radius:7px;background:var(--gr);color:var(--bg);
+  box-shadow:0 0 0 1.5px #141821;font:700 8.5px/13px system-ui,sans-serif;letter-spacing:0;
+  text-align:center;pointer-events:none}
 
 .ed2-btn.ed2-btn-pur{color:var(--ed-pur);border-color:var(--ed-pur-edge)}
 .ed2-btn.ed2-btn-pur:hover{background:rgba(185,174,240,.12);color:var(--ed-pur-hi);
@@ -2469,10 +2469,6 @@ body:not(.mse-template) .mcard .m-rules-split.has-ident.has-flavor>.m-rsecs{
   padding:8px 14px;overflow-x:auto}
 .td-barcol{display:flex;flex-direction:column;gap:4px;flex:0 0 auto}
 .td-barcol .dv-pbtn{text-align:left}
-.td-danger{border-color:var(--re,#c45c5c)!important;color:#f0b8b8!important}
-.td-danger:hover{background:rgba(128,48,48,.5)!important;color:#fff!important;
-  border:1px solid;border-image:linear-gradient(180deg,#3a1818 0%,#803030 15%,#f0b8b8 40%,#c45c5c 50%,#a04040 60%,#803030 85%,#3a1818 100%) 1;border-radius:0;
-  box-shadow:0 0 8px rgba(196,92,92,.3)}
 .td-undo:disabled{opacity:.4;cursor:default}
 .td-undo:disabled:hover{border-color:var(--b1);color:inherit}
 .td-stat{font-family:'Crimson Pro',serif;font-size:.9rem;color:var(--td)}
@@ -3036,6 +3032,7 @@ body.rebirth #tdBoard > .td-half-mine{
 
 .td-ghost{position:fixed;z-index:9500;pointer-events:none;margin:0!important;
   box-shadow:0 8px 24px rgba(0,0,0,.55);opacity:.92;cursor:grabbing}
+.td-ghost *{pointer-events:none!important}
 
 .td-zone.td-over{border-color:var(--txt-accent)}
 .td-zone.td-over .td-zbody{background:rgba(201,168,76,.07)}
@@ -3060,12 +3057,6 @@ body.rebirth #tdBoard > .td-half-mine{
 .td-rew-cost{display:flex;gap:6px}
 .td-rew-num{width:88px}
 .td-rew-cols{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px}
-.td-rew-chip{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;
-  border:1px solid var(--b1);border-radius:999px;background:var(--s2);
-  cursor:pointer;font-family:'Crimson Pro',serif;font-size:.8rem;color:var(--td)}
-.td-rew-chip:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
-.td-rew-chip:has(:checked){border-color:var(--txt-accent);color:var(--tx);
-  background:var(--b2)}
 .td-rew-side{margin:9px -13px 0}
 .td-rew-side .fs{padding-left:13px;padding-right:13px}
 .td-rew-side .fs:last-child{border-bottom:none}
@@ -3216,9 +3207,9 @@ body.rebirth #tdBoard > .td-half-mine{
 .td-mkbtn.td-dropb:hover{border-color:transparent;filter:brightness(1.08);
   box-shadow:0 3px 12px rgba(0,0,0,.5)}
 .td-mkbtn.td-dropb .td-caret{opacity:.8}
-.dv-pbtn.td-shuffle,.dv-pbtn.td-purple{border-color:#b9aef0;color:#d6cfff;
+.dv-pbtn.td-shuffle{border-color:#b9aef0;color:#d6cfff;
   background:rgba(58,52,96,.55)}
-.dv-pbtn.td-shuffle:hover,.dv-pbtn.td-purple:hover{background:rgba(58,52,96,.85);
+.dv-pbtn.td-shuffle:hover{background:rgba(58,52,96,.85);
   color:#fff;border:1px solid;border-image:linear-gradient(180deg,#1d1a33 0%,#3a3460 15%,#e2dcff 40%,#b9aef0 50%,#8b7fd0 60%,#3a3460 85%,#1d1a33 100%) 1;border-radius:0;
   box-shadow:0 0 8px rgba(185,174,240,.3)}
 
@@ -6587,14 +6578,14 @@ function catFilterPred(f){
   var hop=f.hop||'',   hval=(f.hval==null?'':f.hval);
   var arop=f.arop||'', arval=(f.arval==null?'':f.arval);
   var rop=f.rop||'',   rval=(f.rval==null?'':f.rval);
-  var xOnly=!!f.xOnly, atkAny=!!f.atkAny, hpAny=!!f.hpAny, arcAny=!!f.arcAny,
-      rngAny=!!f.rngAny;
   var atkArc=!!f.atkArc, hpArc=!!f.hpArc, dateF=f.dateF||'', sc=scc;
-  if(cop==='x'){ xOnly=true; cop=''; }
-  if(aop==='star'){ atkAny=true; aop=''; }
-  if(hop==='star'){ hpAny=true; hop=''; }
-  if(arop==='star'){ arcAny=true; arop=''; }
-  if(rop==='star'){ rngAny=true; rop=''; }
+  var xCost=(cop==='x'), atkStar=(aop==='star'), hpStar=(hop==='star'),
+      arcStar=(arop==='star'), rngStar=(rop==='star');
+  if(xCost) cop='';
+  if(atkStar) aop='';
+  if(hpStar) hop='';
+  if(arcStar) arop='';
+  if(rngStar) rop='';
   return function(c){
 
     var _si=(typeof window.edAnyIdent==='function')?window.edAnyIdent(c):!!c.splitIdent;
@@ -6613,11 +6604,11 @@ function catFilterPred(f){
         if(!words.some(function(w){return rtLower.indexOf(w)>=0;})) return false;
       }
     }
-    if(xOnly&&String(c.manaCost||'').toUpperCase().indexOf('X')<0) return false;
-    if(atkAny&&c.attack!=='*') return false;
-    if(hpAny&&c.health!=='*') return false;
-    if(arcAny&&c.arcane!=='*') return false;
-    if(rngAny&&c.range!=='*') return false;
+    if(xCost&&String(c.manaCost||'').toUpperCase().indexOf('X')<0) return false;
+    if(atkStar&&c.attack!=='*') return false;
+    if(hpStar&&c.health!=='*') return false;
+    if(arcStar&&c.arcane!=='*') return false;
+    if(rngStar&&c.range!=='*') return false;
     if(atkArc&&!hasFusedStat(c,'A')) return false;
     if(hpArc&&!hasFusedStat(c,'H')) return false;
     if(sc.length){
@@ -11031,48 +11022,6 @@ var sortCols = [];
 
 
 
-var TD_ZONES_MAIN = [
-  {id:'deck',    label:'Main Deck',     short:'Deck',     kind:'pile',  from:'main'},
-  {id:'essdeck', label:'Essence Deck',  short:'Essence',  kind:'pile',  from:'essence'},
-  {id:'wish',    label:'Wish Deck',     short:'Wish',     kind:'pile',  from:'wish'},
-  {id:'grave',   label:'Grave',         kind:'stack'},
-  {id:'susp',    label:'Suspended',     kind:'stack'},
-  {id:'banish',  label:'Banished',      kind:'stack'},
-  {id:'field',   label:'Field',         kind:'free'},
-  {id:'essarea', label:'Essence',       kind:'free'},
-  {id:'hand',    label:'Hand',          kind:'fan'}
-];
-var TD_ZONES_REBIRTH = [
-  {id:'deck',    label:'Main Deck',     short:'Deck',     kind:'pile',  from:'main'},
-  {id:'grave',   label:'Grave',         kind:'stack'},
-  {id:'field',   label:'Field',         kind:'free',  from:'armament'},
-  {id:'essarea', label:'Essence',       kind:'free'},
-  {id:'hand',    label:'Hand',          kind:'fan'}
-];
-var TD_ZONES_ENCOUNTER = [
-  {id:'grave',   label:'Grave', kind:'stack'},
-  {id:'field',   label:'Field', kind:'free'}
-];
-function tdZones(){
-  if(tdIsEncounter()) return TD_ZONES_ENCOUNTER;
-  return REBIRTH ? TD_ZONES_REBIRTH : TD_ZONES_MAIN;
-}
-
-function tdHasLord(){ return !REBIRTH && _gameMode === 'kingdoms'; }
-function tdDataZones(){
-  var z = tdZones().slice();
-  if(tdHasLord()) z.push({id:'lord', label:'Lord', kind:'lord'});
-  return z;
-}
-var TD_LOCK_ZONES = {field:1, essarea:1};
-var TD_CONNECT_ZONES = {field:1};
-
-var TD_OPENING_DRAW = 7;
-
-var TD = {board:null, seq:0, side:'a', log:[], logOn:false,
-          collapse:{},
-          foes:{}, foe:null};
-
 var TD_SEATS = ['a', 'b', 'c', 'd'];
 function tdFoeSides(){
   return TD_SEATS.filter(function(s){ return !!(TD.foes && TD.foes[s]); });
@@ -11138,28 +11087,6 @@ function tdMockFoe(name, seat){
   return foe;
 }
 
-function tdUid(kind){ return TD.side + '·' + kind + (++TD.seq); }
-function tdUidSide(uid){
-  var i = String(uid).indexOf('·');
-  return i > 0 ? String(uid).slice(0, i) : 'a';
-}
-function tdSetSide(s){ TD.side = String(s || 'a'); }
-
-function tdCssEsc(v){
-  v = String(v == null ? '' : v);
-  if(window.CSS && typeof CSS.escape === 'function') return CSS.escape(v);
-  return v.replace(/[^a-zA-Z0-9_ -￿-]/g, function(ch){
-    return '\\' + ch.charCodeAt(0).toString(16) + ' ';
-  });
-}
-function tdSel(id, attr){ return '[' + (attr || 'data-uid') + '="' + tdCssEsc(id) + '"]'; }
-function tdNum(v, dflt){
-  var n = Number(v);
-  return (typeof v === 'number' || (typeof v === 'string' && v.trim() !== '')) && isFinite(n)
-    ? n : (dflt == null ? 0 : dflt);
-}
-window.tdSel = tdSel;
-
 function tdAdoptSide(s, from){
   var side = String(s || 'a'), old = (from == null) ? TD.side : String(from);
   TD.side = side;
@@ -11202,55 +11129,6 @@ function tdPackItem(it){
   o.n = it.card ? it.card.name : '';
   return o;
 }
-
-var TD_STEPS_MAIN = [
-  {id:'main', label:'Main', phases:[
-    {id:'unlock', label:'Unlock', toggle:'unlock'},
-    {id:'onset',  label:'Onset'},
-    {id:'draw',   label:'Draw', toggle:'draw'},
-    {id:'key',    label:'Key'}]},
-  {id:'battle', label:'Battle', phases:[
-    {id:'start',  label:'Start'},
-    {id:'attack', label:'Declare Attackers'},
-    {id:'block',  label:'Declare Blockers'},
-    {id:'damage', label:'Battle Damage'},
-    {id:'offset', label:'Offset'}]}
-];
-var TD_STEPS_REBIRTH = [
-  TD_STEPS_MAIN[0],
-  {id:'battle', label:'Battle', phases:[
-    {id:'battle', label:'Battle'}]}
-];
-function tdSteps(){ return REBIRTH ? TD_STEPS_REBIRTH : TD_STEPS_MAIN; }
-function tdStepDef(id){
-  var steps = tdSteps();
-  for(var i = 0; i < steps.length; i++)
-    if(steps[i].id === id) return steps[i];
-  return steps[0];
-}
-function tdTurnOf(b){
-  var t = (b && b.turn) || {};
-  var step = (t.step === 'battle') ? 'battle' : 'main';
-  var def = tdStepDef(step);
-  var ph = parseInt(t.phase, 10);
-  if(!(ph >= 0 && ph < def.phases.length)) ph = 0;
-  return {step:step, phase:ph, n:(parseInt(t.n, 10) > 0 ? parseInt(t.n, 10) : 1)};
-}
-function tdTurnOn(){
-  return !!TD.board && !TD.watching && !tdIsPool();
-}
-
-function tdAutoKey(k){ return 'conjure_td_auto_' + (REBIRTH ? 'rb_' : '') + k; }
-function tdAutoGet(k){
-  try{ return localStorage.getItem(tdAutoKey(k)) !== '0'; }catch(_){ return true; }
-}
-function tdAutoSet(k, on){
-  try{ localStorage.setItem(tdAutoKey(k), on ? '1' : '0'); }catch(_){}
-}
-window.tdAutoToggle = function(k){
-  tdAutoSet(k, !tdAutoGet(k));
-  tdRenderTurn();
-};
 
 function tdSerialize(){
   if(!TD.board) return null;
@@ -11338,6 +11216,123 @@ function tdBoardHash(data){
   }
   return ('0000000' + h.toString(16)).slice(-8);
 }
+
+
+var TD_ZONES_MAIN = [
+  {id:'deck',    label:'Main Deck',     short:'Deck',     kind:'pile',  from:'main'},
+  {id:'essdeck', label:'Essence Deck',  short:'Essence',  kind:'pile',  from:'essence'},
+  {id:'wish',    label:'Wish Deck',     short:'Wish',     kind:'pile',  from:'wish'},
+  {id:'grave',   label:'Grave',         kind:'stack'},
+  {id:'susp',    label:'Suspended',     kind:'stack'},
+  {id:'banish',  label:'Banished',      kind:'stack'},
+  {id:'field',   label:'Field',         kind:'free'},
+  {id:'essarea', label:'Essence',       kind:'free'},
+  {id:'hand',    label:'Hand',          kind:'fan'}
+];
+var TD_ZONES_REBIRTH = [
+  {id:'deck',    label:'Main Deck',     short:'Deck',     kind:'pile',  from:'main'},
+  {id:'grave',   label:'Grave',         kind:'stack'},
+  {id:'field',   label:'Field',         kind:'free',  from:'armament'},
+  {id:'essarea', label:'Essence',       kind:'free'},
+  {id:'hand',    label:'Hand',          kind:'fan'}
+];
+var TD_ZONES_ENCOUNTER = [
+  {id:'grave',   label:'Grave', kind:'stack'},
+  {id:'field',   label:'Field', kind:'free'}
+];
+function tdZones(){
+  if(tdIsEncounter()) return TD_ZONES_ENCOUNTER;
+  return REBIRTH ? TD_ZONES_REBIRTH : TD_ZONES_MAIN;
+}
+
+function tdHasLord(){ return !REBIRTH && _gameMode === 'kingdoms'; }
+function tdDataZones(){
+  var z = tdZones().slice();
+  if(tdHasLord()) z.push({id:'lord', label:'Lord', kind:'lord'});
+  return z;
+}
+var TD_LOCK_ZONES = {field:1, essarea:1};
+var TD_CONNECT_ZONES = {field:1};
+
+var TD_OPENING_DRAW = 7;
+
+var TD = {board:null, seq:0, side:'a', log:[], logOn:false,
+          collapse:{},
+          foes:{}, foe:null};
+
+
+function tdUid(kind){ return TD.side + '·' + kind + (++TD.seq); }
+function tdUidSide(uid){
+  var i = String(uid).indexOf('·');
+  return i > 0 ? String(uid).slice(0, i) : 'a';
+}
+function tdSetSide(s){ TD.side = String(s || 'a'); }
+
+function tdCssEsc(v){
+  v = String(v == null ? '' : v);
+  if(window.CSS && typeof CSS.escape === 'function') return CSS.escape(v);
+  return v.replace(/[^a-zA-Z0-9_ -￿-]/g, function(ch){
+    return '\\' + ch.charCodeAt(0).toString(16) + ' ';
+  });
+}
+function tdSel(id, attr){ return '[' + (attr || 'data-uid') + '="' + tdCssEsc(id) + '"]'; }
+function tdNum(v, dflt){
+  var n = Number(v);
+  return (typeof v === 'number' || (typeof v === 'string' && v.trim() !== '')) && isFinite(n)
+    ? n : (dflt == null ? 0 : dflt);
+}
+window.tdSel = tdSel;
+
+
+var TD_STEPS_MAIN = [
+  {id:'main', label:'Main', phases:[
+    {id:'unlock', label:'Unlock', toggle:'unlock'},
+    {id:'onset',  label:'Onset'},
+    {id:'draw',   label:'Draw', toggle:'draw'},
+    {id:'key',    label:'Key'}]},
+  {id:'battle', label:'Battle', phases:[
+    {id:'start',  label:'Start'},
+    {id:'attack', label:'Declare Attackers'},
+    {id:'block',  label:'Declare Blockers'},
+    {id:'damage', label:'Battle Damage'},
+    {id:'offset', label:'Offset'}]}
+];
+var TD_STEPS_REBIRTH = [
+  TD_STEPS_MAIN[0],
+  {id:'battle', label:'Battle', phases:[
+    {id:'battle', label:'Battle'}]}
+];
+function tdSteps(){ return REBIRTH ? TD_STEPS_REBIRTH : TD_STEPS_MAIN; }
+function tdStepDef(id){
+  var steps = tdSteps();
+  for(var i = 0; i < steps.length; i++)
+    if(steps[i].id === id) return steps[i];
+  return steps[0];
+}
+function tdTurnOf(b){
+  var t = (b && b.turn) || {};
+  var step = (t.step === 'battle') ? 'battle' : 'main';
+  var def = tdStepDef(step);
+  var ph = parseInt(t.phase, 10);
+  if(!(ph >= 0 && ph < def.phases.length)) ph = 0;
+  return {step:step, phase:ph, n:(parseInt(t.n, 10) > 0 ? parseInt(t.n, 10) : 1)};
+}
+function tdTurnOn(){
+  return !!TD.board && !TD.watching && !tdIsPool();
+}
+
+function tdAutoKey(k){ return 'conjure_td_auto_' + (REBIRTH ? 'rb_' : '') + k; }
+function tdAutoGet(k){
+  try{ return localStorage.getItem(tdAutoKey(k)) !== '0'; }catch(_){ return true; }
+}
+function tdAutoSet(k, on){
+  try{ localStorage.setItem(tdAutoKey(k), on ? '1' : '0'); }catch(_){}
+}
+window.tdAutoToggle = function(k){
+  tdAutoSet(k, !tdAutoGet(k));
+  tdRenderTurn();
+};
+
 
 
 var TD_ACT = {};
@@ -15724,6 +15719,7 @@ function tdBindDrag(){
         _tdTokConnectFrom = ctok.dataset.tok;
         _tdConnectDrag = 'token';
         board.classList.add('td-connecting');
+        try{ board.setPointerCapture(ev.pointerId); }catch(_){}
         return;
       }
       var ccard = ev.target.closest && ev.target.closest('.td-card');
@@ -15735,6 +15731,7 @@ function tdBindDrag(){
           _tdBlockFrom = ccard.dataset.uid;
           board.classList.add('td-blocking');
           tdBlockLive(ev);
+          try{ board.setPointerCapture(ev.pointerId); }catch(_){}
           return;
         }
       }
@@ -15743,6 +15740,7 @@ function tdBindDrag(){
         _tdConnectFrom = ccard.dataset.uid;
         _tdConnectDrag = 'card';
         board.classList.add('td-connecting');
+        try{ board.setPointerCapture(ev.pointerId); }catch(_){}
         return;
       }
     }
@@ -15752,6 +15750,7 @@ function tdBindDrag(){
         ev.preventDefault();
         _tdArrowFrom = acard.dataset.uid;
         board.classList.add('td-arrowing');
+        try{ board.setPointerCapture(ev.pointerId); }catch(_){}
         return;
       }
     }
@@ -17320,6 +17319,7 @@ function tblHandle(m){
   if(m.t === 'joined'){
     TBL.you = m.you;
     TBL.tries = 0;
+    _tblWasOn = false;
     TBL.replaced = false;
     if(!m.back){ TBL.turn = ''; TBL.turnBy = ''; }
     if(m.key && !m.watch) tblSeatKeySet(TBL.room, m.key);
@@ -17438,7 +17438,7 @@ function tblHandle(m){
     TBL.lastFrom = clean;
     TBL.gotCount = (TBL.gotCount || 0) + 1;
     if(typeof TBL.onMsg === 'function'){
-      try{ TBL.onMsg(clean, m.id); }catch(e){ }
+      try{ TBL.onMsg(clean, m.id); }catch(e){ setTimeout(function(){ throw e; }, 0); }
     }
     return;
   }
@@ -26094,12 +26094,12 @@ function alignRuleFor(kind,key){
   return null;
 }
 function alignFor(card){
-  var subs=(card&&card.subTypes)||[];
+  var subs=edList(card&&card.subTypes);
   for(var i=0;i<subs.length;i++){
     var sr=alignRuleFor('sub',subs[i]);
     if(sr)return alignResolve(sr);
   }
-  var s=(card&&card.superTypes||[]).join(' ').toLowerCase();
+  var s=edList(card&&card.superTypes).join(' ').toLowerCase();
   for(var j=0;j<ALIGN_RULES.length;j++){
     var r=ALIGN_RULES[j];
     if(r.kind==='sub')continue;
@@ -26196,6 +26196,11 @@ var HEXNAME={red:'Red',orange:'Orange',yellow:'Yellow',green:'Green',blue:'Blue'
 var GREY_HEX='#4a4a4a';
 function fillHex(c){ if(c==='grey')return GREY_HEX; try{return (window.COLOR_FILL_HEX||{})[HEXNAME[c]]||'#888';}catch(_){return '#888';}}
 var FRAME_ORDER=['grey','red','orange','yellow','green','blue','indigo','violet'];
+function edList(v){
+  if(Array.isArray(v))return v;
+  if(typeof v==='string')return v.split(/\s*,\s*|\s+/).filter(Boolean);
+  return [];
+}
 function frameColorsOf(c){
   var vt=(c&&typeof variantOf==='function')?variantOf(c):c;
   var ov=vt&&vt.frameColor;
@@ -26203,7 +26208,8 @@ function frameColorsOf(c){
     var keep=frameOvrSetOf(c);
     if(keep.length)return keep;
   }
-  var cols=((c&&c.colors)||[]).filter(function(x){return FRAME_ORDER.indexOf(x)>=0;});
+  var cols=edList(c&&c.colors).map(function(x){return String(x).toLowerCase();})
+    .filter(function(x){return FRAME_ORDER.indexOf(x)>=0;});
   if(cols.length<2)return cols;
   var out=[], has={};
   cols.forEach(function(x){ has[x]=1; });
@@ -27022,7 +27028,7 @@ function symbolizeRules(txt,noPills){if(!txt)return'';var out=unescapeRuleFmt(e(
   if(_hold&&_put) out=_put(out,_lk);
   return out.split('\n').map(function(l){return '<p>'+l+'</p>';}).join('');}
 window.symbolizeRules=symbolizeRules;
-function typeLine(c){var sup=(c.superTypes||[]).join(' '),sub=(c.subTypes||[]).join(' ');return sub?(sup+' \u2014 '+sub):sup;}
+function typeLine(c){var sup=edList(c.superTypes).join(' '),sub=edList(c.subTypes).join(' ');return sub?(sup+' \u2014 '+sub):sup;}
 
 var _numIdx=null, _numIdxN=-1, _numIdxG=-1;
 function _numIndex(){
@@ -27871,6 +27877,7 @@ window.edCidReport=function(){
           out.stored++;
           if(!x.cid)return;
           out.withCid++;
+          if(x.__deleted)return;
           if(seen[x.cid])out.dupStored.push({a:seen[x.cid],b:x.name,id:x.cid});
           else seen[x.cid]=x.name;
           if(!x.__deleted&&!live[x.cid])out.orphans.push({name:x.name,id:x.cid});
@@ -27878,25 +27885,6 @@ window.edCidReport=function(){
         done();
       };
     },done);
-  });
-};
-window.edCidUndo=function(){
-  return new Promise(function(res){
-    var r;
-    try{ r=tx('cards','readonly').getAll(); }catch(_){ res(0); return; }
-    r.onerror=function(){ res(0); };
-    r.onsuccess=function(){
-      var list=(r.result||[]).filter(function(x){ return x&&x.cid; });
-      if(list.length){
-        try{
-          var st=tx('cards','readwrite');
-          list.forEach(function(x){ delete x.cid; try{ st.put(x); }catch(_){} });
-        }catch(_){ res(0); return; }
-      }
-      (window.CARDS||[]).forEach(function(c){ delete c.cid; });
-      setMetaSafe('idModel',0);
-      res(list.length);
-    };
   });
 };
 
@@ -29930,7 +29918,7 @@ function rulesBoxHTML(c,rulesAlign,rules,flavor){
 
 
 
-function _supers(c){ return (c&&c.superTypes||[]).map(function(s){return String(s).toLowerCase();}); }
+function _supers(c){ return edList(c&&c.superTypes).map(function(s){return String(s).toLowerCase();}); }
 function hasSuper(c,name){ return _supers(c).indexOf(String(name).toLowerCase())>=0; }
 function isEssenceCard(c){ return hasSuper(c,'essence'); }
 var CARD_TEMPLATES=[
@@ -31275,6 +31263,7 @@ function renderFields(){
       +"<div class='ed2-bg-pair'>"
         +"<button class='ed2-btn primary' id='edSaveBtn' onclick='edSave()'>Save</button>"
         +"<button class='ed2-btn primary' id='edSaveAllBtn' onclick='edSaveAll()'>Save All</button>"
+        +"<span class='ed2-count' id='edSaveAllCount' aria-hidden='true' hidden></span>"
       +"</div>"
       +"<button class='ed2-btn primary' onclick='edNewCard()'>➕ New card</button>"
       +"<button class='ed2-btn ed2-bg-test"+(c.testing?' on':'')+"' id='edTestBtn' aria-pressed='"+(c.testing?'true':'false')+"'"
@@ -33667,7 +33656,10 @@ function edSyncSaveBtns(){
   var n=(window.CARDS||[]).filter(function(x){ return _dirty[x.__id]; }).length;
   var all=document.getElementById('edSaveAllBtn');
   if(all){
-    all.textContent = n ? ('Save All (' + n + ')') : 'Save All';
+    var cnt=document.getElementById('edSaveAllCount');
+    if(cnt){ cnt.textContent = n ? String(n) : ''; cnt.hidden = !n; }
+    if(n) all.setAttribute('aria-label', 'Save All (' + n + ')');
+    else all.removeAttribute('aria-label');
     all.classList.toggle('ed2-nowt', !n);
     all.title = n ? ('Store every card changed this session - ' + n + ' waiting')
                   : 'Every card you have changed is already stored';
@@ -33779,10 +33771,6 @@ function storeReplaceAll(cards,more){
     t.oncomplete=function(){ res((cards||[]).length); };
     t.onabort=function(){ rej(t.error||new Error('the new records were not stored')); };
   });
-}
-function persistAllReplacing(){
-  ensureIds();
-  return storeReplaceAll(window.CARDS||[]);
 }
 
 function applyToCatalog(){ bumpCardGen(); try{ if(typeof window.run==='function')window.run(); }catch(_){} scheduleFace(); }
@@ -33898,7 +33886,7 @@ function scrubSecrets(o){
   return o;
 }
 function backupPayload(){
-  return scrubSecrets({version:5, game:cardsJsonGame(), exported:new Date().toISOString(),
+  return scrubSecrets({version:5, game:backupGameHere(), exported:new Date().toISOString(),
           setInfo:SETINFO, settings:currentSettingsBody(),
           sagas:(typeof SAGAS!=='undefined')?SAGAS:[],
           marks:(typeof MARKS!=='undefined')?MARKS:[],
@@ -34347,6 +34335,7 @@ function openBackupZip(f){
     });
   });
 }
+function backupGameHere(){ return window.REBIRTH?'rebirth':'main'; }
 function _backupGameOf(f){
   return openBackupZip(f).then(function(z){
     var bf=z.get('backup.json');
@@ -34360,9 +34349,9 @@ window.edRestoreBackupZip=function(input){
   var f=input&&input.files&&input.files[0]; if(!f)return;
   input.value='';
   _backupGameOf(f).then(function(g){
-    if(g && g!==cardsJsonGame()){
+    if(g && g!==backupGameHere()){
       alert('That backup holds '+(g==='rebirth'?'Conjure Rebirth':'Conjure')+' cards,'
-        +' and this is '+(cardsJsonGame()==='rebirth'?'Conjure Rebirth':'Conjure')+'.'
+        +' and this is '+(backupGameHere()==='rebirth'?'Conjure Rebirth':'Conjure')+'.'
         +String.fromCharCode(10,10)
         +'The two games share no cards, keywords, sagas or art, and a restore'
         +' REPLACES everything here - so nothing was changed. Switch games in the'
@@ -34451,220 +34440,6 @@ function _restoreBackupZip(f){
         ?'The cards, sagas and watermarks were restored; the rest of it (the look, saved packs) was not.'
         :'The cards, sagas and watermarks stored here are as they were.')); return null; });
 }
-var CARDS_JSON_FORMAT='conjure-cards';
-var CARDS_JSON_VERSION=1;
-function cardsJsonGame(){ return window.REBIRTH?'rebirth':'main'; }
-function cardsJsonPayload(){
-  return {format:CARDS_JSON_FORMAT, version:CARDS_JSON_VERSION,
-    game:cardsJsonGame(),
-    exported:new Date().toISOString(),
-    cardCount:(window.CARDS||[]).length,
-    cards:(window.CARDS||[]).map(function(c){
-      var o=Object.assign({},c);
-      delete o.__id;
-      if(volatileUrl(o.imageUrl))o.imageUrl='';
-      if(o.variants&&o.variants.length)o.variants=o.variants.map(function(v){
-        var w=Object.assign({},v);
-        if(volatileUrl(w.imageUrl))w.imageUrl='';
-        return w; });
-      return o; }),
-    sagas:((typeof SAGAS!=='undefined')?SAGAS:[]).map(function(sg){
-      return Object.assign({},sg); })};
-}
-window.edExportCardsJson=function(){
-  var p=cardsJsonPayload();
-  if(!p.cards.length){ alert('There are no cards to export.'); return; }
-  var stamp=new Date().toISOString().slice(0,10);
-  dl('conjure_cards_'+p.game+'_'+stamp+'.json', JSON.stringify(p), 'application/json');
-  toast('Exported '+p.cards.length+' card(s) with every field');
-};
-
-function _replaceCardInPlace(ex,nc){
-  var keepId=ex.id, keepMem=ex.__id, keepCid=ex.cid;
-  Object.keys(ex).forEach(function(k){ if(k!=='__id'&&k!=='id')delete ex[k]; });
-  Object.keys(nc).forEach(function(k){
-    if(k==='__id'||k==='id'||k==='cid')return; ex[k]=nc[k]; });
-  ex.id=keepId; ex.__id=keepMem;
-  if(keepCid)ex.cid=keepCid; else if(nc.cid)ex.cid=nc.cid;
-}
-function _mergeSagaRecords(list,replace){
-  if(!Array.isArray(list)||!list.length)return Promise.resolve(0);
-  var have={}; (SAGAS||[]).forEach(function(s){ if(s&&s.id)have[s.id]=s; });
-  var write=[];
-  list.forEach(function(sg){
-    var rec=sagaRecordClean(sg);
-    if(!rec)return;
-    if(have[rec.id]&&!replace)return;
-    if(have[rec.id]){ var i=SAGAS.indexOf(have[rec.id]); if(i>=0)SAGAS[i]=rec; }
-    else SAGAS.push(rec);
-    write.push(rec);
-  });
-  if(!write.length)return Promise.resolve(0);
-  return Promise.all(write.map(function(r){ return put('sagas',r); }))
-    .then(function(){ return write.length; });
-}
-function _cardsJsonImpact(cards){
-  var byKey={}; (window.CARDS||[]).forEach(function(c){ byKey[mergeKey(c)]=c; });
-  var add=0, over=0, names=[];
-  (cards||[]).forEach(function(nc){
-    if(byKey[mergeKey(nc)]){ over++; if(names.length<6)names.push(nc.name); }
-    else add++;
-  });
-  return {add:add, over:over, names:names};
-}
-function _cardsJsonMerge(data){
-  var cards=data.cards||[];
-  var mineList=(window.CARDS||[]), ix=cardIndex(mineList);
-  var byId={}; mineList.forEach(function(c){ if(c.id)byId[c.id]=c; });
-  var added=0, updated=0;
-  cards.forEach(function(nc){
-    var at=ix.at(nc), ex=(at==null)?null:mineList[at];
-    if(ex){ _replaceCardInPlace(ex,nc); markDirty(ex); updated++; return; }
-    var o=Object.assign({},nc);
-    o.__id=uid();
-    ensureUniqueId(o,byId);
-    mineList.push(o); ix.add(o,mineList.length-1); markDirty(o); added++;
-  });
-  return persistAll()
-    .then(function(){ return _mergeSagaRecords(data.sagas,false); })
-    .then(ensureSagaRecords)
-    .then(function(){
-      applyToCatalog(); refreshSagaFilter();
-      try{ window.edRenderSagaPage(); }catch(_){}
-      toast('Imported '+added+' new, '+updated+' updated - every field');
-      return {added:added,updated:updated};
-    });
-}
-function _cardsJsonReplace(data){
-  var byId={};
-  window.CARDS=(data.cards||[]).map(function(nc){
-    var o=Object.assign({},nc);
-    o.__id=uid();
-    ensureUniqueId(o,byId);
-    return o;
-  });
-  return persistAllReplacing()
-    .then(function(){ return _mergeSagaRecords(data.sagas,true); })
-    .then(ensureSagaRecords)
-    .then(function(){
-      applyToCatalog(); refreshSagaFilter();
-      try{ window.edRenderSagaPage(); }catch(_){}
-      toast('Replaced the catalogue with '+window.CARDS.length+' card(s)');
-      return {added:window.CARDS.length,updated:0};
-    });
-}
-window.edImportCardsJson=function(input){
-  var f=input&&input.files&&input.files[0]; if(!f)return;
-  input.value='';
-  var rd=new FileReader();
-  rd.onload=function(ev){
-    var data;
-    try{ data=JSON.parse(ev.target.result); }
-    catch(err){ alert('Could not read that file: '+((err&&err.message)||err)); return; }
-    if(!data||data.format!==CARDS_JSON_FORMAT||!Array.isArray(data.cards)){
-      alert('That is not a complete-data file written by this app.'+String.fromCharCode(10,10)
-        +'It needs to be one exported with "Export complete data (.json)". For a'
-        +' spreadsheet use Import Spreadsheet; for a backup use Restore backup (.zip).');
-      return;
-    }
-    if(data.game && data.game!==cardsJsonGame()){
-      alert('That file holds '+(data.game==='rebirth'?'Conjure Rebirth':'Conjure')+' cards,'
-        +' and this is '+(cardsJsonGame()==='rebirth'?'Conjure Rebirth':'Conjure')+'.'
-        +String.fromCharCode(10,10)
-        +'The two games share no cards, keywords, sagas or art, so nothing was'
-        +' imported. Switch games in the header and try again.');
-      return;
-    }
-    var hit=_cardsJsonImpact(data.cards);
-    var n=data.cards.length;
-    window.edChooseModal({
-      title:'Import '+n+' card(s) from '+f.name,
-      body:'This file carries every field of every card in it. '
-        +hit.add+' would be new here; '+hit.over+' match a card you already have.',
-      choices:[
-        {key:'merge', label:'Merge into this catalogue',
-         detail:(hit.add?('Adds the '+hit.add+' new card(s)'
-                          +(hit.over?(' and replaces the '+hit.over+' that match, '
-                                       +'field for field'):''))
-                       :(hit.over?('Replaces the '+hit.over+' matching card(s), '
-                                    +'field for field')
-                                 :'Nothing in this file differs from what you have'))
-           +'. Nothing else is touched and nothing is ever deleted.'},
-        {key:'replace', label:'Replace the catalogue with it', warn:true,
-         detail:'The '+n+' card(s) in the file become the whole catalogue. Every'
-           +' card not in it is lost, including any you made here.'}
-      ]
-    }).then(function(pick){
-      if(!pick){ toast('Cancelled - nothing was changed'); return; }
-      if(pick==='merge'){
-        if(!hit.over)return _cardsJsonMerge(data);
-        return edDangerGate({
-          title:'Merge '+f.name,
-          lose:[hit.over+' card(s) already here are replaced by the file'+String.fromCharCode(39)+'s version,'
-                 +' field for field - rules, stats, art framing, split sections and all',
-                'Examples: '+hit.names.join(', ')+(hit.over>hit.names.length?', …':''),
-                'There is no undo for this'],
-          phrase:'OVERWRITE',
-          requireBackup:true,
-          proceedLabel:'Replace '+hit.over+', add '+hit.add
-        }).then(function(ok){
-          if(!ok){ toast('Cancelled - nothing was changed'); return; }
-          return _cardsJsonMerge(data);
-        });
-      }
-      return edDangerGate({
-        title:'Replace the catalogue with '+f.name,
-        lose:['The current card list - all '+((window.CARDS||[]).length)+' card(s)',
-              'Anything made or edited here that is not in the file',
-              'There is no undo for this'],
-        phrase:'REPLACE',
-        requireBackup:true,
-        proceedLabel:'Replace with '+n+' card(s)'
-      }).then(function(ok){
-        if(!ok){ toast('Cancelled - nothing was changed'); return; }
-        return _cardsJsonReplace(data);
-      });
-    }).catch(function(err){ alert('Import failed: '+((err&&err.message)||err)); });
-  };
-  rd.readAsText(f);
-};
-
-window.edHandleJson=function(file){
-  if(!file)return;
-  edDangerGate({
-    title:'Restore from JSON',
-    lose:['The current card list - all '+((window.CARDS||[]).length)+' cards',
-          'Anything edited or imported since "'+file.name+'" was written',
-          'Settings in the file overwrite the current ones'],
-    phrase:'REPLACE',
-    requireBackup:true,
-    proceedLabel:'Replace with '+file.name
-  }).then(function(ok){
-    if(ok) _handleJsonRestore(file);
-    else toast('Cancelled - nothing was changed');
-  });
-};
-function _handleJsonRestore(file){ var rd=new FileReader();
-  rd.onload=function(ev){ try{ var data=JSON.parse(ev.target.result); var cards=data.cards||data;
-    if(!Array.isArray(cards))throw new Error('bad JSON');
-    if(data.setInfo)SETINFO=Object.assign(SETINFO,data.setInfo);
-    window.CARDS=cards.map(function(c){ if(!c.__id)c.__id=uid(); if(!c.id)c.id=uid();
-      if(c.imageUrl&&c.imageUrl.indexOf('data:')===0){
-        var key=c.art||('jsonart_'+c.id); c.art=key;
-        var b=dataUrlToBlob(c.imageUrl);
-        if(b)artPut(key,b); else ART[key]=c.imageUrl;
-        c.imageUrl='';
-      } return c; });
-    persistAllReplacing().then(function(){
-      return data.settings ? applyPackBody(data.settings) : null;
-    }).then(function(){
-      return _restorePacks(data.packs);
-    }).then(function(){
-      applyToCatalog();
-      toast('Restored '+window.CARDS.length+' cards'+(data.settings?' + settings':''));
-    }).catch(function(err){ alert('Restore failed: '+(err&&err.message||err)); });
-  }catch(err){ alert('Could not read JSON: '+(err&&err.message||err)); } };
-  rd.readAsText(file); };
 
 function injectEditButtons(){
   ensureIds();
@@ -37404,17 +37179,22 @@ function ghAutoCheck(){
   if(!GH_SOURCE||syncBlockedReason(GH_SOURCE))return;
   if(!GH_AUTOCHECK){
     _ghWeeklyOnOpen=true;
-    setTimeout(function(){ try{ ghWeeklyMaybe(); }catch(_){} },1200);
-    return;
+    return new Promise(function(done){
+      setTimeout(function(){ var w; try{ w=ghWeeklyMaybe(); }catch(_){} done(w); },1200);
+    });
   }
   _ghChecked=true;
-  setTimeout(function(){
+  return new Promise(function(done){ setTimeout(function(){
     try{ ghRefreshOfficialIndex(); }catch(_){}
-    Promise.resolve(window.edGhCheck()).then(function(){
-      try{ return ghAutoApply(); }catch(_){}
-    }).then(function(){ return srcEachFollowed(true); })
-      .then(function(){ try{ return ghWeeklyMaybe(); }catch(_){} });
-  },1200);
+    var run;
+    try{
+      run=Promise.resolve(window.edGhCheck()).then(function(){
+        try{ return ghAutoApply(); }catch(_){}
+      }).then(function(){ return srcEachFollowed(true); })
+        .then(function(){ try{ return ghWeeklyMaybe(); }catch(_){} });
+    }catch(e){ done(); throw e; }
+    done(run);
+  },1200); });
 }
 function srcEachFollowed(apply){
   return SOURCES.map(srcWrap).reduce(function(p,s){
@@ -37727,6 +37507,7 @@ function edStorageText(){
 window.edStorageInfo=function(){
   return edStorageRefresh().then(function(){ return Object.assign({text:edStorageText()},_storeInfo); });
 };
+function edOpened(){ window.CONJURE_OPENED=true; }
 function boot(){ if(_inited)return; _inited=true;
   dbOpen().then(function(){
     try{ edWatchOtherTabs(); }catch(_){}
@@ -37836,10 +37617,13 @@ function boot(){ if(_inited)return; _inited=true;
       ensureSagaRecords();
       watchCatalog();
       renderFields();
+      window.CONJURE_BOOTED=true;
       ghLoadSettings().then(function(){
-        try{ ghAutoCheck(); }catch(_){}
+        var run;
+        try{ run=ghAutoCheck(); }catch(_){}
         try{ ghEmptyRefresh(); }catch(_){}
-      }).catch(function(){});
+        Promise.resolve(run).then(edOpened,function(e){ edOpened(); throw e; });
+      }).catch(function(){ edOpened(); });
     });
   }).catch(function(err){ console.error('editor boot failed',err); });
 }
