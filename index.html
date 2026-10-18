@@ -227,8 +227,23 @@ footer a:hover,footer a:focus-visible{border-bottom-color:currentColor}
 
 @media (max-width:430px){
   body{padding:30px 14px}
-  .r3{grid-template-columns:1fr}
   .narrow{width:100%}
+}
+
+/* ── PHONES (the author, session 82; HANDOFF §82) ────────────────────────────
+   The catalog has no Play Online under 900px wide, so its front door has no
+   button for it there - the same line as the app's mobile.css. Discord,
+   Instagram and TTS stay on one row, with the letters closer and, on the
+   narrowest phones, without their icons. */
+@media (max-width:899.98px){
+  .b-online{display:none}
+}
+@media (max-width:430px){
+  .r3{gap:10px}
+  .r3 .mbtn{gap:6px; padding:11px 4px; font-size:clamp(10px,2.95vw,11.5px); letter-spacing:.06em}
+}
+@media (max-width:359.98px){
+  .r3 .mbtn svg{display:none}
 }
 
 /* ── THE TWO SIDES, ALIVE (the author, session 55l) ─────────────────────────
