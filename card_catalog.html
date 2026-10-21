@@ -34,6 +34,8 @@ body.light{--bg:#f4f1ea;--s1:#fff;--s2:#eeeae2;--s3:#e2ded6;--b1:#d0c8bb;--b2:#b
   --metal-gold:linear-gradient(180deg,#4a3818 0%,#7a6030 15%,#f5ecd0 40%,#e8c96a 50%,#c9a84c 60%,#7a6030 85%,#4a3818 100%);
   --metal-purple:linear-gradient(180deg,#2a1a40 0%,#5a3a90 15%,#ecdcff 40%,#b478f0 50%,#8a50c8 60%,#5a3a90 85%,#2a1a40 100%);
   --metal-silver:linear-gradient(180deg,#22262f 0%,#4a5060 15%,#e6e9f0 40%,#a8afc0 50%,#7a8296 60%,#4a5060 85%,#22262f 100%);
+  --metal-hp:linear-gradient(180deg,#4a3818 0%,#7a6030 15%,#f5ecd0 40%,#c9a84c 50%,#7a6030 60%,#7a6030 85%,#4a3818 100%);
+  --metal-lvl:linear-gradient(180deg,#4a3818 0%,#7a6030 15%,#f5ecd0 40%,#e8c96a 50%,#c9a84c 60%,#7a6030 85%,#4a3818 100%);
   --metal-gold-side:linear-gradient(270deg,#4a3818 0%,#7a6030 15%,#f5ecd0 40%,#e8c96a 50%,#c9a84c 60%,#7a6030 85%,#4a3818 100%);
   --metal-gold-row:linear-gradient(90deg,#4a3818,#7a6030,#f5ecd0,#e8c96a,#c9a84c,#f5ecd0,#7a6030,#4a3818);
   --btn-font:'Crimson Pro',serif;
@@ -88,15 +90,15 @@ body.arcane{--bg:#0b0a1a;--s1:#13112a;--s2:#1b1838;--s3:#241f4a;--b1:#322b5c;--b
   --ac:#6fb7ff;--a2:#a6d2ff;--re:#ff6b8b;--re-ink:#ff8fa6;--re-hi:#ffc0cd;--gr:#4fd1a5;
   --sh:rgba(0,0,0,.55);--th-fill:#dcd2ff;--txt-accent:#ece8ff;--ink-on-fill:#0b0a1a;
   --spect:#e58bff;--spect-ink:#f0b0ff;--spect-fill:rgba(229,139,255,.14);--spect-glow:rgba(229,139,255,.35);
-  --metal-gold:linear-gradient(180deg,#282538 0%,#5c5380 15%,#ebe6ff 40%,#b7a6ff 50%,#9285cc 60%,#5c5380 85%,#282538 100%);
+  --metal-gold:linear-gradient(180deg,#2b2d35 0%,#686c7a 15%,#fbf4d6 40%,#e4e7ee 50%,#cfe0f6 60%,#686c7a 85%,#2b2d35 100%);
   --metal-green:linear-gradient(180deg,#112e24 0%,#286852 15%,#cef2e6 40%,#4fd1a5 50%,#3fa784 60%,#286852 85%,#112e24 100%);
   --metal-red:linear-gradient(180deg,#38181f 0%,#803646 15%,#ffd6df 40%,#ff6b8b 50%,#cc566f 60%,#803646 85%,#38181f 100%);
   --metal-blue:linear-gradient(180deg,#182838 0%,#385c80 15%,#d7ebff 40%,#6fb7ff 50%,#5992cc 60%,#385c80 85%,#182838 100%);
   --metal-purple:linear-gradient(180deg,#321f38 0%,#724680 15%,#f8dfff 40%,#e58bff 50%,#b76fcc 60%,#724680 85%,#321f38 100%);
-  --metal-silver:linear-gradient(180deg,#24222e 0%,#524e68 15%,#e6e3f2 40%,#a49ccf 50%,#837da6 60%,#524e68 85%,#24222e 100%);
-  --metal-gold-side:linear-gradient(270deg,#282538 0%,#5c5380 15%,#ebe6ff 40%,#b7a6ff 50%,#9285cc 60%,#5c5380 85%,#282538 100%);
-  --metal-gold-row:linear-gradient(90deg,#282538,#5c5380,#ebe6ff,#b7a6ff,#9285cc,#ebe6ff,#5c5380,#282538);
-  --td-gold:linear-gradient(135deg,#282538 0%,#5c5380 15%,#ebe6ff 40%,#b7a6ff 50%,#9285cc 60%,#5c5380 85%,#282538 100%)}
+  --metal-silver:linear-gradient(180deg,#2b2d35 0%,#686c7a 15%,#fbf4d6 40%,#e4e7ee 50%,#cfe0f6 60%,#686c7a 85%,#2b2d35 100%);
+  --metal-gold-side:linear-gradient(270deg,#2b2d35 0%,#686c7a 15%,#fbf4d6 40%,#e4e7ee 50%,#cfe0f6 60%,#686c7a 85%,#2b2d35 100%);
+  --metal-gold-row:linear-gradient(90deg,#2b2d35,#686c7a,#fbf4d6,#e4e7ee,#cfe0f6,#fbf4d6,#686c7a,#2b2d35);
+  --td-gold:linear-gradient(135deg,#2b2d35 0%,#686c7a 15%,#fbf4d6 40%,#e4e7ee 50%,#cfe0f6 60%,#686c7a 85%,#2b2d35 100%)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--tx);font-family:'Crimson Pro',Georgia,serif;font-size:16px;line-height:1.5;min-height:100vh;overflow-x:clip;transition:background .2s,color .2s}
 header{position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);border-bottom:none;padding:0 14px;display:flex;align-items:center;height:58px;gap:10px;background:var(--hdr-wash);transition:background .2s}
@@ -112,7 +114,7 @@ header::after{content:'';position:absolute;left:0;right:0;bottom:0;height:4px;ba
   drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000)}
 body.light .hlogo{filter:brightness(0)}
 :root{--thm-metal-gold:linear-gradient(180deg,#4a3818 0%,#7a6030 15%,#f5ecd0 40%,#e8c96a 50%,#c9a84c 60%,#7a6030 85%,#4a3818 100%);
-  --thm-metal-violet:linear-gradient(180deg,#282538 0%,#5c5380 15%,#ebe6ff 40%,#b7a6ff 50%,#9285cc 60%,#5c5380 85%,#282538 100%)}
+  --thm-metal-platinum:linear-gradient(180deg,#2b2d35 0%,#686c7a 15%,#fbf4d6 40%,#e4e7ee 50%,#cfe0f6 60%,#686c7a 85%,#2b2d35 100%)}
 .thm{position:relative;display:inline-flex}
 .thm-caret{font-size:.8em;transition:transform .15s}
 #tbtn[aria-expanded='true'] .thm-caret{transform:rotate(180deg)}
@@ -126,7 +128,7 @@ body.light .hlogo{filter:brightness(0)}
   --thm-hot:linear-gradient(rgba(201,168,76,.3),rgba(201,168,76,.3)),#13161f}
 .thm-i-light{--thm-ink:#5e3e08;--thm-edge:#8a6820;--thm-fill:#fff;--thm-rgb:138,104,32;--thm-metal:var(--thm-metal-gold);
   --thm-hot:#8a6820}
-.thm-i-arcane{--thm-ink:#dcd2ff;--thm-edge:#b7a6ff;--thm-fill:#13112a;--thm-rgb:183,166,255;--thm-metal:var(--thm-metal-violet);
+.thm-i-arcane{--thm-ink:#dcd2ff;--thm-edge:#b7a6ff;--thm-fill:#13112a;--thm-rgb:183,166,255;--thm-metal:var(--thm-metal-platinum);
   --thm-hot:linear-gradient(rgba(183,166,255,.3),rgba(183,166,255,.3)),#13112a}
 body:not(.rebirth) .rb-only{display:none!important}
 body.rebirth #dpsec-essence,body.rebirth #dta-essence,
@@ -538,6 +540,8 @@ body.light .ci-qbtn{background:var(--s2)}
 .dp-sec-hdr.dp-sec-active{background:color-mix(in srgb,var(--go) 12%,transparent);color:var(--g2)}
 .dp-sec-hdr:not(.dp-sec-active):hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
 .dp-sec-hdr.dp-sec-active:hover{background:color-mix(in srgb,var(--go) 7%,transparent);border:1px solid;border-image:var(--metal-gold) 1;border-radius:0}
+.dp-sec-hdr.dp-sec-fixed{cursor:default}
+.dp-sec-hdr.dp-sec-fixed:hover{background:none;box-shadow:none}
 .dp-sec-cnt{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;background:var(--b2);color:var(--td);font-size:.75rem;font-weight:700;padding:0 5px}
 .dph{padding:10px 11px 7px;border-bottom:1px solid color-mix(in srgb,var(--th-fill) 20%,var(--b1));flex-shrink:0}
 .dph-top{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:6px}
@@ -652,6 +656,7 @@ body.light .ci-qbtn{background:var(--s2)}
 .dv-sticky{position:sticky;top:var(--chrome);z-index:70;background:var(--s1);padding-bottom:10px;margin-bottom:4px;border-bottom:1px solid var(--b1)}
 body.light .dv-sticky{background:var(--s1)}
 .dv-hdr{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 0 0}
+.dv-pair{display:flex;gap:6px;align-items:center}
 .dv-vbtn{font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);font-size:.96rem;font-weight:600;padding:6px 14px;border:2px solid var(--b2);border-radius:0;background:none;color:var(--td);cursor:pointer;transition:all .15s;white-space:nowrap}
 .dv-vbtn.on{background:color-mix(in srgb,var(--go) 18%,transparent);color:var(--go);border:2px solid;border-image:var(--metal-gold) 1;border-radius:0;box-shadow:0 0 8px color-mix(in srgb,var(--go) 25%,transparent)}
 .dv-vbtn:not(.on):hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
@@ -672,8 +677,8 @@ body.light .dv-sticky{background:var(--s1)}
 .hl-group .hl-toggle{margin:0 10px 0 0}
 .pop-ess-btn .pe-ico{color:var(--white);margin-right:7px}
 .pop-ess-btn .pe-txt{background:linear-gradient(90deg,#ffd9d9 0%,#ffe6cc 17%,#fff6c8 33%,#d9ffdf 50%,#d4f1ff 67%,#e0d9ff 83%,#fbd9ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-.dv-export{position:relative;margin-left:auto}
-.dv-menu{position:absolute;right:0;top:calc(100% + 6px);display:none;flex-direction:column;gap:4px;min-width:150px;padding:6px;background:var(--s1);border:1px solid var(--b2);box-shadow:0 12px 40px color-mix(in srgb,var(--black) 50%,transparent);z-index:200}
+.dv-export{position:relative}
+.dv-menu{position:absolute;left:0;top:calc(100% + 6px);display:none;flex-direction:column;gap:4px;min-width:150px;padding:6px;background:var(--s1);border:1px solid var(--b2);box-shadow:0 12px 40px color-mix(in srgb,var(--black) 50%,transparent);z-index:200}
 .dv-menu.on{display:flex}
 .dv-menu .dv-pbtn{text-align:left;width:100%}
 .dv-type-boxes{display:flex;gap:12px;align-items:flex-start;width:100%}
@@ -702,7 +707,18 @@ body.light .dv-sticky{background:var(--s1)}
 .hl-toggle input:checked+.hl-slider:after{content:'On';right:auto;left:8px;color:var(--go)}
 .hl-panel{position:absolute;top:calc(100% + 6px);left:0;width:280px;background:var(--s1);border:1px solid var(--b2);border-radius:0;padding:14px;z-index:200;box-shadow:0 12px 40px color-mix(in srgb,var(--black) 50%,transparent);display:none}
 .hl-panel.on{display:block}
-.hl-panel-title{font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;letter-spacing:.1em;color:var(--txt-accent);margin-bottom:10px}
+.hl-rows{display:flex;flex-direction:column;gap:8px}
+.hl-cols{display:flex;gap:4px;flex-wrap:wrap}
+.hl-row{display:flex;align-items:center;gap:8px}
+.hl-lab{flex:0 0 auto;min-width:5.6rem;font-size:.8rem;color:var(--td);white-space:nowrap}
+.hl-in{flex:1 1 auto;min-width:0;background:var(--s2);border:1px solid var(--b1);border-radius:0;color:var(--tx);padding:4px 8px;font-size:.85rem}
+.hl-in.hl-in-op{flex:0 0 auto;padding:4px 6px}
+.hl-in.hl-in-num{flex:0 0 56px;width:56px;padding:4px 6px}
+@media (min-width:900px){
+  .dv-hdr .dv-sort-sel{height:37px;box-sizing:border-box}
+  .dv-hdr > .dv-box,.dv-hdr .hl-group,.dv-hdr > .td-statrow,.dv-hdr > .dv-vbtn,.dv-pair > .dv-vbtn,.dv-pair > .dv-export > .dv-pbtn{height:49px;box-sizing:border-box}
+  .dv-hdr .hl-group > .hl-btn{align-self:stretch}
+}
 .dv-group-hdr{grid-column:1/-1;font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;letter-spacing:.1em;color:var(--txt-accent);padding:8px 0 4px;border-bottom:1px solid var(--b1);margin-top:8px;display:flex;align-items:center;gap:8px}
 .dv-group-hdr:first-child{margin-top:0}
 @keyframes hl-shimmer{
@@ -782,7 +798,6 @@ body.light tr.hl-match{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--black)
 .doc-title-bar{color:var(--tx)}
 .kw-name{color:var(--tx)}
 .hl-count{color:var(--tx)}
-.hl-panel-title{color:var(--tx)}
 .stat-pill-val{color:var(--tx)}
 .dv-group-hdr{color:var(--tx)}
 .mana-txt{color:var(--tx)}
@@ -807,7 +822,6 @@ body.light .mco{color:#13161f}
 body.light .doc-title-bar{color:#13161f}
 body.light .kw-name{color:#13161f}
 body.light .hl-count{color:#13161f}
-body.light .hl-panel-title{color:#13161f}
 body.light .stat-pill-val{color:#13161f}
 body.light .dv-group-hdr{color:#13161f}
 body.light .mana-txt{color:#13161f}
@@ -1101,6 +1115,8 @@ body.light .ci-qedit{background:var(--s2);border-color:var(--gr);color:var(--gr)
   color:var(--tx);font-family:'Crimson Pro',serif;font-size:.8rem;padding:3px 4px}
 .ed2-xf-foot{flex:0 0 auto}
 .ed2-art-empty{font-size:.8rem;color:var(--tm);padding:14px 0;line-height:1.5}
+.ed2-art-empty.ed2-stage-none{position:absolute;inset:0;display:flex;align-items:center;
+  justify-content:center;padding:0 8px;text-align:center}
 
 @media(max-width:900px){.ed2-preview{width:300px}}
 @media(max-width:720px){.ed2-wrap{flex-direction:column;height:auto}.ed2-preview{width:100%;border-right:none;border-bottom:1px solid var(--b1)}
@@ -1633,11 +1649,6 @@ body.light .sg-row,body.arcane .sg-row{--sg-face:var(--s1)}
 .ed2-sagachip.on{background:color-mix(in srgb,var(--a2) 14%,transparent);border-color:var(--ed-info-edge);color:var(--ed-chip-on);
   font-weight:600}
 span.ed2-sagachip{cursor:default}
-.ed2-sagabox>label .ed2-sagabox-note{margin:0 0 0 10px;text-transform:none;
-  letter-spacing:0;font-weight:400}
-.ed2-sagabox-note{margin-top:6px;font-family:'Crimson Pro',serif;font-size:.78rem;
-  line-height:1.4;color:var(--tm)}
-.ed2-sagabox-note b{color:var(--tx)}
 
 .ed2-xf-foot{display:flex;gap:6px;flex-wrap:nowrap;align-items:center}
 .ed2-xf-foot > .ed2-btn{flex:1 1 0;min-width:0;padding-left:.3em;padding-right:.3em}
@@ -1868,17 +1879,17 @@ body.light .ed2-hl-ovr,body.arcane .ed2-hl-ovr{--ovr-face:var(--s1)}
 .ed2-ovr{grid-column:1/-1;flex:1 1 100%;min-width:0;
   display:flex;align-items:center;justify-content:flex-start;
   gap:1px;flex-wrap:wrap;margin-top:3px}
-.ed2-artcol > .ed2-hl-ovr{width:50%;box-sizing:border-box;margin-top:8px;flex-wrap:nowrap;
+.ed2-artcol .ed2-hl-ovr{width:50%;box-sizing:border-box;margin-top:8px;flex-wrap:nowrap;
   align-items:center;gap:3px;padding:5px 4px;container-type:inline-size}
-.ed2-artcol > .ed2-hl-ovr .ed2-hl-h{font-size:clamp(6px,3.9cqw,.8rem);letter-spacing:.02em;
+.ed2-artcol .ed2-hl-ovr .ed2-hl-h{font-size:clamp(6px,3.9cqw,.8rem);letter-spacing:.02em;
   line-height:1;white-space:nowrap}
-.ed2-artcol > .ed2-hl-ovr .ed2-ovr{flex:1 1 0;min-width:0;margin-top:0;gap:0;flex-wrap:nowrap}
-.ed2-artcol > .ed2-hl-ovr .ed2-ovr-b{flex:1 1 0;min-width:0;max-width:34px;width:auto;height:auto;
+.ed2-artcol .ed2-hl-ovr .ed2-ovr{flex:1 1 0;min-width:0;margin-top:0;gap:0;flex-wrap:nowrap}
+.ed2-artcol .ed2-hl-ovr .ed2-ovr-b{flex:1 1 0;min-width:0;max-width:34px;width:auto;height:auto;
   aspect-ratio:1/1;border-width:clamp(1.5px,.9cqw,3px)}
-.ed2-artcol > .ed2-hl-ovr .ed2-ovr-b img,
-.ed2-artcol > .ed2-hl-ovr .ed2-ovr-dot{width:90%;height:auto;aspect-ratio:1/1}
-.ed2-artcol > .ed2-hl-ovr .ed2-ovr-sep{align-self:stretch;height:auto;margin:3px 1px}
-.ed2-artcol > .ed2-hl-ovr .ed2-ovr-clr{flex:0 0 auto;align-self:stretch;height:auto;
+.ed2-artcol .ed2-hl-ovr .ed2-ovr-b img,
+.ed2-artcol .ed2-hl-ovr .ed2-ovr-dot{width:90%;height:auto;aspect-ratio:1/1}
+.ed2-artcol .ed2-hl-ovr .ed2-ovr-sep{align-self:stretch;height:auto;margin:3px 1px}
+.ed2-artcol .ed2-hl-ovr .ed2-ovr-clr{flex:0 0 auto;align-self:stretch;height:auto;
   margin:0;padding:0 .4em;border-radius:999px;font-size:clamp(6px,4.4cqw,1.1rem)}
 .ed2-ovr-b{width:20px;height:20px;padding:0;border:2px solid transparent;
   border-radius:50%;background:none;cursor:pointer;flex:0 0 auto;
@@ -2006,6 +2017,45 @@ body.light .ed2-hl-ovr,body.arcane .ed2-hl-ovr{--ovr-face:var(--s1)}
   .fx-nav{flex:none;max-height:38vh;border-right:0;border-bottom:1px solid var(--b1)}
   .fx-main{overflow:visible}
   .fx-zone.fx-danger{margin-left:0;padding-left:0;border-left:0}
+}
+
+@media (min-width:900px){
+  #edFields:has(> .ed2-topsplit){display:grid;grid-template-columns:50% minmax(0,1fr);column-gap:12px;
+    grid-template-rows:auto auto auto auto auto 1fr;align-content:start}
+  #edFields > .ed2-topsplit,#edFields .ed2-topsplit-main,#edFields .ed2-artcol{display:contents}
+  #edFields > .ed2-group{width:auto}
+  #edFields > .ed2-btnbox{grid-column:1;grid-row:1}
+  #edFields .ed2-g-id{grid-column:1;grid-row:2}
+  #edFields .ed2-g-rules{grid-column:1;grid-row:3 / span 2}
+  #edFields > .ed2-g-meta{grid-column:1;grid-row:5}
+  #edFields .ed2-artcol > .ed2-art{grid-column:2;grid-row:1 / span 3;align-self:stretch;contain:size;
+    margin:0 0 6px}
+  #edFields .ed2-artrest{grid-column:2;grid-row:4 / span 3;min-width:0;margin-top:-6px}
+
+  .ed2-row2 .ed2-inl > .ed2-tokrow{flex:0 1 auto;min-width:0;margin:0}
+  .ed2-row2 .ed2-inl > .ed2-combo{min-width:56px}
+  .ed2-row2 .ed2-inl > .ed2-combo:focus-within{min-width:150px}
+
+  .ed2-group .ed2-meta{display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr);
+    gap:10px 10px;align-items:center}
+  .ed2-group .ed2-meta > .ed2-field.ed2-inl{display:contents}
+
+  .ed2-sagabox{display:flex;align-items:center;gap:10px}
+  .ed2-sagabox > label{flex:0 0 auto;margin:0}
+  .ed2-sagabox > .ed2-sagachips{flex:1 1 auto;min-width:0}
+}
+
+@media (min-width:900px){
+  #pane-editor .ed2-btn,#pane-editor .ed2-fmtbtn{--eb-c:var(--a2);--eb-metal:var(--metal-silver)}
+  #pane-editor .ed2-btn.primary,#pane-editor .ed2-btn.ed2-bg-auto{--eb-c:var(--gr);--eb-metal:var(--metal-green)}
+  #pane-editor .ed2-btn.info,#pane-editor .ed2-btn.tiny.on{--eb-c:var(--ed-info);--eb-metal:var(--metal-blue)}
+  #pane-editor .ed2-btn.warn,#pane-editor .ed2-btn.danger{--eb-c:var(--re);--eb-metal:var(--metal-red)}
+  #pane-editor .ed2-btn.ed2-btn-pur{--eb-c:var(--ed-pur);--eb-metal:var(--metal-purple)}
+  #pane-editor .ed2-btn.ed2-bg-test.on{--eb-c:var(--go);--eb-metal:var(--metal-gold)}
+  #pane-editor .ed2-btn:not(.nb):hover:not(:disabled),#pane-editor .ed2-fmtbtn:hover{color:var(--white);
+    background:color-mix(in srgb,var(--eb-c) 25%,transparent);border-color:transparent;
+    border-image:var(--eb-metal) 1;box-shadow:0 0 8px color-mix(in srgb,var(--eb-c) 25%,transparent)}
+  body.light #pane-editor .ed2-btn:not(.nb):hover:not(:disabled),body.light #pane-editor .ed2-fmtbtn:hover{background:var(--eb-c)}
 }
 
 
@@ -2651,6 +2701,21 @@ body:not(.mse-template) .mcard .m-rules-split.has-ident.has-flavor>.m-rsecs{
 .td-sr-lvl{width:118px;letter-spacing:.14em;}
 .td-sr-echo{font-family:'Crimson Pro',serif;font-size:.8rem;color:var(--tm);
   font-style:italic;max-width:340px}
+@media (min-width:900px){
+  .td-statrow{flex-wrap:nowrap;gap:8px;padding:4px 8px;border:2px solid var(--gd);
+    background:color-mix(in srgb,var(--go) 6%,transparent)}
+  .td-sr{flex-direction:row;align-items:center;gap:6px;height:37px;box-sizing:border-box;
+    padding:0 5px 0 8px;border:2px solid;--st:var(--go)}
+  .td-st-lvl{border-image:var(--metal-lvl) 1}
+  .td-st-atk{border-image:var(--metal-red) 1;--st:var(--re)}
+  .td-st-hp{border-image:var(--metal-hp) 1}
+  .td-st-mp{border-image:var(--metal-blue) 1;--st:var(--ac)}
+  .td-sr-lab{font-size:.96rem;font-weight:700;letter-spacing:.06em}
+  .td-sr-in{height:27px;box-sizing:border-box;border-radius:0;
+    background:color-mix(in srgb,var(--st) 12%,transparent);border-color:color-mix(in srgb,var(--st) 30%,transparent)}
+  .td-sr-in:focus{border-color:var(--st)}
+  .td-sr-echo{max-width:220px;line-height:1.15}
+}
 
 .td-counters{display:flex;align-items:center;gap:14px;flex-wrap:nowrap;
   flex:0 0 auto;min-width:0}
@@ -4490,8 +4555,10 @@ body:not(.light) .nb.nb.nb-over:hover:not(:disabled){background:linear-gradient(
     height:auto;min-height:0;padding:10px 12px 10px 16px;background:var(--s2);border-bottom:1px solid var(--b1)}
   .wh.wh > .wh-t{order:0;flex:1 1 auto;min-width:0;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .wh.wh > .wh-keep,.wh.wh > .wh-x{order:1;flex:0 0 auto;margin:0}
+  .wh.wh > .wh-t:has(~ .wh-in){flex:0 1 auto}
+  .wh.wh > .wh-in{order:0;flex:1 1 auto;min-width:0;margin:0 0 0 10px}
   .wh.wh::after{content:'';order:2;flex:0 0 100%;height:0}
-  .wh.wh > :not(.wh-t):not(.wh-keep):not(.wh-x){order:3;margin-top:8px}
+  .wh.wh > :not(.wh-t):not(.wh-keep):not(.wh-x):not(.wh-in){order:3;margin-top:8px}
   .wh.wh > :is(.sg-head-gap,.fx-grow){display:none}
 }
 
@@ -5374,7 +5441,7 @@ body.light .td-dice-q:not(.td-dice-coin) .td-dice-qn{color:var(--dq-ink);text-sh
   .dv-sticky{position:static;margin:6px 0 0;padding:0 0 10px;border:0;background:none;
     display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
   body.light .dv-sticky{background:none}
-  .dv-hdr,.dv-hdr>.dv-box,.dv-type-wrap,.dv-type-boxes,.dv-type-box{display:contents}
+  .dv-hdr,.dv-hdr>.dv-box,.dv-pair,.dv-type-wrap,.dv-type-boxes,.dv-type-box{display:contents}
   .dv-hdr .dv-sel-lbl,#hlWrap,#dvExport{display:none!important}
   .td-statrow{grid-column:1 / -1;order:1;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:8px;margin:4px 0 2px}
   .td-sr{min-width:0;gap:4px}
@@ -5652,7 +5719,8 @@ body.light .td-dice-q:not(.td-dice-coin) .td-dice-qn{color:var(--dq-ink);text-sh
   #pane-editor .ed2-row2{display:block}
   #pane-editor .ed2-row2>.ed2-field{width:auto}
   #pane-editor .ed2-row2>.ed2-field+.ed2-field{margin-top:14px}
-  #pane-editor .ed2-row2 .ed2-inl{display:block}
+  #pane-editor .ed2-row2 .ed2-inl{display:flex;flex-direction:column;align-items:stretch;gap:0}
+  #pane-editor .ed2-row2 .ed2-inl>.ed2-tokrow{order:-1}
   #pane-editor .ed2-row2 .ed2-inl>label{display:block;margin:8px 0 4px}
   #pane-editor .ed2-tokrow{gap:6px;margin:0}
   #pane-editor .ed2-tok{height:36px;gap:0;padding:0 0 0 10px;background:var(--s2);font-size:16px}
@@ -5728,20 +5796,20 @@ body.light .td-dice-q:not(.td-dice-coin) .td-dice-qn{color:var(--dq-ink);text-sh
   #pane-editor .ed2-hl-n{flex:0 0 72px;width:72px;height:44px;padding:0 6px;background:var(--mob-in);font-size:16px;text-align:left}
   #pane-editor .ed2-hl-mark{padding-bottom:0;border-bottom:0}
   #pane-editor .ed2-hl-markbtn{flex:0 0 auto;height:44px;padding:0 12px;font-size:12px}
-  #pane-editor .ed2-artcol>.ed2-hl-ovr{display:flex;flex-wrap:wrap;align-items:center;gap:6px 2px;width:auto;margin:14px 0 0;
+  #pane-editor .ed2-artcol .ed2-hl-ovr{display:flex;flex-wrap:wrap;align-items:center;gap:6px 2px;width:auto;margin:14px 0 0;
     padding:6px 12px 10px;border:3px solid transparent;border-radius:10px;container-type:normal;
     background:linear-gradient(var(--mob-grp),var(--mob-grp)) padding-box,
       var(--td-gold) border-box}
-  #pane-editor .ed2-artcol>.ed2-hl-ovr .ed2-hl-h{flex:1 1 auto;font-size:14px;letter-spacing:.06em;line-height:1.25;color:var(--g2)}
-  #pane-editor .ed2-artcol>.ed2-hl-ovr .ed2-ovr-clr{order:1;height:44px;padding:0 14px;border-radius:0;font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);
+  #pane-editor .ed2-artcol .ed2-hl-ovr .ed2-hl-h{flex:1 1 auto;font-size:14px;letter-spacing:.06em;line-height:1.25;color:var(--g2)}
+  #pane-editor .ed2-artcol .ed2-hl-ovr .ed2-ovr-clr{order:1;height:44px;padding:0 14px;border-radius:0;font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);
     font-size:12px;font-weight:600;color:var(--td);background:none!important;box-shadow:none!important}
-  #pane-editor .ed2-artcol>.ed2-hl-ovr .ed2-ovr{order:2;flex:0 0 100%;gap:2px}
-  #pane-editor .ed2-artcol>.ed2-hl-ovr .ed2-ovr-b{flex:1 1 42px;max-width:42px;height:44px;aspect-ratio:auto;border:0;border-radius:0;
+  #pane-editor .ed2-artcol .ed2-hl-ovr .ed2-ovr{order:2;flex:0 0 100%;gap:2px}
+  #pane-editor .ed2-artcol .ed2-hl-ovr .ed2-ovr-b{flex:1 1 42px;max-width:42px;height:44px;aspect-ratio:auto;border:0;border-radius:0;
     background:none;transform:none!important;box-shadow:none!important}
-  #pane-editor .ed2-artcol>.ed2-hl-ovr .ed2-ovr-b img,#pane-editor .ed2-artcol>.ed2-hl-ovr .ed2-ovr-dot{width:24px;height:24px;filter:none}
-  #pane-editor .ed2-artcol>.ed2-hl-ovr .ed2-ovr-b.on img,#pane-editor .ed2-artcol>.ed2-hl-ovr .ed2-ovr-b.on .ed2-ovr-dot{
+  #pane-editor .ed2-artcol .ed2-hl-ovr .ed2-ovr-b img,#pane-editor .ed2-artcol .ed2-hl-ovr .ed2-ovr-dot{width:24px;height:24px;filter:none}
+  #pane-editor .ed2-artcol .ed2-hl-ovr .ed2-ovr-b.on img,#pane-editor .ed2-artcol .ed2-hl-ovr .ed2-ovr-b.on .ed2-ovr-dot{
     box-shadow:0 0 0 2px var(--mob-grp),0 0 0 4px var(--go)}
-  #pane-editor .ed2-artcol>.ed2-hl-ovr .ed2-ovr-sep{flex:0 0 1px;height:26px;margin:0 4px;align-self:center}
+  #pane-editor .ed2-artcol .ed2-hl-ovr .ed2-ovr-sep{flex:0 0 1px;height:26px;margin:0 4px;align-self:center}
 
   #pane-editor .ed2-kwbar-title{margin:0 0 8px;font-family:'Crimson Pro',serif;font-size:15px;font-weight:400;letter-spacing:0;color:var(--td)}
   #pane-editor .ed2-kwbar-title:has(+.ed2-kwbar-empty){display:none}
@@ -5752,13 +5820,13 @@ body.light .td-dice-q:not(.td-dice-coin) .td-dice-qn{color:var(--dq-ink);text-sh
 
   #pane-editor .ed2-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 8px;margin:0}
   #pane-editor .ed2-meta>.ed2-field{width:auto;min-width:0}
+  #pane-editor .ed2-meta>.ed2-field.ed2-inl{display:block}
   #pane-editor .ed2-meta>.ed2-field:nth-child(-n+2){grid-column:1/-1}
   #pane-editor .ed2-field-rar select{height:44px;padding:0 8px;font-size:16px}
   #pane-editor .ed2-sagabox{margin-top:14px}
   #pane-editor .ed2-sagabox>label{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-size:12px;color:var(--td)}
   #pane-editor .ed2-sagacount{min-width:20px;height:20px;margin:0;padding:0 6px;box-sizing:border-box;border-radius:10px;
     background:var(--s3);font-family:'Crimson Pro',serif;font-size:13px;line-height:20px;text-align:center}
-  #pane-editor .ed2-sagabox>label .ed2-sagabox-note{flex:1 1 100%;margin:0;font-size:14px}
   #pane-editor .ed2-sagachips{margin-top:6px}
   #pane-editor .ed2-sagachip{height:40px;padding:0 0 0 14px;font-size:16px;box-shadow:none!important;background-image:none!important}
   #pane-editor .ed2-sagachip:not(:has(.ed2-sagax)){padding-right:14px}
@@ -6451,30 +6519,24 @@ body.light .td-dice-q:not(.td-dice-coin) .td-dice-qn{color:var(--dq-ink);text-sh
           </div>
           <span class='hl-count' id='hlCount'></span>
           <div class='hl-panel' id='hlPanel'>
-            <div class='hl-panel-title'>Highlight Cards Matching…</div>
-            <div style='display:flex;flex-direction:column;gap:8px'>
-              <div>
-                <div style='display:flex;align-items:center;gap:6px;margin-bottom:4px'>
-                  <label style='font-size:.8rem;color:var(--td)'>Color</label>
-                  <select id='hlColMode' aria-label='Highlight: how the colours match' style='background:var(--s2);border:1px solid var(--b1);border-radius:0;color:var(--tx);padding:3px 6px;font-size:.8rem' onchange='applyHighlight()'>
-                    <option value=''>—</option><option value='any'>Any of</option><option value='all'>All of</option><option value='none'>None of</option>
-                  </select>
-                </div>
-                <div style='display:flex;gap:4px;flex-wrap:wrap'>
-                  <label style='cursor:pointer;position:relative' title='Red'><input type='checkbox' class='hl-col-chk' value='Red' aria-label='Red' style='position:absolute;opacity:0;width:0;height:0'><img data-mana='Red' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' style='width:24px;height:24px;border-radius:50%;border:2px solid transparent;transition:border-color .15s' class='hl-col-img'></label>
-                  <label style='cursor:pointer;position:relative' title='Orange'><input type='checkbox' class='hl-col-chk' value='Orange' aria-label='Orange' style='position:absolute;opacity:0;width:0;height:0'><img data-mana='Orange' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' style='width:24px;height:24px;border-radius:50%;border:2px solid transparent;transition:border-color .15s' class='hl-col-img'></label>
-                  <label style='cursor:pointer;position:relative' title='Yellow'><input type='checkbox' class='hl-col-chk' value='Yellow' aria-label='Yellow' style='position:absolute;opacity:0;width:0;height:0'><img data-mana='Yellow' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' style='width:24px;height:24px;border-radius:50%;border:2px solid transparent;transition:border-color .15s' class='hl-col-img'></label>
-                  <label style='cursor:pointer;position:relative' title='Green'><input type='checkbox' class='hl-col-chk' value='Green' aria-label='Green' style='position:absolute;opacity:0;width:0;height:0'><img data-mana='Green' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' style='width:24px;height:24px;border-radius:50%;border:2px solid transparent;transition:border-color .15s' class='hl-col-img'></label>
-                  <label style='cursor:pointer;position:relative' title='Blue'><input type='checkbox' class='hl-col-chk' value='Blue' aria-label='Blue' style='position:absolute;opacity:0;width:0;height:0'><img data-mana='Blue' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' style='width:24px;height:24px;border-radius:50%;border:2px solid transparent;transition:border-color .15s' class='hl-col-img'></label>
-                  <label style='cursor:pointer;position:relative' title='Indigo'><input type='checkbox' class='hl-col-chk' value='Indigo' aria-label='Indigo' style='position:absolute;opacity:0;width:0;height:0'><img data-mana='Indigo' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' style='width:24px;height:24px;border-radius:50%;border:2px solid transparent;transition:border-color .15s' class='hl-col-img'></label>
-                  <label style='cursor:pointer;position:relative' title='Violet'><input type='checkbox' class='hl-col-chk' value='Violet' aria-label='Violet' style='position:absolute;opacity:0;width:0;height:0'><img data-mana='Violet' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' style='width:24px;height:24px;border-radius:50%;border:2px solid transparent;transition:border-color .15s' class='hl-col-img'></label>
-                </div>
+            <div class='hl-rows'>
+              <div class='hl-cols'>
+                <label style='cursor:pointer;position:relative' title='Red'><input type='checkbox' class='hl-col-chk' value='Red' aria-label='Red' style='position:absolute;opacity:0;width:0;height:0'><img data-mana='Red' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' style='width:24px;height:24px;border-radius:50%;border:2px solid transparent;transition:border-color .15s' class='hl-col-img'></label>
+                <label style='cursor:pointer;position:relative' title='Orange'><input type='checkbox' class='hl-col-chk' value='Orange' aria-label='Orange' style='position:absolute;opacity:0;width:0;height:0'><img data-mana='Orange' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' style='width:24px;height:24px;border-radius:50%;border:2px solid transparent;transition:border-color .15s' class='hl-col-img'></label>
+                <label style='cursor:pointer;position:relative' title='Yellow'><input type='checkbox' class='hl-col-chk' value='Yellow' aria-label='Yellow' style='position:absolute;opacity:0;width:0;height:0'><img data-mana='Yellow' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' style='width:24px;height:24px;border-radius:50%;border:2px solid transparent;transition:border-color .15s' class='hl-col-img'></label>
+                <label style='cursor:pointer;position:relative' title='Green'><input type='checkbox' class='hl-col-chk' value='Green' aria-label='Green' style='position:absolute;opacity:0;width:0;height:0'><img data-mana='Green' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' style='width:24px;height:24px;border-radius:50%;border:2px solid transparent;transition:border-color .15s' class='hl-col-img'></label>
+                <label style='cursor:pointer;position:relative' title='Blue'><input type='checkbox' class='hl-col-chk' value='Blue' aria-label='Blue' style='position:absolute;opacity:0;width:0;height:0'><img data-mana='Blue' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' style='width:24px;height:24px;border-radius:50%;border:2px solid transparent;transition:border-color .15s' class='hl-col-img'></label>
+                <label style='cursor:pointer;position:relative' title='Indigo'><input type='checkbox' class='hl-col-chk' value='Indigo' aria-label='Indigo' style='position:absolute;opacity:0;width:0;height:0'><img data-mana='Indigo' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' style='width:24px;height:24px;border-radius:50%;border:2px solid transparent;transition:border-color .15s' class='hl-col-img'></label>
+                <label style='cursor:pointer;position:relative' title='Violet'><input type='checkbox' class='hl-col-chk' value='Violet' aria-label='Violet' style='position:absolute;opacity:0;width:0;height:0'><img data-mana='Violet' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' style='width:24px;height:24px;border-radius:50%;border:2px solid transparent;transition:border-color .15s' class='hl-col-img'></label>
               </div>
-              <div><label style='font-size:.8rem;color:var(--td)'>Name contains</label><input type='text' id='hlName' aria-label='Highlight: name contains' placeholder='Name…' style='width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:0;padding:4px 8px;color:var(--tx);font-size:.85rem;margin-top:3px' oninput='applyHighlight()'></div>
-              <div style='display:flex;gap:8px;align-items:center'><label style='font-size:.8rem;color:var(--td)'>CMC</label><select id='hlCmcOp' aria-label='Highlight: CMC, how it compares' style='background:var(--s2);border:1px solid var(--b1);border-radius:0;color:var(--tx);padding:4px 6px;font-size:.9rem' onchange='applyHighlight()'><option value=''>Any</option><option value='eq'>=</option><option value='lt'>&lt;</option><option value='gt'>&gt;</option></select><input type='number' id='hlCmcVal' min='0' placeholder='0' aria-label='Highlight: CMC' style='width:56px;background:var(--s2);border:1px solid var(--b1);border-radius:0;color:var(--tx);padding:4px 6px;font-size:.9rem' oninput='applyHighlight()'></div>
-              <div><label style='font-size:.8rem;color:var(--td)'>Super-Type</label><input type='text' id='hlSuper' aria-label='Highlight: Super-Type' placeholder='e.g. Character…' style='width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:0;padding:4px 8px;color:var(--tx);font-size:.85rem;margin-top:3px' oninput='applyHighlight()'></div>
-              <div><label style='font-size:.8rem;color:var(--td)'>Sub-Type</label><input type='text' id='hlSub' aria-label='Highlight: Sub-Type' placeholder='e.g. Warrior…' style='width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:0;padding:4px 8px;color:var(--tx);font-size:.85rem;margin-top:3px' oninput='applyHighlight()'></div>
-              <div><label style='font-size:.8rem;color:var(--td)'>Rules Text contains</label><input type='text' id='hlRule' aria-label='Highlight: rules text contains' placeholder='e.g. Airborne…' style='width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:0;padding:4px 8px;color:var(--tx);font-size:.85rem;margin-top:3px' oninput='applyHighlight()'></div>
+              <div class='hl-row'><label class='hl-lab' for='hlColMode'>Color</label><select id='hlColMode' aria-label='Highlight: how the colours match' class='hl-in' onchange='applyHighlight()'>
+                      <option value=''>—</option><option value='any'>Any of</option><option value='all'>All of</option><option value='none'>None of</option>
+                    </select></div>
+              <div class='hl-row'><label class='hl-lab' for='hlName'>Name contains</label><input type='text' id='hlName' aria-label='Highlight: name contains' placeholder='Name…' class='hl-in' oninput='applyHighlight()'></div>
+              <div class='hl-row'><label class='hl-lab' for='hlCmcOp'>CMC</label><select id='hlCmcOp' aria-label='Highlight: CMC, how it compares' class='hl-in hl-in-op' onchange='applyHighlight()'><option value=''>Any</option><option value='eq'>=</option><option value='lt'>&lt;</option><option value='gt'>&gt;</option></select><input type='number' id='hlCmcVal' min='0' placeholder='0' aria-label='Highlight: CMC' class='hl-in hl-in-num' oninput='applyHighlight()'></div>
+              <div class='hl-row'><label class='hl-lab' for='hlSuper'>Super-Type</label><input type='text' id='hlSuper' aria-label='Highlight: Super-Type' placeholder='e.g. Character…' class='hl-in' oninput='applyHighlight()'></div>
+              <div class='hl-row'><label class='hl-lab' for='hlSub'>Sub-Type</label><input type='text' id='hlSub' aria-label='Highlight: Sub-Type' placeholder='e.g. Warrior…' class='hl-in' oninput='applyHighlight()'></div>
+              <div class='hl-row'><label class='hl-lab' for='hlRule'>Text contains</label><input type='text' id='hlRule' aria-label='Highlight: text contains' placeholder='e.g. Airborne…' class='hl-in' oninput='applyHighlight()'></div>
             </div>
           </div>
         </div>
@@ -6488,19 +6550,20 @@ body.light .td-dice-q:not(.td-dice-coin) .td-dice-qn{color:var(--dq-ink);text-sh
           </select>
         </div>
         <div class='td-statrow rb-only' id='tdStatRow' style='display:none'>
-          <label class='td-sr' title='Colour string, e.g. RRRGG. Each letter is one Core Essence.'>
+          <label class='td-sr td-st-lvl' title='Colour string, e.g. RRRGG. Each letter is one Core Essence.'>
             <span class='td-sr-lab'>LVL</span>
             <input type='text' id='dta-lvl' class='td-sr-in td-sr-lvl' placeholder='RRRGG'
                    spellcheck='false' maxlength='24' oninput='tdLvlEcho()'></label>
-          <label class='td-sr'><span class='td-sr-lab'>ATK</span>
+          <label class='td-sr td-st-atk'><span class='td-sr-lab'>ATK</span>
             <input type='number' id='dta-atk' class='td-sr-in' placeholder='0'></label>
-          <label class='td-sr'><span class='td-sr-lab'>HP</span>
+          <label class='td-sr td-st-hp'><span class='td-sr-lab'>HP</span>
             <input type='number' id='dta-hp' class='td-sr-in' placeholder='0'></label>
-          <label class='td-sr'><span class='td-sr-lab'>MP</span>
+          <label class='td-sr td-st-mp'><span class='td-sr-lab'>MP</span>
             <input type='number' id='dta-mp' class='td-sr-in' placeholder='0'></label>
           <span class='td-sr-echo' id='tdLvlEcho'></span>
         </div>
         <button class='dv-vbtn deck-rules-btn' id='deckRulesBtn' onclick='showDeckRules()'><svg class='ico' aria-hidden='true'><use href='#i-book'/></svg> Deck Rules</button>
+        <div class='dv-pair'>
         <button class='dv-vbtn pop-ess-btn' id='popEssBtn' onclick='populateEssence()'><span class='pe-ico'><svg class='ico' aria-hidden='true'><use href='#i-diamond'/></svg></span><span class='pe-txt'>Populate Essence</span></button>
         <div class='dv-export' id='dvExport'>
           <button class='dv-pbtn dv-pbtn-sm' id='dvExportBtn' type='button' onclick='dvExportMenu()'><svg class='ico' aria-hidden='true'><use href='#i-download'/></svg> Export &#9662;</button>
@@ -6510,6 +6573,7 @@ body.light .td-dice-q:not(.td-dice-coin) .td-dice-qn{color:var(--dq-ink);text-sh
           <button class='dv-pbtn dv-pbtn-sm' type='button' onclick='dvExportMenu(false);printDeck()'><svg class='ico' aria-hidden='true'><use href='#i-print'/></svg> Print</button>
           <button class='dv-pbtn dv-pbtn-sm' type='button' onclick='dvExportMenu(false);printPlaytest()' title='Plain text cards to print and sleeve'>&#9999; Proxies</button>
           </div>
+        </div>
         </div>
       </div>
       <div class='dv-type-wrap' id='dv-type-wrap' style='display:none'>
@@ -6649,10 +6713,10 @@ body.light .td-dice-q:not(.td-dice-coin) .td-dice-qn{color:var(--dq-ink);text-sh
     <div class='dp-scroll'>
       <div class='dp-sec-hdr' id='dpsec-main' onclick="setDVFilter('main')"><svg class='ico' aria-hidden='true'><use href='#i-deck'/></svg> Main Deck<span class='dp-sec-cnt' id='dpCnt-main'>0</span></div>
       <textarea class='dta dta-sec' id='dta-main' placeholder='Add Main Deck cards…' spellcheck='false'></textarea>
-      <div class='dp-sec-hdr' id='dpsec-essence' onclick="setDVFilter('essence')"><svg class='ico' aria-hidden='true'><use href='#i-diamond'/></svg> Essence Deck<span class='dp-sec-cnt' id='dpCnt-essence'>0</span></div>
-      <textarea class='dta dta-sec' id='dta-essence' placeholder='Add Essence Deck cards…' spellcheck='false'></textarea>
       <div class='dp-sec-hdr' id='dpsec-wish' onclick="setDVFilter('wish')"><svg class='ico' aria-hidden='true'><use href='#i-star'/></svg> Wish Deck<span class='dp-sec-cnt' id='dpCnt-wish'>0</span></div>
       <textarea class='dta dta-sec' id='dta-wish' placeholder='Add Wish Deck cards…' spellcheck='false'></textarea>
+      <div class='dp-sec-hdr dp-sec-fixed' id='dpsec-essence' title='Essence cards go here by themselves'><svg class='ico' aria-hidden='true'><use href='#i-diamond'/></svg> Essence Deck<span class='dp-sec-cnt' id='dpCnt-essence'>0</span></div>
+      <textarea class='dta dta-sec' id='dta-essence' placeholder='Essence cards…' spellcheck='false'></textarea>
       <div class='dp-sec-hdr rb-only' id='dpsec-armament' onclick="setDVFilter('armament')">&#9876; Armament<span class='dp-sec-cnt' id='dpCnt-armament'>0</span></div>
       <textarea class='dta dta-sec rb-only' id='dta-armament' placeholder='Add Armament cards…' spellcheck='false'></textarea>
     </div>
@@ -6686,9 +6750,10 @@ body.light .td-dice-q:not(.td-dice-coin) .td-dice-qn{color:var(--dq-ink);text-sh
   <div class='kw-page' style='max-width:1100px'>
     <div class='kw-page-hdr wh'>
       <b class='wh-t'>Help</b>
-      <div class='kw-tabs'>
+      <div class='kw-tabs wh-in'>
         <button class='kw-page-tab on' id='sct-keys' onclick="switchScTab('keys')">Keyboard Shortcuts</button>
         <button class='kw-page-tab' id='sct-tips' onclick="switchScTab('tips')">Tips &amp; Features</button>
+        <button class='kw-page-tab' id='sct-editor' onclick="switchScTab('editor')">Editor</button>
       </div>
       <button class='kw-close nb nb-red nb-m wh-x' onclick='closeShortcutsPage()'>Close &#x2715;</button>
     </div>
@@ -9604,7 +9669,39 @@ function deckKeyOf(id){
 }
 function deckAddKey(card){
   if(card && _isEssenceCard(card) && DECK_IDS.essence) return 'essence';
-  return deckKeyOf(_activeDeckId) || 'main';
+  var k = deckKeyOf(_activeDeckId) || 'main';
+  return (k === 'essence' && card) ? 'main' : k;
+}
+function deckSortEssence(){
+  if(!DECK_IDS.essence) return 0;
+  var byName = Object.create(null);
+  (typeof CARDS !== 'undefined' && CARDS || []).forEach(function(c){ if(c && c.name != null) byName[String(c.name)] = c; });
+  var into = {essence:[], main:[]}, n = {essence:0, main:0};
+  function sweep(key, dest){
+    var ta = document.getElementById(DECK_IDS[key]); if(!ta) return;
+    var keep = [], took = false;
+    String(ta.value || '').split('\n').forEach(function(ln){
+      var ent = parseDeckLine(ln);
+      var name = ent && (deckCanonName(ent.name) || ent.name);
+      var card = name ? byName[name] : null;
+      if(card && _isEssenceCard(card) === (dest === 'essence') && ent.count > 0){
+        into[dest].push({name:name, count:ent.count}); n[dest] += ent.count; took = true;
+        return;
+      }
+      keep.push(ln);
+    });
+    if(took) ta.value = keep.join('\n');
+  }
+  sweep('main', 'essence'); sweep('wish', 'essence'); sweep('essence', 'main');
+  Object.keys(into).forEach(function(dest){
+    var ta = document.getElementById(DECK_IDS[dest]);
+    into[dest].forEach(function(en){ ta.value = deckAdjustText(ta.value, en.name, en.count); });
+  });
+  var said = [];
+  if(n.essence) said.push(n.essence + (n.essence === 1 ? ' Essence card' : ' Essence cards') + ' moved to the Essence Deck');
+  if(n.main) said.push(n.main + (n.main === 1 ? ' card that is not Essence' : ' cards that are not Essence') + ' moved to the Main Deck');
+  if(said.length && typeof window.toast === 'function') window.toast(said.join('; '));
+  return n.essence + n.main;
 }
 function deckRemoveKey(card){
   var has = function(k){
@@ -9794,9 +9891,10 @@ function deckStatsAdoptFromText(){
 window.deckStatsSyncToText = deckStatsSyncToText;
 function _dtaCanon(ev){
   var ta = ev && ev.target; if(!ta) return;
-  var next = deckCanonText(ta.value);
-  if(next === ta.value) return;
-  ta.value = next;
+  var was = ta.value, next = deckCanonText(was);
+  if(next !== was) ta.value = next;
+  var moved = deckSortEssence();
+  if(next === was && !moved) return;
   updCnt(); _hashSaveDeck();
   if(_deckPaneShowing()) refreshDeckView();
 }
@@ -9956,29 +10054,20 @@ var GAME_MODES = {
     label: 'Character', rebirth: true,
     mainMin: 50, mainMax: 50, sizeOnly: true, armamentOnly: true,
     rules: [
-      {title:'Additional', text:'Your Character deck. Level, ATK, HP and MP are saved on the deck itself.'},
       {title:'Main Deck', text:'Exactly 50 cards.'},
-      {title:'Armament', text:'Armament and Ongoing cards only. No size limit. Every Armament card starts on the Field.'},
-      {title:'Level', text:'A colour string such as RRRGG. Each letter is one Core Essence: R Ire, O Vig, Y Lux, G Arch, B Yune, I Psy, V Gris.'},
-      {title:'Opening Draw', text:'Draw cards equal to the total length of your Level.'},
-      {title:'Essence Area', text:'Starts with the Core Essence named by your Level.'},
-      {title:'Counters', text:'ATK, HP and MP, reset to the values saved on the deck. No Life.'}
+      {title:'Gear', text:'Armament cards and Ongoing cards separately costing equal to or less than your LVL points.'},
+      {title:'Draw', text:'Draw cards equal to your LVL.'},
+      {title:'Area', text:'Starts with the Core Essence named by your Level.'},
+      {title:'Stats', text:'Your ATK resets at the end of each Battle, your MP resets at the beginning of each of your turns during Battle, and your HP is tracked through and between Battles.'}
     ]
   },
   encounter: {
-    label: 'Encounter', rebirth: true, noValidation: true,
-    rules: [
-      {title:'Additional', text:'A plain deck with nothing on the board to begin with.'},
-      {title:'Opening Draw', text:'None - the board starts empty.'},
-      {title:'Actions', text:'Draw and Shuffle only.'}
-    ]
+    label: 'Encounter', rebirth: true, noValidation: true, rules: [],
+    note: 'The Encounter Deck is used for random encounters. You "Explore" by rolling a D4 and revealing that many cards from the Encounter Deck and playing them out accordingly.'
   },
   rewards: {
-    label: 'Rewards', rebirth: true, noValidation: true,
-    rules: [
-      {title:'Additional', text:'Not laid out as a deck. Set a specification and draw against it.'},
-      {title:'Draw', text:'Returns one random card matching only the specification you set.'}
-    ]
+    label: 'Rewards', rebirth: true, noValidation: true, rules: [],
+    note: 'The Reward Deck is used for random rewards, the DM determines how many points of rewards the players get, along with possible restrictions such as card types or colors, then they look at cards from the top of the Reward Deck until they\u2019ve found an appropriate amount of cards for the reward and gives those cards to the players.'
   }
 }
 
@@ -10159,9 +10248,14 @@ function showDeckRules(){
   });
 
   var rows = '';
-  orderedTitles.forEach(function(title){
+  orderedTitles.forEach(function(title, i){
     var cells = '';
     modes.forEach(function(m){
+      var note = GAME_MODES[m] && GAME_MODES[m].note;
+      if(note){
+        if(!i) cells += '<td rowspan="'+orderedTitles.length+'" style="padding:8px 12px;border:1px solid var(--b1);font-size:.9rem;color:var(--tx);vertical-align:top;text-align:left">'+note+'</td>';
+        return;
+      }
       var txt = ruleMap[title][m];
       if(txt) cells += '<td style="padding:8px 12px;border:1px solid var(--b1);font-size:.9rem;color:var(--tx)">'+txt+'</td>';
       else cells += '<td style="padding:8px 12px;border:1px solid var(--b1);color:var(--tm);text-align:center">&mdash;</td>';
@@ -10668,6 +10762,7 @@ function _applyImport(parsed){
     else { at[en.name] = merged.length; merged.push({name:en.name, count:en.count, lord:en.lord}); }
   });
   ta.value = formatDeckLines(merged);
+  deckSortEssence();
   deckStatsSyncToText();
   updCnt();
   _hashSaveDeck();
@@ -10706,6 +10801,7 @@ function _applySectioned(parsed){
     ta.value = formatDeckLines(merged);
     touched.push(DECK_LABELS[key] || key);
   });
+  deckSortEssence();
   deckStatsSyncToText();
   updCnt();
   _hashSaveDeck();
@@ -11265,28 +11361,24 @@ function drawStats(mainCards, essDeck){
 
   var cmcKeys=['0','1','2','3','4','5','6','7','8','9+'];
   var cmcVals=cmcKeys.map(function(){ return 0; });
-  var cmcColors={};
-  cmcKeys.forEach(function(k){ cmcColors[k]={}; });
+  var cmcShare=cmcKeys.map(function(){ return {}; });
   deckCards.forEach(function(e){
     var c=parseInt(e.card.cmc)||0;
-    var bkt=c>=9?'9+':String(c);
-    var idx=cmcKeys.indexOf(bkt);
-    if(idx>=0) cmcVals[idx]+=e.count;
-    var cols = _catArr(e.card.colors).map(function(c){ c=String(c); return c.charAt(0).toUpperCase()+c.slice(1).toLowerCase(); });
-    if(cols.length===0){
-      cmcColors[bkt]['Colorless']=(cmcColors[bkt]['Colorless']||0)+e.count;
-    } else {
-      var share=e.count/cols.length;
-      cols.forEach(function(col){ cmcColors[bkt][col]=(cmcColors[bkt][col]||0)+share; });
-    }
+    var idx=cmcKeys.indexOf(c>=9?'9+':String(c));
+    if(idx<0) return;
+    cmcVals[idx]+=e.count;
+    var p=manaPips(e.card.manaCost,1), tot=0;
+    COLORS.forEach(function(k){ tot+=p[k]||0; });
+    if(!tot){ cmcShare[idx].Colorless=(cmcShare[idx].Colorless||0)+e.count; return; }
+    COLORS.forEach(function(k){ if(p[k]) cmcShare[idx][k]=(cmcShare[idx][k]||0)+e.count*p[k]/tot; });
   });
-  var cmcBarColors=cmcKeys.map(function(bkt){
-    var colCounts = cmcColors[bkt]||{};
-    var dominant = Object.keys(colCounts).sort(function(a,b){return colCounts[b]-colCounts[a];})[0];
-    if(dominant && PIP_FILL[dominant]) return PIP_FILL[dominant];
-    return isLight ? '#13161F' : '#F0EAD8';
+  var cmcLess=isLight ? '#13161F' : '#F0EAD8';
+  var cmcSegs=cmcShare.map(function(sh){
+    return COLORS.filter(function(k){ return sh[k]>0; })
+      .map(function(k){ return {fill:PIP_FILL[k]||cmcLess, n:sh[k]}; })
+      .concat(sh.Colorless ? [{fill:cmcLess, n:sh.Colorless}] : []);
   });
-  drawBarMulticolor('chart-cmc',cmcKeys,cmcVals,cmcBarColors,textClr,gridClr);
+  drawBarMulticolor('chart-cmc',cmcKeys,cmcVals,cmcSegs,textClr,gridClr);
 
   var pipC={}; COLORS.forEach(function(c){pipC[c]=0;});
   deckCards.forEach(function(entry){
@@ -11501,8 +11593,19 @@ function drawBarMulticolor(id,labels,values,barColors,textClr,gridClr){
   labels.forEach(function(lbl,i){
     var x=pad.l+i*gap+(gap-bw)/2;
     var bh=Math.max(values[i]/max*cH,0), by=pad.t+cH-bh;
-    ctx.fillStyle=barColors[i]||'#7b9cda';
-    ctx.fillRect(x,by,bw,bh);
+    var segs=barColors[i];
+    if(Array.isArray(segs)){
+      var y=pad.t+cH;
+      segs.forEach(function(s,j){
+        var h=s.n/max*cH;
+        ctx.fillStyle=s.fill; ctx.fillRect(x,y-h,bw,h);
+        if(j) { ctx.fillStyle='rgba(0,0,0,.35)'; ctx.fillRect(x,y-1,bw,1); }
+        y-=h;
+      });
+    } else {
+      ctx.fillStyle=segs||'#7b9cda';
+      ctx.fillRect(x,by,bw,bh);
+    }
     ctx.fillStyle=textClr; ctx.textAlign='center'; ctx.font='bold 11px sans-serif';
     ctx.fillText((tight?'':'Cost ')+lbl, x+bw/2, H-pad.b+15);
     if(values[i]>0){
@@ -26039,6 +26142,7 @@ function mobSheetDraw(){
       var g = GAME_MODES[m];
       if(!g || !g.rules) return '';
       return (modes.length > 1 ? '<h3 class="mob-rule-mode">' + e(g.label || m) + '</h3>' : '')
+        + (g.note ? '<div class="mob-rule"><div class="mob-rule-x">' + g.note + '</div></div>' : '')
         + g.rules.map(function(r){
             if(!String(r.text || '').trim()) return '';
             return '<div class="mob-rule"><div class="mob-rule-t">' + r.title + '</div><div class="mob-rule-x">' + r.text + '</div></div>';
@@ -27807,11 +27911,30 @@ var _SC_TIPS = [
   {title:'Drafting', desc:'A "Draft Deck" (a Deck Type on the Build Deck page) is a card list to draft from, not a Deck to play - every card in it is in the pool except Essence, which Arena provides. Press "Draft" on it in Deck Lists and choose:\n"Default Draft": four packs of 15 each - pick one, pass the rest (left, right, left, right).\n"Vault": 120 cards each, nothing to pick.\n"Hex Draft" (2 players): six piles of 30 round a hexagon - take the top card of two side-by-side piles; the other player takes two of the four left; the last two are removed.\n"Winchester" (2-4 players): four face-up piles - take a whole pile, then every pile gets one more card.\nChairs you do not fill are bots that pick at random. A short pool deals every card once before repeating any. When the draft ends, build an Arena Deck of exactly 30 from what you took and save it. At a table, the host picks Mode: Draft in Options and presses "Start Draft" in the waiting room.', phone:'A "Draft Deck" (a Deck Type on the Build Deck page) is a card list to draft from, not a Deck to play - every card in it is in the pool except Essence, which Arena provides. Press "Draft" on it in Deck Lists and choose:\n"Default Draft": four packs of 15 each - pick one, pass the rest (left, right, left, right).\n"Vault": 120 cards each, nothing to pick.\n"Hex Draft" (2 players): six piles of 30 round a hexagon - take the top card of two side-by-side piles; the other player takes two of the four left; the last two are removed.\n"Winchester" (2-4 players): four face-up piles - take a whole pile, then every pile gets one more card.\nChairs you do not fill are bots that pick at random. A short pool deals every card once before repeating any. When the draft ends, build an Arena Deck of exactly 30 from what you took and save it.'},
   {title:'Tabletop Simulator', desc:'Use "TTS" in the Export menu on the Build Deck page to export your Deck as a single .json file you can copy and paste into Tabletop Simulator.', phone:''}
 ];
+var _SC_EDITOR = [
+  {title:'Opening a Card', desc:'Press Edit (✎) on a card in the catalog or in its card window, or press "New card". Official cards are read-only and do not open here. The arrows over the preview, or the arrow keys when no field has focus, step through the cards the catalog is showing, in its order. The preview is the card as it prints, redrawn as you type.'},
+  {title:'The Toolbar', desc:'"Back to catalog" returns to Browse.\n"Autosave" (on to begin with) stores each change a moment after you make it; turned off, a card is stored only on "Save", "Save All" or leaving it.\n"Save" stores this card and "Save All" every card waiting; the badge on Save All counts them.\n"Duplicate" makes a copy of this card and opens it.\n"Keywords" opens the Keywords page.\n"New card" starts a blank card.\n"Test" keeps this card out of the published catalog: it goes to testing.json, which only your copy reads.\n"Delete card" deletes this card, and it stays deleted after a reload.'},
+  {title:'Fix', desc:'Clean-up tools that look through every card you can edit: "Fix —", "Strip ( )" (reminder text left in brackets), "Essence Rule Text", "Fused Stats", "Duplicate Cards", "Same Shape, Different Name", "Same Card in Several Sagas", "Saga Fields Disagree", "Card IDs" and "Orphaned Cards".'},
+  {title:'Templates', desc:'"Templates" opens the settings every card is drawn with: Display, Art Defaults (what a card whose art fill is "Auto" gets), Card Frames, Orb Icons, Mana & Rule Symbols, Saved Templates, Rules Text Alignment and Pack.'},
+  {title:'Mana Cost and Name', desc:'Type the Mana Cost in braces, such as {2}{R}{R}; it is put in order when you leave the field. The date at the end of the Name row is when the card was last saved.'},
+  {title:'Super-Type and Sub-Type', desc:'Type in the box to search, then press Enter or pick one from the list. Each type is added as a chip to the right of its box, and the box narrows to make room. Press × on a chip to take it off, or drag a chip to change the order: the type line reads in that order, and Templates match a card on its first Sub-Type.'},
+  {title:'Stats', desc:'Four slots, each a stat (Attack, Health, Arcane, Range, Attack + Arcane, Health + Arcane, Blank or Hidden) and its value. Tick * to print a centered * in place of a number.'},
+  {title:'Rule Text', desc:'"No split" is one rules box; "Split 2", "Split 3" and "Split 4" divide it into sections, each with its own text. "All Individual" gives every section its own name, type line and mana cost (or tick a section by itself), and "Choice" adds one line across the top.\nB, I and U make the selected text bold, italic or underlined, "Add —" puts an em dash at the cursor, and "Insert Card Name" links another card: it prints bold and underlined, shows that card when hovered, and the Play Test board can create a copy of it.'},
+  {title:'Flavor Text', desc:'The italic text under the rules. "lines" sets how many lines it may use on the card; blank is automatic. The rules text always fills what is left.'},
+  {title:'Art', desc:'"Variant" is the card’s looks: "+" adds one, ✎ renames it and "Delete" removes it. The art, its fill and its framing belong to the look.\nThe first menu places the art: "Horizontal Art" (above the rules box), "Left Vertical Art" or "Right Vertical Art" (beside it). The second sets how it fills its window: "Auto" (Templates’ Art Defaults), "Contain" (all of it, letterboxed), "Cover" (fills the window, cropping) or "Fill" (stretched).\nDrag the picture on the stage to move it and scroll to zoom; the bright window is what lands on the card. X, Y, Zoom and Rotate do the same by number. "Upload" adds or replaces the picture, "Reset" puts its framing back, "Flip" mirrors it and "Remove" takes it off. Everything here can be set before there is art, and applies as soon as there is.'},
+  {title:'Look', desc:'Highlight gradients for the card’s Image, Background, Pinlines and Border: each takes a preset (the same set the keyword pills use), a blend mode and a strength. "Watermark" opens the watermark editor, and the menu beside it picks this card’s watermark.'},
+  {title:'Colour', desc:'Prints this card in other colors: pick as many as you like. What the card is does not change, only how it is drawn. Click a color again to take it out, or "Clear" to go back to the card’s own.'},
+  {title:'Keyword Reminders', desc:'Every keyword, key term and counter in the rules text is listed under the colors. Click one to print its reminder text on the card, and again to take it off; hover over one to read it.'},
+  {title:'Credits', desc:'"Owner" is who the card belongs to, printed at its bottom left; "Revision #" is its revision and "Artist" who made the art. Type a saga’s name in "Saga" and press Enter to add the card to that saga. In Rebirth, "Rarity" sets its rarity.'},
+  {title:'Sagas', desc:'Every saga the card is in sits beside "Sagas" and its count. Click one to edit the card as that saga prints it; × takes the card out of that saga (a card has to stay in at least one).\nAll copies of this card share Name, Type-Line, Mana Cost, Rules Text, Stats and Revision #. Different versions of this card can have its Flavor Text, Art and Artist, and Owner individually changed.'}
+];
 var _scMode = 'keys';
 function switchScTab(mode){
   _scMode = mode;
   document.getElementById('sct-keys').classList.toggle('on', mode==='keys');
   document.getElementById('sct-tips').classList.toggle('on', mode==='tips');
+  var _ed=document.getElementById('sct-editor');
+  if(_ed)_ed.classList.toggle('on', mode==='editor');
   var _sy=document.getElementById('sct-sync');
   if(_sy)_sy.classList.toggle('on', mode==='sync');
   renderScPage();
@@ -27842,7 +27965,8 @@ function renderScPage(){
     body.style.gridTemplateColumns = 'repeat(2,1fr)';
     body.style.flexDirection = '';
     var _ph = typeof catIsPhone === 'function' && catIsPhone();
-    _SC_TIPS.forEach(function(item){
+    var _list = (_scMode === 'editor' && !_ph) ? _SC_EDITOR : _SC_TIPS;
+    _list.forEach(function(item){
       var desc = (_ph && typeof item.phone === 'string') ? item.phone : item.desc;
       if(!desc) return;
       var div = document.createElement('div');
@@ -31134,7 +31258,7 @@ window.edMassRefresh=function(){
     +"<div class='kwm-form'>"
       +"<label>Scope<select class='ed2-in' id='massScope' onchange='edMassRefresh()'>"+opts+"</select></label>"
       +"<label>Saga<input class='ed2-in' id='mass-saga' placeholder='leave blank to keep'></label>"
-      +"<label>Distributor<input class='ed2-in' id='mass-designer' placeholder='leave blank to keep'></label>"
+      +"<label>Owner<input class='ed2-in' id='mass-designer' placeholder='leave blank to keep'></label>"
       +"<label>Revision<input class='ed2-in' id='mass-revision' placeholder='leave blank to keep'></label>"
       +"<label>Artist<input class='ed2-in' id='mass-artist' placeholder='leave blank to keep'></label>"
       +"<label class='mass-untest'><input type='checkbox' id='mass-untest'> Remove Test from these cards"
@@ -32800,16 +32924,16 @@ window.edFlipArt=function(){
 };
 function fitPickerHTML(c){
   var cur=(variantOf(c)||{}).fit||'';
-  var btn=function(val,label,title){
-    return "<button class='ed2-btn tiny"+(cur===val?' on':'')+"' title='"+e(title)+"' "
-      +"onclick=\"edSetCardFit('"+val+"')\">"+e(label)+"</button>";
+  var opt=function(val,label,title){
+    return "<option value='"+val+"' title='"+e(title)+"'"+(cur===val?' selected':'')+">"+e(label)+"</option>";
   };
-  return "<div class='ed2-var-row ed2-fit-row'>"
-    +btn('','Auto','Follow the global Art fit setting')
-    +btn('contain','Contain','Show the whole image, letterboxed')
-    +btn('cover','Cover','Fill the frame, cropping the overflow')
-    +btn('fill','Fill','Stretch to the frame, ignoring aspect ratio')
-    +"</div>";
+  return "<select class='ed2-in ed2-art-fit' aria-label='Art fill' title='How the art fills its window'"
+    +" onchange='edSetCardFit(this.value)'>"
+    +opt('','Auto','Follow the global Art fit setting')
+    +opt('contain','Contain','Show the whole image, letterboxed')
+    +opt('cover','Cover','Fill the frame, cropping the overflow')
+    +opt('fill','Fill','Stretch to the frame, ignoring aspect ratio')
+    +"</select>";
 }
 function rulesEditorHTML(c){
   var n=rulesSplitOf(c), ident=splitIdentOf(c);
@@ -32893,15 +33017,15 @@ function rulesEditorHTML(c){
 
 function framePickerHTML(c){
   var cur=frameModeOf(c);
-  var btn=function(val,label,title){
-    return "<button class='ed2-btn tiny"+(cur===val?' on':'')+"' title='"+e(title)+"' "
-      +"onclick=\"edSetFrame('"+val+"')\">"+e(label)+"</button>";
+  var opt=function(val,label,title){
+    return "<option value='"+val+"' title='"+e(title)+"'"+(cur===val?' selected':'')+">"+e(label)+"</option>";
   };
-  return "<div class='ed2-var-row ed2-fit-row'>"
-    +btn('h','Horizontal','Art above the rules box - the standard frame')
-    +btn('vl','Art left','Art and rules side by side, art on the left')
-    +btn('vr','Art right','Art and rules side by side, art on the right')
-    +"</div>";
+  return "<select class='ed2-in ed2-art-frame' aria-label='Art pane' title='Where the art sits on the card'"
+    +" onchange='edSetFrame(this.value)'>"
+    +opt('h','Horizontal Art','Art above the rules box - the standard frame')
+    +opt('vl','Left Vertical Art','Art and rules side by side, art on the left')
+    +opt('vr','Right Vertical Art','Art and rules side by side, art on the right')
+    +"</select>";
 }
 window.edSetFrame=function(mode){
   var c=curCard(); if(!c)return;
@@ -33018,41 +33142,33 @@ window.edRenderArtPanel=function(){
   var host=document.getElementById('edArtPanel'); if(!host)return;
   var c=curCard();
   if(!c){ host.innerHTML="<div class='ed2-art-empty'>No card selected.</div>"; return; }
-  var frameRow=framePickerHTML(c);
+  var frameRow="<div class='ed2-var-row ed2-artsel-row'>"+framePickerHTML(c)+fitPickerHTML(c)+"</div>";
   var _vv=variantOf(c);
   var art=(typeof artSrcOf==='function')?artSrcOf(_vv)
          :(_vv.imageUrl||(_vv.art&&ART[_vv.art])||_vv.art||'');
-  if(!art){ host.innerHTML=variantPickerHTML(c)+frameRow
-    +"<div class='ed2-art-empty'>This card has no art yet.</div>"
-    +"<div class='ed2-xf-foot'>"
-      +"<input type='file' id='f-artfile' accept='image/*' style='display:none' onchange='edArtUpload(this.files[0])'>"
-      +"<button class='ed2-btn tiny primary' onclick=\"document.getElementById('f-artfile').click()\">Upload</button>"
-      +"<button class='ed2-btn tiny danger' onclick='edArtClear()'>Remove</button>"
-    +"</div>"; return; }
-  var fitRow=fitPickerHTML(c);
   var t=artXfLive(c);
   function ctrl(k){
     var L=ART_XF_LIMITS[k];
     return "<div class='ed2-xf'><label for='edXf-"+k+"'>"+ART_XF_LABEL[k]+"</label>"
       +"<input type='range' id='edXf-"+k+"' min='"+L.min+"' max='"+L.max+"' step='"+L.step+"' value='"+t[k]+"' "
       +"oninput=\"edSetArtXf('"+k+"',this.value)\">"
-      +"<input type='number' id='edXfN-"+k+"' min='"+L.min+"' max='"+L.max+"' step='"+L.step+"' value='"+t[k]+"' "
+      +"<input type='number' id='edXfN-"+k+"' aria-label='"+ART_XF_LABEL[k]+"' min='"+L.min+"' max='"+L.max+"' step='"+L.step+"' value='"+t[k]+"' "
       +"oninput=\"edSetArtXf('"+k+"',this.value)\"></div>";
   }
   host.innerHTML=
     variantPickerHTML(c)
     +frameRow
-    +fitRow
     +"<div class='ed2-stage' id='edArtStage'>"
       +"<div class='ed2-stage-box' id='edArtStageBox'>"
         +"<div class='ed2-stage-xf' id='edArtStageXf' style='transform:"+artStageTransform(t)+"'>"
           +"<div class='ed2-stage-spill' id='edArtStageSpill'"
-          +" style='background-image:"+e(cssUrl(art))+"'></div>"
+          +(art?" style='background-image:"+e(cssUrl(art))+"'":"")+"></div>"
         +"</div>"
         +"<div class='ed2-stage-clip'>"
-          +"<div class='ed2-stage-img' id='edArtStageImg' style='background-image:"+e(cssUrl(art))+";"
+          +"<div class='ed2-stage-img' id='edArtStageImg' style='"+(art?"background-image:"+e(cssUrl(art))+";":"")
           +"background-size:"+stageFitSize(c)+";"
           +"transform:"+artStageTransform(t)+"'></div>"
+          +(art?"":"<div class='ed2-art-empty ed2-stage-none'>This card has no art yet.</div>")
         +"</div>"
         +"<div class='ed2-stage-edge'></div>"
       +"</div>"
@@ -33648,13 +33764,12 @@ function sagaBoxHTML(c){
       : "<span class='ed2-sagachip"+on+"'>"+e(lbl)+"</span>";
   }).join('');
   var note = (ids.length>1)
-    ? "All copies of this card share Name, Type-Line, Mana Cost, Rules Text, Stats and "
-      +"Revision #.<br>Different versions of this card can have its Flavor Text, Art and "
-      +"Artist, and Distributor individually changed."
+    ? " title='All copies of this card share Name, Type-Line, Mana Cost, Rules Text, Stats and "
+      +"Revision #. Different versions of this card can have its Flavor Text, Art and Artist, and "
+      +"Owner individually changed.'"
     : "";
   return "<div class='ed2-sagabox'>"
-    +"<label>Sagas <span class='ed2-sagacount'>"+ids.length+"</span>"
-      +"<span class='ed2-sagabox-note'>"+note+"</span></label>"
+    +"<label"+note+">Sagas <span class='ed2-sagacount'>"+ids.length+"</span></label>"
     +"<div class='ed2-sagachips'>"+chips+"</div>"
   +"</div>";
 }
@@ -33694,28 +33809,30 @@ function renderFields(){
     +"</div>"
     +"</div>"
     +"<div class='ed2-topsplit'><div class='ed2-topsplit-main'>"
-    +"<div class='ed2-group'>"
+    +"<div class='ed2-group ed2-g-id'>"
       +"<div class='ed2-mn-row'>"
         +"<div class='ed2-field ed2-inl f-mana-wrap'><label for='f-mana'>Mana Cost</label><input class='ed2-input' id='f-mana' value='"+e(c.manaCost)+"' oninput='edLive()' onblur='edSortMana(this)'></div>"
         +"<div class='ed2-field ed2-inl f-name-wrap'><label for='f-name'>Name</label><input class='ed2-input' id='f-name' value='"+e(c.name)+"' oninput='edLive()' onfocus='edNameFocus()' onblur='edNameBlur()'>"
           +"<span class='ed2-rev-date' id='f-rev-date'>"+(c.lastUpdated?("· "+e(c.lastUpdated)):'')+"</span></div>"
       +"</div>"
       +"<div class='ed2-row2'>"
-        +"<div class='ed2-field'><div class='ed2-tokrow' id='f-super-toks'></div>"
+        +"<div class='ed2-field'>"
           +"<div class='ed2-inl'><label for='f-super-in'>Super-Type</label>"
           +"<div class='ed2-combo' id='f-super-combo'>"
             +"<input class='ed2-input' id='f-super-in' placeholder='Type to search…' autocomplete='off'>"
-            +"<div class='ed2-combo-list hidden' id='f-super-list'></div></div></div></div>"
-        +"<div class='ed2-field'><div class='ed2-tokrow' id='f-sub-toks'></div>"
+            +"<div class='ed2-combo-list hidden' id='f-super-list'></div></div>"
+          +"<div class='ed2-tokrow' id='f-super-toks'></div></div></div>"
+        +"<div class='ed2-field'>"
           +"<div class='ed2-inl'><label for='f-sub-in'>Sub-Type</label>"
           +"<div class='ed2-combo' id='f-sub-combo'>"
             +"<input class='ed2-input' id='f-sub-in' placeholder='Type to search…' autocomplete='off'>"
-            +"<div class='ed2-combo-list hidden' id='f-sub-list'></div></div></div></div>"
+            +"<div class='ed2-combo-list hidden' id='f-sub-list'></div></div>"
+          +"<div class='ed2-tokrow' id='f-sub-toks'></div></div></div>"
       +"</div>"
       +"<div class='ed2-group-stats'><div class='ed2-stats' id='f-orbs'>"
         +orbEditorRows(c)+"</div></div>"
     +"</div>"
-    +"<div class='ed2-group'><div class='ed2-row3'>"
+    +"<div class='ed2-group ed2-g-rules'><div class='ed2-row3'>"
       +"<div class='ed2-rules-col'>"
         +rulesEditorHTML(c)
         +"<div class='ed2-field ed2-flavor-row'><label class='ed2-stack-lbl' for='f-flavor'>Flavor<br>Text</label>"
@@ -33729,18 +33846,20 @@ function renderFields(){
     +"</div></div>"
     +"</div><div class='ed2-artcol'>"
       +"<div class='ed2-group ed2-art' id='edArtPanel'></div>"
+      +"<div class='ed2-artrest'>"
       +holoSectionHTML(c)
       +"<div class='ed2-kwbar' id='f-kwbar'></div>"
+      +"</div>"
     +"</div></div>"
-    +"<div class='ed2-group'><div class='ed2-meta'>"
-      +"<div class='ed2-field'><label for='f-designer'>Distributor</label><input class='ed2-input' id='f-designer' value='"+e(m.designer||'')+"' oninput='edLive()'></div>"
-      +"<div class='ed2-field'><label for='f-saga'>Saga</label><input class='ed2-input' id='f-saga'"
+    +"<div class='ed2-group ed2-g-meta'><div class='ed2-meta'>"
+      +"<div class='ed2-field ed2-inl f-owner-wrap'><label for='f-designer'>Owner</label><input class='ed2-input' id='f-designer' value='"+e(m.designer||'')+"' oninput='edLive()'></div>"
+      +"<div class='ed2-field ed2-inl f-saga-wrap'><label for='f-saga'>Saga</label><input class='ed2-input' id='f-saga'"
         +" list='ed2-sagalist' placeholder='type a saga to add\u2026'"
         +" title='Type a saga and press Enter to add this card to it. The chips below are every saga it is in.'"
         +" onkeydown='if(event.key===\"Enter\"){event.preventDefault();edSagaFieldAdd();}'"
         +" onchange='edSagaFieldAdd()'>"+sagaDatalistHTML()+"</div>"
-      +"<div class='ed2-field'><label for='f-rev'>Revision</label><input class='ed2-input' id='f-rev' value='"+e(m.revision||'')+"' oninput='edLive()'></div>"
-      +"<div class='ed2-field'><label for='f-artist'>Artist</label><input class='ed2-input' id='f-artist' value='"+e(m.artist||'')+"' oninput='edLive()'></div>"
+      +"<div class='ed2-field ed2-inl f-rev-wrap'><label for='f-rev'>Revision #</label><input class='ed2-input' id='f-rev' value='"+e(m.revision||'')+"' oninput='edLive()'></div>"
+      +"<div class='ed2-field ed2-inl f-artist-wrap'><label for='f-artist'>Artist</label><input class='ed2-input' id='f-artist' value='"+e(m.artist||'')+"' oninput='edLive()'></div>"
       +(window.REBIRTH ? rarityFieldHTML(c) : '')
     +"</div>"+sagaBoxHTML(c)+"</div>";
   renderTypeToks();
@@ -33807,7 +33926,7 @@ function rarityFieldHTML(c){
       return "<option value='"+e(r.id)+"'"+(cur===r.id?' selected':'')+">"
         +e(r.label)+"</option>";
     }).join('');
-  return "<div class='ed2-field ed2-field-rar'><label>Rarity</label>"
+  return "<div class='ed2-field ed2-inl ed2-field-rar'><label for='f-rarity'>Rarity</label>"
     +"<select class='ed2-input' id='f-rarity' onchange='edSetRarity(this.value)'>"
     +opts+"</select></div>";
 }
