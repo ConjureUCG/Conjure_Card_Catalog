@@ -3,68 +3,9 @@
   "name": "Conjure UCG",
   "format": 2,
   "testing": true,
-  "cardCount": 11
+  "cardCount": 48
  },
  "cards": [
-  {
-   "name": "_Bash",
-   "manaCost": "R",
-   "cmc": "1",
-   "colors": [
-    "red"
-   ],
-   "superTypes": [
-    "Quick",
-    "Action"
-   ],
-   "subTypes": [
-    "Warrior"
-   ],
-   "orbs": [
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    },
-    {
-     "type": "hidden",
-     "value": ""
-    }
-   ],
-   "attack": "",
-   "health": "",
-   "arcane": "",
-   "ruleText": "This card costs {R} less if you control an Ire Essence and a Warrior Field Card.\nDeal 1 damage to any target Field Card.",
-   "flavor": "",
-   "imageUrl": "",
-   "art": "",
-   "saga": "Beginnings",
-   "revision": "Rev 1.0",
-   "artist": "Midjourney",
-   "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-10-07",
-   "variants": [
-    {
-     "id": "v1",
-     "label": "Default",
-     "art": "",
-     "imageUrl": ""
-    }
-   ],
-   "variant": "v1",
-   "sagaId": "Beginnings",
-   "id": "cmuy9t6g16zron",
-   "_src": "mse",
-   "cid": "cmuy9t6g152nxg4b0eh6u",
-   "testing": 1
-  },
   {
    "id": "cmtup123b1g75c",
    "name": "_New Card",
@@ -82,8 +23,7 @@
    "subTypes": [
     "Giant",
     "Swimming",
-    "Beast",
-    "Horror"
+    "Beast"
    ],
    "attack": "9",
    "health": "8",
@@ -115,13 +55,13 @@
     }
    ],
    "range": "",
-   "lastUpdated": "2026-10-03",
+   "lastUpdated": "2026-10-08",
    "cid": "c1fhd70c1xt2dpy",
-   "testing": 1,
    "sagaIds": [
     "Beginnings"
    ],
-   "sagaId": "Beginnings"
+   "sagaId": "Beginnings",
+   "testing": 1
   },
   {
    "name": "_Hardened Steel",
@@ -162,7 +102,7 @@
    "arcane": "",
    "ruleText": "Amass — Artificer Characters\nArmament Objects you control gain \"Armed Character gains +2 Health.\"",
    "flavor": "",
-   "imageUrl": "",
+   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art-uploads/image317.webp",
    "art": "",
    "saga": "Infinite",
    "revision": "Rev 1.0",
@@ -403,7 +343,7 @@
     "Infinite"
    ],
    "sagaId": "Infinite",
-   "lastUpdated": "2026-10-07",
+   "lastUpdated": "2026-10-08",
    "testing": 1,
    "mark": "wm_cmudw0ix3xj34z"
   },
@@ -627,6 +567,1914 @@
    "testing": 1,
    "range": "",
    "lastUpdated": "2026-10-07"
+  },
+  {
+   "name": "_Bash",
+   "manaCost": "R",
+   "cmc": "1",
+   "colors": [
+    "red"
+   ],
+   "superTypes": [
+    "Quick",
+    "Action"
+   ],
+   "subTypes": [
+    "Warrior"
+   ],
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "This card costs {R} less if you control an Ire Essence and a Warrior Field Card.\nDeal 1 damage to any target Field Card.",
+   "flavor": "",
+   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art-uploads/image1019.webp",
+   "art": "",
+   "saga": "Beginnings",
+   "revision": "Rev 1.0",
+   "artist": "Midjourney",
+   "designer": "ConjureUCG LLC 2026",
+   "lastUpdated": "2026-10-07",
+   "variants": [
+    {
+     "id": "v1",
+     "label": "Default",
+     "art": "",
+     "imageUrl": ""
+    }
+   ],
+   "variant": "v1",
+   "sagaId": "Beginnings",
+   "id": "cmuy9t6g16zron",
+   "_src": "mse",
+   "cid": "cmuy9t6g152nxg4b0eh6u",
+   "testing": 1
+  },
+  {
+   "id": "cmuyn3bz6ecyxp",
+   "name": "_Gore Drinker",
+   "manaCost": "IV3",
+   "cmc": "5",
+   "colors": [
+    "indigo",
+    "violet"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Void",
+    "Avatar",
+    "Vampire"
+   ],
+   "attack": "7",
+   "health": "4",
+   "arcane": "7A",
+   "ruleText": "Shade\nYour Offset — Sacrifice a Field Card unless you've gained life this turn.",
+   "flavor": "\"I lived for eons, seen the end, then lived long enough to see it begin anew.\"",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuyn3bz6nrv3eba22o52",
+   "orbs": [
+    {
+     "type": "attack and arcane",
+     "value": "7"
+    },
+    {
+     "type": "health",
+     "value": "4"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "range": "",
+   "lastUpdated": "2026-10-07",
+   "testing": 1
+  },
+  {
+   "id": "cmuyna6df2n6oc",
+   "name": "_Tech Duinn Cambion",
+   "manaCost": "VVV4",
+   "cmc": "7",
+   "colors": [
+    "violet"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Vampire",
+    "Shaman"
+   ],
+   "attack": "9",
+   "health": "4",
+   "arcane": "10",
+   "ruleText": "Lacerate\nWhenever a Character an opponent controls dies, Revive that card unless an opponent pays 3 Life.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuyna6dgdmb62q288ogl",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "9"
+    },
+    {
+     "type": "health",
+     "value": "4"
+    },
+    {
+     "type": "arcane",
+     "value": "10"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "range": "",
+   "lastUpdated": "2026-10-10",
+   "testing": 1
+  },
+  {
+   "id": "cmuysac5qt3r0x",
+   "name": "_a",
+   "manaCost": "ROYGBIV",
+   "cmc": "7",
+   "colors": [
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "blue",
+    "indigo",
+    "violet"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [],
+   "attack": "1",
+   "health": "1",
+   "arcane": "1",
+   "ruleText": "",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuysac5qzida7epg0viv",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "1"
+    },
+    {
+     "type": "health",
+     "value": "1"
+    },
+    {
+     "type": "arcane",
+     "value": "1"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "testing": 1,
+   "lastUpdated": "2026-10-08",
+   "range": "",
+   "__fxSteps": {
+    "r": "",
+    "v": []
+   }
+  },
+  {
+   "id": "cmuytbv2c8zncv",
+   "name": "_Commune the Untold",
+   "manaCost": "I3",
+   "cmc": "4",
+   "colors": [
+    "indigo"
+   ],
+   "superTypes": [
+    "Spell"
+   ],
+   "subTypes": [
+    "Demonic"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Reveal the top 5 cards of your Deck, target opponent splits those cards into 2 piles. Put 1 pile into your Hand and the other into your Grave.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuytbv2cmd0rayu309cs",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1
+  },
+  {
+   "id": "cmuytf8jrtattw",
+   "name": "_Check the Funds",
+   "manaCost": "Y1",
+   "cmc": "2",
+   "colors": [
+    "yellow"
+   ],
+   "superTypes": [
+    "Quick",
+    "Action"
+   ],
+   "subTypes": [
+    "Cleric"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Cancel target card unless its controller pays {2}.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuytf8jr4vu5p2qmf2pg",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "testing": 1,
+   "lastUpdated": "2026-10-08"
+  },
+  {
+   "id": "cmuytiaxrwf0ym",
+   "name": "_Missmember",
+   "manaCost": "I",
+   "cmc": "1",
+   "colors": [
+    "indigo"
+   ],
+   "superTypes": [
+    "Spell"
+   ],
+   "subTypes": [
+    "Esper"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Look at target player's Hand, choose a card for them to Discard unless they Grind equal to its Mana Cost.\nDraw 1.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuytiaxrybro2y1tqxn7",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1
+  },
+  {
+   "id": "cmuyw40b11hv17",
+   "name": "_Faulty Tuning",
+   "manaCost": "O2",
+   "cmc": "3",
+   "colors": [
+    "orange"
+   ],
+   "superTypes": [
+    "Action"
+   ],
+   "subTypes": [
+    "Artificer"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Draw 3.\nDiscard 2 unless you Discard an Object.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuyw40b1tfywlst4vyz7",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "testing": 1,
+   "lastUpdated": "2026-10-08"
+  },
+  {
+   "id": "cmuyw5arij2cg1",
+   "name": "_Reckless Research",
+   "manaCost": "R1",
+   "cmc": "2",
+   "colors": [
+    "red"
+   ],
+   "superTypes": [
+    "Quick",
+    "Action",
+    "Spell"
+   ],
+   "subTypes": [
+    "Alchemist"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Ignite 3.\nDiscard 2 unless you Discard an Action or Spell.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuyw5arijpq7xdnubn0j",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "testing": 1,
+   "lastUpdated": "2026-10-08"
+  },
+  {
+   "id": "cmuyw97eqe33o2",
+   "name": "_Post Mortem Study",
+   "manaCost": "V2",
+   "cmc": "3",
+   "colors": [
+    "violet"
+   ],
+   "superTypes": [
+    "Spell"
+   ],
+   "subTypes": [
+    "Necro",
+    "Shaman"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Draw 3, lose 3 Life.\nDiscard 2 cards unless you Discard a Character.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuyw97eqhr91digfxu77",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "testing": 1,
+   "lastUpdated": "2026-10-08"
+  },
+  {
+   "id": "cmuywg1vb88g3g",
+   "name": "_Commune With Coals",
+   "manaCost": "R1",
+   "cmc": "2",
+   "colors": [
+    "red"
+   ],
+   "superTypes": [
+    "Spell"
+   ],
+   "subTypes": [
+    "Pyro",
+    "Shaman"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Draw 2. Discard 1 unless you've Ignited this turn.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuywg1vbnyojg9zsjymq",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "testing": 1,
+   "lastUpdated": "2026-10-08"
+  },
+  {
+   "id": "cmuywghe3h35a4",
+   "name": "_Interupting Imp",
+   "manaCost": "II2",
+   "cmc": "4",
+   "colors": [
+    "indigo"
+   ],
+   "superTypes": [
+    "Quick",
+    "Character"
+   ],
+   "subTypes": [
+    "Imp"
+   ],
+   "attack": "2",
+   "health": "1",
+   "arcane": "4",
+   "ruleText": "Intimidate, Bloodlust\nArrive — Look at target player's Hand, choose a card and put it on the bottom of their Deck.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuywghe3zno8spl8m5db",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "2"
+    },
+    {
+     "type": "health",
+     "value": "1"
+    },
+    {
+     "type": "arcane",
+     "value": "4"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "testing": 1,
+   "lastUpdated": "2026-10-08",
+   "range": ""
+  },
+  {
+   "id": "cmuyws2kotn8kf",
+   "name": "_Default Test Card",
+   "manaCost": "1",
+   "cmc": "1",
+   "colors": [],
+   "superTypes": [],
+   "subTypes": [],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuyws2koe7lwc5m25qkv",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1
+  },
+  {
+   "id": "cmuywskb0oe6kp",
+   "name": "_Default Test Card (copy)",
+   "manaCost": "1",
+   "cmc": "1",
+   "colors": [],
+   "superTypes": [],
+   "subTypes": [],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuywskb0e2gqpzx2cm83",
+   "orbs": [
+    {
+     "type": "attack and arcane",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1,
+   "range": ""
+  },
+  {
+   "id": "cmuywskxv7vxqa",
+   "name": "_Stray Phantasm",
+   "manaCost": "V2",
+   "cmc": "3",
+   "colors": [
+    "violet"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Necro",
+    "Geist"
+   ],
+   "attack": "2",
+   "health": "2",
+   "arcane": "3",
+   "ruleText": "Airborne\nArrive — Draw 1, sacrifice a Character.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuywskxvaspdosu42jo5",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "2"
+    },
+    {
+     "type": "health",
+     "value": "2"
+    },
+    {
+     "type": "arcane",
+     "value": "3"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1,
+   "range": ""
+  },
+  {
+   "id": "cmuywwe6wh5rcp",
+   "name": "_Scrying Ripples",
+   "manaCost": "B",
+   "cmc": "1",
+   "colors": [
+    "blue"
+   ],
+   "superTypes": [
+    "Quick",
+    "Spell"
+   ],
+   "subTypes": [
+    "Aqua",
+    "Druid"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Only use mana created by Characters to play this card.\nForetell 1, Draw 1.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuywwe6wppzsv2bgyjav",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1
+  },
+  {
+   "id": "cmuywyk3uwcm59",
+   "name": "_Verdue Conference",
+   "manaCost": "GG",
+   "cmc": "2",
+   "colors": [
+    "green"
+   ],
+   "superTypes": [
+    "Quick",
+    "Spell"
+   ],
+   "subTypes": [
+    "Plant",
+    "Druid"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Only use mana created by Characters to play this card.\nWish a Core Arch Essence to the Field.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuywyk3umh87frkpsy6q",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1
+  },
+  {
+   "id": "cmuyx3mrmowe4a",
+   "name": "_Marabout Mentorship",
+   "manaCost": "Y",
+   "cmc": "1",
+   "colors": [
+    "yellow"
+   ],
+   "superTypes": [
+    "Quick",
+    "Spell"
+   ],
+   "subTypes": [
+    "Druid",
+    "Monk"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Only use mana created by Characters to play this card.\nEach player Draws 1.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuyx3mrmhljvgtq5hyvt",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1
+  },
+  {
+   "id": "cmuyx8azqc26ly",
+   "name": "_Burnished Spearhead",
+   "manaCost": "Y1",
+   "cmc": "2",
+   "colors": [
+    "yellow",
+    "grey"
+   ],
+   "superTypes": [
+    "Object"
+   ],
+   "subTypes": [
+    "Soldier",
+    "Relic"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Arrive — Each Character gains +1 this turn.\nSacrifice: Each player gains 3 Life. Recover target card that entered your Grave this turn.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuyx8azqzn8lorqrx1ak",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "sagaIds": [
+    "Beginnings"
+   ],
+   "sagaId": "Beginnings",
+   "lastUpdated": "2026-10-17",
+   "testing": 1,
+   "range": ""
+  },
+  {
+   "id": "cmuyxfu47di2gd",
+   "name": "_Hound",
+   "manaCost": "R",
+   "cmc": "1",
+   "colors": [
+    "red"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Wild",
+    "Fanged",
+    "Beast"
+   ],
+   "attack": "2",
+   "health": "1",
+   "arcane": "",
+   "ruleText": "Bloodlust",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuyxfu476lxza06loay5",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "2"
+    },
+    {
+     "type": "health",
+     "value": "1"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1,
+   "range": "",
+   "kwReminders": [
+    "Bloodlust"
+   ]
+  },
+  {
+   "id": "cmuyxn27kwcemr",
+   "name": "_Pariah Dog",
+   "manaCost": "G1",
+   "cmc": "2",
+   "colors": [
+    "green"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Fanged",
+    "Beast",
+    "Familiar"
+   ],
+   "attack": "2",
+   "health": "1",
+   "arcane": "",
+   "ruleText": "Battlecry — If this card is attacking with another Character, this card gains Taunt this turn.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuyxn27ld116t1cylnb1",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "2"
+    },
+    {
+     "type": "health",
+     "value": "1"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1,
+   "range": ""
+  },
+  {
+   "id": "cmuyxukwua9gs6",
+   "name": "_Feral Mongrel",
+   "manaCost": "RR",
+   "cmc": "2",
+   "colors": [
+    "red"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Wild",
+    "Fanged",
+    "Beast"
+   ],
+   "attack": "2",
+   "health": "1",
+   "arcane": "",
+   "ruleText": "Swift, Intimidate, Bloodlust\nArrive — Target Character with Attack less than this card's Attack can't block this turn.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuyxukwugphldhgaq6yj",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "2"
+    },
+    {
+     "type": "health",
+     "value": "1"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1,
+   "range": ""
+  },
+  {
+   "id": "cmuyy10wsetwte",
+   "name": "_Stabful Skirge",
+   "manaCost": "IR1",
+   "cmc": "3",
+   "colors": [
+    "red",
+    "indigo"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Undead",
+    "Knife",
+    "Imp"
+   ],
+   "attack": "5",
+   "health": "1",
+   "arcane": "4",
+   "ruleText": "This card can't block.\n{IV}, Banish a Character card from your Grave: Revive this card with an Oblivion counter.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuyy10ws4cf9w98su2fw",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "5"
+    },
+    {
+     "type": "health",
+     "value": "1"
+    },
+    {
+     "type": "arcane",
+     "value": "4"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1,
+   "range": ""
+  },
+  {
+   "id": "cmuyy8ipxji157",
+   "name": "_Soul Blight",
+   "manaCost": "VV",
+   "cmc": "2",
+   "colors": [
+    "violet"
+   ],
+   "superTypes": [
+    "Quick",
+    "Spell"
+   ],
+   "subTypes": [
+    "Necro",
+    "Geist"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Depleted\nAdditional Cost — Pay X Life.\nTarget Character gains -X this turn.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuyy8ipxhpn7z4gcr5sk",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1
+  },
+  {
+   "id": "cmuyyc92ui2ldd",
+   "name": "_Collect the Empty",
+   "manaCost": "I1",
+   "cmc": "2",
+   "colors": [
+    "indigo"
+   ],
+   "superTypes": [
+    "Spell"
+   ],
+   "subTypes": [
+    "Void"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Put a -1 counter on target Character.\n\nBanish target Crystallized card.\n\nIf an opponent doesn't control any Crystallized cards, Draw 2.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuyyc92upbji0r1sa1ba",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1,
+   "rulesSplit": 3,
+   "sections": [
+    {
+     "text": "Put a -1 counter on target Character.",
+     "name": "",
+     "manaCost": "",
+     "superTypes": [],
+     "subTypes": []
+    },
+    {
+     "text": "Banish target Crystallized card.",
+     "name": "",
+     "manaCost": "",
+     "superTypes": [],
+     "subTypes": []
+    },
+    {
+     "text": "If an opponent doesn't control any Crystallized cards, Draw 2.",
+     "name": "",
+     "manaCost": "",
+     "superTypes": [],
+     "subTypes": []
+    }
+   ],
+   "splitChoice": true,
+   "choiceText": "Choose 1"
+  },
+  {
+   "id": "cmuze9cgsgjpga",
+   "name": "_Guffawing Imp",
+   "manaCost": "I3",
+   "cmc": "4",
+   "colors": [
+    "indigo"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Winged",
+    "Imp"
+   ],
+   "attack": "2",
+   "health": "1",
+   "arcane": "3",
+   "ruleText": "Airborne\nDemise — Target player puts a card from their Hand on top of their Deck.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuze9cgs60afpn60101p",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "2"
+    },
+    {
+     "type": "health",
+     "value": "1"
+    },
+    {
+     "type": "arcane",
+     "value": "3"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1,
+   "range": ""
+  },
+  {
+   "id": "cmuzen7ocun8l0",
+   "name": "_Argent Im[",
+   "manaCost": "V1",
+   "cmc": "2",
+   "colors": [
+    "violet"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Winged",
+    "Imp"
+   ],
+   "attack": "2",
+   "health": "2",
+   "arcane": "1",
+   "ruleText": "Airborne\nAs long as this card has a -1 counter on it, it gains Sustain.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuzen7oc98x3nw2zy0mw",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "2"
+    },
+    {
+     "type": "health",
+     "value": "2"
+    },
+    {
+     "type": "arcane",
+     "value": "1"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1,
+   "range": ""
+  },
+  {
+   "id": "cmuzerks0o7299",
+   "name": "_Inkling Bonespur",
+   "manaCost": "V",
+   "cmc": "1",
+   "colors": [
+    "violet"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Demonic",
+    "Winged",
+    "Knife"
+   ],
+   "attack": "1",
+   "health": "1",
+   "arcane": "1",
+   "ruleText": "Airborne, Sustain\nArrive — Lose 3 Life.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuzerks025acv6xi83m1",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "1"
+    },
+    {
+     "type": "health",
+     "value": "1"
+    },
+    {
+     "type": "arcane",
+     "value": "1"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1,
+   "range": "",
+   "kwReminders": [
+    "Sustain"
+   ]
+  },
+  {
+   "id": "cmuzey29iofzz6",
+   "name": "_Skullduggery",
+   "manaCost": "I2",
+   "cmc": "3",
+   "colors": [
+    "indigo"
+   ],
+   "superTypes": [
+    "Ongoing",
+    "Spell"
+   ],
+   "subTypes": [
+    "Necro",
+    "Esper"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Whenever a Character enters your Grave from anywhere, Foretell. (<i>Multiple Characters entering your Grave at the same time only makes you Foretell 1 that many times.</i>)",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuzey29ikpv08jo2c3bl",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1
+  },
+  {
+   "id": "cmuzf5xe4mhpob",
+   "name": "_Knavish Imp",
+   "manaCost": "I1",
+   "cmc": "2",
+   "colors": [
+    "indigo"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Slimy",
+    "Winged",
+    "Imp"
+   ],
+   "attack": "1",
+   "health": "1",
+   "arcane": "1",
+   "ruleText": "Airborne\nArrive — Recover target Spell unless an opponent Discards.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuzf5xe4kd50kmf17x9d",
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "1"
+    },
+    {
+     "type": "health",
+     "value": "1"
+    },
+    {
+     "type": "arcane",
+     "value": "1"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1,
+   "kwReminders": [
+    "Recover"
+   ],
+   "range": ""
+  },
+  {
+   "id": "cmuzfaernnzxm6",
+   "name": "_Dusk Vault Purge",
+   "manaCost": "I2",
+   "cmc": "3",
+   "colors": [
+    "indigo"
+   ],
+   "superTypes": [
+    "Ongoing",
+    "Spell"
+   ],
+   "subTypes": [
+    "Demonic",
+    "Shaman"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Whenever a Character Arrives under your control, Recover target Spell with Mana Cost less than the Character's Arcane. If you do, that Character Arrives with a -1 counter.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuzfaernifb916yw9h7s",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1
+  },
+  {
+   "id": "cmuzfec5opac57",
+   "name": "_Midnight Spelling",
+   "manaCost": "I1",
+   "cmc": "2",
+   "colors": [
+    "indigo"
+   ],
+   "superTypes": [
+    "Ongoing",
+    "Spell"
+   ],
+   "subTypes": [
+    "Vampire",
+    "Shaman"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Sacrifice an Ongoing Spell: Recover target Non-Ongoing Spell with Mana Cost less the sacrificed card's.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuzfec5o4w7x41507ptv",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1
+  },
+  {
+   "id": "cmuzfhonrdq8uw",
+   "name": "_Strifeful Midnight",
+   "manaCost": "I",
+   "cmc": "1",
+   "colors": [
+    "indigo"
+   ],
+   "superTypes": [
+    "Quick",
+    "Spell"
+   ],
+   "subTypes": [
+    "Shaman"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Additional Cost — Sacrifice an Ongoing Spell.\nRecover target Non-Ongoing Spell with Mana Cost less the sacrificed card's.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuzfhonrb8ey1iao1c7c",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1
+  },
+  {
+   "id": "cmuzfk1x575d75",
+   "name": "_Harpy's Hex",
+   "manaCost": "I",
+   "cmc": "1",
+   "colors": [
+    "indigo"
+   ],
+   "superTypes": [
+    "Spell",
+    "Quick"
+   ],
+   "subTypes": [
+    "Zephyr",
+    "Winged",
+    "Shaman"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Additional Cost — Sacrifice a Character with Airborne.\nDestroy target Character or Ongoing Field Card with Mana Cost less than the sacrificed card's Arcane.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuzfk1x5um5yuuspwl3x",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1
+  },
+  {
+   "id": "cmuzfo4882nj96",
+   "name": "_Illusory Hex",
+   "manaCost": "I",
+   "cmc": "1",
+   "colors": [
+    "indigo"
+   ],
+   "superTypes": [
+    "Spell",
+    "Quick"
+   ],
+   "subTypes": [
+    "Esper",
+    "Illusion",
+    "Shaman"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Additional Cost — Sacrifice a Character with Illusion.\nDestroy target Ongoing Field Card with Mana Cost less than the sacrificed card's Arcane.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuzfo488ipcs249x5sez",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1
+  },
+  {
+   "id": "cmuzfpm21nv441",
+   "name": "_Nightfall Hex",
+   "manaCost": "I",
+   "cmc": "1",
+   "colors": [
+    "indigo"
+   ],
+   "superTypes": [
+    "Spell",
+    "Quick"
+   ],
+   "subTypes": [
+    "Void",
+    "Shaman",
+    "Shade"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Additional Cost — Sacrifice a Character with Shade.\nDestroy target Character or Ongoing Field Card with Mana Cost less than the sacrificed card's Arcane.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuzfpm21k7htc36c0725",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1
+  },
+  {
+   "id": "cmuzft4qf0j388",
+   "name": "_Hexweaver's Sorcery",
+   "manaCost": "I",
+   "cmc": "1",
+   "colors": [
+    "indigo"
+   ],
+   "superTypes": [
+    "Spell",
+    "Quick"
+   ],
+   "subTypes": [
+    "Shaman"
+   ],
+   "attack": "",
+   "health": "",
+   "arcane": "",
+   "ruleText": "Additional Cost — Sacrifice a Character with Thaumaturge.\nDestroy target Ongoing Field Card, and Recover target Spell, both with Mana Cost less than the sacrificed card's Arcane.",
+   "flavor": "",
+   "saga": "",
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmuzft4qfvant1u9x0dox",
+   "orbs": [
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "lastUpdated": "2026-10-08",
+   "testing": 1
+  },
+  {
+   "id": "cmw1fd0fmhz92g",
+   "name": "_Nomad of the Cloud",
+   "manaCost": "YY3",
+   "cmc": "5",
+   "colors": [
+    "yellow"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Giant",
+    "Zephyr",
+    "Cleric"
+   ],
+   "attack": "",
+   "health": "7",
+   "arcane": "8",
+   "ruleText": "{L}: Target Character gains -10 Attack this turn.",
+   "flavor": "",
+   "saga": "My Cards",
+   "sagaId": "my-cards-fd0flxp",
+   "sagaIds": [
+    "my-cards-fd0flxp"
+   ],
+   "revision": "",
+   "artist": "Midjourney",
+   "designer": "Conjure UCG LLC 2026",
+   "imageUrl": "",
+   "art": "",
+   "cid": "cmw1fd0fnkp4031t61i93",
+   "orbs": [
+    {
+     "type": "health",
+     "value": "7"
+    },
+    {
+     "type": "arcane",
+     "value": "8"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "testing": 1,
+   "lastUpdated": "2026-11-04",
+   "range": ""
   }
  ]
 }

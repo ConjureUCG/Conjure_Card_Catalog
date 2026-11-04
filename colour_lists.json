@@ -1,0 +1,400 @@
+{
+ "format": 1,
+ "colours": {
+  "Red": {
+   "primary": [
+    "Firebreathing",
+    "Empower",
+    "Enact",
+    "Volley",
+    "Fury",
+    "Swift",
+    "Bloodlust",
+    "Overwhelm",
+    "Ignite"
+   ],
+   "secondary": [
+    "Airborne",
+    "Intimidate",
+    "Flux",
+    "Lucky",
+    "Envoy",
+    "Wound"
+   ],
+   "tertiary": [
+    "Snare",
+    "Taunt",
+    "Desperation",
+    "Mechanical"
+   ],
+   "subtypes": [
+    "Alchemist",
+    "Bard",
+    "Bow",
+    "Clawed",
+    "Curse",
+    "Demonic",
+    "Divine",
+    "Dragon",
+    "Elemental",
+    "Fanged",
+    "Horned",
+    "Imp",
+    "Instrument",
+    "Knife",
+    "Potion",
+    "Pyro",
+    "Ranger",
+    "Rogue",
+    "Shaman",
+    "Song",
+    "Spear",
+    "Sword",
+    "Warrior",
+    "Wild",
+    "Wizard"
+   ]
+  },
+  "Orange": {
+   "primary": [
+    "Steadfast",
+    "Enact",
+    "Volley",
+    "Snare",
+    "Overwhelm",
+    "Mechanical",
+    "Puppeteer"
+   ],
+   "secondary": [
+    "Guardian",
+    "Shield"
+   ],
+   "tertiary": [
+    "Firebreathing",
+    "Invulnerable",
+    "Coalesce",
+    "Fury",
+    "Swift",
+    "Taunt"
+   ],
+   "subtypes": [
+    "Alchemist",
+    "Artificer",
+    "Armor",
+    "Bard",
+    "Bow",
+    "Construct",
+    "Dragon",
+    "Geo",
+    "Golem",
+    "Hooved",
+    "Horned",
+    "Mace",
+    "Monk",
+    "Ranger",
+    "Scaly",
+    "Soldier",
+    "Spear",
+    "Sword"
+   ]
+  },
+  "Yellow": {
+   "primary": [
+    "Shield",
+    "Airborne",
+    "Donate",
+    "Envoy",
+    "Fortify",
+    "Guardian",
+    "Sovereign",
+    "Sustain",
+    "Toughened",
+    "Steadfast",
+    "Barrier",
+    "Immune"
+   ],
+   "secondary": [
+    "Lucky",
+    "Invulnerable",
+    "Sealed"
+   ],
+   "tertiary": [
+    "Empower",
+    "Foretell",
+    "Coalesce",
+    "Snare",
+    "Mechanical",
+    "Oblivion"
+   ],
+   "subtypes": [
+    "Artificer",
+    "Bard",
+    "Clawed",
+    "Cleric",
+    "Construct",
+    "Divine",
+    "Elemental",
+    "Geist",
+    "Hooved",
+    "Horned",
+    "Instrument",
+    "Mace",
+    "Monk",
+    "Scaly",
+    "Soldier",
+    "Song",
+    "Spear",
+    "Spirit",
+    "Sword",
+    "Winged",
+    "Zephyr"
+   ]
+  },
+  "Green": {
+   "primary": [
+    "Amass",
+    "Barrier",
+    "Coalesce",
+    "Overwhelm",
+    "Snare",
+    "Taunt"
+   ],
+   "secondary": [
+    "Guardian",
+    "Lethal",
+    "Sustain",
+    "Envoy"
+   ],
+   "tertiary": [
+    "Fortify",
+    "Donate",
+    "Dredge",
+    "Fury",
+    "Volley",
+    "Steadfast",
+    "Sovereign",
+    "Toughened",
+    "Swift",
+    "Foretell",
+    "Mutate"
+   ],
+   "subtypes": [
+    "Alchemist",
+    "Bard",
+    "Beast",
+    "Bow",
+    "Clawed",
+    "Cleric",
+    "Dragon",
+    "Druid",
+    "Elf",
+    "Fanged",
+    "Geo",
+    "Golem",
+    "Hooved",
+    "Horned",
+    "Insect",
+    "Instrument",
+    "Monk",
+    "Mutant",
+    "Pest",
+    "Plant",
+    "Potion",
+    "Ranger",
+    "Scaly",
+    "Shaman",
+    "Slimy",
+    "Song",
+    "Spirit",
+    "Swimming",
+    "Sword",
+    "Warrior",
+    "Wild"
+   ]
+  },
+  "Blue": {
+   "primary": [
+    "Airborne",
+    "Thaumaturge",
+    "Empower",
+    "Barrier",
+    "Illusion",
+    "Meditate",
+    "Foretell"
+   ],
+   "secondary": [
+    "Guardian",
+    "Unblockable",
+    "Flux"
+   ],
+   "tertiary": [
+    "Steadfast",
+    "Donate",
+    "Envoy",
+    "Puppeteer"
+   ],
+   "subtypes": [
+    "Alchemist",
+    "Aqua",
+    "Bard",
+    "Clawed",
+    "Cryo",
+    "Cleric",
+    "Curse",
+    "Demonic",
+    "Druid",
+    "Elemental",
+    "Esper",
+    "Geist",
+    "Illusion",
+    "Imp",
+    "Insect",
+    "Instrument",
+    "Mutant",
+    "Potion",
+    "Rogue",
+    "Slimy",
+    "Song",
+    "Spear",
+    "Spirit",
+    "Swimming",
+    "Vampire",
+    "Winged",
+    "Wizard",
+    "Zephyr"
+   ]
+  },
+  "Indigo": {
+   "primary": [
+    "Gouge",
+    "Grind",
+    "Shade",
+    "Delve",
+    "Intimidate"
+   ],
+   "secondary": [
+    "Airborne",
+    "Empower",
+    "Illusion",
+    "Dredge",
+    "Mutate",
+    "Foreshadow",
+    "Foretell",
+    "Thaumaturge",
+    "Desperation"
+   ],
+   "tertiary": [
+    "Meditate",
+    "Lethal",
+    "Bloodlust",
+    "Unblockable",
+    "Decayed",
+    "Depleted",
+    "Sealed",
+    "Barrier",
+    "Wound",
+    "Oblivion"
+   ],
+   "subtypes": [
+    "Clawed",
+    "Curse",
+    "Demonic",
+    "Esper",
+    "Geist",
+    "Horned",
+    "Horror",
+    "Illusion",
+    "Imp",
+    "Insect",
+    "Knife",
+    "Mutant",
+    "Necro",
+    "Outlaw",
+    "Pest",
+    "Rogue",
+    "Shade",
+    "Shaman",
+    "Slimy",
+    "Spear",
+    "Spirit",
+    "Undead",
+    "Vampire",
+    "Void",
+    "Winged"
+   ]
+  },
+  "Violet": {
+   "primary": [
+    "Decayed",
+    "Depleted",
+    "Desperation",
+    "Dredge",
+    "Intimidate",
+    "Illusion",
+    "Lethal",
+    "Shade",
+    "Sustain",
+    "Delve",
+    "Wound"
+   ],
+   "secondary": [
+    "Taunt",
+    "Bloodlust",
+    "Unblockable"
+   ],
+   "tertiary": [
+    "Airborne",
+    "Donate",
+    "Gouge",
+    "Grind",
+    "Guardian",
+    "Mutate",
+    "Foreshadow",
+    "Fury",
+    "Puppeteer",
+    "Barrier"
+   ],
+   "subtypes": [
+    "Curse",
+    "Demonic",
+    "Esper",
+    "Fanged",
+    "Geist",
+    "Horror",
+    "Illusion",
+    "Imp",
+    "Insect",
+    "Knife",
+    "Mutant",
+    "Necro",
+    "Outlaw",
+    "Pest",
+    "Rogue",
+    "Shade",
+    "Shaman",
+    "Slimy",
+    "Spirit",
+    "Undead",
+    "Vampire",
+    "Void",
+    "Winged",
+    "Wizard"
+   ]
+  }
+ },
+ "shared": [
+  "Absolute",
+  "Amalgam",
+  "Amass",
+  "Barrier",
+  "Battlecry",
+  "Envoy",
+  "Immune",
+  "Raid",
+  "Unique",
+  "Unlimited"
+ ],
+ "any": [
+  "Beast"
+ ]
+}

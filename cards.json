@@ -2,7 +2,7 @@
  "manifest": {
   "name": "Conjure UCG",
   "format": 2,
-  "cardCount": 1592,
+  "cardCount": 1591,
   "keywordCount": 108,
   "lookSlots": 0,
   "markCount": 1,
@@ -248,7 +248,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -261,7 +261,11 @@
    "sagaId": "Beginnings",
    "id": "cmrvgfuv46db9i",
    "_src": "mse",
-   "cid": "c0ju2upj1pkn8b3"
+   "cid": "c0ju2upj1pkn8b3",
+   "kwReminders": [
+    "Airborne"
+   ],
+   "flavorRows": 2
   },
   {
    "name": "Banish the Foes",
@@ -1825,7 +1829,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -1838,7 +1842,11 @@
    "sagaId": "Beginnings",
    "id": "cmrvgfuv4vzypc",
    "_src": "mse",
-   "cid": "c1hiixv41h5jue4"
+   "cid": "c1hiixv41h5jue4",
+   "kwReminders": [
+    "Arrive"
+   ],
+   "flavorRows": 1
   },
   {
    "name": "Decapheli Remnant",
@@ -1946,7 +1954,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-21",
    "variants": [
     {
      "id": "v1",
@@ -4410,7 +4418,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-05",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -4430,7 +4438,8 @@
    "sagaId": "Beginnings",
    "id": "cms47zh8915e92",
    "_src": "mse",
-   "cid": "c053uvz90a3qmwh"
+   "cid": "c053uvz90a3qmwh",
+   "flavorRows": ""
   },
   {
    "name": "Tricorn Rhinodon",
@@ -4476,7 +4485,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -4489,7 +4498,11 @@
    "sagaId": "Beginnings",
    "id": "cms47zh891rjls",
    "_src": "mse",
-   "cid": "c15quzwf1jdr9q1"
+   "cid": "c15quzwf1jdr9q1",
+   "kwReminders": [
+    "Volley"
+   ],
+   "flavorRows": 1
   },
   {
    "name": "Colassal Caster",
@@ -5005,7 +5018,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -5031,7 +5044,7 @@
   {
    "name": "Mark of the Beast",
    "manaCost": "R/GI",
-   "cmc": "2",
+   "cmc": "3",
    "colors": [
     "red",
     "green",
@@ -5919,7 +5932,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -5932,7 +5945,10 @@
    "sagaId": "Beginnings",
    "id": "cms47zh89wjrnu",
    "_src": "mse",
-   "cid": "c0oqbe1p1dcgd6p"
+   "cid": "c0oqbe1p1dcgd6p",
+   "kwReminders": [
+    "Lucky"
+   ]
   },
   {
    "name": "Felix the Lucky",
@@ -8233,7 +8249,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -8253,7 +8269,10 @@
    "sagaId": "Beginnings",
    "id": "cms47zh8b8jyp1",
    "_src": "mse",
-   "cid": "c0lw9b8z1cdtp71"
+   "cid": "c0lw9b8z1cdtp71",
+   "kwReminders": [
+    "Fury"
+   ]
   },
   {
    "name": "Frantic Ravings",
@@ -8421,7 +8440,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-28",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -8447,7 +8466,7 @@
    "sagaId": "Beginnings",
    "id": "cms47zh8b9ahsc",
    "_src": "mse",
-   "flavorRows": 1,
+   "flavorRows": 2,
    "cid": "c12bqxeo0zp1wsy"
   },
   {
@@ -10042,7 +10061,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Deal 5 damage to target Character you con’t control. Excess damage dealt this way is dealt to you.",
+   "ruleText": "Deal 5 damage to target Character you don’t control. Excess damage dealt this way is dealt to you.",
    "flavor": "\"Wait, dont!\"",
    "imageUrl": "",
    "art": "",
@@ -10050,7 +10069,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-10",
    "variants": [
     {
      "id": "v1",
@@ -10573,7 +10592,7 @@
   {
    "name": "Spell Craft",
    "manaCost": "B/RB/R2",
-   "cmc": "4",
+   "cmc": "6",
    "colors": [
     "red",
     "blue"
@@ -10746,7 +10765,7 @@
   {
    "name": "Silversoul’s Boon",
    "manaCost": "RO/GO/G",
-   "cmc": "3",
+   "cmc": "5",
    "colors": [
     "red",
     "orange",
@@ -11896,7 +11915,7 @@
   {
    "name": "Primus’ Boon",
    "manaCost": "RO/GO/GX",
-   "cmc": "3",
+   "cmc": "5",
    "colors": [
     "red",
     "orange",
@@ -13080,7 +13099,7 @@
   {
    "name": "Field Testing",
    "manaCost": "B/RB/R1",
-   "cmc": "3",
+   "cmc": "5",
    "colors": [
     "red",
     "blue"
@@ -16264,7 +16283,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -16278,7 +16297,10 @@
    "sagaId": "Infinite",
    "id": "cms47zh8g6tonj",
    "_src": "mse",
-   "cid": "c00oqde90ndqyer"
+   "cid": "c00oqde90ndqyer",
+   "kwReminders": [
+    "Battlecry"
+   ]
   },
   {
    "name": "Fire-Strung Bow Master",
@@ -16699,13 +16721,21 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-10-07",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image270.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image270.webp",
+     "artXf": {
+      "z": 1.19,
+      "x": -2,
+      "y": 5,
+      "r": 0,
+      "f": 1
+     },
+     "fit": "contain"
     }
    ],
    "variant": "v1",
@@ -17264,7 +17294,7 @@
   {
    "name": "Principle Arcane",
    "manaCost": "BY/BB/R",
-   "cmc": "3",
+   "cmc": "5",
    "colors": [
     "red",
     "yellow",
@@ -17555,7 +17585,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -17569,7 +17599,11 @@
    "sagaId": "Infinite",
    "id": "cms47zh8h7bdns",
    "_src": "mse",
-   "cid": "c1ny3qws1s0xl5c"
+   "cid": "c1ny3qws1s0xl5c",
+   "kwReminders": [
+    "Ignite"
+   ],
+   "flavorRows": 1.5
   },
   {
    "name": "Ignite the Fire",
@@ -19785,7 +19819,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -19808,7 +19842,10 @@
    "id": "cms47zh8iu61fm",
    "_src": "mse",
    "frame": "vr",
-   "cid": "c10ea0ki1fpufc2"
+   "cid": "c10ea0ki1fpufc2",
+   "kwReminders": [
+    "Volley"
+   ]
   },
   {
    "name": "Torch Runner",
@@ -20875,13 +20912,20 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image597.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image597.webp",
+     "artXf": {
+      "z": 1,
+      "x": 0,
+      "y": 12,
+      "r": 0,
+      "f": 1
+     }
     }
    ],
    "variant": "v1",
@@ -20995,13 +21039,20 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image590.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image590.webp",
+     "artXf": {
+      "z": 1,
+      "x": 0,
+      "y": 10.5,
+      "r": 0,
+      "f": 1
+     }
     }
    ],
    "variant": "v1",
@@ -21874,7 +21925,7 @@
   {
    "name": "Vermillion Visionary",
    "manaCost": "B/RB/R2",
-   "cmc": "6",
+   "cmc": "4",
    "colors": [
     "red",
     "blue"
@@ -21915,7 +21966,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -21928,7 +21979,8 @@
    "sagaId": "Beginnings",
    "id": "cms47zh8k02oq0",
    "_src": "mse",
-   "cid": "c1ludt9e0flpime"
+   "cid": "c1ludt9e0flpime",
+   "flavorRows": 1
   },
   {
    "name": "Irresistible",
@@ -21973,13 +22025,20 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image771.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image771.webp",
+     "artXf": {
+      "z": 1,
+      "x": 0,
+      "y": 9,
+      "r": 0,
+      "f": 1
+     }
     }
    ],
    "variant": "v1",
@@ -22066,7 +22125,7 @@
   {
    "name": "Serene Casting",
    "manaCost": "R/YB",
-   "cmc": "2",
+   "cmc": "3",
    "colors": [
     "red",
     "yellow",
@@ -22228,7 +22287,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -22241,7 +22300,10 @@
    "sagaId": "Beginnings",
    "id": "cms47zh8k7g7rj",
    "_src": "mse",
-   "cid": "c1gyqdpd1g8puxd"
+   "cid": "c1gyqdpd1g8puxd",
+   "kwReminders": [
+    "Airborne"
+   ]
   },
   {
    "name": "Lucky Familiar",
@@ -26715,7 +26777,7 @@
   {
    "name": "Silversoul’s Plea",
    "manaCost": "RO/G",
-   "cmc": "2",
+   "cmc": "3",
    "colors": [
     "red",
     "orange",
@@ -27230,7 +27292,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-25",
    "variants": [
     {
      "id": "v1",
@@ -28215,7 +28277,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-09",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -28241,7 +28303,8 @@
    "sagaId": "Beginnings",
    "id": "cms5ftx0e6e3om",
    "_src": "mse",
-   "cid": "c0p9fyah1rndem3"
+   "cid": "c0p9fyah1rndem3",
+   "flavorRows": ""
   },
   {
    "name": "Align Chakra",
@@ -29044,7 +29107,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-21",
    "variants": [
     {
      "id": "v1",
@@ -32234,7 +32297,7 @@
    "attack": "",
    "health": "",
    "arcane": "",
-   "ruleText": "Barrier — You Draw 3.\nWhenever you Draw any number of cards,\nput that many Ascend counter on this card.\nYour Onset — If there are 30 or more Ascend counters on this card,\nyou win the game.",
+   "ruleText": "Barrier — You Draw 3.\nWhenever you Draw any number of cards, put that many Ascend counter on this card.\nYour Onset — If there are 30 or more Ascend counters on this card, you win the game.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -32242,7 +32305,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -33666,7 +33729,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-10-01",
+   "lastUpdated": "2026-10-21",
    "variants": [
     {
      "id": "v1",
@@ -33675,8 +33738,8 @@
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1134.webp",
      "artXf": {
       "z": 1,
-      "x": 0,
-      "y": 4,
+      "x": 1,
+      "y": 6.5,
       "r": 0,
       "f": 1
      }
@@ -35403,7 +35466,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-25",
+   "lastUpdated": "2026-10-21",
    "variants": [
     {
      "id": "v1",
@@ -36521,7 +36584,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -43208,7 +43271,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -43221,7 +43284,11 @@
    "sagaId": "Beginnings",
    "id": "cms5ftx0s1j2w3",
    "_src": "mse",
-   "cid": "c0l2uy3r1l39ikj"
+   "cid": "c0l2uy3r1l39ikj",
+   "kwReminders": [
+    "Steadfast",
+    "Airborne"
+   ]
   },
   {
    "name": "Cruel Celebration",
@@ -43623,7 +43690,7 @@
   {
    "name": "Chronicler of Might",
    "manaCost": "O/GO/G1",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "orange",
     "green"
@@ -43663,13 +43730,20 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image839.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image839.webp",
+     "artXf": {
+      "z": 1,
+      "x": 0,
+      "y": 14.5,
+      "r": 0,
+      "f": 1
+     }
     }
    ],
    "variant": "v1",
@@ -43856,7 +43930,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -43869,7 +43943,8 @@
    "sagaId": "Beginnings",
    "id": "cms5ftx0skinhe",
    "_src": "mse",
-   "cid": "c04nzlqy18w8zu0"
+   "cid": "c04nzlqy18w8zu0",
+   "flavorRows": 1
   },
   {
    "name": "Cutthroat’s Ploy",
@@ -44206,7 +44281,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -44219,7 +44294,10 @@
    "sagaId": "Beginnings",
    "id": "cms5ftx0sp8dt4",
    "_src": "mse",
-   "cid": "c0uec03f0om29ab"
+   "cid": "c0uec03f0om29ab",
+   "kwReminders": [
+    "Desperation"
+   ]
   },
   {
    "name": "Circle of Platinum",
@@ -45336,7 +45414,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -45349,7 +45427,11 @@
    "sagaId": "Beginnings",
    "id": "cms5g01qplbs65",
    "_src": "mse",
-   "cid": "c1p3p9lq0p3rt0s"
+   "cid": "c1p3p9lq0p3rt0s",
+   "kwReminders": [
+    "Overwhelm"
+   ],
+   "flavorRows": 2
   },
   {
    "name": "Daily Devotions",
@@ -45511,7 +45593,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -45524,7 +45606,8 @@
    "sagaId": "Beginnings",
    "id": "cms5g01qpt2ryt",
    "_src": "mse",
-   "cid": "c084xtiy0hot4g6"
+   "cid": "c084xtiy0hot4g6",
+   "flavorRows": ""
   },
   {
    "name": "Dual Front Attack",
@@ -48399,7 +48482,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -48412,7 +48495,11 @@
    "sagaId": "Beginnings",
    "id": "cms5g01qsud3g5",
    "_src": "mse",
-   "cid": "c1tqlo6v0myrttd"
+   "cid": "c1tqlo6v0myrttd",
+   "kwReminders": [
+    "Arrive"
+   ],
+   "flavorRows": 1
   },
   {
    "name": "Giant Slayer’s Spear",
@@ -49418,14 +49505,21 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image7.webp",
-     "fit": "contain"
+     "fit": "contain",
+     "artXf": {
+      "z": 1.15,
+      "x": 0,
+      "y": 6,
+      "r": 0,
+      "f": 1
+     }
     }
    ],
    "variant": "v1",
@@ -49900,7 +49994,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -49913,7 +50007,8 @@
    "sagaId": "Beginnings",
    "id": "cms5g01qumgzon",
    "_src": "mse",
-   "cid": "c1c6cm8e0fg7d7s"
+   "cid": "c1c6cm8e0fg7d7s",
+   "flavorRows": 1
   },
   {
    "name": "Golden Ratio",
@@ -50027,7 +50122,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -50040,7 +50135,8 @@
    "sagaId": "Beginnings",
    "id": "cms5g01quqisov",
    "_src": "mse",
-   "cid": "c1nc2u070mq1iiv"
+   "cid": "c1nc2u070mq1iiv",
+   "flavorRows": 1.5
   },
   {
    "name": "Death’s Embrace",
@@ -52446,7 +52542,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -52460,7 +52556,10 @@
    "sagaId": "Infinite",
    "id": "cms5g01qx1xtlc",
    "_src": "mse",
-   "cid": "c10ndecw1eahnim"
+   "cid": "c10ndecw1eahnim",
+   "kwReminders": [
+    "Arrive"
+   ]
   },
   {
    "name": "Emerald Geod Golem",
@@ -53742,7 +53841,7 @@
   {
    "name": "Equalize the Flesh",
    "manaCost": "Y/IY/I2",
-   "cmc": "4",
+   "cmc": "6",
    "colors": [
     "yellow",
     "indigo"
@@ -54459,7 +54558,7 @@
    "arcane": "",
    "ruleText": "Attacking Characters can be blocked as if they had no abilities this turn.",
    "flavor": "\"May the light illuminate your path, follow it to victory!\"",
-   "imageUrl": "",
+   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art-uploads/image980.webp",
    "art": "",
    "saga": "Infinite",
    "revision": "Rev 1.0",
@@ -57294,7 +57393,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-10-07",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -57303,9 +57402,9 @@
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image874.webp",
      "fit": "contain",
      "artXf": {
-      "z": 1.07,
+      "z": 1.11,
       "x": 0,
-      "y": 5.5,
+      "y": 6,
       "r": 0,
       "f": 1
      }
@@ -57734,14 +57833,20 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image872.webp",
-     "fit": "contain"
+     "artXf": {
+      "z": 1.09,
+      "x": 0,
+      "y": 12,
+      "r": 0,
+      "f": 1
+     }
     }
    ],
    "variant": "v1",
@@ -58671,7 +58776,7 @@
   {
    "name": "Fascination",
    "manaCost": "Y/B",
-   "cmc": "1",
+   "cmc": "2",
    "colors": [
     "yellow",
     "blue"
@@ -60299,13 +60404,20 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_157.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_157.webp",
+     "artXf": {
+      "z": 1,
+      "x": 0,
+      "y": 10.5,
+      "r": 0,
+      "f": 1
+     }
     }
    ],
    "variant": "v1",
@@ -60474,7 +60586,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -60487,7 +60599,10 @@
    "sagaId": "Beginnings",
    "id": "cms5g5x6p6f94u",
    "_src": "mse",
-   "cid": "c1ichwvy1m5xyva"
+   "cid": "c1ichwvy1m5xyva",
+   "kwReminders": [
+    "Thaumaturge"
+   ]
   },
   {
    "name": "Mature Arthropod",
@@ -61303,7 +61418,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -61313,7 +61428,7 @@
      "artXf": {
       "z": 1,
       "x": 0,
-      "y": 4.5,
+      "y": 8.5,
       "r": 0,
       "f": 1
      }
@@ -61731,7 +61846,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -61744,7 +61859,10 @@
    "sagaId": "Beginnings",
    "id": "cms5g5x6r0z2zt",
    "_src": "mse",
-   "cid": "c1k2qplc0p8jt2a"
+   "cid": "c1k2qplc0p8jt2a",
+   "kwReminders": [
+    "Demise"
+   ]
   },
   {
    "name": "Lux-Arch Essence",
@@ -62544,7 +62662,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -62557,7 +62675,8 @@
    "sagaId": "Beginnings",
    "id": "cms5g5x6s9dc17",
    "_src": "mse",
-   "cid": "c1ivnhnj1po0d61"
+   "cid": "c1ivnhnj1po0d61",
+   "flavorRows": 2
   },
   {
    "name": "Magi Ploy",
@@ -62893,7 +63012,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -62903,7 +63022,7 @@
      "artXf": {
       "z": 1,
       "x": 0,
-      "y": -1,
+      "y": 0.5,
       "r": 0,
       "f": 1
      }
@@ -63026,7 +63145,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -63039,7 +63158,10 @@
    "sagaId": "Beginnings",
    "id": "cms5g5x6sk6p67",
    "_src": "mse",
-   "cid": "c0gdi0a50szvn5p"
+   "cid": "c0gdi0a50szvn5p",
+   "kwReminders": [
+    "Decayed"
+   ]
   },
   {
    "name": "Mobile Transport",
@@ -68501,7 +68623,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -68514,7 +68636,11 @@
    "sagaId": "Beginnings",
    "id": "cms5g5x6yiy4uy",
    "_src": "mse",
-   "cid": "c15gdny41smicjo"
+   "cid": "c15gdny41smicjo",
+   "kwReminders": [
+    "Airborne"
+   ],
+   "flavorRows": 2
   },
   {
    "name": "Magnificent Crescendo",
@@ -68579,7 +68705,7 @@
   {
    "name": "Lonesome Infiltrator",
    "manaCost": "B/VB/V1",
-   "cmc": "5",
+   "cmc": "3",
    "colors": [
     "blue",
     "violet"
@@ -68620,13 +68746,20 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image589.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image589.webp",
+     "artXf": {
+      "z": 1,
+      "x": 0,
+      "y": 10,
+      "r": 0,
+      "f": 1
+     }
     }
    ],
    "variant": "v1",
@@ -70622,7 +70755,7 @@
   {
    "name": "Null and Void",
    "manaCost": "Y/B/II1",
-   "cmc": "3",
+   "cmc": "5",
    "colors": [
     "yellow",
     "blue",
@@ -71165,7 +71298,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -71178,7 +71311,10 @@
    "sagaId": "Beginnings",
    "id": "cms5g5x70w9hzx",
    "_src": "mse",
-   "cid": "c070o9l40k47a0k"
+   "cid": "c070o9l40k47a0k",
+   "kwReminders": [
+    "Demise"
+   ]
   },
   {
    "name": "Ingnear’s Ingenius",
@@ -71842,7 +71978,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-09-07",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -71852,7 +71988,7 @@
      "artXf": {
       "z": 1,
       "x": 0,
-      "y": 3.5,
+      "y": 5.5,
       "r": 0,
       "f": 1
      }
@@ -72630,13 +72766,20 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-10-01",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
      "label": "Default",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image1034.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image1034.webp",
+     "artXf": {
+      "z": 1,
+      "x": 0,
+      "y": 8.5,
+      "r": 0,
+      "f": 1
+     }
     }
    ],
    "variant": "v1",
@@ -73961,7 +74104,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -73974,7 +74117,10 @@
    "sagaId": "Beginnings",
    "id": "cms66fm9biodlh",
    "_src": "mse",
-   "cid": "c1vm8prf0jpymw1"
+   "cid": "c1vm8prf0jpymw1",
+   "kwReminders": [
+    "Sustain"
+   ]
   },
   {
    "name": "Paraswarmia",
@@ -74020,7 +74166,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-08-02",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -74033,7 +74179,11 @@
    "sagaId": "Beginnings",
    "id": "cms66fm9bmg58h",
    "_src": "mse",
-   "cid": "c10ezb851muhb0z"
+   "cid": "c10ezb851muhb0z",
+   "kwReminders": [
+    "Gouge"
+   ],
+   "flavorRows": 1
   },
   {
    "name": "Soul Swayer",
@@ -74512,7 +74662,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -74525,7 +74675,11 @@
    "sagaId": "Beginnings",
    "id": "cms66fm9bzmyhe",
    "_src": "mse",
-   "cid": "c0mdteuf17rrul9"
+   "cid": "c0mdteuf17rrul9",
+   "kwReminders": [
+    "Barrier",
+    "Gouge"
+   ]
   },
   {
    "name": "Pincer Attack",
@@ -74991,7 +75145,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -75004,12 +75158,16 @@
    "sagaId": "Beginnings",
    "id": "cms66fm9ce000q",
    "_src": "mse",
-   "cid": "c0m3y4mw0woaj4y"
+   "cid": "c0m3y4mw0woaj4y",
+   "kwReminders": [
+    "Barrier"
+   ],
+   "flavorRows": 1.5
   },
   {
    "name": "Polychromatic Paradox",
    "manaCost": "Y/B1",
-   "cmc": "2",
+   "cmc": "3",
    "colors": [
     "yellow",
     "blue"
@@ -77572,7 +77730,7 @@
   {
    "name": "Silversoul’s Blessing",
    "manaCost": "O/GO/GY",
-   "cmc": "3",
+   "cmc": "5",
    "colors": [
     "orange",
     "yellow",
@@ -81951,7 +82109,7 @@
   {
    "name": "Spectra Branch",
    "manaCost": "Y/B",
-   "cmc": "1",
+   "cmc": "2",
    "colors": [
     "yellow",
     "blue"
@@ -83379,7 +83537,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -83393,7 +83551,10 @@
    "sagaId": "Infinite",
    "id": "cms66fm9kvgrnb",
    "_src": "mse",
-   "cid": "c1yac2qp17mfgot"
+   "cid": "c1yac2qp17mfgot",
+   "kwReminders": [
+    "Gouge"
+   ]
   },
   {
    "name": "Reliquary Mausoleum",
@@ -85007,7 +85168,7 @@
   {
    "name": "Reconstituted Barrier",
    "manaCost": "Y/B/I",
-   "cmc": "1",
+   "cmc": "3",
    "colors": [
     "yellow",
     "blue",
@@ -86107,7 +86268,7 @@
   {
    "name": "Storm Dojo",
    "manaCost": "Y/BG1",
-   "cmc": "3",
+   "cmc": "4",
    "colors": [
     "yellow",
     "green",
@@ -86598,7 +86759,7 @@
   {
    "name": "Protective Weave",
    "manaCost": "Y/B",
-   "cmc": "1",
+   "cmc": "2",
    "colors": [
     "yellow",
     "blue"
@@ -87399,7 +87560,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -87412,7 +87573,8 @@
    "sagaId": "Beginnings",
    "id": "cms66fm9oebblf",
    "_src": "mse",
-   "cid": "c1icwo2i05alc6m"
+   "cid": "c1icwo2i05alc6m",
+   "flavorRows": 1.5
   },
   {
    "name": "Solemn Wind Born",
@@ -88807,7 +88969,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -88820,7 +88982,10 @@
    "sagaId": "Beginnings",
    "id": "cms66fm9pohytr",
    "_src": "mse",
-   "cid": "c0a1nq9a153uxkc"
+   "cid": "c0a1nq9a153uxkc",
+   "kwReminders": [
+    "Raid"
+   ]
   },
   {
    "name": "Platinum Filo Owl",
@@ -89167,7 +89332,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "ConjureUCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -89180,7 +89345,11 @@
    "sagaId": "Beginnings",
    "id": "cms66fm9punlah",
    "_src": "mse",
-   "cid": "c1fua5ld0s7qiaz"
+   "cid": "c1fua5ld0s7qiaz",
+   "kwReminders": [
+    "Airborne",
+    "Intimidate"
+   ]
   },
   {
    "name": "Scripture Speaker",
@@ -98211,7 +98380,7 @@
    "attack": "4",
    "health": "6",
    "arcane": "9",
-   "ruleText": "Barrier — Discard 1.\nWhenever a Character with Gouge deals damage to another Character, the controls of the Character dealt damage Grinds equal to the damage dealt.",
+   "ruleText": "Barrier — Discard 1.\nWhenever a Character with Gouge deals damage to another Character, the controller of the Character dealt damage Grinds equal to the damage dealt.",
    "flavor": "",
    "imageUrl": "",
    "art": "",
@@ -98219,7 +98388,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-25",
    "variants": [
     {
      "id": "v1",
@@ -98849,7 +99018,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-07-29",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -98862,7 +99031,11 @@
    "sagaId": "Beginnings",
    "id": "cms66imoaj8xnp",
    "_src": "mse",
-   "cid": "c0jlgm4d1cjx2cb"
+   "cid": "c0jlgm4d1cjx2cb",
+   "kwReminders": [
+    "Gouge"
+   ],
+   "flavorRows": 2
   },
   {
    "name": "Tyrin’s Steed",
@@ -101771,7 +101944,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-23",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -101793,7 +101966,10 @@
    "sagaId": "Infinite",
    "id": "cmt46p9ho13u88",
    "frame": "vr",
-   "cid": "c07z6s1j0rz9t4d"
+   "cid": "c07z6s1j0rz9t4d",
+   "kwReminders": [
+    "Meditate"
+   ]
   },
   {
    "name": "Aegis Adept",
@@ -102345,7 +102521,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-27",
+   "lastUpdated": "2026-10-24",
    "variants": [
     {
      "id": "v1",
@@ -102368,7 +102544,7 @@
      "fit": "contain"
     }
    ],
-   "variant": "v2",
+   "variant": "v1",
    "sagaId": "Beginnings",
    "sagaIds": [
     "Beginnings",
@@ -102442,29 +102618,6 @@
    "id": "cmum242zfee9y9",
    "mark": "wm_cmudw0ix3xj34z",
    "range": ""
-  },
-  {
-   "id": "cmupb7khvhp5by",
-   "name": "New Card",
-   "manaCost": "",
-   "cmc": 0,
-   "colors": [],
-   "superTypes": [
-    "Character"
-   ],
-   "subTypes": [],
-   "attack": "",
-   "health": "",
-   "arcane": "",
-   "ruleText": "",
-   "flavor": "",
-   "saga": "",
-   "revision": "",
-   "artist": "Midjourney",
-   "designer": "Conjure UCG LLC 2026",
-   "imageUrl": "",
-   "art": "",
-   "cid": "c1jkis4h1iysx71"
   }
  ],
  "look": null,
