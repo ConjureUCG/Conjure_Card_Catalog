@@ -1,0 +1,688 @@
+/* Keep the body:not(.mse-template) prefix: rules here and in the other stylesheets are balanced against its specificity (HANDOFF §8). */
+
+body:not(.mse-template) .mcard{--m-ink:#f0ead8;--card-font:"Book Antiqua",Georgia,serif;
+  --m-pad:8.1px;
+  --tpl-w:calc(340px * 1644 / 1500);--tpl-h:calc(476px * 2244 / 2100);
+  --tpl-x:calc(340px * -72 / 1500);--tpl-y:calc(476px * -72 / 2100);
+  width:340px;height:476px;padding:var(--m-pad);position:relative;box-sizing:border-box;
+  border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.55);
+  transform:perspective(1000px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+  transition:transform .12s ease-out;transform-origin:center;font-family:var(--card-font)}
+body:not(.mse-template) .mcard-inner{height:100%;background:#0f1219;display:flex;flex-direction:column;
+  overflow:hidden;position:relative;border-radius:10px}
+/* Falls back to --frame, so the default look is unchanged until a pinline mode is chosen; the outer border reads --frame alone. */
+body:not(.mse-template) .mcard .m-pinline{border:3px solid transparent;border-image:var(--pin,var(--frame)) 1}
+body:not(.mse-template) .mcard .m-pips{display:flex;gap:2px;flex-shrink:0;align-items:center}
+body:not(.mse-template) .mcard .m-pips img{width:18px;height:18px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
+body:not(.mse-template) .mcard .m-name{flex:1;min-width:0;text-align:right;font:700 16px/1.1 var(--card-font);
+  color:var(--m-ink);white-space:nowrap;overflow:hidden}
+body:not(.mse-template) .mcard .m-nameline.nocost .m-name{text-align:center}
+body:not(.mse-template) .mcard .m-typeline{padding:0 9px 6px;font:700 10.5px/1.2 var(--card-font);
+  letter-spacing:.02em;color:var(--m-ink);background:var(--typebox,transparent);white-space:nowrap;
+  overflow:hidden;text-align:left}
+body:not(.mse-template) .mcard .m-art{flex:1;position:relative;margin:0 7px;
+  background:#080a0f;min-height:0}
+/* Its own layer, so zoom, pan and rotation leave .m-orbs (inside .m-art) alone; it clips, not .m-art (HANDOFF §8). */
+body:not(.mse-template) .mcard .m-art-clip{position:absolute;inset:0;
+  overflow:hidden;border-radius:inherit}
+/* contain is the base: cover cut a mean 23% off every card (HANDOFF §8). */
+body:not(.mse-template) .mcard .m-art-img{position:absolute;inset:0;
+  background:center/contain no-repeat;transform-origin:center center}
+/* The fit class is on .mcard, not <body>: it is the card's effective fit, so the image and the letterbox never disagree. */
+body:not(.mse-template) .mcard.fit-cover .m-art-img{background-size:cover}
+body:not(.mse-template) .mcard.fit-fill  .m-art-img{background-size:100% 100%}
+body:not(.mse-template) .mcard .m-art.empty::after{content:"art";position:absolute;inset:0;display:grid;
+  place-items:center;color:#242a3a;font:400 11px/1 var(--card-font);letter-spacing:.4em}
+body:not(.mse-template) .mcard .m-orbs{position:absolute;top:7px;left:7px;display:flex;flex-direction:column;gap:5px}
+body:not(.mse-template) .mcard .m-orb-slot{width:38px;height:38px}
+body:not(.mse-template) .mcard .m-orb-slot svg{width:100%;height:100%}
+body:not(.mse-template) .mcard .m-rules{flex:0 0 auto;height:118px;overflow:hidden;padding:7px 9px;
+  background:rgba(240,234,216,.05);color:var(--m-ink);display:flex;flex-direction:column}
+/* flex:1 1 auto is load-bearing: fitFace sees overflow only while the body fills the box, so alignment goes on its content (HANDOFF §8). */
+body:not(.mse-template) .mcard .m-rules-body{flex:1 1 auto;min-height:0;overflow:hidden;
+  font:400 13px/1.34 var(--card-font);color:var(--m-ink);
+  display:flex;flex-direction:column}
+/* safe: text that overflows falls back to flex-start instead of losing its top under Middle or Bottom. */
+body:not(.mse-template) .mcard .m-rules.align-top .m-rules-body{justify-content:flex-start}
+body:not(.mse-template) .mcard .m-rules.align-middle .m-rules-body{justify-content:safe center}
+body:not(.mse-template) .mcard .m-rules.align-bottom .m-rules-body{justify-content:safe flex-end}
+body:not(.mse-template) .mcard .m-rules.just-left .m-rules-body{text-align:left}
+body:not(.mse-template) .mcard .m-rules.just-center .m-rules-body{text-align:center}
+body:not(.mse-template) .mcard .m-rules-body p{margin:0 0 .35em}
+/* In a flex column the last margin counts as content: it eats alignment's free space and holds text off the bottom. */
+body:not(.mse-template) .mcard .m-rules-body p:last-child{margin-bottom:0}
+body:not(.mse-template) .mcard .m-rules-body img{width:13px;height:13px;vertical-align:-2px;margin:0 1px}
+body:not(.mse-template) .mcard .m-rules-body .kw-link{color:var(--m-ink);cursor:pointer;border-bottom:1px dotted var(--m-ink)}
+body:not(.mse-template) .mcard .m-flavor{font:italic 400 11.5px/1.3 var(--card-font);color:var(--m-ink);
+  margin-top:5px;padding-top:5px;border-top:1px solid rgba(240,234,216,.14)}
+body:not(.mse-template) .mcard .m-info{flex:0 0 auto;display:flex;justify-content:space-between;
+  align-items:flex-end;padding:5px 10px 7px;font-family:var(--card-font);color:var(--m-ink);gap:8px;position:relative}
+body:not(.mse-template) .mcard .m-info>div{position:static}
+body:not(.mse-template) .mcard .m-info .i-distrib,
+body:not(.mse-template) .mcard .m-info .i-saga{font-size:8.5px;font-weight:700;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;max-width:150px;order:1}
+body:not(.mse-template) .mcard .m-info .i-rev{font-size:8.5px;font-weight:700;text-align:center;order:2}
+body:not(.mse-template) .mcard .m-info .i-artist,
+body:not(.mse-template) .mcard .m-info .i-num{font-size:8.5px;font-weight:700;text-align:right;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;order:3}
+body:not(.mse-template) .mcard .m-info{display:grid;grid-template-columns:1fr auto 1fr;
+  grid-template-rows:auto auto;align-items:end;column-gap:6px;row-gap:1px}
+body:not(.mse-template) .mcard .m-info .i-distrib{grid-column:1;grid-row:1;text-align:left}
+body:not(.mse-template) .mcard .m-info .i-artist{grid-column:3;grid-row:1;text-align:right}
+body:not(.mse-template) .mcard .m-info .i-saga{grid-column:1;grid-row:2;text-align:left;font-weight:500;opacity:.9}
+body:not(.mse-template) .mcard .m-info .i-rev{grid-column:2;grid-row:2}
+body:not(.mse-template) .mcard .m-info .i-num{grid-column:3;grid-row:2;text-align:right}
+
+/* A fourth column only when the card has a rarity (.has-rarity), so a card without one keeps the three-column layout. */
+body:not(.mse-template) .mcard .m-info.has-rarity{grid-template-columns:1fr auto 1fr auto}
+body:not(.mse-template) .mcard .m-info .i-rarity{
+  grid-column:4;grid-row:1 / span 2;align-self:center;justify-self:end;
+  padding:2px 7px;border:2px solid transparent;border-radius:3px;
+  background:linear-gradient(var(--rar-fill),var(--rar-fill)) padding-box,
+             var(--rar-edge) border-box;
+  color:var(--rar-ink);font-size:8px;font-weight:700;letter-spacing:.06em;
+  white-space:nowrap;line-height:1.15;
+  text-shadow:none;position:relative}
+body:not(.mse-template) .mcard .m-info.has-rarity .i-artist,
+body:not(.mse-template) .mcard .m-info.has-rarity .i-num{max-width:118px}
+
+/* Primordial is meant to look wrong: it steps through uneven offsets so it never settles; a glide would read as a shimmer. */
+@keyframes mRarityGlitch{
+  0%   {background-position:0 0, 0% 50%;   filter:none}
+  11%  {background-position:0 0, 62% 50%;  filter:hue-rotate(85deg) saturate(1.6)}
+  17%  {background-position:0 0, 12% 50%;  filter:none}
+  29%  {background-position:0 0, 91% 50%;  filter:hue-rotate(-120deg) contrast(1.5)}
+  33%  {background-position:0 0, 34% 50%;  filter:invert(1) hue-rotate(40deg)}
+  38%  {background-position:0 0, 34% 50%;  filter:none}
+  56%  {background-position:0 0, 78% 50%;  filter:hue-rotate(200deg) saturate(2.2)}
+  61%  {background-position:0 0, 5% 50%;   filter:none}
+  73%  {background-position:0 0, 47% 50%;  filter:hue-rotate(-60deg)}
+  77%  {background-position:0 0, 99% 50%;  filter:invert(1)}
+  81%  {background-position:0 0, 22% 50%;  filter:none}
+  94%  {background-position:0 0, 68% 50%;  filter:hue-rotate(140deg) contrast(1.7)}
+  100% {background-position:0 0, 0% 50%;   filter:none}
+}
+@keyframes mRarityTear{
+  0%,100% {transform:translate(0,0)}
+  13%     {transform:translate(-1.5px,.5px)}
+  16%     {transform:translate(1.5px,-.5px)}
+  17%     {transform:translate(0,0)}
+  48%     {transform:translate(0,0)}
+  50%     {transform:translate(2px,0)}
+  52%     {transform:translate(-1px,1px)}
+  54%     {transform:translate(0,0)}
+  87%     {transform:translate(0,0)}
+  89%     {transform:translate(-2px,-1px)}
+  91%     {transform:translate(0,0)}
+}
+body:not(.mse-template) .mcard .i-rarity.rar-primordial{
+  background-size:auto, 320% 100%;
+  animation:mRarityGlitch 1.7s steps(1,end) infinite}
+body:not(.mse-template) .mcard .i-rarity.rar-primordial span{
+  display:inline-block;animation:mRarityTear 2.3s steps(1,end) infinite}
+
+/* Separate animations over disjoint properties: two that write the same property do not combine, the later wins outright.
+   Aura's creep and Nudge's tick share background-position, so those two are one keyframe list. */
+body:not(.mse-template) .mcard .i-rarity.rar-transcendent{
+  background-size:auto, 280% 100%;
+  animation:mRarTrans 5.9s ease-in-out infinite}
+body:not(.mse-template) .mcard .i-rarity.rar-transcendent span{
+  display:inline-block;
+  animation:mRarTransFade 3.7s ease-in-out infinite,
+            mRarTransSplit 4.2s ease-in-out infinite,
+            mRarTransDrop 4.7s steps(1,end) infinite,
+            mRarTransNudge 4.1s steps(1,end) infinite}
+@keyframes mRarTrans{
+  0%    {background-position:0 0, 0% 50%;  box-shadow:0 0 0 rgba(142,237,246,0)}
+  40%   {background-position:0 0, 55% 50%; box-shadow:0 0 7px 1px rgba(142,237,246,.75)}
+  47%   {background-position:0 0, 55% 50%; animation-timing-function:steps(1,end)}
+  49%   {background-position:0 0, 69% 50%; animation-timing-function:steps(1,end)}
+  51%   {background-position:0 0, 62% 50%}
+  70%   {background-position:0 0, 80% 50%; box-shadow:0 0 3px rgba(255,255,255,.5)}
+  88%   {background-position:0 0, 92% 50%; animation-timing-function:steps(1,end)}
+  90%   {background-position:0 0, 74% 50%; animation-timing-function:steps(1,end)}
+  92%   {background-position:0 0, 92% 50%}
+  100%  {background-position:0 0, 0% 50%;  box-shadow:0 0 0 rgba(142,237,246,0)}
+}
+@keyframes mRarTransFade{0%,100%{opacity:1}45%{opacity:.55}}
+/* text-shadow only: opacity is mRarTransFade's, and two animations writing it would leave one doing nothing. */
+@keyframes mRarTransSplit{
+  0%,60%,100%{text-shadow:none}
+  68%{text-shadow:1.5px 0 0 rgba(142,237,246,.85),-1.5px 0 0 rgba(255,255,255,.6),
+      0 0 5px rgba(255,255,255,.7)}
+  75%{text-shadow:2.5px 0 0 rgba(142,237,246,.6),-2.5px 0 0 rgba(255,255,255,.45),
+      0 0 8px rgba(255,255,255,.5)}
+  84%{text-shadow:none}
+}
+@keyframes mRarTransDrop{
+  0%,31%{clip-path:inset(0 0 0 0)}
+  32%{clip-path:inset(34% 0 54% 0)}
+  33%,67%{clip-path:inset(0 0 0 0)}
+  68%{clip-path:inset(58% 0 26% 0)}
+  69%,100%{clip-path:inset(0 0 0 0)}
+}
+@keyframes mRarTransNudge{
+  0%,40%{transform:translate(0,0)}
+  41%,43%{transform:translate(1px,0)}
+  44%,88%{transform:translate(0,0)}
+  89%,91%{transform:translate(-1px,0)}
+  92%,100%{transform:translate(0,0)}
+}
+
+/* The ramp runs at 8.2s and the word at 4.1s, exactly double, so the two halves of Nudge's tick land together. */
+body:not(.mse-template) .mcard .i-rarity.rar-mythic{
+  background-size:auto, 300% 100%;
+  animation:mRarMythRamp 8.2s linear infinite,
+            mRarMythBlip 9s steps(1,end) infinite}
+body:not(.mse-template) .mcard .i-rarity.rar-mythic span{
+  display:inline-block;
+  animation:mRarMythDrop 4.7s steps(1,end) infinite,
+            mRarMythNudge 4.1s steps(1,end) infinite}
+@keyframes mRarMythRamp{
+  0%      {background-position:0 0, 0% 50%}
+  20.5%   {background-position:0 0, 21% 50%; animation-timing-function:steps(1,end)}
+  21.5%   {background-position:0 0, 34% 50%; animation-timing-function:steps(1,end)}
+  22%     {background-position:0 0, 22% 50%}
+  44.5%   {background-position:0 0, 45% 50%; animation-timing-function:steps(1,end)}
+  45.5%   {background-position:0 0, 33% 50%; animation-timing-function:steps(1,end)}
+  46%     {background-position:0 0, 46% 50%}
+  50%     {background-position:0 0, 50% 50%}
+  70.5%   {background-position:0 0, 29% 50%; animation-timing-function:steps(1,end)}
+  71.5%   {background-position:0 0, 41% 50%; animation-timing-function:steps(1,end)}
+  72%     {background-position:0 0, 28% 50%}
+  94.5%   {background-position:0 0, 5% 50%;  animation-timing-function:steps(1,end)}
+  95.5%   {background-position:0 0, 17% 50%; animation-timing-function:steps(1,end)}
+  96%     {background-position:0 0, 4% 50%}
+  100%    {background-position:0 0, 0% 50%}
+}
+@keyframes mRarMythBlip{
+  0%,49.6%{filter:none}
+  49.8%{filter:contrast(1.6) saturate(.35)}
+  50.2%,100%{filter:none}
+}
+@keyframes mRarMythDrop{
+  0%,31%{clip-path:inset(0 0 0 0)}
+  32%{clip-path:inset(34% 0 54% 0)}
+  33%,67%{clip-path:inset(0 0 0 0)}
+  68%{clip-path:inset(58% 0 26% 0)}
+  69%,100%{clip-path:inset(0 0 0 0)}
+}
+@keyframes mRarMythNudge{
+  0%,40%{transform:translate(0,0)}
+  41%,43%{transform:translate(1px,0)}
+  44%,88%{transform:translate(0,0)}
+  89%,91%{transform:translate(-1px,0)}
+  92%,100%{transform:translate(0,0)}
+}
+@media (prefers-reduced-motion:reduce){
+  body:not(.mse-template) .mcard .i-rarity.rar-primordial,
+  body:not(.mse-template) .mcard .i-rarity.rar-primordial span,
+  body:not(.mse-template) .mcard .i-rarity.rar-transcendent,
+  body:not(.mse-template) .mcard .i-rarity.rar-transcendent span,
+  body:not(.mse-template) .mcard .i-rarity.rar-mythic,
+  body:not(.mse-template) .mcard .i-rarity.rar-mythic span{animation:none}
+}
+/* buildFaceHTML still emits the removed MSE layout's boxes; this face draws its own, so they stay hidden. */
+body:not(.mse-template) .mcard .m-namebox,
+body:not(.mse-template) .mcard .m-typebox,
+body:not(.mse-template) .mcard .m-pin-name,
+body:not(.mse-template) .mcard .m-pin-type,
+body:not(.mse-template) .mcard .m-pin-rules{display:none}
+body:not(.mse-template) .mcard .m-nameline{display:flex;align-items:center;gap:7px;padding:6px 9px 5px;margin:7px 7px 5px;
+  background:var(--namebox,linear-gradient(180deg,rgba(255,255,255,.08),transparent));
+  border:3px solid transparent;border-image:var(--pin,var(--frame)) 1;min-height:26px}
+body:not(.mse-template) .mcard .m-typeline{margin:0 7px 6px;border:3px solid transparent;border-image:var(--pin,var(--frame)) 1}
+body:not(.mse-template) .mcard .m-rules{margin:7px 7px 5px;border:3px solid transparent;border-image:var(--pin,var(--frame)) 1}
+
+body:not(.mse-template) .mcard-essence .m-orbs{display:none}
+
+
+
+body:not(.mse-template) .mcard .m-canvas{display:contents}
+
+/* border-image ignores border-radius, so the gradient is background layers, where a colour is legal only last: tints are linear-gradient(c,c).
+   4px: browsers floor border-width to whole device pixels, so 3.3px and 3.5px drew as 3px. */
+body:not(.mse-template) .mcard{--m-bg:#0f1219;--m-bevel:rgba(255,255,255,.10)}
+body:not(.mse-template) .mcard .m-nameline,
+body:not(.mse-template) .mcard .m-rules{
+  border:4px solid transparent;border-image:none;border-radius:7px}
+body:not(.mse-template) .mcard .m-nameline{margin:7px 7px 0}
+body:not(.mse-template) .mcard .m-art{border-radius:6px;overflow:hidden}
+
+/* The info bar sits on the dark interior, not a panel, so it keeps light ink (--m-meta-ink). */
+body:not(.mse-template) .mcard{--m-ink:#000;--m-meta-ink:#f5f0e4;--m-panel:rgba(255,255,255,.70)}
+body:not(.mse-template) .mcard .mcard-inner{background:var(--frame-dark,var(--frame))}
+body:not(.mse-template) .mcard .m-art{background-color:transparent}
+body:not(.mse-template) .mcard.fit-contain .m-art:not(.empty){
+  background-color:var(--m-bg,#0f1219)}
+body:not(.mse-template) .mcard .m-art.empty::after{color:rgba(0,0,0,.32)}
+body:not(.mse-template) .mcard .m-nameline,
+body:not(.mse-template) .mcard .m-rules{
+  background:linear-gradient(var(--m-panel),var(--m-panel)) padding-box,
+             var(--pin,var(--frame)) border-box;
+  color:var(--m-ink)}
+body:not(.mse-template) .mcard .m-name,
+body:not(.mse-template) .mcard .m-typeline,
+body:not(.mse-template) .mcard .m-rules-body,
+body:not(.mse-template) .mcard .m-flavor{color:#000}
+body:not(.mse-template) .mcard .m-rules-body .kw-link{
+  color:#000;border-bottom-color:rgba(0,0,0,.55)}
+body:not(.mse-template) .mcard .m-flavor{border-top-color:rgba(0,0,0,.22)}
+body:not(.mse-template) .mcard .m-info{color:var(--m-meta-ink);
+  text-shadow:0 1px 2px rgba(0,0,0,.7)}
+
+/* Layers: the boxes (z-index auto), 3 holo-bg, 4 the uploaded asset (.m-tpl), 5 the art, 6 the text. A box must not get a z-index:
+   it would start a stacking context and trap its text under the asset. The clipped type line is raised whole. */
+/* Drawn on the guides' 1644 x 2244 canvas, its bleed just outside the card, shifted back by the outer ring this box starts inside (HANDOFF §8). */
+body:not(.mse-template) .mcard .m-tpl{position:absolute;inset:0;z-index:4;
+  pointer-events:none;background-repeat:no-repeat;border-radius:10px;
+  background-size:var(--tpl-w) var(--tpl-h);
+  background-position:calc(var(--tpl-x) - var(--m-pad)) calc(var(--tpl-y) - var(--m-pad))}
+body:not(.mse-template) .mcard .m-nameline,
+body:not(.mse-template) .mcard .m-rules,
+body:not(.mse-template) .mcard .m-art,
+body:not(.mse-template) .mcard .m-info{position:relative}
+body:not(.mse-template) .mcard .m-typeline,
+body:not(.mse-template) .mcard .m-name,
+body:not(.mse-template) .mcard .m-pips,
+body:not(.mse-template) .mcard .m-rules-body,
+body:not(.mse-template) .mcard .m-flavor,
+body:not(.mse-template) .mcard .m-rsec,
+body:not(.mse-template) .mcard .m-info>div{position:relative;z-index:6}
+/* 5, below the text at 6: sharing 6, the art painted over the type line, which comes first in the DOM.
+   z-index only: .m-art-clip is absolute with inset:0, and made relative it collapses to no height. */
+body:not(.mse-template) .mcard .m-art-clip{z-index:5}
+body:not(.mse-template) .mcard .m-orbs{z-index:6;left:0}
+
+/* The type line is clipped, which clips box-shadow, so its rings come from its layer stack instead. */
+body:not(.mse-template) .mcard .m-nameline,
+body:not(.mse-template) .mcard .m-rules{
+  box-shadow:0 0 0 1.5px var(--ink-dark,#141418),
+             inset 0 0 0 1.5px var(--ink-dark,#141418),
+             inset 0 2px 0 -1px var(--m-bevel),
+             inset 0 3px 6px -1px rgba(0,0,0,.5)}
+body:not(.mse-template) .mcard .mcard-inner{
+  box-shadow:0 0 0 1.5px var(--ink-dark,#141418)}
+
+body:not(.mse-template) .mcard .m-pips img,
+body:not(.mse-template) .mcard .m-rules-body img,
+body:not(.mse-template) .mcard .m-sym,
+body:not(.mse-template) .mcard .m-orb-img img,
+body:not(.mse-template) .mcard .m-info img{
+  filter:drop-shadow(var(--ico-sx,.91px) var(--ico-sy,1.82px) var(--ico-blur,3.03px) rgba(0,0,0,.75))}
+
+.m-statmark{display:inline-block;width:1.05em;height:1.05em;vertical-align:-.18em;margin-right:.12em}
+.m-statmark svg{display:block;width:100%;height:100%;
+  filter:drop-shadow(var(--ico-sx,.91px) var(--ico-sy,1.82px) var(--ico-blur,3.03px) rgba(0,0,0,.75))}
+/* The same box and baseline nudge as a stat mark, so a die and a stat sit on one line; drawn in currentColor. */
+.m-dicemark{display:inline-block;width:1.05em;height:1.05em;vertical-align:-.18em;margin-right:.14em}
+/* A tighter shadow than the orbs: their 3px blur smears a die's thin outline into a smudge. */
+.m-dicemark svg{display:block;width:100%;height:100%;
+  filter:drop-shadow(calc(var(--ico-sx,.91px) * .5) calc(var(--ico-sy,1.82px) * .5)
+                     1px rgba(0,0,0,.55))}
+
+/* No name or type-line font sizes here: fitFace writes them inline, from its caps. */
+
+body:not(.mse-template) .mcard .m-typeline{
+  box-sizing:border-box;
+  width:calc(100% - 14px);
+  margin:-4px 7px 6px;
+  height:34.5px;
+  padding:0 36px 0 29px;
+  border:0;border-radius:0;box-shadow:none;
+  /* Flex centres the text whatever size fitFace writes; a block with line-height 1.2 sat about 8px high. */
+  display:flex;align-items:center;justify-content:flex-start;
+  /* The element paints only the outer 1.5px ring, ::before the frame, ::after the panel: clip-path rules out a shadow. */
+  background:var(--ink-dark,#141418) border-box;
+  -webkit-clip-path:polygon(0.00% 0.00%, 100.00% 0.00%, 98.90% 8.33%, 97.92% 16.67%, 97.06% 25.00%, 96.33% 33.33%, 95.73% 41.67%, 95.25% 50.00%, 94.90% 58.33%, 94.67% 66.67%, 94.56% 75.00%, 94.58% 83.33%, 94.73% 91.67%, 95.00% 100.00%, 5.27% 91.67%, 5.42% 83.33%, 5.44% 75.00%, 5.33% 66.67%, 5.10% 58.33%, 4.75% 50.00%, 4.27% 41.67%, 3.67% 33.33%, 2.94% 25.00%, 2.08% 16.67%, 1.10% 8.33%);
+          clip-path:polygon(0.00% 0.00%, 100.00% 0.00%, 98.90% 8.33%, 97.92% 16.67%, 97.06% 25.00%, 96.33% 33.33%, 95.73% 41.67%, 95.25% 50.00%, 94.90% 58.33%, 94.67% 66.67%, 94.56% 75.00%, 94.58% 83.33%, 94.73% 91.67%, 95.00% 100.00%, 5.27% 91.67%, 5.42% 83.33%, 5.44% 75.00%, 5.33% 66.67%, 5.10% 58.33%, 4.75% 50.00%, 4.27% 41.67%, 3.67% 33.33%, 2.94% 25.00%, 2.08% 16.67%, 1.10% 8.33%)}
+body:not(.mse-template) .mcard .m-typeline::before,
+body:not(.mse-template) .mcard .m-typeline::after,
+body:not(.mse-template) .mcard .m-tl-panel{
+  content:'';position:absolute;inset:0;pointer-events:none}
+body:not(.mse-template) .mcard .m-typeline::before{
+  z-index:-3;
+  background:var(--pin,var(--frame));
+  background-size:var(--gsize,auto);
+  background-position:var(--gpos,0 0);
+  /* Reaches the top edge across the full width, so the name box's pinline runs straight into this one. */
+  -webkit-clip-path:polygon(3.32% 22.37%, 4.05% 30.71%, 4.07% 31.02%, 4.68% 39.35%, 4.70% 39.72%, 5.18% 48.06%, 5.20% 48.49%, 5.56% 56.82%, 5.57% 57.32%, 5.80% 65.65%, 5.81% 66.20%, 5.92% 74.53%, 5.92% 75.09%, 5.90% 83.43%, 5.89% 83.99%, 5.83% 87.43%, 94.36% 95.65%, 94.26% 92.85%, 94.25% 92.32%, 94.11% 83.99%, 94.10% 83.43%, 94.08% 75.09%, 94.08% 74.53%, 94.19% 66.20%, 94.20% 65.65%, 94.43% 57.32%, 94.44% 56.82%, 94.80% 48.49%, 94.82% 48.06%, 95.30% 39.72%, 95.32% 39.35%, 95.93% 31.02%, 95.95% 30.71%, 96.68% 22.37%, 96.70% 22.12%, 97.21% 17.14%, 97.87% 17.14%, 97.92% 16.67%, 98.90% 8.33%, 100.00% 0.00%, 0.00% 0.00%, 1.10% 8.33%, 2.08% 16.67%, 2.13% 17.14%, 2.79% 17.14%, 3.30% 22.12%);
+          clip-path:polygon(3.32% 22.37%, 4.05% 30.71%, 4.07% 31.02%, 4.68% 39.35%, 4.70% 39.72%, 5.18% 48.06%, 5.20% 48.49%, 5.56% 56.82%, 5.57% 57.32%, 5.80% 65.65%, 5.81% 66.20%, 5.92% 74.53%, 5.92% 75.09%, 5.90% 83.43%, 5.89% 83.99%, 5.83% 87.43%, 94.36% 95.65%, 94.26% 92.85%, 94.25% 92.32%, 94.11% 83.99%, 94.10% 83.43%, 94.08% 75.09%, 94.08% 74.53%, 94.19% 66.20%, 94.20% 65.65%, 94.43% 57.32%, 94.44% 56.82%, 94.80% 48.49%, 94.82% 48.06%, 95.30% 39.72%, 95.32% 39.35%, 95.93% 31.02%, 95.95% 30.71%, 96.68% 22.37%, 96.70% 22.12%, 97.21% 17.14%, 97.87% 17.14%, 97.92% 16.67%, 98.90% 8.33%, 100.00% 0.00%, 0.00% 0.00%, 1.10% 8.33%, 2.08% 16.67%, 2.13% 17.14%, 2.79% 17.14%, 3.30% 22.12%)}
+body:not(.mse-template) .mcard .m-typeline::after{
+  z-index:-2;
+  background:var(--ink-dark,#141418);
+  -webkit-clip-path:polygon(3.29% 11.43%, 3.89% 17.32%, 3.96% 18.00%, 4.69% 26.33%, 4.75% 27.16%, 5.36% 35.49%, 5.42% 36.48%, 5.90% 44.81%, 5.96% 45.97%, 6.31% 54.31%, 6.36% 55.63%, 6.59% 63.96%, 6.62% 65.41%, 6.72% 73.74%, 6.73% 75.25%, 6.71% 80.37%, 93.37% 88.42%, 93.31% 85.08%, 93.29% 83.59%, 93.27% 75.25%, 93.28% 73.74%, 93.38% 65.41%, 93.41% 63.96%, 93.64% 55.63%, 93.69% 54.31%, 94.04% 45.97%, 94.10% 44.81%, 94.58% 36.48%, 94.64% 35.49%, 95.25% 27.16%, 95.31% 26.33%, 96.04% 18.00%, 96.11% 17.32%, 96.71% 11.43%);
+          clip-path:polygon(3.29% 11.43%, 3.89% 17.32%, 3.96% 18.00%, 4.69% 26.33%, 4.75% 27.16%, 5.36% 35.49%, 5.42% 36.48%, 5.90% 44.81%, 5.96% 45.97%, 6.31% 54.31%, 6.36% 55.63%, 6.59% 63.96%, 6.62% 65.41%, 6.72% 73.74%, 6.73% 75.25%, 6.71% 80.37%, 93.37% 88.42%, 93.31% 85.08%, 93.29% 83.59%, 93.27% 75.25%, 93.28% 73.74%, 93.38% 65.41%, 93.41% 63.96%, 93.64% 55.63%, 93.69% 54.31%, 94.04% 45.97%, 94.10% 44.81%, 94.58% 36.48%, 94.64% 35.49%, 95.25% 27.16%, 95.31% 26.33%, 96.04% 18.00%, 96.11% 17.32%, 96.71% 11.43%)}
+/* A real element: the element and its two pseudos give three layers, and this look needs four. */
+body:not(.mse-template) .mcard .m-tl-panel{
+  z-index:-1;
+  background:linear-gradient(var(--m-panel),var(--m-panel)),var(--pin,var(--frame));
+  background-size:auto, var(--gsize,auto);
+  background-position:0 0, var(--gpos,0 0);
+  box-shadow:inset 0 3px 6px -1px rgba(0,0,0,.5);
+  -webkit-clip-path:polygon(4.37% 15.71%, 5.07% 23.71%, 5.16% 24.84%, 5.76% 33.18%, 5.85% 34.54%, 6.33% 42.87%, 6.41% 44.46%, 6.76% 52.80%, 6.83% 54.61%, 7.06% 62.95%, 7.10% 64.94%, 7.20% 73.27%, 7.21% 75.35%, 7.21% 76.13%, 92.81% 84.08%, 92.81% 83.68%, 92.79% 75.35%, 92.80% 73.27%, 92.90% 64.94%, 92.94% 62.95%, 93.17% 54.61%, 93.24% 52.80%, 93.59% 44.46%, 93.67% 42.87%, 94.15% 34.54%, 94.24% 33.18%, 94.84% 24.84%, 94.93% 23.71%, 95.63% 15.71%);
+          clip-path:polygon(4.37% 15.71%, 5.07% 23.71%, 5.16% 24.84%, 5.76% 33.18%, 5.85% 34.54%, 6.33% 42.87%, 6.41% 44.46%, 6.76% 52.80%, 6.83% 54.61%, 7.06% 62.95%, 7.10% 64.94%, 7.20% 73.27%, 7.21% 75.35%, 7.21% 76.13%, 92.81% 84.08%, 92.81% 83.68%, 92.79% 75.35%, 92.80% 73.27%, 92.90% 64.94%, 92.94% 62.95%, 93.17% 54.61%, 93.24% 52.80%, 93.59% 44.46%, 93.67% 42.87%, 94.15% 34.54%, 94.24% 33.18%, 94.84% 24.84%, 94.93% 23.71%, 95.63% 15.71%)}
+/* A second copy of the icon-shadow rule above, the same values; it changes
+   nothing. */
+body:not(.mse-template) .mcard .m-pips img,
+body:not(.mse-template) .mcard .m-rules-body img,
+body:not(.mse-template) .mcard .m-sym,
+body:not(.mse-template) .mcard .m-orb-img img,
+body:not(.mse-template) .mcard .m-info img{
+  filter:drop-shadow(var(--ico-sx,.91px) var(--ico-sy,1.82px) var(--ico-blur,3.03px) rgba(0,0,0,.75))}
+
+/* margin-bottom 0, so the type line can share its bottom edge. */
+body:not(.mse-template) .mcard .m-nameline{display:flex;align-items:center;gap:7px;
+  padding:6px 9px 5px;margin:7px 7px 0;min-height:26px}
+/* The fixed height is what lets auto-fit work: a box that grows never overflows, so nothing shrinks (HANDOFF §8). */
+body:not(.mse-template) .mcard .m-rules{flex:0 0 auto;height:118px;overflow:hidden;
+  padding:7px 9px;display:flex;flex-direction:column}
+/* No display here: the rule above's display:flex is what makes Middle and Bottom work. */
+body:not(.mse-template) .mcard .m-rules-body{flex:1 1 auto;min-height:0;overflow:hidden}
+/* A second copy of the dark outline rules above, with the same values; it changes nothing. */
+body:not(.mse-template) .mcard .m-nameline,
+body:not(.mse-template) .mcard .m-rules{
+  box-shadow:0 0 0 1.5px var(--ink-dark,#141418),
+             inset 0 0 0 1.5px var(--ink-dark,#141418),
+             inset 0 2px 0 -1px var(--m-bevel),
+             inset 0 3px 6px -1px rgba(0,0,0,.5)}
+body:not(.mse-template) .mcard .mcard-inner{
+  box-shadow:0 0 0 1.5px var(--ink-dark,#141418)}
+
+/* A second copy of the inline stat and dice mark rules above, with the same values; it changes nothing. */
+.m-statmark{display:inline-block;width:1.05em;height:1.05em;vertical-align:-.18em;margin-right:.12em}
+.m-statmark svg{display:block;width:100%;height:100%;
+  filter:drop-shadow(var(--ico-sx,.91px) var(--ico-sy,1.82px) var(--ico-blur,3.03px) rgba(0,0,0,.75))}
+.m-dicemark{display:inline-block;width:1.05em;height:1.05em;vertical-align:-.18em;margin-right:.14em}
+.m-dicemark svg{display:block;width:100%;height:100%;
+  filter:drop-shadow(calc(var(--ico-sx,.91px) * .5) calc(var(--ico-sy,1.82px) * .5)
+                     1px rgba(0,0,0,.55))}
+
+/* holoStyleVars() writes --holo-<slot>-* inline and holoClasses() adds .holo-<slot>, so an unset slot emits nothing. */
+body:not(.mse-template) .mcard .m-art-holo{position:absolute;inset:0;pointer-events:none;
+  background:var(--holo-image-img,none);opacity:var(--holo-image-a,0);
+  mix-blend-mode:var(--holo-image-blend,screen)}
+body:not(.mse-template) .mcard.holo-bg .mcard-inner::after{content:'';position:absolute;inset:0;
+  pointer-events:none;z-index:3;background:var(--holo-bg-img,none);opacity:var(--holo-bg-a,0);
+  mix-blend-mode:var(--holo-bg-blend,screen)}
+/* .mcard-inner is an opaque child, so a ::before at inset:0 shows only in the 8.1px ring. */
+body:not(.mse-template) .mcard.holo-border::before{content:'';position:absolute;inset:0;
+  pointer-events:none;border-radius:16px;background:var(--holo-border-img,none);
+  opacity:var(--holo-border-a,0);mix-blend-mode:var(--holo-border-blend,screen)}
+/* A background layer cannot mix-blend-mode (all five modes drew the same): background-blend-mode, per layer, is the one. */
+body:not(.mse-template) .mcard.holo-pin .m-nameline,
+body:not(.mse-template) .mcard.holo-pin .m-rules{
+  background:linear-gradient(var(--m-panel),var(--m-panel)) padding-box,
+             var(--holo-pin-img,none) border-box,
+             var(--pin,var(--frame)) border-box;
+  background-blend-mode:normal,var(--holo-pin-blend,screen),normal}
+/* The type line's frame is a pseudo-element alignFrameGradients cannot style, so it needs its own size list:
+   one --gsize for two layers drew the holo in card space here and box space everywhere else. */
+body:not(.mse-template) .mcard.holo-pin .m-typeline::before{
+  background-image:var(--holo-pin-img,none),var(--pin,var(--frame));
+  background-size:auto,var(--gsize,auto);
+  background-position:0 0,var(--gpos,0 0);
+  background-blend-mode:var(--holo-pin-blend,screen),normal}
+/* Under the panel too, as on the name box: the panel is 70% white, so that is where most of the holo shows. */
+body:not(.mse-template) .mcard.holo-pin .m-tl-panel{
+  background:linear-gradient(var(--m-panel),var(--m-panel)),
+             var(--holo-pin-img,none),
+             var(--pin,var(--frame));
+  background-size:auto,auto,var(--gsize,auto);
+  background-position:0 0,0 0,var(--gpos,0 0);
+  background-blend-mode:normal,var(--holo-pin-blend,screen),normal}
+
+/* Not the pinlines: their size list is written inline by alignFrameGradients, which beats any rule here.
+   filter:opacity(), not opacity, so the breathe is a share of the strength slider's --holo-<slot>-a. */
+body:not(.mse-template) .mcard.holo-fx-image-glitch .m-art-holo,
+body:not(.mse-template) .mcard.holo-fx-bg-glitch .mcard-inner::after,
+body:not(.mse-template) .mcard.holo-fx-border-glitch::before{
+  background-size:320% 100%;
+  animation:mHoloGlitch 1.7s steps(1,end) infinite}
+body:not(.mse-template) .mcard.holo-fx-image-transcendent .m-art-holo,
+body:not(.mse-template) .mcard.holo-fx-bg-transcendent .mcard-inner::after,
+body:not(.mse-template) .mcard.holo-fx-border-transcendent::before{
+  background-size:280% 100%;
+  animation:mHoloTransRamp 5.9s ease-in-out infinite,
+            mHoloTransFade 3.7s ease-in-out infinite}
+body:not(.mse-template) .mcard.holo-fx-image-mythic .m-art-holo,
+body:not(.mse-template) .mcard.holo-fx-bg-mythic .mcard-inner::after,
+body:not(.mse-template) .mcard.holo-fx-border-mythic::before{
+  background-size:300% 100%;
+  animation:mHoloMythRamp 8.2s linear infinite,
+            mHoloMythBlip 9s steps(1,end) infinite}
+@keyframes mHoloGlitch{
+  0%   {background-position:0% 50%;  filter:none}
+  11%  {background-position:62% 50%; filter:hue-rotate(85deg) saturate(1.6)}
+  17%  {background-position:12% 50%; filter:none}
+  29%  {background-position:91% 50%; filter:hue-rotate(-120deg) contrast(1.5)}
+  33%  {background-position:34% 50%; filter:invert(1) hue-rotate(40deg)}
+  38%  {background-position:34% 50%; filter:none}
+  56%  {background-position:78% 50%; filter:hue-rotate(200deg) saturate(2.2)}
+  61%  {background-position:5% 50%;  filter:none}
+  73%  {background-position:47% 50%; filter:hue-rotate(-60deg)}
+  77%  {background-position:99% 50%; filter:invert(1)}
+  81%  {background-position:22% 50%; filter:none}
+  94%  {background-position:68% 50%; filter:hue-rotate(140deg) contrast(1.7)}
+  100% {background-position:0% 50%;  filter:none}
+}
+@keyframes mHoloTransRamp{
+  0%   {background-position:0% 50%}
+  40%  {background-position:55% 50%}
+  47%  {background-position:55% 50%; animation-timing-function:steps(1,end)}
+  49%  {background-position:69% 50%; animation-timing-function:steps(1,end)}
+  51%  {background-position:62% 50%}
+  70%  {background-position:80% 50%}
+  88%  {background-position:92% 50%; animation-timing-function:steps(1,end)}
+  90%  {background-position:74% 50%; animation-timing-function:steps(1,end)}
+  92%  {background-position:92% 50%}
+  100% {background-position:0% 50%}
+}
+@keyframes mHoloTransFade{0%,100%{filter:opacity(1)}45%{filter:opacity(.55)}}
+@keyframes mHoloMythRamp{
+  0%    {background-position:0% 50%}
+  20.5% {background-position:21% 50%; animation-timing-function:steps(1,end)}
+  21.5% {background-position:34% 50%; animation-timing-function:steps(1,end)}
+  22%   {background-position:22% 50%}
+  44.5% {background-position:45% 50%; animation-timing-function:steps(1,end)}
+  45.5% {background-position:33% 50%; animation-timing-function:steps(1,end)}
+  46%   {background-position:46% 50%}
+  50%   {background-position:50% 50%}
+  70.5% {background-position:29% 50%; animation-timing-function:steps(1,end)}
+  71.5% {background-position:41% 50%; animation-timing-function:steps(1,end)}
+  72%   {background-position:28% 50%}
+  94.5% {background-position:5% 50%;  animation-timing-function:steps(1,end)}
+  95.5% {background-position:17% 50%; animation-timing-function:steps(1,end)}
+  96%   {background-position:4% 50%}
+  100%  {background-position:0% 50%}
+}
+@keyframes mHoloMythBlip{
+  0%,49.6%{filter:none}
+  49.8%{filter:contrast(1.6) saturate(.35)}
+  50.2%,100%{filter:none}
+}
+@media (prefers-reduced-motion:reduce){
+  body:not(.mse-template) .mcard[class*='holo-fx-'] .m-art-holo,
+  body:not(.mse-template) .mcard[class*='holo-fx-'] .mcard-inner::after,
+  body:not(.mse-template) .mcard[class*='holo-fx-']::before{animation:none}
+}
+
+body:not(.mse-template) .mcard .m-mark{position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-repeat:no-repeat;background-position:center;background-size:contain;
+  transform-origin:center center}
+body:not(.mse-template) .mcard .m-rules{position:relative}
+/* No z-index here: coming after the layering above, one would undo it and put the rules text under the uploaded asset. */
+body:not(.mse-template) .mcard .m-rules-body,
+body:not(.mse-template) .mcard .m-flavor{position:relative}
+
+
+body:not(.mse-template) .mcard-essence .m-name{text-align:center}
+body:not(.mse-template) .mcard-essence .m-typeline{justify-content:center}
+
+body:not(.mse-template) .mcard-essence .m-art{margin-bottom:5px}
+
+body:not(.mse-template) .mcard .m-mana-bar{
+  position:absolute;left:0;right:0;bottom:6px;z-index:6;
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  background:none;border:0;pointer-events:none}
+body:not(.mse-template) .mcard .m-mana-orb{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:72px;height:72px;box-sizing:content-box;
+  border:4px solid transparent;border-radius:50%;
+  /* No --gsize / --gpos: each orb's --pin is its own colour, inline, and the shared alignment would map it back onto the card's. */
+  background:var(--pin,var(--frame)) border-box;
+  box-shadow:0 0 0 1.5px var(--ink-dark,#141418),
+             inset 0 0 0 1.5px var(--ink-dark,#141418),
+             0 2px 6px rgba(0,0,0,.55)}
+body:not(.mse-template) .mcard .m-mana-orb img{
+  width:72px;height:72px;border-radius:50%;display:block;
+  filter:drop-shadow(var(--ico-sx,.91px) var(--ico-sy,1.82px) var(--ico-blur,3.03px) rgba(0,0,0,.75))}
+
+/* It keeps the .m-rules class, so fitFace still fits its .m-rules-body. */
+body:not(.mse-template) .mcard-tpl-essence-boxed .m-art .m-rules{
+  position:absolute;left:50%;transform:translateX(-50%);bottom:0;
+  width:232.5px;height:78.5px;margin:0;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  /* 6, the text layer: lower, it is a stacking context under the uploaded asset and takes its text with it. */
+  overflow:hidden;z-index:6}
+body:not(.mse-template) .mcard-tpl-essence-boxed .m-art .m-rules-body{
+  flex:0 1 auto;text-align:center}
+
+/* The 78.5px box and an 8px gap. */
+body:not(.mse-template) .mcard-tpl-essence-boxed .m-mana-bar{bottom:86.5px}
+
+/* .m-mid must not be positioned: it would become .m-tpl's containing block and clip the asset to the middle band. */
+body:not(.mse-template) .mcard-fh .m-mid{display:contents}
+/* -6px, not 0: the type line's 6px bottom margin does not collapse in a flex column. */
+body:not(.mse-template) .mcard-fv .m-mid{display:flex;flex:1 1 auto;min-height:0;
+  margin:-6px 7px 5px;gap:6px;align-items:stretch}
+body:not(.mse-template) .mcard-fv-left  .m-mid{flex-direction:row}
+body:not(.mse-template) .mcard-fv-right .m-mid{flex-direction:row-reverse}
+/* Direct children only: an Essence card's rules box is inside the art and stays there. */
+body:not(.mse-template) .mcard-fv .m-mid>.m-art{flex:1 1 0;min-width:0;margin:0}
+/* Its height comes from the row, which has one from the card's fixed height, so fitFace still measures (HANDOFF §8). */
+body:not(.mse-template) .mcard-fv .m-mid>.m-rules{flex:1 1 0;min-width:0;margin:0;
+  height:auto;align-self:stretch;overflow:hidden}
+
+/* On a vertical card the rules box's side is squared off. All four layers are re-cut from tools/typeline_clips.py's geometry
+   with one side replaced; the script that did it is not in the repository, so never hand-edit these (HANDOFF §8). */
+/* 21px puts the text as far inside the squared edge (1.77%) as 29px does inside the tapered one (4.37%). */
+body:not(.mse-template) .mcard-fv-left  .m-typeline{padding-right:21px}
+body:not(.mse-template) .mcard-fv-right .m-typeline{padding-left:21px}
+
+/* rules box on the LEFT  - square that side */
+body:not(.mse-template) .mcard-fv-right .m-typeline{
+  -webkit-clip-path:polygon(0.00% 0.00%, 100.00% 0.00%, 98.90% 8.33%, 97.92% 16.67%, 97.06% 25.00%, 96.33% 33.33%, 95.73% 41.67%, 95.25% 50.00%, 94.90% 58.33%, 94.67% 66.67%, 94.56% 75.00%, 94.58% 83.33%, 94.73% 91.67%, 95.00% 100.00%, 0.00% 100.00%);
+          clip-path:polygon(0.00% 0.00%, 100.00% 0.00%, 98.90% 8.33%, 97.92% 16.67%, 97.06% 25.00%, 96.33% 33.33%, 95.73% 41.67%, 95.25% 50.00%, 94.90% 58.33%, 94.67% 66.67%, 94.56% 75.00%, 94.58% 83.33%, 94.73% 91.67%, 95.00% 100.00%, 0.00% 100.00%)}
+body:not(.mse-template) .mcard-fv-right .m-typeline::before{
+  -webkit-clip-path:polygon(94.36% 95.71%, 94.26% 92.85%, 94.25% 92.32%, 94.11% 83.99%, 94.10% 83.43%, 94.08% 75.09%, 94.08% 74.53%, 94.19% 66.20%, 94.20% 65.65%, 94.43% 57.32%, 94.44% 56.82%, 94.80% 48.49%, 94.82% 48.06%, 95.30% 39.72%, 95.32% 39.35%, 95.93% 31.02%, 95.95% 30.71%, 96.68% 22.37%, 96.70% 22.12%, 97.21% 17.14%, 97.87% 17.14%, 97.92% 16.67%, 98.90% 8.33%, 100.00% 0.00%, 0.00% 0.00%, 0.00% 17.14%, 0.48% 17.14%, 0.48% 95.71%);
+          clip-path:polygon(94.36% 95.71%, 94.26% 92.85%, 94.25% 92.32%, 94.11% 83.99%, 94.10% 83.43%, 94.08% 75.09%, 94.08% 74.53%, 94.19% 66.20%, 94.20% 65.65%, 94.43% 57.32%, 94.44% 56.82%, 94.80% 48.49%, 94.82% 48.06%, 95.30% 39.72%, 95.32% 39.35%, 95.93% 31.02%, 95.95% 30.71%, 96.68% 22.37%, 96.70% 22.12%, 97.21% 17.14%, 97.87% 17.14%, 97.92% 16.67%, 98.90% 8.33%, 100.00% 0.00%, 0.00% 0.00%, 0.00% 17.14%, 0.48% 17.14%, 0.48% 95.71%)}
+body:not(.mse-template) .mcard-fv-right .m-typeline::after{
+  -webkit-clip-path:polygon(1.29% 11.43%, 1.29% 88.57%, 93.37% 88.57%, 93.31% 85.08%, 93.29% 83.59%, 93.27% 75.25%, 93.28% 73.74%, 93.38% 65.41%, 93.41% 63.96%, 93.64% 55.63%, 93.69% 54.31%, 94.04% 45.97%, 94.10% 44.81%, 94.58% 36.48%, 94.64% 35.49%, 95.25% 27.16%, 95.31% 26.33%, 96.04% 18.00%, 96.11% 17.32%, 96.71% 11.43%);
+          clip-path:polygon(1.29% 11.43%, 1.29% 88.57%, 93.37% 88.57%, 93.31% 85.08%, 93.29% 83.59%, 93.27% 75.25%, 93.28% 73.74%, 93.38% 65.41%, 93.41% 63.96%, 93.64% 55.63%, 93.69% 54.31%, 94.04% 45.97%, 94.10% 44.81%, 94.58% 36.48%, 94.64% 35.49%, 95.25% 27.16%, 95.31% 26.33%, 96.04% 18.00%, 96.11% 17.32%, 96.71% 11.43%)}
+body:not(.mse-template) .mcard-fv-right .m-tl-panel{
+  -webkit-clip-path:polygon(1.77% 15.71%, 1.77% 84.29%, 92.82% 84.29%, 92.81% 83.68%, 92.79% 75.35%, 92.80% 73.27%, 92.90% 64.94%, 92.94% 62.95%, 93.17% 54.61%, 93.24% 52.80%, 93.59% 44.46%, 93.67% 42.87%, 94.15% 34.54%, 94.24% 33.18%, 94.84% 24.84%, 94.93% 23.71%, 95.63% 15.71%);
+          clip-path:polygon(1.77% 15.71%, 1.77% 84.29%, 92.82% 84.29%, 92.81% 83.68%, 92.79% 75.35%, 92.80% 73.27%, 92.90% 64.94%, 92.94% 62.95%, 93.17% 54.61%, 93.24% 52.80%, 93.59% 44.46%, 93.67% 42.87%, 94.15% 34.54%, 94.24% 33.18%, 94.84% 24.84%, 94.93% 23.71%, 95.63% 15.71%)}
+
+/* rules box on the RIGHT - square that side */
+body:not(.mse-template) .mcard-fv-left .m-typeline{
+  -webkit-clip-path:polygon(0.00% 0.00%, 100.00% 0.00%, 100.00% 100.00%, 5.27% 91.67%, 5.42% 83.33%, 5.44% 75.00%, 5.33% 66.67%, 5.10% 58.33%, 4.75% 50.00%, 4.27% 41.67%, 3.67% 33.33%, 2.94% 25.00%, 2.08% 16.67%, 1.10% 8.33%);
+          clip-path:polygon(0.00% 0.00%, 100.00% 0.00%, 100.00% 100.00%, 5.27% 91.67%, 5.42% 83.33%, 5.44% 75.00%, 5.33% 66.67%, 5.10% 58.33%, 4.75% 50.00%, 4.27% 41.67%, 3.67% 33.33%, 2.94% 25.00%, 2.08% 16.67%, 1.10% 8.33%)}
+body:not(.mse-template) .mcard-fv-left .m-typeline::before{
+  -webkit-clip-path:polygon(3.32% 22.37%, 4.05% 30.71%, 4.07% 31.02%, 4.68% 39.35%, 4.70% 39.72%, 5.18% 48.06%, 5.20% 48.49%, 5.56% 56.82%, 5.57% 57.32%, 5.80% 65.65%, 5.81% 66.20%, 5.92% 74.53%, 5.92% 75.09%, 5.90% 83.43%, 5.89% 83.99%, 5.83% 87.43%, 99.52% 95.67%, 99.52% 17.14%, 100.00% 17.14%, 100.00% 0.00%, 0.00% 0.00%, 1.10% 8.33%, 2.08% 16.67%, 2.13% 17.14%, 2.79% 17.14%, 3.30% 22.12%);
+          clip-path:polygon(3.32% 22.37%, 4.05% 30.71%, 4.07% 31.02%, 4.68% 39.35%, 4.70% 39.72%, 5.18% 48.06%, 5.20% 48.49%, 5.56% 56.82%, 5.57% 57.32%, 5.80% 65.65%, 5.81% 66.20%, 5.92% 74.53%, 5.92% 75.09%, 5.90% 83.43%, 5.89% 83.99%, 5.83% 87.43%, 99.52% 95.67%, 99.52% 17.14%, 100.00% 17.14%, 100.00% 0.00%, 0.00% 0.00%, 1.10% 8.33%, 2.08% 16.67%, 2.13% 17.14%, 2.79% 17.14%, 3.30% 22.12%)}
+body:not(.mse-template) .mcard-fv-left .m-typeline::after{
+  -webkit-clip-path:polygon(3.29% 11.43%, 3.89% 17.32%, 3.96% 18.00%, 4.69% 26.33%, 4.75% 27.16%, 5.36% 35.49%, 5.42% 36.48%, 5.90% 44.81%, 5.96% 45.97%, 6.31% 54.31%, 6.36% 55.63%, 6.59% 63.96%, 6.62% 65.41%, 6.72% 73.74%, 6.73% 75.25%, 6.71% 80.36%, 98.71% 88.46%, 98.71% 11.43%);
+          clip-path:polygon(3.29% 11.43%, 3.89% 17.32%, 3.96% 18.00%, 4.69% 26.33%, 4.75% 27.16%, 5.36% 35.49%, 5.42% 36.48%, 5.90% 44.81%, 5.96% 45.97%, 6.31% 54.31%, 6.36% 55.63%, 6.59% 63.96%, 6.62% 65.41%, 6.72% 73.74%, 6.73% 75.25%, 6.71% 80.36%, 98.71% 88.46%, 98.71% 11.43%)}
+body:not(.mse-template) .mcard-fv-left .m-tl-panel{
+  -webkit-clip-path:polygon(4.37% 15.71%, 5.07% 23.71%, 5.16% 24.84%, 5.76% 33.18%, 5.85% 34.54%, 6.33% 42.87%, 6.41% 44.46%, 6.76% 52.80%, 6.83% 54.61%, 7.06% 62.95%, 7.10% 64.94%, 7.20% 73.27%, 7.21% 75.35%, 7.21% 76.12%, 98.23% 84.13%, 98.23% 15.71%);
+          clip-path:polygon(4.37% 15.71%, 5.07% 23.71%, 5.16% 24.84%, 5.76% 33.18%, 5.85% 34.54%, 6.33% 42.87%, 6.41% 44.46%, 6.76% 52.80%, 6.83% 54.61%, 7.06% 62.95%, 7.10% 64.94%, 7.20% 73.27%, 7.21% 75.35%, 7.21% 76.12%, 98.23% 84.13%, 98.23% 15.71%)}
+
+
+/* Always a column: the Choice line sits above on either frame, and .m-rsecs turns to the long axis. */
+body:not(.mse-template) .mcard .m-rules-split{display:flex;flex-direction:column;gap:0}
+body:not(.mse-template) .mcard .m-rsecs{flex:1 1 auto;min-height:0;min-width:0;
+  display:flex;gap:5px}
+body:not(.mse-template) .mcard-fh .m-rsecs{flex-direction:row}
+body:not(.mse-template) .mcard-fv .m-rsecs{flex-direction:column}
+body:not(.mse-template) .mcard .m-rsec{flex:1 1 0;min-width:0;min-height:0;
+  overflow:hidden;display:flex;flex-direction:column}
+body:not(.mse-template) .mcard-fh .m-rsec:not(.ident)+.m-rsec:not(.ident){
+  border-left:1px solid rgba(0,0,0,.28);padding-left:5px}
+body:not(.mse-template) .mcard-fv .m-rsec:not(.ident)+.m-rsec:not(.ident){
+  border-top:1px solid rgba(0,0,0,.28);padding-top:5px}
+
+/* With identities on, the sections are the box, edge to edge; two rings meeting between neighbours are the divider, on purpose. */
+body:not(.mse-template) .mcard .m-rules-split.has-ident{
+  background:none;border:0;border-radius:0;box-shadow:none;padding:0}
+body:not(.mse-template) .mcard .m-rules-split.has-ident .m-rsecs{gap:0}
+body:not(.mse-template) .mcard .m-rules-split.has-ident .m-rsec.ident{
+  border-radius:0;margin:0}
+/* The default box is drawn under the whole area and the sections keep their full size over it.
+   Its ring sits 1.5px in, so its outer dark ring is not cut off by the box's overflow. */
+body:not(.mse-template) .mcard .m-rules-split.has-ident::before{
+  content:'';position:absolute;inset:1.5px;z-index:0;pointer-events:none;
+  border:4px solid transparent;border-radius:6px;
+  background:linear-gradient(var(--m-panel),var(--m-panel)) padding-box,
+             var(--pin,var(--frame)) border-box;
+  box-shadow:0 0 0 1.5px var(--ink-dark,#141418),
+             inset 0 0 0 1.5px var(--ink-dark,#141418),
+             inset 0 2px 0 -1px var(--m-bevel),
+             inset 0 3px 6px -1px rgba(0,0,0,.5)}
+/* A plain section beside an individual one is the default box's own text; 6px 8px is the 3px clear ring plus a section's 3px 5px. */
+body:not(.mse-template) .mcard .m-rules-split.has-ident .m-rsec:not(.ident){
+  border:0;border-radius:0;margin:0;background:none;box-shadow:none;
+  color:var(--m-ink);padding:6px 8px}
+body:not(.mse-template) .mcard-fh .m-rules-split.has-ident .m-rsec:not(.ident)+.m-rsec:not(.ident){
+  background:linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.28)) left top/1px 100% no-repeat border-box}
+body:not(.mse-template) .mcard-fv .m-rules-split.has-ident .m-rsec:not(.ident)+.m-rsec:not(.ident){
+  background:linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.28)) left top/100% 1px no-repeat border-box}
+
+/* A fixed row, so the sections' auto-fit has a budget that does not move. */
+/* Wrapped and fitted, never ellipsed: an ellipsis cut a long Choice line off mid-word with no way back. */
+body:not(.mse-template) .mcard .m-choice{flex:0 0 auto;
+  font:700 11px/1.25 var(--card-font);color:var(--m-ink);text-align:center;
+  padding:1px 4px 3px;overflow:hidden;
+  overflow-wrap:break-word;word-break:normal}
+/* The Choice line is rules text, so it comes as paragraphs (rulesAreaHTML): the .m-rules-body rules, applied here. */
+body:not(.mse-template) .mcard .m-choice p{margin:0 0 .25em}
+body:not(.mse-template) .mcard .m-choice p:last-child{margin-bottom:0}
+body:not(.mse-template) .mcard .m-choice img{width:1em;height:1em;
+  vertical-align:-.15em;margin:0 1px}
+/* No panel of its own: the default box is under it. The padding clears that box's top ring and keeps a panelled line's height. */
+body:not(.mse-template) .mcard .m-rules-split.has-ident .m-choice{
+  border:0;border-radius:0;background:none;box-shadow:none;
+  padding:7px 9px 2px;position:relative;z-index:6}
+/* Its cost overrides --frame, --pin and --ink-dark inline, so these rules draw it in its own colour; with no cost it inherits the card's. */
+body:not(.mse-template) .mcard .m-rsec.ident{
+  border:3px solid transparent;border-radius:5px;
+  background:linear-gradient(var(--m-panel),var(--m-panel)) padding-box,
+             var(--pin,var(--frame)) border-box;
+  box-shadow:0 0 0 1px var(--ink-dark,#141418),
+             inset 0 0 0 1px var(--ink-dark,#141418);
+  padding:3px 5px}
+body:not(.mse-template) .mcard .m-rsec-name{display:flex;align-items:center;gap:4px;
+  flex:0 0 auto;font:700 11px/1.15 var(--card-font);color:var(--m-ink);
+  border-bottom:1px solid rgba(0,0,0,.25);padding-bottom:2px;margin-bottom:2px}
+body:not(.mse-template) .mcard .m-rsec-nm{flex:1;min-width:0;overflow:hidden;
+  white-space:nowrap;text-overflow:ellipsis;text-align:right}
+body:not(.mse-template) .mcard .m-rsec-pips{display:inline-flex;gap:1px;
+  flex-shrink:0;align-items:center}
+body:not(.mse-template) .mcard .m-rsec-pips img{width:12px;height:12px;
+  filter:drop-shadow(var(--ico-sx,.91px) var(--ico-sy,1.82px) var(--ico-blur,3.03px) rgba(0,0,0,.75))}
+body:not(.mse-template) .mcard .m-rsec-type{flex:0 0 auto;
+  font:700 8.5px/1.15 var(--card-font);color:var(--m-ink);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+/* A fixed row under every section, for the Choice line's reason: fitFace pins it before the sections measure.
+   The second selector is for faces from an older renderer, with .m-flavor inside a section. */
+body:not(.mse-template) .mcard .m-rules-split>.m-flavor,
+body:not(.mse-template) .mcard .m-rsec .m-flavor{flex:0 0 auto}
+body:not(.mse-template) .mcard .m-rules-split>.m-flavor{width:100%}
+
+/* No panel of its own here either: the padding clears the default box's bottom ring and keeps a panelled row's height. */
+body:not(.mse-template) .mcard .m-rules-split.has-ident>.m-flavor{
+  border:0;border-radius:0;box-shadow:none;
+  background:linear-gradient(rgba(0,0,0,.22),rgba(0,0,0,.22)) center top/calc(100% - 18px) 1px no-repeat border-box;
+  margin-top:0;padding:3px 9px 8px}
+body:not(.mse-template) .mcard .m-rules-split.has-ident.has-flavor>.m-rsecs{
+  margin-bottom:2px}

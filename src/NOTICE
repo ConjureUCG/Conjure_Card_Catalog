@@ -1,0 +1,28 @@
+Conjure card catalog
+Copyright 2026 Conjure UCG LLC
+
+The code in src/ is licensed under the Apache License, Version 2.0. The full
+text is in src/LICENSE. card_catalog.html, the page playconjure.com serves, is
+built by joining the files src/BUILD_ORDER.txt lists, in that order.
+
+The licence covers the code and nothing else. It grants no rights to the game,
+even where the game's content sits inside these files. That includes the cards
+and their names, text and data (everything in data/), the rules and design
+documents, the keywords, the art and icons, the card back, and the Conjure
+name, logo and wordmark. All of it remains all rights reserved by Conjure UCG
+LLC.
+
+Third-party code and fonts keep their own licences:
+
+  src/jszip.html    JSZip 3.10.1, (c) 2009-2016 Stuart Knightley, dual-licensed
+                    under the MIT licence or GPLv3, and the pako library it
+                    includes, under the MIT licence. Its licence header is kept
+                    in the file.
+
+  src/webfonts.css  Cinzel, Copyright 2020 The Cinzel Project Authors, and
+                    Crimson Pro, Copyright 2018 The Crimson Pro Project
+                    Authors, both under the SIL Open Font License 1.1
+                    (https://openfontlicense.org).
+
+src/fonts.css is part of the build but is not published here: the fonts it
+embeds are not ours to license.

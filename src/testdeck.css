@@ -1,0 +1,2350 @@
+/* The only declaration of --pan, --bd and --warn: undefined, each var() would drop its declaration. On body too, as
+   body.light redefines --s1 and --b1 there and a var() is substituted where it is declared. */
+:root,body{--pan:var(--s1);--bd:var(--b1);--warn:#c98a3e}
+
+/* Loaded after catalog.css and ed2_style.css; its classes are its own, as .ci or .cg would hand every token to the editor's face pass and the tilt handler. */
+/* Sticky below the app header and the top row (--td-tbl-h, written by tdTopRowFit), or it would slide under them. */
+.td-top{position:sticky;top:calc(var(--chrome,109px) + var(--td-tbl-h,0px));z-index:70;
+  background:var(--pan);border-bottom:1px solid var(--bd);
+  box-shadow:0 4px 10px color-mix(in srgb,var(--black) 35%,transparent)}
+/* Never wraps: a narrow window scrolls the row sideways rather than breaking it into banded lines. */
+.td-toprow{display:flex;align-items:center;gap:12px;flex-wrap:nowrap;
+  padding:8px 14px;overflow-x:auto}
+.td-barcol{display:flex;flex-direction:column;gap:4px;flex:0 0 auto}
+.td-barcol .dv-pbtn{text-align:left}
+/* Greyed, never hidden: a bar that changes width as you play moves its buttons under the pointer. */
+.td-undo:disabled{opacity:.4;cursor:default}
+.td-undo:disabled:hover{border-color:var(--b1);color:inherit}
+.td-stat{font-family:'Crimson Pro',serif;font-size:.9rem;color:var(--td)}
+.td-stat b{color:var(--tx)}
+.td-warn{font-family:'Crimson Pro',serif;font-size:.82rem;color:var(--warn,var(--go));
+  cursor:help}
+
+/* On the deck page, not the board: a Character deck's four saved values. */
+.td-statrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.td-sr{display:flex;flex-direction:column;gap:2px;cursor:text}
+.td-sr-lab{font-family:Cinzel,serif;font-size:.66rem;letter-spacing:.08em;
+  color:var(--tx);}
+.td-sr-in{width:62px;padding:3px 7px;border:1px solid var(--b1);border-radius:6px;
+  background:var(--s2);color:var(--tx);font-family:Cinzel,serif;font-size:1rem;
+  font-variant-numeric:tabular-nums}
+.td-sr-in:focus{outline:none;border-color:var(--txt-accent)}
+.td-sr-lvl{width:118px;letter-spacing:.14em;}
+.td-sr-echo{font-family:'Crimson Pro',serif;font-size:.8rem;color:var(--tm);
+  font-style:italic;max-width:340px}
+@media (min-width:900px){
+  .td-statrow{flex-wrap:nowrap;gap:8px;padding:4px 8px;border:2px solid var(--gd);
+    background:color-mix(in srgb,var(--go) 6%,transparent)}
+  .td-sr{flex-direction:row;align-items:center;gap:6px;height:37px;box-sizing:border-box;
+    padding:0 5px 0 8px;border:2px solid;--st:var(--go)}
+  .td-st-lvl{border-image:var(--metal-lvl) 1;--st:var(--lvl-silver)}
+  .td-st-atk{border-image:var(--metal-red) 1;--st:var(--re)}
+  .td-st-hp{border-image:var(--metal-hp) 1}
+  .td-st-mp{border-image:var(--metal-blue) 1;--st:var(--ac)}
+  .td-sr-lab{font-size:.96rem;font-weight:700;letter-spacing:.06em}
+  .td-sr-in{height:27px;box-sizing:border-box;border-radius:0;
+    background:color-mix(in srgb,var(--st) 12%,transparent);border-color:color-mix(in srgb,var(--st) 30%,transparent)}
+  .td-sr-in:focus{border-color:var(--st)}
+  .td-sr-echo{max-width:220px;line-height:1.15}
+}
+
+/* No padding, border or background: .td-top carries them for the whole strip. */
+.td-counters{display:flex;align-items:center;gap:14px;flex-wrap:nowrap;
+  flex:0 0 auto;min-width:0}
+.td-counters:empty{display:none;padding:0;border:0}
+.td-ctr-row{display:flex;gap:12px;flex-wrap:wrap}
+/* A column by default: .td-ctr is also the counter maker (.td-ctr-make); only .td-ctr-stat is a row. */
+.td-ctr{display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 9px;border:1px solid var(--bd);border-radius:10px;
+  background:var(--b2)}
+.td-ctr-warn{position:absolute;top:-2px;right:-6px;
+  color:var(--warn,var(--go));cursor:help;font-size:.8rem}
+.td-ctr-valbox{position:relative;display:flex;align-items:center;
+  justify-content:center;flex:0 0 auto}
+.td-ctr-set{width:100%;margin-top:3px;padding:1px 4px;
+  border:1px solid var(--b1);border-radius:6px;
+  background:var(--s2);color:var(--tx);text-align:center;
+  font-family:'Crimson Pro',serif;font-size:.72rem;
+  font-variant-numeric:tabular-nums}
+.td-ctr-set::placeholder{color:var(--tm);font-style:italic;letter-spacing:.04em}
+.td-ctr-set:focus{outline:none;border-color:var(--txt-accent);
+  background:var(--s3,var(--s2))}
+/* --stat-fill and --stat-ink come from ORB_FILL and ORB_OUTLINE, so each stat's buttons wear its orb's colour. */
+.td-ctr .td-ctr-b.td-ctr-b-tint{border-color:var(--stat-fill,var(--b1));
+  background:color-mix(in srgb,var(--stat-fill) 22%,var(--s2));
+  color:color-mix(in srgb,var(--stat-fill) 55%,var(--tx))}
+/* Mixed towards white, not var(--tx), or the number turns cream while its box turns redder. */
+.td-ctr .td-ctr-b.td-ctr-b-tint:hover{background:color-mix(in srgb,var(--stat-fill) 40%,var(--s2));
+  color:color-mix(in srgb,var(--stat-fill) 40%,var(--white));
+  border-color:color-mix(in srgb,var(--stat-fill) 70%,var(--white))}
+.td-ctr-stat .td-ctr-set{border-color:color-mix(in srgb,var(--stat-fill,var(--tm2)) 45%,var(--b1))}
+/* Not the layout: .td-ctr.td-ctr-stat .td-ctr-btns below overrules the display, gap, margin and min-width; this keeps the look. */
+.td-ctr-btns{display:flex;gap:3px;margin-top:2px}
+.td-ctr-b{min-width:34px;padding:2px 5px;border:1px solid var(--b1);
+  border-radius:6px;background:var(--s2);color:var(--tx);cursor:pointer;
+  font-family:'Crimson Pro',serif;font-size:.8rem;
+  font-variant-numeric:tabular-nums}
+.td-ctr-b:hover{border-color:var(--txt-accent)}
+.td-ctr-b.dn:hover{color:var(--re-ink)}
+.td-ctr-b.up:hover{color:var(--gr)}
+
+/* One card width for every zone (--td-cw): tdFitTable writes the largest, up to 132px, at which the table fits the window. */
+.td-top:has(.td-counters:empty){display:none}
+.td-board{
+  --td-cw:132px;
+  --td-rail:30px;
+  --td-stack-show:0.10;                       /* of the card underneath, in a pile */
+  --td-hand-show:0.42;                        /* of the card behind, in the hand */
+  --td-play-w:212px;
+  position:relative;
+}
+/* On the half, not the board: a var() is computed where it is declared, so a half's own --td-cw must reach its height. */
+.td-half{--td-ch:calc(var(--td-cw) * 1.39609)}   /* 571/409, the card's ratio */
+/* The grid is on the half (a solo game is one half); the card-size variables stay on .td-board so both halves measure alike. */
+.td-half{
+  position:relative;
+  display:grid;gap:10px;padding:12px 14px;align-items:stretch;
+  /* 22px is the body's padding and borders; the rail stands beside the body, so the track carries it too. */
+  grid-template-columns:calc(var(--td-cw) + 22px + var(--td-rail))
+                        calc(var(--td-cw) + 22px + var(--td-rail)) 1fr 1fr;
+  grid-template-areas:
+    "deck    grave  field   field"
+    "essdeck susp   field   field"
+    "wish    banish essarea hand";
+}
+/* The opponent's rows run the other way, their Field to the centre line: reordered, not rotated, which would turn every word over. */
+.td-board.td-two .td-half-foe{
+  grid-template-areas:
+    "wish    banish essarea hand"
+    "essdeck susp   field   field"
+    "deck    grave  field   field";
+}
+body.rebirth .td-board.td-two .td-half-foe{
+  grid-template-areas:
+    "essarea essarea hand    hand"
+    "grave   field   field   field"
+    "deck    field   field   field";
+}
+/* A third and fourth half stand on the sides, turned, and at four they are compact (tdCompactFoes): a layout only, the DOM unchanged. */
+/* The name needs an area of its own: with every area taken, auto-placement drops it under the half. */
+.td-board .td-half-foe.td-half-side{
+  grid-template-areas:
+    "who     who    who     who"
+    "wish    banish essarea hand"
+    "essdeck susp   field   field"
+    "deck    grave  field   field";
+}
+/* Every counted zone is one narrow column, so a side half is as thin as it can be beside a Field the length of the table. */
+.td-board .td-half-foe.td-half-side.td-compact{
+  grid-template-columns:minmax(0,auto) minmax(0,auto) minmax(0,1fr)
+                        calc(var(--td-cw) + 22px + var(--td-rail));
+  grid-template-areas:
+    "who     who     who     who"
+    "hand    wish    field   essarea"
+    "deck    banish  field   essarea"
+    "grave   susp    field   essarea"
+    "essdeck .       field   essarea";
+}
+body.rebirth .td-board .td-half-foe.td-half-side{
+  grid-template-areas:
+    "who     who     who     who"
+    "essarea essarea hand    hand"
+    "grave   field   field   field"
+    "deck    field   field   field";
+}
+body.rebirth .td-board .td-half-foe.td-half-side.td-compact{
+  grid-template-columns:minmax(0,auto) minmax(0,1fr) calc(var(--td-cw) + 22px + var(--td-rail));
+  grid-template-areas:
+    "who   who   who"
+    "hand  field essarea"
+    "deck  field essarea"
+    "grave field essarea";
+}
+/* A side's column is as tall as the middle: tdSideLayout lays the half out that long and turns it; --td-side-l and -r are its thickness. */
+.td-board.td-seats3,.td-board.td-seats4{display:grid;column-gap:10px;align-items:start}
+.td-board.td-seats3{grid-template-columns:minmax(0,1fr) var(--td-side-r,0px);
+  grid-template-areas:"top right" "mid right" "near right"}
+.td-board.td-seats4{grid-template-columns:var(--td-side-l,0px) minmax(0,1fr) var(--td-side-r,0px);
+  grid-template-areas:"left top right" "left mid right" "left near right"}
+.td-board.td-seats3 > .td-half[data-place='top'],
+.td-board.td-seats4 > .td-half[data-place='top']{grid-area:top}
+.td-board.td-seats3 > .td-midline,.td-board.td-seats4 > .td-midline{grid-area:mid}
+.td-board.td-seats3 > .td-half[data-place='near'],
+.td-board.td-seats4 > .td-half[data-place='near']{grid-area:near}
+.td-side{position:relative;min-width:0;align-self:stretch}
+.td-side-right{grid-area:right}
+.td-side-left{grid-area:left}
+.td-side > .td-half{position:absolute;left:0;top:0;transform-origin:0 0}
+/* Drawn the way round your own half is and turned clockwise like the right one, so the writing on both sides runs the same way. */
+.td-board .td-half-foe.td-half-side.td-half-left{
+  grid-template-areas:
+    "deck    grave  field   field"
+    "essdeck susp   field   field"
+    "wish    banish essarea hand"
+    "who     who    who     who";
+}
+.td-board .td-half-foe.td-half-side.td-half-left.td-compact{
+  grid-template-areas:
+    "essdeck .       field   essarea"
+    "grave   susp    field   essarea"
+    "deck    banish  field   essarea"
+    "hand    wish    field   essarea"
+    "who     who     who     who";
+}
+body.rebirth .td-board .td-half-foe.td-half-side.td-half-left{
+  grid-template-areas:
+    "deck    field   field   field"
+    "grave   field   field   field"
+    "essarea essarea hand    hand"
+    "who     who     who     who";
+}
+body.rebirth .td-board .td-half-foe.td-half-side.td-half-left.td-compact{
+  grid-template-areas:
+    "grave field essarea"
+    "deck  field essarea"
+    "hand  field essarea"
+    "who   who   who";
+}
+.td-half-left .td-foebar{padding:0 8px 3px}
+.td-half-side .td-foebar{padding:3px 8px 0}
+.td-half-foe.td-half-side.td-compact .td-zone[data-zone='essarea'] .td-zbody{
+  max-height:none;min-height:calc(var(--td-ch) + 10px)}
+.td-board.td-two .td-half-foe.td-half-near{
+  grid-template-areas:
+    "deck    grave  field   field"
+    "essdeck susp   field   field"
+    "wish    banish essarea hand";
+}
+body.rebirth .td-board.td-two .td-half-foe.td-half-near{
+  grid-template-areas:
+    "deck    field   field   field"
+    "grave   field   field   field"
+    "essarea essarea hand    hand";
+}
+.td-foebar{grid-area:who}
+/* A compact half drops the 96px floor of an empty zone (nobody drops a card on another's half), and its titles lie flat,
+   as a title down the side sets a floor of about 90px on a zone that should be 40. */
+.td-half-foe.td-compact .td-zone{flex-direction:column}
+.td-half-foe.td-compact .td-zhdr{width:auto;flex-direction:row;
+  align-items:center;gap:6px;padding:5px 8px;border-right:0;
+  border-bottom:1px solid var(--bd)}
+.td-half-foe.td-compact .td-zname{writing-mode:horizontal-tb;transform:none;
+  flex:1 1 auto;min-height:0;justify-content:flex-start}
+.td-half-foe.td-compact .td-ztools{flex-direction:row}
+.td-half-foe.td-compact .td-zone[data-zone='field']{flex-direction:row}
+.td-half-foe.td-compact .td-zone[data-zone='field'] .td-zhdr{
+  width:var(--td-rail,30px);flex-direction:column;padding:6px 0;
+  border-right:1px solid var(--bd);border-bottom:0}
+.td-half-foe.td-compact .td-zone[data-zone='field'] .td-zname{
+  writing-mode:vertical-rl;transform:rotate(180deg);justify-content:center}
+.td-half-foe.td-compact .td-zone[data-zone='field'] .td-ztools{
+  flex-direction:column}
+.td-half-foe.td-compact .td-zbody{min-height:0}
+/* Taller than a card: Field cards are placed as percentages of it, and at one card's height they would pile on each other. */
+.td-half-foe.td-compact .td-zone[data-zone='field'] .td-zbody{
+  min-height:calc(var(--td-ch) * 1.6 + 18px)}
+.td-half-foe.td-compact .td-zone[data-zone='essarea'] .td-zbody{
+  min-height:0;padding:4px 8px}
+/* Folded by the layout, not the fold state, which is yours and must not change because somebody sat down. */
+.td-half-foe.td-compact .td-zone:not([data-zone='field']):not([data-zone='essarea'])
+  .td-zbody{display:none}
+.td-half-foe.td-compact .td-zone:not([data-zone='field']):not([data-zone='essarea']){
+  align-self:start}
+.td-half-foe.td-compact .td-zfold{display:none}
+.td-half-foe.td-compact .td-zone[data-zone='essarea'] .td-zbody{
+  max-height:calc(var(--td-ch) + 10px);overflow:hidden auto}
+
+.td-foebar{grid-column:1 / -1;display:flex;align-items:center;gap:12px;
+  padding:2px 4px 0;font-size:.76rem;color:var(--tm)}
+.td-fbname{font-family:Cinzel,serif;font-size:.86rem;letter-spacing:.06em;
+  color:var(--go)}
+.td-fbn{white-space:nowrap;opacity:.85}
+/* Only tokens that exist (--b1, --tx): a var() naming an undefined property drops the whole declaration. */
+.td-fbn b{color:var(--tx);font-weight:600}
+.td-fbgap{flex:1 1 auto}
+.td-fbbtn{background:none;border:1px solid var(--b1);border-radius:7px;
+  color:var(--tm);cursor:pointer;font:inherit;font-size:.72rem;padding:2px 9px}
+.td-fbbtn:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+
+.td-midline{
+  position:relative;height:2px;margin:2px 14px 6px;
+  background:linear-gradient(90deg,transparent,var(--go),transparent);
+  opacity:.7;display:flex;align-items:center;justify-content:center;
+}
+.td-midline span{
+  position:absolute;transform:translateY(-1px);
+  font-family:Cinzel,serif;font-size:.7rem;letter-spacing:.14em;
+  color:var(--go);
+  background:var(--bg);padding:0 12px;white-space:nowrap;
+}
+/* Their cards are the size of yours: every half reads the one --td-cw, and tdFitTable fits the whole table to the window. */
+.td-board.td-two .td-half-foe .td-card{cursor:default}
+.td-card-back{width:var(--td-cw);height:var(--td-ch);flex:0 0 auto;
+  border-radius:6px;overflow:hidden;border:1px solid var(--b1);
+  position:relative}
+/* The first track has a floor, not a fixed width: at any real width all four match, so Hand and Essence halve the bottom row. */
+body.rebirth .td-half{
+  grid-template-columns:minmax(calc(var(--td-cw) + 22px + var(--td-rail)),1fr) 1fr 1fr 1fr;
+  grid-template-areas:
+    "deck    field   field   field"
+    "grave   field   field   field"
+    "essarea essarea hand    hand";
+}
+/* `play`, the control panel, is on your own half only. Scoped to #tdBoard >, so the Encounter board's own .td-half-mine keeps
+   its template, and the id beats the (0,2,1) of body.rebirth .td-half. */
+#tdBoard > .td-half-mine{
+  grid-template-columns:calc(var(--td-cw) + 22px + var(--td-rail))
+                        calc(var(--td-cw) + 22px + var(--td-rail))
+                        var(--td-play-w,212px)
+                        1fr 1fr;
+  /* `play` runs down all three rows, so the turn tracker has the height for all nine phases at once. */
+  grid-template-areas:
+    "deck    grave   play    field   field"
+    "essdeck susp    play    field   field"
+    "wish    banish  play    essarea hand";
+}
+/* The pile column is exactly one card wide, with no 1fr: the room it gives back is where the panel stands. */
+/* The third track puts the line between Essence and Hand at the middle: half the row, less the two fixed tracks and the gaps. */
+body.rebirth #tdBoard > .td-half-mine{
+  grid-template-columns:calc(var(--td-cw) + 22px + var(--td-rail))
+                        var(--td-play-w,212px)
+                        max(0px, calc(50% - 5px - (var(--td-cw) + 22px + var(--td-rail))
+                                      - var(--td-play-w,212px) - 20px))
+                        1fr;
+  grid-template-areas:
+    "deck    play    field   field"
+    "grave   play    field   field"
+    "essarea essarea essarea hand";
+}
+.td-play{grid-area:play}
+.td-zone[data-zone=deck]{grid-area:deck}
+.td-zone[data-zone=essdeck]{grid-area:essdeck}
+.td-zone[data-zone=wish]{grid-area:wish}
+.td-zone[data-zone=grave]{grid-area:grave}
+.td-zone[data-zone=susp]{grid-area:susp}
+.td-zone[data-zone=banish]{grid-area:banish}
+.td-zone[data-zone=field]{grid-area:field}
+.td-zone[data-zone=essarea]{grid-area:essarea}
+.td-zone[data-zone=hand]{grid-area:hand}
+/* The hand and, past a thin line, the gear in play (tdZoneHTML): one frame, two bare sections; the gear takes at most half (tdFitHands). */
+.td-handarea{grid-area:hand;display:flex;flex-direction:row;min-width:0;
+  border:4px solid transparent;border-radius:10px;
+  background:linear-gradient(var(--pan),var(--pan)) padding-box,var(--td-gold) border-box;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--white) 6%,transparent)}
+.td-handarea > .td-zone{border:0;border-radius:0;background:none;box-shadow:none}
+.td-handarea > .td-zone[data-zone=hand]{flex:1 1 0;min-width:0}
+.td-handarea > .td-zone[data-zone=gear]{display:none;flex:0 1 auto;min-width:0;max-width:50%;
+  border-left:1px solid var(--bd)}
+.td-handarea.td-hasgear > .td-zone[data-zone=gear]{display:flex}
+body.rebirth .td-zone[data-zone=field]{--td-fill:var(--grey-field)}
+
+/* A row: the name runs down a rail on the left; position:relative is for the Lock/Unlock pair (.td-zacts). */
+.td-zone{border:1px solid var(--bd);border-radius:10px;background:var(--pan);
+  display:flex;flex-direction:row;min-width:0;position:relative}
+.td-zhdr{flex:0 0 auto;width:var(--td-rail,30px);display:flex;flex-direction:column;
+  align-items:center;gap:6px;padding:6px 0;
+  border-right:1px solid var(--bd);border-bottom:0;
+  font-family:Cinzel,serif;font-size:.86rem;color:var(--tx)}
+/* vertical-rl plus rotate(180deg) reads bottom to top, where vertical-lr would only move the baseline; min-height:0 lets a long name shrink. */
+.td-zname{flex:1 1 auto;min-height:0;display:flex;align-items:center;
+  justify-content:center;writing-mode:vertical-rl;transform:rotate(180deg);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  letter-spacing:.06em;font-size:.78rem;
+  /* The name never makes a zone taller (tdFitRail shrinks it); inline-size is its length here, as it runs down the rail. */
+  contain:inline-size}
+.td-zcount{flex:0 0 auto;font-family:'Crimson Pro',serif;font-size:.78rem;
+  color:var(--tm);background:var(--b2);border-radius:7px;padding:0 4px;
+  min-width:22px;text-align:center;line-height:1.5}
+.td-ztools{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;
+  gap:2px}
+/* Top left, past the rail (left counts from the section's box); z-index, as a card can be dropped under them on the Field. */
+.td-zacts{position:absolute;top:5px;left:calc(var(--td-rail,30px) + 6px);
+  z-index:22;display:flex;gap:4px;pointer-events:auto}
+.td-zbtn{font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);font-size:.78rem;letter-spacing:.02em;
+  padding:3px 10px;border-radius:8px;
+  border:1px solid var(--b1);background:var(--s2);color:var(--td);
+  cursor:pointer;flex:0 0 auto;
+  transition:border-color .15s,color .15s,background .15s}
+.td-zbtn:hover:not(:disabled){border-color:var(--txt-accent);color:var(--tx)}
+.td-zbtn:disabled{opacity:.38;cursor:default}
+.td-board.td-small .td-zbtn{font-size:.62rem;padding:2px 6px;border-radius:6px}
+/* The pair may wrap inside its zone; pointer-events:none on the holder lets the pointer through to the cards. */
+.td-board.td-small .td-zone .td-zacts{gap:3px;right:4px;flex-wrap:wrap;
+  align-content:flex-start;pointer-events:none}
+.td-board.td-small .td-zone .td-zacts > *{pointer-events:auto}
+.td-zbtn-un.on{border-color:var(--gr);color:var(--green-pale);background:rgba(45,107,62,.55)}
+.td-zbtn-un.on:hover{border-color:var(--green-light-3);color:var(--white);background:rgba(45,107,62,.8)}
+.td-zbtn-lk.on{border-color:var(--re);color:var(--re-hi);background:rgba(128,48,48,.55)}
+.td-zbtn-lk.on:hover{border-color:var(--re-ink);color:var(--white);background:rgba(128,48,48,.8)}
+.td-zbody{flex:1 1 auto;min-width:0;padding:8px;min-height:96px;position:relative}
+.td-empty{font-family:'Crimson Pro',serif;font-size:.8rem;color:var(--tm);
+  font-style:italic;padding:14px 4px;text-align:center}
+
+.td-card{position:relative;border-radius:6px;overflow:hidden;background:var(--s2);
+  border:1px solid var(--b1);width:var(--td-cw);height:var(--td-ch);
+  flex:0 0 auto;cursor:grab;transition:transform .12s,box-shadow .12s}
+.td-card:hover{box-shadow:0 2px 10px color-mix(in srgb,var(--black) 45%,transparent);z-index:20}
+.td-face{width:100%;height:100%;pointer-events:none;overflow:hidden}
+.td-face .mcard-fit{max-width:none!important;margin:0!important}
+.td-art{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.td-noart{display:flex;align-items:center;justify-content:center;height:100%;
+  padding:6px;font-family:'Crimson Pro',serif;font-size:.72rem;color:var(--tm);
+  text-align:center}
+.td-back{width:100%;height:100%;
+  background:repeating-linear-gradient(45deg,var(--b2) 0 6px,var(--s2) 6px 12px)}
+
+/* Locked is a quarter turn clockwise, on the token: .mcard's own transform carries a tilt this would compose with. */
+.td-card.locked{transform:rotate(90deg)}
+
+.td-stack .td-zbody{display:flex;flex-direction:column;align-items:center;
+  min-height:calc(var(--td-ch) + 8px)}
+.td-stack .td-card{margin-top:calc(var(--td-ch) * (var(--td-stack-show) - 1))}
+.td-stack .td-card:first-child{margin-top:0}
+.td-stack .td-card:hover{z-index:20;transform:translateX(6px)}
+
+.td-fan .td-zbody{display:flex;flex-direction:row;align-items:flex-start;
+  overflow-x:auto;overflow-y:visible;min-height:calc(var(--td-ch) + 14px);
+  padding-bottom:12px}
+.td-fan .td-card{margin-left:calc(var(--td-cw) * (var(--td-hand-show) - 1))}
+.td-fan .td-card:first-child{margin-left:0}
+.td-fan .td-card:hover{z-index:20;transform:translateY(-8px)}
+
+/* Positions are percentages of the zone, so they survive a re-render and a resize. */
+/* One card tall: grid rows stretch to their tallest cell, so only the Field asks for two. */
+.td-free .td-zbody{position:relative;min-height:calc(var(--td-ch) + 24px)}
+.td-zone[data-zone=field] .td-zbody{min-height:calc(var(--td-ch) * 2 + 42px)}
+.td-free .td-card{position:absolute;left:4%;top:4%}
+
+/* The top card comes last in the markup, so paint order puts it over its attachments with no z-index; their offsets are inline (TD_CONNECT_SHOW). */
+.td-group{position:absolute;width:var(--td-cw)}
+.td-group>.td-card{position:relative;left:auto;top:auto}
+.td-group>.td-card.td-attached{position:absolute;left:0}
+
+/* overflow visible, so the Lord coin's preview can hang outside the panel. */
+.td-pile .td-zbody{display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:visible}
+.td-pile .td-card{cursor:pointer}
+
+/* The Lord coin's preview is only faded, never display:none: a face in a display:none host measures 0 and tdFitFace gives up. */
+.td-lord{position:absolute;top:8px;left:50%;transform:translateX(-50%);
+  width:48px;height:48px;border-radius:50%;z-index:12;cursor:context-menu;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 34% 28%,var(--gold-pale) 0%,var(--g2) 38%,var(--go) 62%,var(--gd) 100%);
+  border:2px solid #4a3818;
+  box-shadow:0 2px 9px color-mix(in srgb,var(--black) 55%,transparent),inset 0 1px 2px color-mix(in srgb,var(--white) 55%,transparent)}
+.td-lord:hover{box-shadow:0 2px 14px color-mix(in srgb,var(--g2) 60%,transparent),inset 0 1px 2px color-mix(in srgb,var(--white) 55%,transparent)}
+.td-lord-lab{font-family:Cinzel,serif;font-size:.6rem;font-weight:700;
+  letter-spacing:.03em;color:var(--gold-deep);pointer-events:none}
+.td-lord-pop{position:absolute;left:50%;top:calc(100% + 8px);width:230px;
+  transform:translateX(-50%) scale(.96);transform-origin:top center;
+  opacity:0;pointer-events:none;transition:opacity .12s,transform .12s;z-index:40}
+.td-lord:hover .td-lord-pop{opacity:1;transform:translateX(-50%) scale(1)}
+
+.td-tokens{position:absolute;inset:0;pointer-events:none;z-index:60}
+.td-token{position:absolute;pointer-events:auto;cursor:grab;touch-action:none;
+  -webkit-user-select:none;user-select:none;
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:36px;height:34px;padding:0 9px;border-radius:17px;border:2px solid;
+  font-family:Cinzel,serif;font-weight:700;font-size:1rem;line-height:1;
+  font-variant-numeric:tabular-nums;
+  box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.td-token:active{cursor:grabbing}
+.td-token-plus{background:rgba(45,107,62,.95);border-color:#b8f0c8;color:#fff}
+.td-token-minus{background:rgba(128,48,48,.95);border-color:#f0b8b8;color:#fff}
+/* A keyword counter is its pill: the base token's background, border, padding and size are unset; the drop shadow stays. */
+.td-token-kw{background:none;border:0;border-radius:0;padding:0;
+  height:auto;min-width:0;box-shadow:none;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.55))}
+/* Through to the counter, so the whole pill drags and the tooltip is the counter's title, not the pill's. */
+.td-token-kw > *{pointer-events:none}
+/* line-height:1 on the text: Cinzel's line box is taller than its capitals, so centring the box leaves them high. */
+.td-token-emblem{background:rgba(58,52,96,.95);border-color:#b9aef0;color:#fff;
+  font-size:.8rem;letter-spacing:.05em;padding:0 11px;
+  line-height:1;align-items:center}
+/* --tok-fill and --tok-ink come from COLOR_FILL_HEX and COLOR_OUTLINE_HEX; the fills are pale, so the ink is the outline colour. */
+.td-token-color{border-color:transparent;
+  background:linear-gradient(var(--tok-fill,#888),var(--tok-fill,#888)) padding-box,
+    linear-gradient(140deg,#fff 0%,var(--tok-fill,#888) 28%,var(--tok-ink,#141418) 62%,
+      var(--tok-fill,#888) 88%) border-box;
+  color:var(--tok-ink,#141418);gap:5px;
+  font-weight:800;font-size:.74rem;letter-spacing:.05em;
+  padding:0 10px;text-shadow:0 1px 0 rgba(255,255,255,.45)}
+.td-token-color .td-colmana{width:15px;height:15px}
+.td-board.td-connecting,.td-board.td-connecting .td-card{cursor:alias}
+.td-stepped{z-index:40;outline:2px solid var(--go,var(--go));
+  outline-offset:1px;box-shadow:0 6px 18px color-mix(in srgb,var(--black) 60%,transparent)}
+.td-tok-drag{opacity:.85;cursor:grabbing;box-shadow:0 8px 20px rgba(0,0,0,.6)}
+
+/* The inset is a fallback: tdPlaceCardTokens places the layer over the art. Sized, never scaled, as it measures their boxes. */
+/* overflow:hidden is what keeps a counter off the rules text: a measurement taken before the fonts swap can be wrong. */
+.td-cardtok{position:absolute;left:4%;top:8%;width:92%;height:40%;
+  z-index:12;pointer-events:none;overflow:hidden}
+/* max-width keeps a counter inside the art band, which can be 37px wide on some templates; a long keyword ellipsizes. */
+.td-cardtok .td-token{position:absolute;pointer-events:auto;
+  min-width:0;max-width:100%;height:auto;padding:1px 5px;border-width:1.5px;
+  font-size:.62rem;border-radius:10px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;
+  box-shadow:0 1px 4px rgba(0,0,0,.6)}
+.td-cardtok .td-token-kw{padding:1px 3px}
+.td-cardtok .td-token-kw .kw-pill{font-size:.56rem;max-width:100%;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;
+  vertical-align:bottom}
+.td-token-stuck{cursor:inherit}
+
+.td-board.td-connecting .td-card{cursor:crosshair}
+.td-board.td-connecting .td-free .td-card{outline:2px dashed var(--go);
+  outline-offset:2px}
+
+/* pointer-events:none: the Alt preview follows the mouse and must never become the thing under it. */
+/* perspective on the holder: without it a rotateX or rotateY on the face is a flat shear. */
+.td-zoom{position:fixed;z-index:9800;pointer-events:none;
+  perspective:1100px;
+  filter:drop-shadow(0 14px 34px color-mix(in srgb,var(--black) 75%,transparent))}
+.td-zoom-face{width:340px;height:476px;transform-style:preserve-3d;
+  transition:transform .1s ease-out;will-change:transform}
+.td-zoom-face .mcard-fit{max-width:none!important;margin:0!important}
+
+@media (max-width:900px){
+  .td-half,body.rebirth .td-half{
+    grid-template-columns:1fr;
+    grid-template-areas:"deck" "essdeck" "wish" "grave" "susp" "banish"
+                        "field" "essarea" "hand"}
+  /* Carries the id, as the wide rules do, to beat a selector naming body.rebirth. */
+  #tdBoard > .td-half-mine,
+  body.rebirth #tdBoard > .td-half-mine{
+    grid-template-columns:1fr;
+    grid-template-areas:"play" "deck" "essdeck" "wish" "grave" "susp" "banish"
+                        "field" "essarea" "hand"}
+  #tdBoard > .td-half-mine .td-play{flex-direction:row;flex-wrap:wrap}
+}
+
+/* Scoped inside .td-play: the counter strip (.td-top) still serves the boards with no panel (tdCtrHost). */
+.td-play{display:flex;flex-direction:column;gap:8px;min-width:0;
+  padding:8px;border:1px solid var(--bd);border-radius:10px;
+  background:var(--pan);overflow:auto}
+.td-play-ctrs{display:flex;flex-direction:column;gap:8px;min-width:0}
+/* A column in the panel: in 212px a wrapping row reorders itself as its contents change size. */
+.td-play .td-ctr-row{flex-direction:column;flex-wrap:nowrap;gap:8px;min-width:0}
+.td-play .td-ctr{padding:5px 6px;align-self:stretch}
+/* Life only (data-ctr): Rebirth stacks three stats in this column and has no room for taller buttons; min-height keeps the glyphs centred. */
+.td-play .td-ctr-stat[data-ctr='life'] .td-ctr-b{min-height:26px}
+.td-play .td-ctr-stat[data-ctr='life'] .td-ctr-set{min-height:20px}
+/* Names .td-ctr-make too: #tdBoard .td-play .td-ctr, further down at the same specificity, would win on order. */
+#tdBoard .td-play .td-ctr.td-ctr-make{background:none;border:0;padding:0;
+  border-radius:0;box-shadow:none}
+.td-play .td-ctr-make{flex-direction:column;align-items:stretch;gap:7px}
+.td-play .td-ctr-row > .td-play-bar{align-self:stretch;min-width:0}
+.td-play .td-ctr-make .td-mkrow:not(.td-mkrow-drops){
+  display:flex;flex-direction:row;align-items:stretch;gap:5px;
+  order:0;flex:0 0 auto;min-width:0}
+/* 29px, the counter dropdowns' height, as these sit right above them. */
+.td-play .td-ctr-make .td-mkrow:not(.td-mkrow-drops) .td-mkbtn{
+  flex:1 1 0;min-width:0;min-height:29px}
+.td-play .td-ctr-make .td-mkrow-drops{
+  display:flex;flex-direction:column;gap:6px;
+  order:1;flex:0 0 auto;min-width:0}
+.td-play .td-mkbtn{font-size:.74rem;padding:2px 4px}
+.td-play .td-mkrow-drops .td-mkbtn.td-dropb{height:29px;font-size:.74rem;
+  letter-spacing:.03em}
+.td-play-bar .td-barcol{flex-direction:row;gap:5px}
+/* 29px matches a counter dropdown; min-height and a centring flex, as padding would push the icon and the word apart. */
+.td-play-bar .td-barcol .dv-pbtn{flex:1 1 0;min-width:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.74rem;padding:3px 4px;min-height:29px;white-space:nowrap}
+
+/* A class, as showTab writes .dp's inline display back on every tab change; !important beats minimizeDeckPanel's inline one. */
+.dp.td-panel-fold{display:none!important}
+
+/* The step colours are built in JS (tdStepGrad, TD_STEP_LOOK), not taken from KW_HLSETS; see there. */
+.td-turn-host{align-self:stretch;min-width:0}
+.td-turn-whose{display:flex;align-items:center;gap:6px;padding:2px 2px 0;
+  font-family:Cinzel,serif;font-size:.74rem;font-weight:700;letter-spacing:.06em;
+  color:var(--tx)}
+.td-turn-ro .td-turn-head,.td-turn-ph.ro{cursor:default}
+.td-turn-passed{font-family:Cinzel,serif;font-size:.62rem;letter-spacing:.06em;
+  color:var(--green-pale);border:1px solid var(--gr);border-radius:6px;
+  padding:1px 6px;margin-left:auto;opacity:.85}
+/* Two columns when tdFitTable picks them: the tracker spans every row, and the last row flexes so the spare height lands there. */
+#tdBoard > .td-half-mine.td-play2{--td-play-w:432px}
+.td-half-mine.td-play2 .td-play .td-ctr-row{display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  grid-template-rows:repeat(6,auto) minmax(0,1fr);
+  column-gap:8px;row-gap:0;align-content:start}
+.td-half-mine.td-play2 .td-play .td-ctr-row > *{grid-column:1;margin-bottom:8px}
+.td-half-mine.td-play2 .td-play .td-ctr-row > .td-turn-host{grid-column:2;grid-row:1 / -1;margin-bottom:0}
+.td-turn{display:flex;flex-direction:column;gap:5px;min-width:0}
+/* A gradient border is two backgrounds (padding-box, border-box): --st-out is a gradient, which border-color cannot draw. */
+.td-turn-step{border:2px solid transparent;border-radius:9px;overflow:hidden;
+  background:linear-gradient(var(--pan),var(--pan)) padding-box,
+             var(--st-out,var(--b2)) border-box;
+  min-width:0}
+.td-turn-step:not(.live){opacity:.58}
+.td-turn-step:not(.live):hover{opacity:.82}
+.td-turn-head{display:flex;align-items:center;justify-content:space-between;
+  gap:6px;padding:5px 7px;cursor:pointer;
+  background:var(--st-fill,var(--b1))}
+.td-turn-name{font-family:Cinzel,serif;font-weight:800;letter-spacing:.08em;
+  font-size:.86rem;line-height:1.1;
+  color:var(--st-ink,var(--white));
+  /* Both rings are listed: eight offsets at 2px alone leave the corners out, and the 1px ring fills them. */
+  text-shadow:0 1px 0 var(--st-o,#000), 1px 0 0 var(--st-o,#000),
+              0 -1px 0 var(--st-o,#000), -1px 0 0 var(--st-o,#000),
+              1px 1px 0 var(--st-o,#000), -1px 1px 0 var(--st-o,#000),
+              1px -1px 0 var(--st-o,#000), -1px -1px 0 var(--st-o,#000),
+              0 2px 0 var(--st-o,#000), 2px 0 0 var(--st-o,#000),
+              0 -2px 0 var(--st-o,#000), -2px 0 0 var(--st-o,#000),
+              2px 2px 0 var(--st-o,#000), -2px 2px 0 var(--st-o,#000),
+              2px -2px 0 var(--st-o,#000), -2px -2px 0 var(--st-o,#000)}
+.td-turn-pass{flex:0 0 auto;padding:2px 9px;border-radius:7px;cursor:pointer;
+  border:1px solid #b8f0c8;background:rgba(45,107,62,.95);color:var(--white);
+  font-family:Cinzel,serif;font-weight:700;font-size:.7rem;letter-spacing:.06em;
+  line-height:1.35;
+  transition:background .15s,border-color .15s}
+.td-turn-pass:hover{background:rgba(45,107,62,1);border-color:var(--ink-light);
+  box-shadow:0 0 8px color-mix(in srgb,var(--gr) 35%,transparent)}
+.td-turn-phases{display:flex;flex-direction:column;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--bg) 55%,transparent),color-mix(in srgb,var(--bg) 72%,transparent))}
+.td-turn-ph{display:flex;align-items:center;justify-content:space-between;
+  gap:5px;padding:3px 8px;cursor:pointer;min-width:0;
+  font-family:'Crimson Pro',Georgia,serif;font-size:.8rem;line-height:1.3;
+  color:var(--td);border-top:1px solid color-mix(in srgb,var(--white) 5%,transparent)}
+.td-turn-ph:hover{background:color-mix(in srgb,var(--white) 6%,transparent);color:var(--tx)}
+.td-turn-ph.ro:hover{background:transparent}
+/* The step's fill, not --st-tint (set by tdStepVars, read by no rule); the letter ring keeps the word legible over its band. */
+.td-turn-ph.on{color:var(--st-ink,var(--white));
+  background:var(--st-fill,var(--b1));
+  /* Tighter than the quiet rows: at their spacing the live row clips "Unlock". */
+  gap:3px;padding:3px 5px;
+  margin:2px 3px;border-radius:8px;border-top-color:transparent;
+  /* outline, not border: it moves nothing when the live phase changes. */
+  outline:2px solid var(--st-ink,var(--white));outline-offset:-2px;
+  box-shadow:0 1px 5px color-mix(in srgb,var(--black) 45%,transparent)}
+.td-turn-ph.on:hover{background:var(--st-fill,var(--b1));filter:brightness(1.12)}
+/* The arrow is the one mark that is not colour; aria-hidden, as the row already says it is current. */
+.td-turn-arw{flex:0 0 auto;font-size:.62rem;line-height:1;
+  color:var(--st-ink,var(--white));
+  text-shadow:0 1px 0 var(--st-o,var(--black)), 1px 0 0 var(--st-o,var(--black)),
+              0 -1px 0 var(--st-o,var(--black)), -1px 0 0 var(--st-o,var(--black))}
+.td-turn-phn{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+/* One line: tdFitPhase shrinks the words after every render, and the ellipsis is only the floor's net. */
+.td-turn-ph.on .td-turn-phn{font-weight:800;font-size:1.15em;
+  margin-left:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  text-shadow:0 1px 0 var(--st-o,#000), 1px 0 0 var(--st-o,#000),
+              0 -1px 0 var(--st-o,#000), -1px 0 0 var(--st-o,#000),
+              1px 1px 0 var(--st-o,#000), -1px 1px 0 var(--st-o,#000),
+              1px -1px 0 var(--st-o,#000), -1px -1px 0 var(--st-o,#000)}
+.td-turn-tog{flex:0 0 auto;padding:0 6px;border-radius:6px;cursor:pointer;
+  border:1px solid var(--b1);background:var(--s2);color:var(--tx);
+  font-family:Cinzel,serif;font-size:.6rem;font-weight:700;letter-spacing:.06em;
+  line-height:1.7;
+  transition:background .15s,border-color .15s,color .15s}
+.td-turn-tog.on{border-color:var(--gr);background:rgba(45,107,62,.55);color:var(--ink-light)}
+.td-turn-tog:hover{border-color:var(--txt-accent);color:var(--tx)}
+.td-turn-tog.on:hover{border-color:var(--green-light-3);color:var(--white);
+  background:rgba(45,107,62,.8)}
+/* Gold, not green: green means an automatic that does something to the cards, and this only stops the turn pausing. */
+.td-turn-pa{flex:0 0 auto;padding:0 4px;border-radius:6px;cursor:pointer;
+  border:1px solid var(--b1);background:var(--s2);color:var(--tx);
+  font-family:Cinzel,serif;font-size:.53rem;font-weight:700;letter-spacing:.04em;
+  line-height:1.8;
+  transition:background .15s,border-color .15s,color .15s}
+.td-turn-pa.on{border-color:var(--gd);background:color-mix(in srgb,var(--go) 28%,transparent);
+  color:var(--go)}
+.td-turn-pa:hover{border-color:var(--txt-accent);color:var(--tx)}
+.td-turn-pa.on:hover{border-color:var(--g2);color:var(--white);
+  background:color-mix(in srgb,var(--go) 45%,transparent)}
+.td-turn-pass1{padding:1px 5px;font-size:.56rem;letter-spacing:.03em;
+  line-height:1.45;border-radius:6px}
+.td-turn-ph.on .td-turn-tog{padding:0 4px;font-size:.55rem;letter-spacing:.04em}
+.td-turn-wait{padding:3px 8px 4px;text-align:center;
+  font-family:'Crimson Pro',Georgia,serif;font-size:.68rem;font-style:italic;
+  color:var(--tm);border-top:1px solid color-mix(in srgb,var(--white) 5%,transparent)}
+
+/* touch-action:none, or a touchscreen takes a drag for a scroll. */
+.td-card{touch-action:none;-webkit-user-select:none;user-select:none}
+.td-card:active{cursor:grabbing}
+
+/* Left in place, faded, so the stack does not jump under the pointer mid-drag. */
+.td-dragging{opacity:.28}
+
+/* pointer-events:none: elementFromPoint must see the zone underneath, not the ghost. */
+.td-ghost{position:fixed;z-index:9500;pointer-events:none;margin:0!important;
+  box-shadow:0 8px 24px color-mix(in srgb,var(--black) 55%,transparent);opacity:.92;cursor:grabbing}
+/* Its counters set pointer-events:auto, so without this the ghost could take the pointer and the card would stay held. */
+.td-ghost *{pointer-events:none!important}
+
+.td-zone.td-over{border-color:var(--txt-accent)}
+.td-zone.td-over .td-zbody{background:color-mix(in srgb,var(--go) 7%,transparent)}
+
+/* Two rows and a spanning first column, so the deck browser stretches to the foot of the Specification. */
+.td-rew{display:grid;gap:14px;grid-template-columns:minmax(280px,420px) 1fr;
+  grid-template-rows:auto 1fr;padding:4px 0;align-items:stretch}
+.td-rew-spec{grid-column:1;grid-row:1 / span 2}
+.td-rew-res{grid-column:2;grid-row:1}
+.td-rew-cat{grid-column:2;grid-row:2}
+.td-rew h4{margin:0 0 6px;font-family:Cinzel,serif;font-size:.92rem;color:var(--tx);
+  display:flex;align-items:center;gap:8px}
+.td-rew-spec,.td-rew-res{border:1px solid var(--bd);border-radius:10px;
+  background:var(--pan);padding:11px 13px;min-width:0}
+.td-rew-fields{display:flex;flex-direction:column;gap:9px;margin-top:9px}
+.td-rew-f{display:flex;flex-direction:column;gap:3px}
+/* :first-child, because the cost control is also a direct span child and must
+   not be dressed as a label. */
+.td-rew-f>span:first-child{font-family:Cinzel,serif;font-size:.7rem;
+  letter-spacing:.06em;color:var(--tx)}
+.td-rew-f>span:first-child em{font-style:italic;text-transform:none;letter-spacing:0}
+.td-rew-in{padding:4px 8px;border:1px solid var(--b1);border-radius:6px;
+  background:var(--s2);color:var(--tx);font-family:'Crimson Pro',serif;font-size:.88rem}
+.td-rew-in:focus{outline:none;border-color:var(--txt-accent)}
+.td-rew-cost{display:flex;gap:6px}
+.td-rew-num{width:88px}
+.td-rew-cols{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px}
+/* The sidebar's own classes (.fs .fl .nf .mp .csw .stf) are global, so only the panel's padding is undone here. */
+.td-rew-side{margin:9px -13px 0}
+.td-rew-side .fs{padding-left:13px;padding-right:13px}
+.td-rew-side .fs:last-child{border-bottom:none}
+.td-rew-csw{gap:12px;justify-content:center;padding:5px 0 3px}
+/* The sidebar sizes its swatch images inline in JS; this markup is a string, so the size is set here. */
+.td-rew-csw label{width:26px;height:26px;flex-shrink:0}
+.td-rew-csw label img{width:26px;height:26px;display:block;
+  filter:drop-shadow(0 0 2px color-mix(in srgb,var(--white) 50%,transparent))}
+.td-rew-rt{background:var(--s2);border:1px solid var(--b1);border-radius:0;color:var(--tx);
+  font-family:'Crimson Pro',serif;font-size:.75rem;padding:3px 0 3px 4px;cursor:pointer}
+.td-rew-actions{display:flex;align-items:center;gap:10px;margin-top:11px;
+  flex-wrap:wrap}
+.td-rew-count{font-family:'Crimson Pro',serif;font-size:.82rem;color:var(--tm)}
+.td-rew-count.none{color:var(--warn,var(--go))}
+.td-rew-res{min-height:150px}
+#tdRewOut{display:grid;gap:9px;
+  grid-template-columns:repeat(auto-fill,minmax(112px,1fr))}
+.td-rew-card{position:relative;border:1px solid var(--b1);border-radius:7px;
+  overflow:hidden;background:var(--s2)}
+.td-rew-card .td-face{aspect-ratio:409/571;height:auto}
+.td-rew-card.latest{border-color:var(--txt-accent);
+  box-shadow:0 0 0 1px var(--txt-accent),0 4px 16px color-mix(in srgb,var(--black) 50%,transparent)}
+.td-rew-name{display:block;padding:4px 6px;font-family:'Crimson Pro',serif;
+  font-size:.76rem;color:var(--tx);overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+.td-rew-tag{position:absolute;top:4px;left:4px;padding:0 7px;border-radius:7px;
+  background:color-mix(in srgb,var(--black) 72%,transparent);color:var(--txt-accent);
+  font-family:'Crimson Pro',serif;font-size:.68rem}
+/* min-height:0: a grid item's auto minimum is its content, so a big deck would push the row open instead of scrolling. */
+.td-rew-cat{border:1px solid var(--bd);border-radius:10px;
+  background:var(--pan);padding:11px 13px;min-width:0;min-height:0;
+  display:flex;flex-direction:column}
+.td-rew-cat #tdRewCat{flex:1 1 auto;min-height:0;overflow-y:auto;padding-right:4px}
+.td-rew-showb{flex:0 0 auto}
+/* The summary must be one element: in a column flex every loose text and <b> is an item of its own. */
+.td-rew-hidden{display:flex;flex-direction:column;gap:6px;justify-content:center;
+  align-items:center;height:100%;min-height:74px;text-align:center;
+  font-family:'Crimson Pro',serif;font-size:.9rem;color:var(--tm)}
+.td-rew-hidden span{display:block}
+.td-rew-hidden b{color:var(--tx);font-weight:600}
+.td-rew-hidden i{font-size:.8rem;opacity:.75}
+.td-rew-hint{margin-left:auto;font-family:'Crimson Pro',serif;font-size:.76rem;
+  color:var(--tm);font-style:italic;font-weight:400}
+#tdRewCat{display:grid;gap:9px;
+  grid-template-columns:repeat(auto-fill,minmax(104px,1fr));max-height:46vh;
+  overflow:auto}
+.td-rew-mini{position:relative;border:1px solid var(--b1);border-radius:7px;
+  overflow:hidden;background:var(--s2);cursor:pointer;transition:opacity .15s}
+.td-rew-mini .td-face{aspect-ratio:409/571;height:auto}
+.td-rew-mini:hover{border-color:var(--txt-accent)}
+.td-rew-mini.dim{opacity:.26}
+.td-rew-mini.dim:hover{opacity:.62}
+
+/* The placement is undone too, or the three panels would stack in one cell. */
+@media (max-width:900px){
+  .td-rew{grid-template-columns:1fr;grid-template-rows:none}
+  .td-rew-spec,.td-rew-res,.td-rew-cat{grid-column:auto;grid-row:auto}
+}
+
+.td-menu{position:fixed;z-index:9600;min-width:186px;padding:5px;
+  background:var(--pan);border:1px solid var(--bd);border-radius:9px;
+  box-shadow:0 10px 30px color-mix(in srgb,var(--black) 60%,transparent)}
+.td-mtitle{font-family:Cinzel,serif;font-size:.78rem;color:var(--tx);
+  padding:4px 9px 6px;border-bottom:1px solid var(--bd);margin-bottom:4px;
+  max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.td-mi{display:flex;align-items:center;gap:8px;width:100%;text-align:left;
+  padding:5px 9px;border:0;border-radius:6px;background:none;color:var(--tx);
+  font-family:'Crimson Pro',serif;font-size:.88rem;cursor:pointer}
+.td-mi:hover{background:var(--b2)}
+.td-mhint{margin-left:auto;font-size:.74rem;color:var(--tm)}
+.td-marrow{margin-left:auto;color:var(--tm)}
+.td-msep{height:1px;background:var(--bd);margin:4px 6px}
+/* Inside #tdMenu, which the close-on-outside test leaves alone, so it keeps the focus while you type. */
+.td-mfield{display:flex;align-items:center;gap:6px;padding:4px 8px}
+.td-mfield-in{flex:1 1 0;min-width:64px;width:64px;box-sizing:border-box;
+  padding:4px 7px;border:1px solid var(--b1);border-radius:7px;
+  background:var(--s2);color:var(--tx);
+  font-family:Cinzel,serif;font-size:.9rem;font-variant-numeric:tabular-nums}
+.td-mfield-in:focus{outline:none;border-color:var(--txt-accent)}
+.td-mfield-b{flex:0 0 auto;padding:4px 10px;border:1px solid var(--b1);
+  border-radius:7px;background:var(--s2);color:var(--td);cursor:pointer;
+  font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);font-size:.72rem;letter-spacing:.02em;
+  }
+.td-mfield-b:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+
+.td-msub{position:relative}
+.td-mflyout{display:none;position:absolute;left:100%;top:-5px;min-width:150px;
+  padding:5px;background:var(--pan);border:1px solid var(--bd);border-radius:9px;
+  box-shadow:0 10px 30px color-mix(in srgb,var(--black) 60%,transparent);max-height:60vh;overflow:auto}
+.td-msub:hover .td-mflyout{display:block}
+@media (max-width:620px){.td-mflyout{left:auto;right:0;top:100%}}
+
+/* Not .ed2-overlay: the editor turns arrow-key navigation off whenever one is present. */
+.td-ov{position:fixed;inset:0;background:color-mix(in srgb,var(--black) 62%,transparent);z-index:9000;
+  display:flex;align-items:center;justify-content:center;padding:24px}
+.td-search-note{font-family:'Crimson Pro',serif;font-size:.78rem;color:var(--tm);
+  margin-left:10px;font-style:italic}
+.td-search-body{max-height:72vh}
+.td-scard{cursor:grab}
+.td-scard.td-sdrag{opacity:.5;cursor:grabbing}
+.td-scard.td-sover{outline:3px solid var(--go,var(--go));outline-offset:2px}
+.td-srest{align-self:center;font-family:'Crimson Pro',serif;font-size:.86rem;
+  color:var(--tm);font-style:italic;padding:0 10px}
+.td-mpeek{display:flex;align-items:stretch;gap:6px;padding:2px 6px}
+.td-mi-peek{flex:1 1 auto;text-align:left;line-height:1.25}
+.td-mi-peek small{display:block;font-size:.72rem;color:var(--tm);
+  font-family:'Crimson Pro',serif;font-style:italic}
+.td-mpeek-in{width:56px;padding:2px 6px;border:1px solid var(--b1);
+  border-radius:6px;background:var(--s2);color:var(--tx);text-align:center;
+  font-family:'Crimson Pro',serif;font-variant-numeric:tabular-nums}
+.td-mpeek-in:focus{outline:none;border-color:var(--txt-accent)}
+
+/* Rows of five, as asked, not as many as fit. */
+.td-search-grid{display:grid;gap:9px;grid-template-columns:repeat(5,1fr)}
+.td-scard{position:relative;border:1px solid var(--b1);border-radius:7px;
+  overflow:hidden;background:var(--s2);cursor:context-menu}
+.td-scard .td-face{aspect-ratio:409/571;height:auto}
+.td-thumb-noart{width:100%;aspect-ratio:409/571;
+  background:repeating-linear-gradient(45deg,var(--b2) 0 6px,var(--s2) 6px 12px)}
+.td-scard:hover{border-color:var(--txt-accent)}
+.td-sname{display:block;padding:4px 6px;font-family:'Crimson Pro',serif;
+  font-size:.74rem;color:var(--tx);overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+.td-spos{position:absolute;top:4px;left:4px;padding:0 6px;border-radius:7px;
+  background:color-mix(in srgb,var(--black) 66%,transparent);color:var(--tm);font-family:'Crimson Pro',serif;
+  font-size:.7rem}
+.td-scard:first-child .td-spos{color:var(--txt-accent)}
+
+.td-ctr-mk{min-width:auto}
+.td-ctr-make{align-items:stretch;gap:5px;position:relative}
+.td-ctr-make .td-mkrow{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
+  margin-top:0}
+.td-ctr-make .td-mkbtn{width:100%;text-align:center;
+  display:inline-flex;align-items:center;justify-content:center;gap:5px}
+.td-mkrow-drops .td-mkbtn.td-dropb{height:34px;font-size:.82rem;letter-spacing:.05em}
+.td-ctr-none{font-family:'Crimson Pro',serif;font-size:.82rem;color:var(--tm);
+  font-style:italic}
+
+/* The colours of .td-token-plus, -minus and -emblem: each button looks like the counter it makes. */
+.td-mkbtn.td-mk-plus{background:rgba(45,107,62,.95);border-color:#b8f0c8;color:#fff}
+.td-mkbtn.td-mk-plus:hover{background:rgba(45,107,62,1);border-color:#d8ffe4}
+.td-mkbtn.td-mk-minus{background:rgba(128,48,48,.95);border-color:#f0b8b8;color:#fff}
+.td-mkbtn.td-mk-minus:hover{background:rgba(128,48,48,1);border-color:#ffd8d8}
+.td-mkbtn.td-mk-copy{background:rgba(58,52,96,.95);border-color:#b9aef0;color:#fff}
+.td-mkbtn.td-mk-copy:hover{background:rgba(58,52,96,1);border-color:#d6cfff}
+
+/* The outline is a gradient in two backgrounds, as border-image ignores border-radius (HANDOFF §8); --drop-out and --drop-fill come from kwGrad. */
+/* Compounded with .td-mkbtn, declared later at equal specificity, or the base border and radius would win. */
+.td-mkbtn.td-dropb{border:3px solid transparent;border-radius:0;
+  background:var(--drop-fill) padding-box,var(--drop-out) border-box;
+  color:var(--drop-text,#0c0e14);
+  font-family:Cinzel,serif;font-weight:800;
+  
+  /* A stroke, not a shadow, over a light-to-dark fill; paint-order puts it outside the glyph so it does not eat the letter. */
+  -webkit-text-stroke:1.4px var(--drop-ink,#0c0e14);
+  paint-order:stroke fill;
+  text-shadow:none;
+  transition:transform .12s,box-shadow .12s,filter .12s}
+/* Not a no-op: .td-mkbtn:hover sets a border colour, which would paint over the gradient outline. */
+.td-mkbtn.td-dropb:hover{border-color:transparent;filter:brightness(1.08);
+  box-shadow:0 3px 12px rgba(0,0,0,.5)}
+.td-mkbtn.td-dropb .td-caret{opacity:.8}
+.dv-pbtn.td-shuffle{border-color:var(--spect-ink);color:var(--blue-pale);
+  background:color-mix(in srgb,var(--blue-dark) 55%,transparent)}
+/* .dv-pbtn:hover draws a green border-image, which border-color cannot override, so the purple ramp is restated. */
+.dv-pbtn.td-shuffle:hover{background:color-mix(in srgb,var(--blue-dark) 85%,transparent);
+  color:var(--white);border:1px solid;border-image:linear-gradient(180deg,#1d1a33 0%,#3a3460 15%,#e2dcff 40%,#b9aef0 50%,#8b7fd0 60%,#3a3460 85%,#1d1a33 100%) 1;border-radius:0;
+  box-shadow:0 0 8px color-mix(in srgb,var(--spect-ink) 30%,transparent)}
+
+.td-crystal{min-width:0;padding:6px}
+.td-crystal-b{display:flex;align-items:center;gap:6px;width:100%;
+  margin-top:4px;padding:5px 10px;border-radius:8px;
+  border:2px solid transparent;
+  background:linear-gradient(var(--tok-fill,#888),var(--tok-fill,#888)) padding-box,
+    linear-gradient(140deg,#fff 0%,var(--tok-fill,#888) 28%,var(--tok-ink,#141418) 62%,
+      var(--tok-fill,#888) 88%) border-box;
+  color:var(--tok-ink,#141418);
+  font-family:Cinzel,serif;font-weight:800;font-size:.74rem;letter-spacing:.04em;
+  cursor:pointer;
+  text-shadow:0 1px 0 rgba(255,255,255,.45);
+  transition:transform .12s,box-shadow .12s}
+.td-crystal-b:hover:not(:disabled){transform:translateY(-1px);
+  box-shadow:0 3px 10px rgba(0,0,0,.5)}
+.td-crystal-b.out{opacity:.32;filter:grayscale(.7);cursor:default}
+.td-crystal-b .td-colmana{width:15px;height:15px}
+
+.td-coldrop{min-width:200px}
+.td-colname{display:block;line-height:1}
+
+/* The rim is a border-box background under the fill, as border-image cannot be rounded (HANDOFF §8). */
+.td-colpick-b{display:inline-flex;align-items:center;justify-content:center;
+  gap:5px;flex:0 0 auto;min-width:48px;height:var(--td-ctr-rowh,28px);
+  padding:0 8px;border-radius:9px;border:2px solid transparent;
+  background:linear-gradient(var(--tok-fill,#888),var(--tok-fill,#888)) padding-box,
+    linear-gradient(140deg,#fff 0%,var(--tok-fill,#888) 28%,var(--tok-ink,#141418) 62%,
+      var(--tok-fill,#888) 88%) border-box;
+  color:var(--tok-ink,#141418);
+  font-family:Cinzel,serif;font-weight:800;font-size:.68rem;letter-spacing:.04em;
+  cursor:pointer;
+  text-shadow:0 1px 0 rgba(255,255,255,.45);
+  transition:transform .12s,box-shadow .12s}
+.td-colmana{width:14px;height:14px;display:block;border-radius:50%;flex:0 0 auto}
+.td-colpick-b:hover{transform:translateY(-1px);
+  box-shadow:0 3px 10px rgba(0,0,0,.45)}
+.td-colpick-b:active{transform:none}
+
+.td-board.td-watching .td-card,
+.td-board.td-watching .td-token{pointer-events:none}
+.td-board.td-watching{cursor:default}
+.td-board.td-watching .td-half-mine::after,
+.td-board.td-watching .td-half-foe::after{content:'';position:absolute;inset:0;
+  pointer-events:none;border-radius:12px;
+  box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--txt-accent) 22%, transparent)}
+
+@keyframes tdJustMoved{
+  0%{box-shadow:0 0 0 3px var(--txt-accent), 0 0 16px color-mix(in srgb,var(--black) 50%,transparent)}
+  70%{box-shadow:0 0 0 3px var(--txt-accent), 0 0 16px color-mix(in srgb,var(--black) 50%,transparent)}
+  100%{box-shadow:0 0 0 0 transparent}
+}
+.td-card.td-justmoved{animation:tdJustMoved 9s ease-out forwards;border-radius:7px}
+
+.td-movedchip{position:fixed;left:50%;transform:translateX(-50%);z-index:120;
+  padding:7px 14px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--txt-accent);background:var(--b1);color:var(--tx);
+  font:inherit;font-size:.82rem;box-shadow:0 6px 20px color-mix(in srgb,var(--black) 55%,transparent)}
+.td-movedchip.up{top:14px}
+.td-movedchip.down{bottom:14px}
+.td-movedchip:hover{background:var(--b2)}
+
+/* align-items:start, so a short column's rows are not stretched to a tall one's height. */
+.td-keygrid{display:grid;grid-template-columns:repeat(3,auto);gap:4px 26px;
+  align-items:start}
+@media (max-width:900px){ .td-keygrid{grid-template-columns:1fr} }
+.td-fbbtn.close-x{border-color:var(--re,var(--re));color:#f0b8b8;background:rgba(128,48,48,.35)}
+.td-fbbtn.close-x:hover{background:rgba(128,48,48,.75);color:var(--white);border-color:#f0b8b8;
+  box-shadow:0 0 8px color-mix(in srgb,var(--re) 30%,transparent)}
+.td-keytab{border-collapse:collapse;font-size:.88rem}
+.td-keytab td{padding:5px 12px 5px 0;vertical-align:baseline}
+.td-keytab tr.td-keyalt td{padding-top:0;color:var(--td);font-style:italic}
+.td-keytab tr.td-keyalt td:nth-child(2){padding-left:0}
+.td-keynote{font-family:'Crimson Pro',serif;font-size:.86rem;color:var(--td);
+  line-height:1.5;margin:0 0 12px;max-width:46ch}
+.td-keytab td:first-child{white-space:nowrap;text-align:right;padding-right:14px}
+.td-keys kbd{display:inline-block;min-width:1.1em;text-align:center;
+  padding:2px 6px;border:1px solid var(--b1);border-bottom-width:2px;
+  border-radius:5px;background:var(--b2);font:inherit;font-size:.82rem}
+.tbl-watchers{color:var(--spect-ink);font-size:.78rem}
+.tbl-link{color:var(--gr);font-size:.82rem;white-space:nowrap;
+  font-variant-numeric:tabular-nums}
+body.light .tbl-link{color:var(--gr)}
+.tbl-link.bad{color:var(--bad, var(--re));opacity:1}
+
+/* Your own face-down card shows you its face: what keeps it secret is that its identity never crosses the wire, not this. */
+.td-card.td-down .td-face{filter:brightness(.5) saturate(.45) contrast(.95)}
+.td-card.td-down{outline:2px dashed color-mix(in srgb, var(--txt-accent) 70%, transparent);
+  outline-offset:-3px;border-radius:7px}
+.td-downmark{position:absolute;left:50%;top:50%;z-index:13;
+  transform:translate(-50%,-50%) rotate(-14deg);
+  padding:2px 7px;border-radius:4px;pointer-events:none;
+  border:1px solid color-mix(in srgb, var(--txt-accent) 70%, transparent);
+  background:color-mix(in srgb,var(--black) 66%,transparent);color:var(--txt-accent);
+  font-size:.56rem;letter-spacing:.14em;
+  white-space:nowrap;text-shadow:0 1px 2px var(--black)}
+.tbl-watching{color:var(--spect-ink);letter-spacing:.08em;font-size:.72rem;
+  }
+
+.td-more{position:relative;display:inline-block}
+.td-more-b{padding-left:9px;padding-right:9px;font-size:1rem;line-height:1}
+.td-moredrop{position:absolute;top:100%;right:0;margin-top:5px;z-index:90;
+  min-width:224px;padding:5px;border:1px solid var(--b1);border-radius:11px;
+  background:var(--b1);box-shadow:0 10px 26px color-mix(in srgb,var(--black) 50%,transparent);text-align:left}
+.td-moredrop[hidden]{display:none}
+.td-moreitem{display:block;width:100%;text-align:left;background:none;
+  border:1px solid transparent;border-radius:9px;padding:7px 9px;cursor:pointer;
+  color:var(--tx);font:inherit;font-size:.84rem}
+.td-moreitem:hover{border-color:var(--txt-accent);background:var(--b2)}
+.td-moreitem small{display:block;opacity:.62;font-size:.74rem;margin-top:1px}
+.td-moresep{height:1px;margin:5px 4px;background:var(--bd)}
+.td-morehead{font-family:Cinzel,serif;font-size:.66rem;font-weight:700;letter-spacing:.12em;
+  color:var(--td);padding:5px 9px 3px}
+.td-maplist{max-height:240px;overflow-y:auto}
+.td-mapitem{display:flex;align-items:stretch;gap:2px}
+.td-mapitem > .td-moreitem{flex:1 1 auto;min-width:0}
+.td-mapitem.on > .td-moreitem{border-color:var(--gd);background:color-mix(in srgb,var(--g2) 10%,transparent)}
+.td-mapdel{flex:0 0 auto;width:28px;background:none;border:1px solid transparent;border-radius:9px;
+  color:var(--re-ink);cursor:pointer;font-size:.8rem}
+.td-mapdel:hover{border-color:var(--re);background:color-mix(in srgb,var(--re) 12%,transparent)}
+.td-morenone{padding:4px 9px 6px;color:var(--tm);font-style:italic;font-size:.82rem}
+
+.td-caret{font-size:.7rem;opacity:.75;line-height:1}
+/* Fixed, not absolute: the panel and the strip's row scroll, and a scroll container clips; tdPlaceDrop places it by hand. */
+.td-kwdrop{position:fixed;z-index:120;
+  min-width:230px;max-width:min(70vw,720px);
+  max-height:min(46vh,380px);overflow-y:auto;
+  display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;
+  padding:8px;border-radius:10px;
+  border:1px solid var(--b2);background:var(--s1);
+  box-shadow:0 14px 34px color-mix(in srgb,var(--black) 60%,transparent)}
+.td-kwdrop[hidden]{display:none}
+.td-kwdrop-item{background:none;border:1px solid transparent;border-radius:9px;
+  padding:4px 5px;cursor:pointer}
+.td-kwdrop-item:hover{border-color:var(--txt-accent);background:var(--b2)}
+.td-mkbtn{padding:5px 11px;border:1px solid var(--b1);border-radius:8px;
+  background:var(--s2);color:var(--tx);cursor:pointer;
+  font-family:'Crimson Pro',serif;font-size:.85rem;white-space:nowrap}
+.td-mkbtn:hover{border-color:var(--txt-accent)}
+.td-mkbtn.up:hover{border-color:#5c9e6e;color:#8ad0a0}
+.td-mkbtn.dn:hover{border-color:#c45c5c;color:#e08a8a}
+
+/* kwPill wires each pill to the Keywords page; on a counter that would leave the board, so nothing inside takes the pointer. */
+.td-token-kw *{pointer-events:none}
+
+/* A modifier, not the base rule: .td-ctr is also the counter maker's box. */
+.td-ctr.td-ctr-stat{background:none;border:0;padding:2px 4px 0;min-width:104px;position:relative}
+.td-ctr-orbbox{display:block;width:86px;height:86px;
+  filter:drop-shadow(0 3px 7px color-mix(in srgb,var(--black) 55%,transparent))}
+/* Child, not descendant: edOrbSvg nests an svg in an svg, and a px width on the inner one is scaled by the outer (174px for 86). */
+.td-ctr-orbbox>svg{width:86px;height:86px;display:block;overflow:visible}
+/* A grid, not a flex column, so the set field is exactly as wide as the two buttons above it. */
+.td-ctr.td-ctr-stat{flex-direction:row;align-items:center;gap:7px}
+.td-ctr.td-ctr-stat .td-ctr-btns{display:grid;grid-template-columns:1fr 1fr;
+  gap:2px;margin:0;flex:0 0 auto;width:86px}
+.td-ctr.td-ctr-stat .td-ctr-b{min-width:0;width:100%}
+.td-ctr.td-ctr-stat .td-ctr-set{grid-column:1 / -1;margin-top:1px}
+.td-ctr-stat .td-ctr-warn{position:absolute;top:0;right:0}
+
+/* Its four hosts are display:contents, so every button is an item of this one flex line. */
+.td-table{position:sticky;top:var(--chrome,109px);z-index:76;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:7px 14px;border-bottom:1px solid var(--bd);background:var(--pan);
+  box-shadow:0 4px 10px color-mix(in srgb,var(--black) 35%,transparent);
+  font-family:'Crimson Pro',serif;font-size:.9rem;color:var(--td)}
+.td-th{display:contents}
+.td-table .td-stat{white-space:nowrap}
+.tbl-gap{flex:1 1 auto}
+.tbl-dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;background:var(--tm)}
+.tbl-dot.tbl-on{background:var(--gr);box-shadow:0 0 0 3px color-mix(in srgb,var(--gr) 18%,transparent)}
+.tbl-dot.tbl-joining,.tbl-dot.tbl-lost{background:var(--warn,var(--go));
+  animation:tblPulse 1.1s ease-in-out infinite}
+.tbl-dot.tbl-error{background:var(--re)}
+@keyframes tblPulse{0%,100%{opacity:1}50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.tbl-dot{animation:none!important}}
+.tbl-state{font-family:Cinzel,serif;font-size:.8rem;letter-spacing:.05em;
+  color:var(--tx)}
+.tbl-code{font-family:Cinzel,serif;font-size:1.15rem;letter-spacing:.26em;
+  color:var(--go);background:var(--b2);border:1px solid var(--gd);
+  border-radius:7px;padding:1px 4px 1px 12px;cursor:help}
+.tbl-who,.tbl-peer{color:var(--tm);font-size:.86rem}
+.tbl-wait{font-style:italic}
+.tbl-note{color:var(--re-ink);font-size:.86rem}
+.tbl-unsent{font-family:Cinzel,serif;font-size:.74rem;letter-spacing:.05em;
+  color:var(--g2);background:color-mix(in srgb,var(--orange-dark) 35%,transparent);border:1px solid var(--gd);
+  border-radius:7px;padding:1px 8px;cursor:help}
+
+.tbl-body{display:flex;flex-direction:column;gap:12px}
+.tbl-f{display:flex;flex-direction:column;gap:3px}
+.tbl-f span{font-family:Cinzel,serif;font-size:.68rem;letter-spacing:.08em;
+  color:var(--tx)}
+.tbl-f input{padding:6px 9px;border:1px solid var(--b1);border-radius:7px;
+  background:var(--s2);color:var(--tx);font-family:'Crimson Pro',serif;font-size:.95rem}
+.tbl-f input:focus{outline:none;border-color:var(--txt-accent)}
+.tbl-relay{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  font-family:'Crimson Pro',serif;font-size:.92rem;color:var(--tm)}
+.tbl-relay .ed2-btn{margin-left:auto}
+.tbl-relay-dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;
+  background:var(--green-mid);box-shadow:0 0 6px color-mix(in srgb,var(--green-mid) 60%,transparent)}
+.tbl-relay-dot.own{background:var(--go);box-shadow:0 0 6px color-mix(in srgb,var(--go) 60%,transparent)}
+/* The relay box is laid out by .tbl-urlbox alone: an id rule for #tblUrlBox would beat it. */
+.tbl-err{margin:0;padding:7px 10px;border-radius:7px;font-family:'Crimson Pro',serif;
+  font-size:.9rem;color:var(--re-hi);background:color-mix(in srgb,var(--re) 28%,transparent);border:1px solid var(--re)}
+.tbl-err[hidden]{display:none}
+
+/* Seat d is pink and seat f blue-violet, clear of purple, which means spectating (HANDOFF §12.1 D). */
+:root,body{--seat-a:#e8c96a;--seat-b:#6cb6ff;--seat-c:#34d17f;--seat-d:#f07ab0;
+  --seat-e:#ff9a3c;--seat-f:#8c7cff}
+/* Its own palette: .ed2-modal is dark in both themes, and body.light would turn --tx and the rest dark on it. */
+.tbl-dlg{--re-ink:#e07a7a;--re-hi:#f0b8b8;--ink-on-fill:#0c0e14;--tm2:#9a8f79;--bg:#0c0e14;--s1:#13161f;--s2:#1a1e2b;--s3:#212638;--b1:#2a2f45;--b2:#363d58;
+  --go:#c9a84c;--g2:#e8c96a;--gd:#7a6030;--tx:#f0ead8;--td:#c0b89a;--tm:#8d8472;
+  --re:#c45c5c;--gr:#5c9e6e;--bd:#2a2f45;--pan:#13161f;--txt-accent:#e8c96a;
+  color:var(--tx);
+  --spect:#b478f0;--spect-ink:#c9a0ff;--spect-fill:rgba(180,120,240,.14);
+  --spect-glow:rgba(180,120,240,.35);
+  --tbl-m-gold:linear-gradient(180deg,#4a3818 0%,#7a6030 15%,#f5ecd0 40%,#e8c96a 50%,#c9a84c 60%,#7a6030 85%,#4a3818 100%);
+  --tbl-m-purple:linear-gradient(180deg,#2a1240 0%,#5a2a8a 15%,#f0dcff 40%,#c9a0ff 50%,#9a5ad8 60%,#5a2a8a 85%,#2a1240 100%);
+  --tbl-m-green:linear-gradient(180deg,#0e2a1a 0%,#1f5a36 15%,#d8f5e2 40%,#5fcf8a 50%,#3c9a62 60%,#1f5a36 85%,#0e2a1a 100%);
+  --tbl-m-grey:linear-gradient(180deg,#1a1d26 0%,#363d58 15%,#8a90a6 40%,#5a6078 50%,#454b62 60%,#363d58 85%,#1a1d26 100%);
+  /* The dark values always: the dialog is dark in both themes, and the light theme's are made for a cream header. */
+  --tbl-metal:linear-gradient(180deg,#101c33 0%,#2b4a7a 15%,#e8f4ff 40%,#9ec8f0 50%,#5b86c4 60%,#2b4a7a 85%,#101c33 100%);
+  --tbl-wash:linear-gradient(180deg,rgba(24,40,70,.96) 0%,rgba(12,14,20,.94) 100%);
+  --tbl-fill:linear-gradient(180deg,rgba(46,92,160,.34) 0%,rgba(20,38,70,.30) 100%);
+  --tbl-ink:#cfe2ff;
+  --tbl-grad:linear-gradient(180deg,#2f6fd0 0%,#9aa6ff 20%,#e8f4ff 46%,#7fd4ff 62%,#2f6fd0 100%);
+  font-family:'Crimson Pro',Georgia,serif}
+body.rebirth .tbl-dlg{
+  --tbl-metal:linear-gradient(180deg,#3a0a04 0%,#7d1c0c 15%,#ffe8b8 40%,#ffc02e 50%,#e07018 60%,#7d1c0c 85%,#3a0a04 100%);
+  --tbl-wash:linear-gradient(180deg,rgba(58,20,10,.96) 0%,rgba(12,14,20,.94) 100%);
+  --tbl-fill:linear-gradient(180deg,rgba(176,58,16,.34) 0%,rgba(70,20,10,.30) 100%);
+  --tbl-ink:#ffd9a8;
+  --tbl-grad:linear-gradient(180deg,#c2160c 0%,#f4471d 20%,#ff8a1f 42%,#ffe36b 52%,#ffc02e 68%,#c2160c 100%)}
+body.light .tbl-dlg .ed2-btn.close-x{color:#f0b8b8;border-color:var(--re);
+  background:rgba(128,48,48,.35)}
+body.light .tbl-dlg .ed2-btn.close-x:hover{color:var(--white);background:rgba(128,48,48,.75);
+  border-color:#f0b8b8}
+.tbl-ov2{z-index:9100}
+.tbs-ov{z-index:9200}
+.tbs-dlg{width:min(720px,94vw)}
+.tbs-body{padding:12px 16px 16px;max-height:70vh;overflow:auto}
+.tbs-state{font-size:1.02rem;color:var(--td);padding:6px 2px}
+.tbs-state.ok{color:var(--gr)}
+.tbs-list{display:flex;flex-direction:column;gap:6px}
+.tbs-row{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr) auto;align-items:center;
+  gap:10px;padding:7px 10px;border:1px solid var(--b1);border-radius:6px;background:var(--s1)}
+.tbs-row.tbs-deck{border-color:var(--g2)}
+.tbs-name{display:flex;align-items:baseline;gap:8px;min-width:0}
+.tbs-name b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tbs-n{font-size:.82rem;color:var(--tm);white-space:nowrap}
+.tbs-why{font-size:.92rem;color:var(--td);min-width:0}
+.tbs-act{display:flex;justify-content:flex-end}
+.tbs-busy{font-size:.88rem;color:var(--g2);white-space:nowrap}
+.ed2-btn.tbl-syncbtn{border-color:var(--g2);color:var(--g2)}
+.tbl-tsync{margin-top:5px}
+.tbl-hub,.tbl-roomdlg{width:min(1120px,96vw)}
+.tbl-hostdlg{width:min(960px,96vw)}
+.tbl-head{position:relative;justify-content:flex-start;gap:12px;background:var(--tbl-wash);
+  border-bottom:0;border-radius:12px 12px 0 0;padding-bottom:16px}
+.tbl-head::after{content:'';position:absolute;left:0;right:0;bottom:0;height:4px;
+  background:var(--tbl-metal);pointer-events:none}
+.tbl-head > b,.tbl-hl > b{font-family:Cinzel,serif;font-size:1rem;letter-spacing:.03em;
+  color:var(--tbl-ink);white-space:nowrap}
+.tbl-pill{display:inline-flex;align-items:center;padding:3px 9px;white-space:nowrap;
+  background:var(--tbl-fill);border:2px solid;border-image:var(--tbl-metal) 1}
+.tbl-pill-w{font-family:Cinzel,serif;font-size:.68rem;font-weight:900;letter-spacing:.07em;
+  background-image:var(--tbl-grad);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent}
+.tbl-online{display:flex;align-items:center;gap:8px;font-size:.92rem;color:var(--td);white-space:nowrap}
+.tbl-online:empty{display:none}
+.tbl-relay-dot.bad{background:var(--re);box-shadow:0 0 6px color-mix(in srgb,var(--re) 60%,transparent)}
+.tbl-relay-dot.off{background:var(--tm);box-shadow:none}
+/* Equal outer columns are what put the name in the true middle. */
+.tbl-head3{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:14px}
+.tbl-hl{display:flex;align-items:center;gap:12px;min-width:0}
+.tbl-hr{display:flex;align-items:center;gap:10px;justify-content:flex-end;min-width:0}
+.tbl-head .tbl-namef{display:flex;align-items:center;gap:10px;margin:0}
+.tbl-head .tbl-namef span{font-family:Cinzel,serif;font-size:.66rem;letter-spacing:.1em;
+  color:var(--tbl-ink);white-space:nowrap}
+.tbl-head .tbl-namef input{width:210px;padding:6px 10px;border:1px solid var(--b2);border-radius:7px;
+  background:color-mix(in srgb,var(--bg) 72%,transparent);color:var(--tx);font-family:'Crimson Pro',serif;font-size:.98rem}
+.tbl-head .tbl-namef input:focus{outline:none;border-color:var(--tbl-ink)}
+.tbl-head .tbl-relay{flex-wrap:nowrap;color:var(--tbl-ink)}
+.tbl-head .tbl-relay .ed2-btn{margin-left:0}
+@media (max-width:900px){
+  .tbl-head3{display:flex;flex-wrap:wrap}
+  .tbl-hr{margin-left:auto}
+}
+.tbl-urlbox{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:2px}
+.tbl-urlbox[hidden]{display:none}
+.tbl-f.tbl-urlrow{flex:1 1 320px;flex-direction:row;align-items:center;gap:10px;margin:0}
+.tbl-f.tbl-urlrow > span{white-space:nowrap}
+.tbl-f.tbl-urlrow input{flex:1 1 auto;min-width:0}
+.tbl-lstat{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--td);white-space:nowrap}
+.tbl-lstat:empty{display:none}
+
+.tbl-box{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.tbl-onerow{flex-wrap:nowrap}
+.tbl-hostwrap{flex-direction:column;align-items:stretch;gap:0}
+.tbl-hostline{display:flex;align-items:center;gap:12px}
+.tbl-hostopts{border-top:1px solid color-mix(in srgb,var(--b1) 60%,transparent);margin-top:10px}
+.tbl-hostopts[hidden]{display:none}
+.tbl-hostopts .tbl-hostbody{padding:2px 0 0}
+.tbl-hostopts .tbl-hrow:last-child{border-bottom:0;padding-bottom:2px}
+.tbl-box h5{margin:0;font-size:.92rem;white-space:nowrap}
+@media (max-width:760px){.tbl-onerow{flex-wrap:wrap}}
+
+.tbl-seg{display:inline-flex;border:1px solid var(--b2);flex:0 0 auto}
+.tbl-seg button{font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);font-size:.72rem;font-weight:600;padding:6px 12px;
+  color:var(--td);background:var(--s2);border:0;cursor:pointer;white-space:nowrap}
+.tbl-seg button + button{border-left:1px solid var(--b2)}
+.tbl-seg button.on{background:color-mix(in srgb,var(--g2) 14%,transparent);color:var(--g2);box-shadow:inset 0 -2px 0 var(--g2)}
+.tbl-seg button:not(.on):hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+.tbl-seg-sm button{font-size:.62rem;padding:4px 9px}
+
+/* One fixed size, so the switch never moves under the pointer whichever word shows. */
+.tbl-pp,.tbl-opt{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;
+  flex:0 0 auto;height:38px;padding:0 12px;box-sizing:border-box;font:inherit;
+  border:2px solid;transition:background .15s}
+.tbl-pp{width:140px;border-image:var(--tbl-m-gold) 1;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--g2) 16%,transparent),color-mix(in srgb,var(--g2) 4%,transparent))}
+.tbl-pp[data-pp="private"]{border-image:var(--tbl-m-purple) 1;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--spect) 18%,transparent),color-mix(in srgb,var(--spect) 5%,transparent))}
+.tbl-pp-track{position:relative;width:40px;height:22px;border-radius:11px;flex:0 0 auto;
+  background:color-mix(in srgb,var(--g2) 18%,transparent);border:1px solid var(--g2);transition:all .15s}
+.tbl-pp-knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;
+  background:var(--g2);transition:all .15s}
+.tbl-pp-word{font-family:Cinzel,serif;font-size:.74rem;font-weight:700;letter-spacing:.05em;
+  color:var(--g2);width:64px;text-align:left}
+.tbl-pp[data-pp="private"] .tbl-pp-track{background:color-mix(in srgb,var(--spect) 18%,transparent);border-color:var(--spect)}
+.tbl-pp[data-pp="private"] .tbl-pp-knob{left:20px;background:var(--spect)}
+.tbl-pp[data-pp="private"] .tbl-pp-word{color:var(--spect-ink)}
+.tbl-pp:hover{box-shadow:0 0 10px color-mix(in srgb,var(--g2) 30%,transparent)}
+.tbl-pp[data-pp="private"]:hover{box-shadow:0 0 10px color-mix(in srgb,var(--spect) 35%,transparent)}
+
+.tbl-opt{border-image:var(--tbl-m-grey) 1;background:color-mix(in srgb,var(--white) 2%,transparent)}
+.tbl-opt-lbl{font-family:Cinzel,serif;font-size:.68rem;font-weight:700;letter-spacing:.08em;
+  color:var(--tx);white-space:nowrap}
+.tbl-opt-word{font-family:Cinzel,serif;font-size:.72rem;font-weight:700;letter-spacing:.05em;
+  width:30px;text-align:left;color:var(--td)}
+.tbl-opt .tbl-pp-track{background:color-mix(in srgb,var(--white) 5%,transparent);border-color:var(--b2)}
+.tbl-opt .tbl-pp-knob{background:var(--grey-mid)}
+.tbl-opt[data-on="1"] .tbl-pp-knob{left:20px}
+.tbl-opt[data-on="0"] .tbl-opt-lbl{color:var(--td)}
+.tbl-opt:hover{box-shadow:0 0 8px color-mix(in srgb,var(--grey-mid) 30%,transparent)}
+.tbl-opt-spect[data-on="1"]{border-image:var(--tbl-m-purple) 1;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--spect) 18%,transparent),color-mix(in srgb,var(--spect) 5%,transparent))}
+.tbl-opt-spect[data-on="1"] .tbl-pp-track{background:color-mix(in srgb,var(--spect) 22%,transparent);border-color:var(--spect)}
+.tbl-opt-spect[data-on="1"] .tbl-pp-knob{background:var(--spect)}
+.tbl-opt-spect[data-on="1"] .tbl-opt-lbl,.tbl-opt-spect[data-on="1"] .tbl-opt-word{color:var(--spect-ink)}
+.tbl-opt-spect[data-on="1"]:hover{box-shadow:0 0 10px color-mix(in srgb,var(--spect) 35%,transparent)}
+.tbl-opt-strict[data-on="1"]{border-image:var(--tbl-m-green) 1;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--green-mid) 16%,transparent),color-mix(in srgb,var(--green-mid) 4%,transparent))}
+.tbl-opt-strict[data-on="1"] .tbl-pp-track{background:color-mix(in srgb,var(--green-mid) 22%,transparent);border-color:var(--gr)}
+.tbl-opt-strict[data-on="1"] .tbl-pp-knob{background:var(--gr)}
+.tbl-opt-strict[data-on="1"] .tbl-opt-lbl,.tbl-opt-strict[data-on="1"] .tbl-opt-word{color:var(--gr)}
+.tbl-opt-strict[data-on="1"]:hover{box-shadow:0 0 10px color-mix(in srgb,var(--green-mid) 35%,transparent)}
+.tbl-strict-ink{color:var(--gr)}
+
+.tbl-code6{display:flex;gap:6px;flex:0 0 auto}
+.tbl-c6{width:34px;height:40px;text-align:center;font-family:Cinzel,serif;font-weight:800;
+  font-size:1.15rem;color:var(--g2);background:var(--s2);border:1px solid var(--b2);
+  border-radius:6px;padding:0;}
+.tbl-c6:focus{outline:none;border-color:var(--g2);box-shadow:0 0 0 3px color-mix(in srgb,var(--g2) 15%,transparent)}
+
+.ed2-btn.tbl-green{color:var(--ink-on-fill);background:var(--gr);border-color:var(--gr)}
+.ed2-btn.tbl-green:hover{color:var(--ink-on-fill);background:var(--gr);border-color:var(--gr);
+  box-shadow:0 0 12px color-mix(in srgb,var(--green-mid) 45%,transparent)}
+.ed2-btn.tbl-gold{color:var(--ink-on-fill);background:var(--g2);border-color:var(--g2)}
+.ed2-btn.tbl-gold:hover{color:var(--ink-dark);background:#f5ecd0;border-color:#f5ecd0;
+  box-shadow:0 0 12px color-mix(in srgb,var(--g2) 50%,transparent)}
+.ed2-btn.tbl-big{font-size:.86rem;padding:9px 18px}
+
+.tbl-lobby{display:grid;grid-template-columns:210px minmax(0,1fr);border:1px solid var(--b1);
+  border-radius:10px;min-height:300px;overflow:hidden}
+.tbl-lside{border-right:1px solid var(--b1);padding:14px;background:var(--bg)}
+.tbl-lside h6{font-family:Cinzel,serif;font-size:.66rem;letter-spacing:.12em;
+  color:var(--tx);margin:14px 0 6px}
+.tbl-lside h6:first-child{margin-top:0}
+.tbl-chk{display:flex;align-items:center;gap:8px;width:100%;font-family:'Crimson Pro',serif;
+  font-size:.95rem;color:var(--td);padding:3px 0;cursor:pointer;background:none;border:0;
+  text-align:left;white-space:nowrap}
+.tbl-chk i{width:15px;height:15px;border:1px solid var(--b2);background:var(--s2);flex:0 0 auto;
+  display:inline-flex;align-items:center;justify-content:center;font-style:normal;
+  font-size:.7rem;color:var(--g2)}
+.tbl-chk.on i::before{content:'\2713'}
+.tbl-chk:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+.tbl-n{margin-left:auto;font-size:.8rem;color:var(--td)}
+.tbl-lmain{padding:14px 16px;min-width:0}
+.tbl-ltop{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.tbl-lh{font-family:Cinzel,serif;font-size:.72rem;letter-spacing:.12em;color:var(--tx)}
+.tbl-lhead,.tbl-trow{display:grid;grid-template-columns:minmax(0,1fr) 124px 118px 90px 150px;
+  gap:12px;align-items:center}
+.tbl-lhead{padding:0 14px 6px;font-family:Cinzel,serif;font-size:.62rem;letter-spacing:.12em;
+  color:var(--tx)}
+.tbl-lgroup{font-family:Cinzel,serif;font-size:.68rem;letter-spacing:.12em;
+  color:var(--tx);margin:12px 0 7px}
+.tbl-trow{padding:9px 14px;border:1px solid var(--b1);background:var(--s1);border-radius:8px}
+.tbl-trow + .tbl-trow{margin-top:7px}
+.tbl-trow:hover{border-color:var(--blue-dark-6);background:var(--s2)}
+.tbl-trow.mine{border-color:var(--gd);
+  background:linear-gradient(90deg,color-mix(in srgb,var(--g2) 7%,transparent),transparent 60%),var(--s1)}
+.tbl-trow.full{opacity:.78}
+.tbl-trow > *,.tbl-lhead > *{min-width:0}
+.tbl-tname,.tbl-tsub,.tbl-tstate,.tbl-lhead span{display:block;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.tbl-tname{font-family:Cinzel,serif;font-weight:700;font-size:.95rem;letter-spacing:.02em;
+  line-height:1.25;color:var(--tx)}
+.tbl-tsub{font-size:.86rem;color:var(--td)}
+.tbl-tsub b{color:var(--tx);font-weight:600}
+.tbl-warn{color:var(--re-ink)}
+.tbl-seats{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.tbl-seat{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;
+  justify-content:center;font-family:Cinzel,serif;font-size:.62rem;font-weight:800;
+  color:var(--ink-dark);flex:0 0 auto}
+.tbl-seat.open{background:transparent;border:1.5px dashed var(--b2)}
+.tbl-seats small{font-size:.82rem;color:var(--td);margin-left:3px}
+body.rebirth .tbl-lhead,body.rebirth .tbl-trow{grid-template-columns:minmax(0,1fr) 186px 118px 90px 150px}
+.tbl-tstate{font-size:.86rem;color:var(--td)}
+.tbl-tstate .w{color:var(--gr)}
+.tbl-tstate .g{color:var(--go)}
+.tbl-acts{display:flex;gap:6px;justify-content:flex-end;white-space:nowrap}
+.tbl-lfoot{display:inline-flex;align-items:center;gap:8px;margin:0 0 0 6px;font-size:.88rem;color:var(--td);
+  white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.tbl-empty{border:1px dashed var(--b2);border-radius:10px;padding:22px;text-align:center}
+.tbl-seat-a{background:var(--seat-a)}
+.tbl-seat-b{background:var(--seat-b)}
+.tbl-seat-c{background:var(--seat-c)}
+.tbl-seat-d{background:var(--seat-d)}
+.tbl-seat-e{background:var(--seat-e)}
+.tbl-seat-f{background:var(--seat-f)}
+.tbl-ink-a{color:var(--seat-a)}
+.tbl-ink-b{color:var(--seat-b)}
+.tbl-ink-c{color:var(--seat-c)}
+.tbl-ink-d{color:var(--seat-d)}
+.tbl-ink-e{color:var(--seat-e)}
+.tbl-ink-f{color:var(--seat-f)}
+.tbl-capnote{font-style:italic}
+@media (max-width:900px){
+  .tbl-lobby{grid-template-columns:1fr}
+  .tbl-lside{border-right:0;border-bottom:1px solid var(--b1)}
+}
+
+.tbl-hostbody{padding:6px 16px 10px}
+.tbl-hrow{display:flex;align-items:center;gap:14px;padding:11px 0;
+  border-bottom:1px solid color-mix(in srgb,var(--b1) 60%,transparent);flex-wrap:wrap}
+.tbl-hrow:last-child{border-bottom:0}
+.tbl-il{display:flex;align-items:center;gap:10px}
+.tbl-grow{flex:1 1 220px}
+.tbl-lbl{font-family:Cinzel,serif;font-size:.66rem;letter-spacing:.1em;
+  color:var(--tx);white-space:nowrap}
+.tbl-lw{width:60px}
+.tbl-hostbody input,.tbl-select{flex:1 1 auto;min-width:0;padding:7px 10px;border:1px solid var(--b1);
+  border-radius:7px;background:var(--s2);color:var(--tx);font-family:'Crimson Pro',serif;font-size:1rem}
+.tbl-hostbody input:focus,.tbl-select:focus{outline:none;border-color:var(--g2)}
+/* width:0, as a text box's default of twenty characters pushed the box onto a line of its own. */
+.tbl-hostbody .tbl-il input{width:0;min-width:120px}
+.tbl-dcount{font-size:.9rem;color:var(--td);white-space:nowrap}
+.tbl-lmark{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;
+  border-radius:50%;font-size:.9rem;font-weight:900;flex:0 0 auto}
+.tbl-lmark:empty{display:none}
+.tbl-lmark.ok{color:var(--gr);background:color-mix(in srgb,var(--green-mid) 14%,transparent);border:1px solid var(--gr)}
+.tbl-lmark.no{color:var(--re-ink);background:color-mix(in srgb,var(--re) 16%,transparent);border:1px solid var(--re)}
+
+.tbl-roomdlg .ed2-modal-head{flex-wrap:wrap}
+.tbl-rtitle{font-size:1.15rem!important}
+.tbl-bigcode{font-family:Cinzel,serif;font-size:1.2rem;letter-spacing:.3em;color:var(--g2);
+  padding:2px 10px 2px 14px;border:1px solid var(--gd);background:color-mix(in srgb,var(--g2) 7%,transparent)}
+.tbl-dcslot{display:inline-flex;align-items:center}
+.tbl-dcslot:empty{display:none}
+/* The link is what gives when a row is short: its column can shrink to nothing, so the buttons never wrap. */
+.tbl-dc{display:inline-grid;grid-template-columns:auto minmax(0,max-content) auto;align-items:center;
+  column-gap:7px;white-space:nowrap}
+.td-table .tbl-dc,.tbl-head .tbl-dcslot{flex:1000 1 0;max-width:max-content}
+.td-table:not(.td-tiny) .tbl-dc{grid-template-columns:auto minmax(auto,max-content) auto}
+.td-table:not(.td-tiny) .tbl-dc-url{min-width:6.5em}
+.tbl-dc-logo{grid-column:1;width:18px;height:18px;color:var(--hdr-ink)}
+/* Under 4em the words wrap to a second line inside the one-line link and are hidden, rather than shown as a sliver. */
+.tbl-dc-url,.tbl-dc-url:visited,.tbl-dc-url:hover{grid-column:2;display:flex;flex-wrap:wrap;min-width:0;
+  max-width:16em;height:1.5em;line-height:1.5;overflow:hidden;font-size:.92rem;color:var(--tx);
+  text-decoration:none}
+.tbl-dc-url::before{content:'';flex:0 0 0;height:100%}
+.tbl-dc-url > span{flex:1 1 0;min-width:4em;overflow:hidden;text-overflow:ellipsis;text-decoration:underline;
+  text-underline-offset:3px;text-decoration-color:color-mix(in srgb,currentColor 45%,transparent)}
+.ed2-btn.tbl-dc-join{grid-column:3;display:inline-flex;align-items:center;gap:5px}
+.tbl-head .tbl-dc{padding-left:12px;border-left:1px solid color-mix(in srgb,var(--tbl-ink) 35%,transparent)}
+.tbl-head .tbl-dc-logo,.tbl-head .tbl-dc-url,.tbl-head .tbl-dc-url:visited,.tbl-head .tbl-dc-url:hover{color:var(--tbl-ink)}
+.tbl-hostbody .tbl-dcin,.tbl-rdc .tbl-dcin{width:100%;min-width:0}
+.tbl-hrow.tbl-namerow{display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr);
+  align-items:center;gap:6px 10px}
+.tbl-hrow.tbl-namerow-m{grid-template-columns:auto auto minmax(0,1fr) auto minmax(0,1fr)}
+.tbl-hostbody .tbl-namerow > input{width:100%;min-width:0}
+.tbl-namerow > input + .tbl-lbl{margin-left:4px}
+.tbl-namerow > .tbl-il{margin-right:4px}
+.tbl-namerow .tbl-dcwhy{grid-column:-2 / -1}
+@media (max-width:760px){
+  .tbl-hrow.tbl-namerow,.tbl-hrow.tbl-namerow-m{grid-template-columns:auto minmax(0,1fr)}
+  .tbl-namerow > .tbl-il{grid-column:1 / -1}
+  .tbl-namerow > input + .tbl-lbl{margin-left:0}
+}
+.tbl-rdc{display:grid;grid-template-columns:auto minmax(0,440px) auto auto;justify-content:start;
+  align-items:center;gap:6px 10px;margin-top:12px}
+.tbl-rdc:empty{display:none}
+.tbl-rdc .tbl-dcin{padding:6px 10px;border:1px solid var(--b1);border-radius:7px;background:var(--s2);
+  color:var(--tx);font-family:'Crimson Pro',serif;font-size:1rem}
+.tbl-rdc .tbl-dcin:focus{outline:none;border-color:var(--g2)}
+.tbl-dcin[aria-invalid='true'],.tbl-dcin[aria-invalid='true']:focus{border-color:var(--re)}
+.tbl-dcwhy{grid-column:2 / -1;margin:0;font-size:.9rem;color:var(--re-ink)}
+.tbl-room{display:grid;grid-template-columns:minmax(0,1fr) 290px;min-height:420px;overflow:hidden}
+.tbl-rmain{padding:16px 18px;overflow:auto}
+/* Inline, not flex: a flex row puts its gap between every word and every <b>. */
+.tbl-rstatus{font-size:.98rem;color:var(--td);line-height:30px}
+.tbl-rstatus .tbl-pp{vertical-align:middle;margin:0 2px}
+.tbl-rstatus b{color:var(--tx)}
+.tbl-seatgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}
+.tbl-seatcard{border:1px solid var(--b1);border-radius:10px;background:var(--s1);padding:14px;
+  display:flex;gap:12px;align-items:flex-start;min-height:112px;min-width:0}
+.tbl-seatcard.me{border-color:var(--g2)}
+.tbl-seatcard.open{border-style:dashed;background:transparent}
+.tbl-sbody{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:7px}
+.tbl-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:Cinzel,serif;font-weight:900;font-size:1.1rem;color:var(--ink-dark);flex:0 0 auto}
+.tbl-seatcard.open .tbl-av{background:transparent;border:1.5px dashed var(--b2);color:var(--td)}
+.tbl-swho{font-family:Cinzel,serif;font-weight:700;font-size:1rem;color:var(--tx);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tbl-you{font-family:'Crimson Pro',serif;font-weight:400;color:var(--td);margin-left:4px}
+.tbl-hostbadge{font-family:Cinzel,serif;font-size:.58rem;letter-spacing:.12em;color:var(--g2);
+  border:1px solid var(--gd);padding:0 5px;margin-left:8px;vertical-align:2px}
+.tbl-stop{display:flex;align-items:center;gap:10px;min-width:0}
+.tbl-stop .tbl-swho{flex:1 1 auto;min-width:0}
+.tbl-sdeck{display:flex;align-items:center;gap:8px;min-width:0;font-size:.92rem;color:var(--td)}
+.tbl-sdeckname{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tbl-sdeck b{color:var(--tx)}
+.tbl-sdeckrow{display:flex;align-items:center;gap:8px;min-width:0}
+.tbl-dmbox{align-items:flex-start;flex-wrap:wrap}
+.tbl-dmbox .tbl-lbl{padding-top:9px}
+.tbl-dmdecks{flex:1 1 240px;min-width:0;box-sizing:border-box;resize:vertical;min-height:48px;
+  padding:7px 10px;border:1px solid var(--b1);border-radius:7px;background:var(--s2);color:var(--tx);
+  font-family:'Crimson Pro',serif;font-size:1rem}
+.tbl-dmdecks:focus{outline:none;border-color:var(--g2)}
+.tbl-dmfound{flex:1 1 100%;display:flex;flex-direction:column;gap:2px;font-size:.88rem}
+.tbl-dmfound:empty{display:none}
+.tbl-dmok{color:var(--td)}
+.tbl-dmok i{color:var(--tm)}
+.tbl-dmmiss{color:var(--re-ink)}
+.tbl-sdmrow{display:flex;flex-direction:column;gap:8px;margin-top:4px;padding-top:8px;
+  border-top:1px solid color-mix(in srgb,var(--b1) 60%,transparent)}
+.tbl-dmbadge{color:var(--go)}
+.ed2-btn.tbl-readybtn{color:var(--gr);border-color:var(--gr);flex:0 0 auto}
+.ed2-btn.tbl-readybtn:hover{color:var(--gr);border-color:var(--gr);background:color-mix(in srgb,var(--green-mid) 12%,transparent);
+  box-shadow:0 0 8px color-mix(in srgb,var(--green-mid) 30%,transparent)}
+.ed2-btn.tbl-readybtn.on,.ed2-btn.tbl-readybtn.on:hover{color:var(--ink-on-fill);background:var(--gr);border-color:var(--gr)}
+.tbl-ready{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;font-family:Cinzel,serif;font-size:.66rem;
+  font-weight:700;letter-spacing:.1em;padding:3px 8px;
+  border:1px solid var(--gr);color:var(--gr)}
+.tbl-ready.not{border-color:var(--b2);color:var(--tx)}
+.tbl-ractions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding-top:14px;
+  border-top:1px solid var(--b1)}
+.tbl-rhint{font-size:.92rem;color:var(--td)}
+.tbl-rside{border-left:1px solid var(--b1);background:var(--bg);display:flex;flex-direction:column;min-height:0}
+.tbl-sideh{font-family:Cinzel,serif;font-size:.68rem;letter-spacing:.12em;
+  color:var(--tx);padding:12px 14px 0}
+.tbl-rspect{padding:6px 14px 12px;font-size:.92rem;color:var(--td);border-bottom:1px solid var(--b1)}
+.tbl-rside .tbl-chatlog{flex:1 1 auto;min-height:160px;max-height:none}
+@media (max-width:900px){
+  .tbl-room{grid-template-columns:1fr}
+  .tbl-rside{border-left:0;border-top:1px solid var(--b1)}
+  .tbl-seatgrid{grid-template-columns:1fr}
+}
+
+.tbl-chatlog{padding:10px 14px;display:flex;flex-direction:column;gap:7px;font-size:.95rem;
+  overflow-y:auto;max-height:46vh;color:var(--tx)}
+.tbl-cm b{font-family:Cinzel,serif;font-size:.8rem;margin-right:6px;color:var(--g2)}
+.tbl-cm b.tbl-ink-a{color:var(--seat-a)}
+.tbl-cm b.tbl-ink-b{color:var(--seat-b)}
+.tbl-cm b.tbl-ink-c{color:var(--seat-c)}
+.tbl-cm b.tbl-ink-d{color:var(--seat-d)}
+.tbl-cm b.tbl-ink-e{color:var(--seat-e)}
+.tbl-cm b.tbl-ink-f{color:var(--seat-f)}
+.tbl-csys{font-size:.86rem;color:var(--td);font-style:italic}
+.tbl-chatin{border-top:1px solid var(--b1);padding:9px 10px}
+.tbl-chat{background:var(--s1);border:1px solid var(--b1);border-radius:10px;
+  display:flex;flex-direction:column;font-family:'Crimson Pro',serif;color:var(--tx)}
+/* Low, clear of Leave at the top row's end; tdFloatWin places it, so these hold only until it runs. */
+.tbl-chat-pop{position:fixed;right:18px;bottom:76px;width:340px;max-height:min(520px,calc(100vh - 220px));
+  z-index:86;box-shadow:0 18px 40px color-mix(in srgb,var(--black) 55%,transparent)}
+.tbl-chathead{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--b1)}
+.tbl-chathead b{font-family:Cinzel,serif;font-size:.8rem;color:var(--tx);white-space:nowrap}
+.tbl-chatwho{padding:6px 12px 0;font-size:.86rem;color:var(--tx)}
+.tbl-chatwho[hidden]{display:none}
+
+.tbl-chip{display:inline-flex;align-items:center;gap:7px;padding:3px 10px;border:1px solid var(--b1);
+  border-radius:999px;background:var(--s1);font-size:.9rem;color:var(--tx);white-space:nowrap}
+.tbl-chip b{font-weight:600}
+.tbl-chip.turn{border-color:var(--g2);box-shadow:0 0 0 3px color-mix(in srgb,var(--g2) 10%,transparent)}
+.tbl-chip.focus{outline:2px solid var(--ac);outline-offset:2px}
+.tbl-chip[data-seat]{cursor:context-menu}
+.tbl-s{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
+.tbl-cs{font-size:.84rem;color:var(--tx);padding-left:7px;border-left:1px solid var(--b2)}
+.tbl-cs b{color:var(--g2);font-weight:700}
+.tbl-phase{font-family:Cinzel,serif;font-size:.7rem;letter-spacing:.06em;color:var(--tx)}
+.ed2-btn.tbl-tool{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;
+  color:var(--tx);position:relative;white-space:nowrap}
+/* A hover never changes a colour (HANDOFF §12.1 G). */
+.ed2-btn.tbl-tool.tbl-red,.ed2-btn.tbl-no{border-color:var(--re);color:#f0b8b8;background:rgba(128,48,48,.38)}
+.ed2-btn.tbl-tool.tbl-green{border-color:var(--gr);color:var(--green-pale);background:rgba(45,107,62,.5)}
+.ed2-btn.tbl-tool.tbl-purple{border-color:var(--spect-ink);color:var(--purple-pale);background:color-mix(in srgb,var(--purple-dark-2) 45%,transparent)}
+body.light .ed2-btn.tbl-tool.tbl-red,body.light .ed2-btn.tbl-no{color:var(--re);background:rgba(196,92,92,.16)}
+body.light .ed2-btn.tbl-tool.tbl-green{color:var(--gr);background:rgba(92,158,110,.18)}
+body.light .ed2-btn.tbl-tool.tbl-purple{color:var(--spect-ink);background:rgba(155,123,218,.2)}
+.td-table .td-more{display:inline-flex}
+.td-table.td-up{z-index:87}
+/* The row gives ground in stages to stay one line (tdTopRowFit). */
+.td-table.td-tight{gap:5px;padding:6px 10px}
+.td-table.td-tight .ed2-btn.tbl-tool{padding:0 7px;gap:5px}
+.td-table.td-tight .tbl-code{font-size:.95rem;letter-spacing:.16em;padding:1px 3px 1px 8px}
+.td-table.td-tight .tbl-chip{gap:5px;padding:3px 8px}
+.td-table.td-tight .tbl-cs{padding-left:5px}
+.td-table.td-iconic .ed2-btn.tbl-tool:not(.tbl-keep) .tbl-tw{display:none}
+.td-table.td-iconic .ed2-btn.tbl-tool:not(.tbl-keep){padding:0 8px}
+.td-table.td-tiny .tbl-you,.td-table.td-tiny .tbl-link,.td-table.td-tiny .tbl-phase,
+.td-table.td-tiny .tbl-chip.me .tbl-cs{display:none}
+.ed2-btn.tbl-tool svg{width:15px;height:15px;flex:0 0 auto}
+.ed2-btn.tbl-tool.on{border-color:var(--g2);color:var(--g2)}
+.tbl-badge{position:absolute;top:-7px;right:-7px;min-width:17px;height:17px;border-radius:9px;
+  background:var(--re);color:var(--white);font-size:.64rem;font-weight:700;display:flex;align-items:center;
+  justify-content:center;padding:0 4px;font-family:system-ui,sans-serif;letter-spacing:0}
+
+
+.td-zone.td-fold .td-zbody{display:none}
+.td-zone.td-fold{align-self:start}
+/* A folded zone's title lies flat: read down the side it sets a floor of about 90px on a zone that should have almost none. */
+.td-zone.td-fold{flex-direction:column}
+.td-zone.td-fold .td-zhdr{width:auto;flex-direction:row;align-items:center;
+  gap:8px;padding:6px 10px;border-right:0;border-bottom:1px solid var(--bd)}
+.td-zone.td-fold .td-zname{writing-mode:horizontal-tb;transform:none;
+  flex:1 1 auto;min-height:0;justify-content:flex-start}
+.td-zone.td-fold .td-ztools{flex-direction:row}
+.td-zone.td-fold .td-zacts{display:none}
+.td-zfold{background:none;border:0;color:var(--tm);cursor:pointer;
+  font-size:.9rem;line-height:1;padding:0 4px;flex:0 0 auto}
+.td-zfold:hover{color:var(--txt-accent)}
+
+.td-zeye{background:none;border:0;cursor:pointer;padding:0 3px;flex:0 0 auto;
+  font-size:.9rem;line-height:1;opacity:.55;filter:grayscale(1)}
+.td-zeye:hover{opacity:1;filter:none}
+.td-zeye.on{opacity:1;filter:none}
+.td-zeye.on.mine{filter:drop-shadow(0 0 4px color-mix(in srgb,var(--go) 80%,transparent))}
+.td-zone.td-seen{border-color:var(--go)}
+.td-zone.td-seen .td-zhdr{border-bottom-color:var(--gd)}
+.td-zone.td-seen .td-zbody{display:flex;flex-wrap:wrap;gap:6px;
+  align-items:flex-start}
+
+.tbl-ask{max-width:460px}
+.tbl-askbody{display:flex;flex-direction:column;gap:12px}
+.tbl-askrow{display:flex;gap:10px}
+.tbl-asknote{padding:4px 16px 0;font-family:'Crimson Pro',serif;font-size:.86rem;
+  font-style:italic;color:var(--td)}
+.tbl-askrow .ed2-btn{flex:1 1 0}
+
+.td-restn{position:absolute;inset:auto 0 6px 0;text-align:center;
+  font-family:Cinzel,serif;font-size:.8rem;color:var(--tx);
+  text-shadow:0 1px 3px var(--black);pointer-events:none}
+
+.td-withfeed{display:block;position:relative}
+.td-withfeed > .td-board{width:100%;min-width:0}
+.td-feed{position:fixed;top:170px;right:18px;width:290px;z-index:85;
+  max-height:min(62vh,560px);display:flex;flex-direction:column;
+  box-shadow:0 18px 40px color-mix(in srgb,var(--black) 55%,transparent);
+  font-family:'Crimson Pro',serif;font-size:.86rem;line-height:1.45}
+.td-feed[hidden]{display:none}
+.td-dmwin{position:fixed;top:170px;right:326px;z-index:86;width:min(460px,calc(100vw - 32px));
+  max-height:min(80vh,760px);display:flex;flex-direction:column;
+  box-shadow:0 18px 40px color-mix(in srgb,var(--black) 55%,transparent);
+  font-family:'Crimson Pro',serif;font-size:.9rem;line-height:1.4}
+.td-dmwin[hidden]{display:none}
+.td-dmbody{flex:1 1 auto;min-height:0;overflow-y:auto;padding:10px 12px;
+  display:flex;flex-direction:column;gap:10px}
+.td-dm-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.td-dm-sel{flex:1 1 200px;min-width:0}
+.td-dm-n{color:var(--td);font-size:.86rem;white-space:nowrap}
+.td-dm-n.none{color:var(--re-ink)}
+.td-dm-add{display:flex;flex-direction:column;gap:6px}
+.td-dm-add[hidden],.td-dm-desc[hidden]{display:none}
+.td-dm-add textarea{width:100%;box-sizing:border-box;resize:vertical;min-height:52px;padding:6px 9px;
+  border:1px solid var(--b1);border-radius:7px;background:var(--s2);color:var(--tx);
+  font-family:'Crimson Pro',serif;font-size:.95rem}
+.td-dm-add textarea:focus{outline:none;border-color:var(--g2)}
+.td-dm-why{flex:1 1 160px;min-width:0;font-size:.84rem;color:var(--td)}
+.td-dm-desc{border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);padding-bottom:8px}
+.td-dm-desc .td-rew-side{margin:0 -12px}
+.td-dm-sec{display:flex;flex-direction:column;gap:5px}
+.td-dm-h{font-family:Cinzel,serif;font-size:.7rem;font-weight:700;letter-spacing:.1em;color:var(--tx)}
+.td-dm-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px;
+  max-height:236px;overflow-y:auto;padding:2px}
+.td-dm-drop{min-height:64px;border:1px dashed var(--b2);border-radius:8px;padding:5px}
+.td-dm-mini{position:relative;border-radius:5px;overflow:hidden;border:1px solid var(--b1);
+  background:var(--s2);cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none}
+.td-dm-mini .td-face{aspect-ratio:409/571;height:auto}
+.td-dm-mini:hover{border-color:var(--txt-accent)}
+.td-dm-none{grid-column:1 / -1;color:var(--tm);font-style:italic;font-size:.86rem;padding:4px 2px}
+.td-fw-head{display:flex;flex-direction:row;align-items:center;gap:8px;
+  padding:7px 10px;border-bottom:1px solid var(--bd);cursor:grab;
+  user-select:none;touch-action:none}
+.td-fw-drag .td-fw-head{cursor:grabbing}
+.td-fw-title{font-family:Cinzel,serif;font-size:.8rem;font-weight:700;
+  letter-spacing:.08em;color:var(--tx)}
+.td-feed-list{flex:1 1 auto;min-height:0;overflow-y:auto;padding:10px 12px;
+  display:flex;flex-direction:column;gap:4px}
+.td-feed-none{color:var(--tm);font-style:italic}
+.td-fl{color:var(--td);padding:1px 0}
+.td-fl b{color:var(--go);font-weight:600}
+.td-fl.them{color:var(--tm)}
+.td-fl.them b{color:var(--ac)}
+.td-fl.say{color:var(--tx);background:var(--b2);border-radius:7px;padding:3px 8px}
+
+/* pointer-events:none: the layer covers the whole board and must not swallow a drag. */
+.td-arrows{position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:65;overflow:visible}
+.td-arrow{stroke-width:3;fill:none;stroke-linecap:round;
+  filter:drop-shadow(0 1px 3px color-mix(in srgb,var(--black) 70%,transparent))}
+.td-arrow.mine{stroke:var(--g2);color:var(--g2)}
+.td-arrow.theirs{stroke:var(--ac);color:var(--ac)}
+.td-board.td-arrowing .td-card{cursor:crosshair}
+.td-board.td-arrowing .td-card:hover{outline:2px solid var(--go);outline-offset:2px}
+
+/* Pulses on the 2.6s beat every declared card shares (TD_PULSE_MS): the delay set at draw time keeps one clock. */
+.td-blockline{stroke:var(--white);fill:none;stroke-linecap:round;stroke-width:3;
+  filter:drop-shadow(0 0 4px color-mix(in srgb,var(--white) 85%,transparent)) drop-shadow(0 1px 3px color-mix(in srgb,var(--black) 60%,transparent));
+  animation:tdBlockPulse 2.6s ease-in-out infinite}
+@keyframes tdBlockPulse{0%,100%{stroke-opacity:.55;stroke-width:2.4}50%{stroke-opacity:1;stroke-width:3.6}}
+.td-block-live{animation:none;stroke-opacity:.8;stroke-dasharray:6 6}
+.td-board.td-blocking .td-card{cursor:crosshair}
+/* A declared card's look is in boardfx.css; no rule here styles td-decl-atk, -thaum or -blk. */
+
+.td-peerptr{position:absolute;z-index:66;pointer-events:none;
+  width:0;height:0;transition:left .08s linear,top .08s linear}
+.td-peerptr::before{content:'';position:absolute;left:-5px;top:-5px;
+  width:10px;height:10px;border-radius:50%;background:var(--ptr,var(--ac));
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--ptr,var(--ac)) 30%,transparent),0 1px 4px color-mix(in srgb,var(--black) 60%,transparent)}
+.td-peerptr span{position:absolute;left:10px;top:6px;white-space:nowrap;
+  font-family:'Crimson Pro',serif;font-size:.72rem;color:var(--ptr,var(--a2));
+  text-shadow:0 1px 3px var(--black)}
+
+@keyframes tdFlash{
+  0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--g2) 0%,transparent)}
+  20%,60%{box-shadow:0 0 0 4px color-mix(in srgb,var(--g2) 90%,transparent),0 0 18px color-mix(in srgb,var(--g2) 60%,transparent)}
+}
+.td-flash{animation:tdFlash 1.4s ease-out;z-index:30}
+@media (prefers-reduced-motion:reduce){
+  .td-flash{animation:none;outline:3px solid var(--g2);outline-offset:2px}
+}
+
+.tbl-turn{font-family:Cinzel,serif;font-size:.76rem;letter-spacing:.06em;
+  color:var(--tx);padding:2px 9px;border-radius:7px;
+  border:1px solid var(--b1)}
+.tbl-turn.mine{color:var(--ink-on-fill);background:var(--g2);border-color:var(--g2)}
+.tbl-chatin input{width:100%;box-sizing:border-box;padding:5px 9px;
+  border:1px solid var(--b1);border-radius:7px;background:var(--s2);
+  color:var(--tx);font-family:'Crimson Pro',serif;font-size:.9rem}
+.tbl-chatin input:focus{outline:none;border-color:var(--txt-accent)}
+
+
+/* The editor's section frame: the fill (--td-fill) in the padding box over a gold ramp in the border box; not .ed2-group,
+   whose fill is fixed. Written after the boxes' own rules, which it must beat without raising its specificity. */
+:root{
+  --td-gold:linear-gradient(135deg,#4a3818 0%,#7a6030 15%,#f5ecd0 40%,
+    #e8c96a 50%,#c9a84c 60%,#7a6030 85%,#4a3818 100%);
+}
+.td-zone,.td-ctr,.td-rew-spec,.td-rew-res,.td-rew-cat,.tbl-box,.td-feed,.td-dmwin{
+  border:4px solid transparent;border-radius:10px;
+  background:linear-gradient(var(--td-fill,var(--pan)),var(--td-fill,var(--pan))) padding-box,
+             var(--td-gold) border-box;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--white) 6%,transparent)}
+.td-ctr{--td-fill:var(--b2)}
+.tbl-box{--td-fill:var(--s1)}
+.td-half-foe[data-tint='red']    .td-zone{--td-fill:color-mix(in srgb,#c0392b 12%,var(--pan))}
+.td-half-foe[data-tint='yellow'] .td-zone{--td-fill:color-mix(in srgb,#d4ac0d 11%,var(--pan))}
+.td-half-foe[data-tint='green']  .td-zone{--td-fill:color-mix(in srgb,#27ae60 11%,var(--pan))}
+.td-half-foe[data-tint='blue']   .td-zone{--td-fill:color-mix(in srgb,#2980b9 13%,var(--pan))}
+.td-half-foe[data-tint='violet'] .td-zone{--td-fill:color-mix(in srgb,#8e44ad 13%,var(--pan))}
+.td-snudge{display:flex;justify-content:center;gap:6px;padding:4px 0 5px}
+.td-snb{width:26px;height:22px;border-radius:6px;border:1px solid var(--g2);background:color-mix(in srgb,var(--s1) 85%,transparent);
+  color:var(--g2);cursor:pointer;font-size:.72rem;line-height:1;padding:0}
+.td-snb:disabled{opacity:.3;cursor:default}
+.td-snb:hover:not(:disabled){background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+/* On the board the frame is .td-play's, one ring round its boxes; after the shared rule and with an id, to beat it unedited. */
+#tdBoard .td-play{
+  border:4px solid transparent;border-radius:10px;
+  background:linear-gradient(var(--pan),var(--pan)) padding-box,
+             var(--td-gold) border-box;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--white) 6%,transparent)}
+#tdBoard .td-play .td-ctr{
+  border:1px solid var(--bd);border-radius:9px;
+  background:var(--b2);box-shadow:none}
+
+/* As .ed2-sec-h, in the normal text colour, never muted (HANDOFF §12.1 B); each title keeps its own size. */
+.td-zname,.td-rew h4 .td-h4-t,.tbl-box h5{
+  font-family:'Cinzel',serif;font-weight:700;letter-spacing:.08em;
+  color:var(--tx)}
+.td-rew h4 .td-h4-t{flex:0 1 auto}
+
+
+.td-encboard{margin-top:14px}
+/* Beats body.rebirth .td-half (0,2,1), or Encounter gets the five-zone template; Encounter is Rebirth only. */
+body.rebirth .td-board.td-encboard .td-half,
+.td-board.td-encboard .td-half{
+  grid-template-columns:minmax(calc(var(--td-cw) + 22px),0.55fr) 1fr;
+  grid-template-areas:"grave field";
+}
+@media (max-width:900px){
+  body.rebirth .td-board.td-encboard .td-half,
+  .td-board.td-encboard .td-half{
+    grid-template-columns:1fr;grid-template-areas:"grave" "field"}
+}
+
+/* Only on the magnifier: a board card has no room for it, and a printed card keeps its printed number. */
+.td-zoom .m-orb-slot.m-orb-mod{position:relative}
+.td-zoom .m-orb-delta{position:absolute;right:-2px;bottom:-2px;min-width:15px;padding:0 3px;
+  border-radius:7px;background:var(--gr);color:var(--white);border:1px solid color-mix(in srgb,var(--white) 72%,transparent);
+  font:700 10px/15px system-ui,sans-serif;text-align:center;pointer-events:none;
+  box-shadow:0 1px 3px color-mix(in srgb,var(--black) 55%,transparent)}
+.td-zoom .m-orb-delta.neg{background:var(--red-mid-3)}
+
+/* --s1 turned to hue 275 and nothing else, as asked; the light theme's white has no hue to turn, so it gets the faintest purple. */
+.td-zone[data-zone='hand'].td-shown{--td-fill:#1a131f}
+body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
+/* isolation:isolate, so the ::after wave at z-index:-1 paints above the panel and under the cards. */
+.td-zone[data-zone='hand'].td-shown .td-zbody{position:relative;isolation:isolate;
+  overflow:hidden}
+/* Two layers half a cycle apart, each invisible at both ends of its run: one scaled gradient alone would snap back at the loop. */
+.td-zone[data-zone='hand'].td-shown .td-zbody::before,
+.td-zone[data-zone='hand'].td-shown .td-zbody::after{
+  content:'';position:absolute;inset:-25%;z-index:-1;pointer-events:none;
+  background:repeating-radial-gradient(circle at 50% 50%,
+    transparent 0 24px, color-mix(in srgb,var(--blue-pale) 42%,transparent) 24px 52px, transparent 52px 88px);
+  filter:blur(15px);opacity:0;
+  animation:tdHandAura 9s linear infinite}
+/* Negative, so the second layer starts half way through and the aura is whole from the first frame. */
+.td-zone[data-zone='hand'].td-shown .td-zbody::after{animation-delay:-4.5s}
+@keyframes tdHandAura{
+  0%  {transform:scale(1.9);opacity:0}
+  18% {opacity:.46}
+  72% {opacity:.46}
+  100%{transform:scale(.94);opacity:0}
+}
+/* 4.5s, half the rings' 9s: a ring reaches the border every half cycle. */
+.td-zone[data-zone='hand'].td-shown{animation:tdHandEdge 4.5s ease-in-out infinite}
+@keyframes tdHandEdge{
+  0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--blue-pale) 0%,transparent),
+                     inset 0 0 8px color-mix(in srgb,var(--blue-pale) 4%,transparent)}
+  45%    {box-shadow:0 0 13px 1px color-mix(in srgb,var(--blue-pale) 26%,transparent),
+                     inset 0 0 24px color-mix(in srgb,var(--blue-pale) 15%,transparent)}
+}
+/* opacity is restated: the rings sit at 0 until their animation lifts them, so with no animation they would vanish. */
+@media (prefers-reduced-motion:reduce){
+  .td-zone[data-zone='hand'].td-shown,
+  .td-zone[data-zone='hand'].td-shown .td-zbody::before,
+  .td-zone[data-zone='hand'].td-shown .td-zbody::after{animation:none}
+  .td-zone[data-zone='hand'].td-shown .td-zbody::before{opacity:.36}
+}
+
+/* Collapsed by one variable, nothing hidden: every card stays in the DOM and can still be dragged out. */
+.td-zone.td-collapsed{--td-stack-show:0}
+.td-zone.td-collapsed .td-stack .td-card:hover,
+.td-zone.td-collapsed.td-stack .td-card:hover{transform:none}
+.td-zcol{flex:0 0 auto;display:block;width:100%;padding:5px 0 6px;margin:1px 0 2px;
+  border:0;border-radius:4px;cursor:pointer;
+  background:color-mix(in srgb,var(--white) 5%,transparent);color:var(--tm);
+  transition:background .15s,color .15s}
+.td-zcol:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+/* Gold, not the eye's purple, which means the other player can see this. */
+.td-zcol.off{background:color-mix(in srgb,var(--go) 22%,transparent);color:var(--go);
+  box-shadow:inset 0 0 0 1px var(--gd)}
+.td-zcol.off:hover{background:color-mix(in srgb,var(--go) 34%,transparent);color:var(--white)}
+.td-zcol-t{writing-mode:vertical-rl;transform:rotate(180deg);
+  font-size:.58rem;letter-spacing:.1em;}
+
+.td-zshow{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;
+  width:100%;padding:5px 0 6px;margin:2px 0 4px;border:0;border-radius:4px;cursor:pointer;
+  background:color-mix(in srgb,var(--white) 5%,transparent);color:var(--tm);transition:background .15s,color .15s}
+.td-zshow:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+.td-zshow.on{background:color-mix(in srgb,var(--blue-dark) 95%,transparent);color:var(--blue-pale);box-shadow:inset 0 0 0 1px var(--spect-ink)}
+.td-zshow.on:hover{background:color-mix(in srgb,var(--blue-dark-7) 98%,transparent)}
+.td-zshow-i{display:block;line-height:0}
+.td-zshow-t{writing-mode:vertical-rl;transform:rotate(180deg);
+  font-size:.58rem;letter-spacing:.1em;}
+.td-board.td-small .td-zshow-t{display:none}
+/* Only a name down a rail has no length of its own; a flat one must be as wide as its bar needs, or "Suspended" is cut short. */
+.td-zone.td-fold .td-zname,.td-half-foe.td-compact .td-zname{contain:none}
+.td-half-foe.td-compact .td-zone[data-zone='field'] .td-zname{contain:inline-size}
+
+.td-shownmark{position:absolute;left:50%;bottom:6%;transform:translateX(-50%);
+  z-index:6;padding:1px 6px;border-radius:8px;background:color-mix(in srgb,var(--blue-dark) 95%,transparent);
+  border:1px solid var(--spect-ink);color:var(--blue-pale);font:600 8px/1.5 system-ui,sans-serif;
+  letter-spacing:.06em;pointer-events:none;white-space:nowrap}
+
+.td-zoom-ctr{max-width:320px}
+/* --kw-out and --kw-fill are the pill's own gradients (edKwPillVars); a gradient border is two backgrounds, as border-color cannot draw one. */
+.td-ctrwin{border:6px solid transparent;border-radius:14px;
+  background:linear-gradient(180deg,var(--s2),var(--s1)) padding-box,
+    var(--kw-out,var(--b2)) border-box;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--white) 6%,transparent);overflow:hidden;
+  transition:transform .1s ease-out;will-change:transform}
+/* Rectangular: a pill's shape (KW_SHAPECLASS) would cut a full-width name in half. */
+.td-ctrwin-head{position:relative;z-index:0;
+  padding:10px 14px 11px;text-align:center;
+  font-family:Cinzel,serif;font-weight:800;letter-spacing:.05em;
+  font-size:1.38rem;line-height:1.15;
+  color:var(--kw-ink,var(--white));background:var(--kw-out,var(--b1));
+  text-shadow:0 2px 0 var(--kw-o,#000), 2px 0 0 var(--kw-o,#000),
+              0 -2px 0 var(--kw-o,#000), -2px 0 0 var(--kw-o,#000),
+              2px 2px 0 var(--kw-o,#000), -2px 2px 0 var(--kw-o,#000),
+              2px -2px 0 var(--kw-o,#000), -2px -2px 0 var(--kw-o,#000),
+              0 3px 5px rgba(0,0,0,.55)}
+/* inset 4.5px: .kw-pill::before's 1.5px, tripled with the border. */
+.td-ctrwin-head::before{content:'';position:absolute;inset:4.5px;z-index:-1;
+  background:var(--kw-fill,var(--b1))}
+.td-ctrwin-txt{color:var(--tx);font-family:'Crimson Pro',Georgia,serif;
+  font-size:.92rem;line-height:1.45;text-align:center;padding:11px 13px 12px}
+.td-ctrwin-txt.none{color:var(--tm);font-style:italic;font-size:.84rem}
+.td-ctrwin-txt img{width:13px;height:13px;vertical-align:-2px;margin:0 1px}
+
+.td-zoom-ctrs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;
+  margin-top:8px;padding:8px 10px;border-radius:10px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--s2) 97%,transparent),color-mix(in srgb,var(--s1) 97%,transparent));
+  border:1px solid var(--b2);box-shadow:0 8px 20px color-mix(in srgb,var(--black) 50%,transparent)}
+.td-zoom-ctrs-lab{font-family:Cinzel,serif;font-size:.6rem;letter-spacing:.1em;
+  color:var(--tx);margin-right:2px}
+/* Not .td-token (absolute, draggable); only the td-token-KIND colour rules are shared, so they are written as selectors of their own. */
+.td-zoom-ctr-chip{display:inline-flex;align-items:center;justify-content:center;
+  min-width:26px;height:24px;padding:0 8px;border-radius:12px;border:2px solid;
+  font-family:Cinzel,serif;font-weight:700;font-size:.82rem;line-height:1;
+  font-variant-numeric:tabular-nums}
+.td-zoom-ctr-chip.td-token-plus{background:rgba(45,107,62,.95);border-color:#b8f0c8;color:#fff}
+.td-zoom-ctr-chip.td-token-minus{background:rgba(128,42,42,.95);border-color:#f0b8b8;color:#fff}
+.td-zoom-ctr-chip.td-token-emblem{background:rgba(74,45,110,.95);border-color:#d3b8f0;color:#fff}
+.td-zoom-ctr-chip.td-token-color{background:var(--tok-fill,#555);border-color:var(--tok-ink,#111);
+  color:var(--tok-ink,#111)}
+.td-zoom-ctr-chip.td-token-kw{background:none;border:0;padding:0;min-width:0;height:auto}
+
+.td-ctr-orbbox.td-orb-high{position:relative;
+  filter:drop-shadow(0 0 10px color-mix(in srgb,var(--gr) 55%,transparent))
+  drop-shadow(0 3px 7px color-mix(in srgb,var(--black) 55%,transparent))}
+.td-orb-glim{position:absolute;inset:0;pointer-events:none;overflow:visible}
+.td-orb-glim>i{position:absolute;width:12px;height:12px;
+  background:radial-gradient(circle,color-mix(in srgb,var(--white) 98%,transparent) 0%,color-mix(in srgb,var(--teal-pale) 85%,transparent) 35%,transparent 70%);
+  clip-path:polygon(50% 0%,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0% 50%,40% 40%);
+  opacity:0;animation:tdOrbSpark 2.6s ease-in-out infinite}
+.td-orb-glim>i:nth-child(1){left:12%;top:22%;animation-delay:0s}
+.td-orb-glim>i:nth-child(2){right:10%;top:34%;animation-delay:.65s}
+.td-orb-glim>i:nth-child(3){left:26%;bottom:16%;animation-delay:1.3s}
+.td-orb-glim>i:nth-child(4){right:22%;bottom:24%;animation-delay:1.95s}
+@keyframes tdOrbSpark{
+  0%,72%{opacity:0;transform:scale(.35) rotate(0deg)}
+  80%{opacity:1;transform:scale(1.15) rotate(35deg)}
+  100%{opacity:0;transform:scale(.5) rotate(70deg)}
+}
+@media (prefers-reduced-motion:reduce){
+  .td-orb-glim>i{animation:none}
+  .td-orb-glim>i{opacity:.55}
+}
+
+/* A fixed 38px: the Lock/Unlock pair steps aside by exactly this much (.td-zacts below). */
+.td-esstally{flex:0 0 38px;display:flex;flex-direction:column;align-items:center;
+  gap:4px;padding:6px 4px;border-right:1px solid var(--bd);
+  overflow:hidden auto}
+/* Keyed on the zone, not .td-esstally + .td-zacts, so the pair does not move when the first essence lands. */
+.td-zone[data-zone='essarea'] .td-zacts{left:calc(var(--td-rail,30px) + 38px + 6px);right:auto}
+.td-esstally-b{display:flex;flex-direction:column;align-items:center;gap:1px;
+  padding:4px 5px 3px;border-radius:8px;border:2px solid transparent;
+  background:linear-gradient(var(--tok-fill,#888),var(--tok-fill,#888)) padding-box,
+    linear-gradient(140deg,#fff 0%,var(--tok-fill,#888) 28%,var(--tok-ink,#141418) 62%,
+      var(--tok-fill,#888) 88%) border-box;
+  color:var(--tok-ink,var(--ink-dark));
+  font-family:Cinzel,serif;font-weight:800;font-size:.8rem;line-height:1;
+  text-shadow:0 1px 0 color-mix(in srgb,var(--white) 45%,transparent)}
+.td-esstally-b .td-colmana{width:16px;height:16px;display:block}
+.td-esstally-n{font-variant-numeric:tabular-nums}
+
+
+/* On <body> (tdDiceOpen), as a fixed box under a transformed ancestor is placed in its coordinates and drifts from the pointer.
+   z-index 8800: over the board's furniture, under .td-ov (9000) and .td-menu (9600), which must cover it. */
+.td-dice{position:fixed;z-index:8800;width:528px;
+  border:4px solid transparent;border-radius:10px;
+  background:linear-gradient(var(--pan),var(--pan)) padding-box,
+             var(--td-gold) border-box;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--white) 6%,transparent),0 14px 38px color-mix(in srgb,var(--black) 62%,transparent);
+  padding:0 0 8px}
+
+.td-dice-hd{display:flex;align-items:center;gap:8px;
+  padding:6px 8px 6px 10px;border-bottom:1px solid var(--bd);
+  cursor:grab;user-select:none;touch-action:none}
+.td-dice-hd:active{cursor:grabbing}
+.td-dice-ttl{font-family:Cinzel,serif;font-weight:700;font-size:.78rem;
+  letter-spacing:.09em;color:var(--g2);
+  white-space:nowrap}
+.td-dice-held{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;text-align:right;
+  font-family:'Crimson Pro',Georgia,serif;font-style:italic;
+  font-size:.76rem;color:var(--tm)}
+
+/* Not height:0 on the box: its padding would still show under the bar. */
+.td-dice.td-dice-mini{padding-bottom:0}
+.td-dice.td-dice-mini .td-dice-box,
+.td-dice.td-dice-mini .td-dice-bar,
+.td-dice.td-dice-mini .td-dice-quick,
+.td-dice.td-dice-mini .td-dice-err{display:none}
+.td-dice.td-dice-mini .td-dice-hd{border-bottom:0}
+
+/* Placed, never resized: tdDiceOpen sizes the canvas by its attributes, the coordinates the physics is written in. */
+.td-dice-box{position:relative;height:300px;overflow:hidden}
+.td-dice-box canvas{display:block;position:absolute;inset:0;
+  background:radial-gradient(130% 105% at 50% 0,var(--s2),var(--s1))}
+.td-dice-read{position:absolute;left:0;right:0;top:12px;display:grid;
+  place-items:center;pointer-events:none;z-index:3}
+.td-dice-total{width:62px;height:62px;border-radius:50%;
+  display:grid;place-items:center;
+  font-family:Cinzel,serif;font-weight:800;font-size:1.5rem;color:var(--ink-light);
+  border:2px solid transparent;
+  background:radial-gradient(circle at 50% 38%,var(--grey-deep),var(--black)) padding-box,
+             var(--td-gold) border-box;
+  text-shadow:0 0 9px color-mix(in srgb,var(--g2) 85%,transparent),0 1px 0 #4a3818;
+  opacity:0;transform:scale(.6);transition:opacity .2s}
+/* tdDiceThrow takes .on off and on with a forced reflow between, which is what replays the pop on the same number. */
+.td-dice-total.on{opacity:1;
+  animation:tdDicePop .42s cubic-bezier(.2,1.5,.4,1) forwards,
+            tdDiceGlow 2.4s ease-in-out .42s infinite}
+@keyframes tdDicePop{0%{transform:scale(.4)}60%{transform:scale(1.14)}
+                     100%{transform:scale(1)}}
+@keyframes tdDiceGlow{
+  0%,100%{box-shadow:0 0 7px 1px color-mix(in srgb,var(--g2) 30%,transparent),
+                     inset 0 0 8px color-mix(in srgb,var(--g2) 16%,transparent)}
+  50%    {box-shadow:0 0 20px 5px color-mix(in srgb,var(--g2) 62%,transparent),
+                     inset 0 0 16px color-mix(in srgb,var(--g2) 34%,transparent)}
+}
+/* Scrolls, as the formula has no ceiling; takes pointer events back from .td-dice-read so it can. */
+.td-dice-parts{margin-top:7px;max-width:472px;text-align:center;
+  max-height:132px;overflow:hidden auto;pointer-events:auto;
+  scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--go) 50%,transparent) transparent;
+  font-family:Cinzel,serif;font-weight:700;font-size:.82rem;letter-spacing:.05em;
+  color:var(--go);opacity:0;transition:opacity .3s;
+  text-shadow:0 1px 2px color-mix(in srgb,var(--black) 80%,transparent)}
+.td-dice-parts.on{opacity:.95}
+.td-dice-parts em{font-style:normal;opacity:.55}
+
+.td-dice-bar{display:flex;gap:8px;align-items:stretch;padding:9px 9px 0}
+.td-dice-in{flex:1 1 auto;min-width:0;
+  background:var(--s2);border:1px solid var(--b1);border-radius:8px;
+  color:var(--tx);font-family:Cinzel,serif;font-size:.9rem;letter-spacing:.06em;
+  padding:7px 11px;outline:none}
+.td-dice-in:focus{border-color:var(--go);background:var(--s3)}
+.td-dice-in.bad{border-color:var(--re)}
+.td-dice-in::placeholder{color:var(--tm);letter-spacing:.04em;
+  font-family:'Crimson Pro',Georgia,serif;font-style:italic}
+.td-dice-go{flex:0 0 auto;padding:7px 20px;border-radius:8px;cursor:pointer;
+  border:1px solid #b8f0c8;background:rgba(45,107,62,.95);color:var(--white);
+  font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);font-weight:600;font-size:.8rem;letter-spacing:.02em;
+  transition:background .15s,box-shadow .15s}
+.td-dice-go:hover{background:rgba(45,107,62,1);
+  box-shadow:0 0 9px color-mix(in srgb,var(--gr) 40%,transparent)}
+
+/* auto for the coin and six equal shares for the dice: a seventh equal track would size them all to Flip Coin's label. */
+.td-dice-quick{display:grid;grid-template-columns:auto repeat(6,1fr);gap:6px;
+  padding:8px 9px 0}
+/* --dq-fill and --dq-ink come from tdDiceQuickRow (tdColorFill, tdColorInk). */
+.td-dice-q{min-width:0;display:flex;align-items:center;justify-content:center;
+  gap:4px;padding:5px 2px 6px;cursor:pointer;
+  border:2px solid transparent;border-radius:8px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--s1) 96%,transparent),color-mix(in srgb,var(--bg) 96%,transparent)) padding-box,
+    linear-gradient(180deg,var(--dq-ink) 0%,var(--dq-fill) 38%,var(--white) 50%,
+      var(--dq-fill) 62%,var(--dq-ink) 100%) border-box;
+  transition:box-shadow .15s,transform .08s,background .15s}
+.td-dice-q:hover{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--s3) 98%,transparent),color-mix(in srgb,var(--s2) 98%,transparent)) padding-box,
+    linear-gradient(180deg,var(--dq-ink) 0%,var(--dq-fill) 38%,var(--white) 50%,
+      var(--dq-fill) 62%,var(--dq-ink) 100%) border-box;
+  box-shadow:0 0 10px -1px var(--dq-fill)}
+.td-dice-q:active{transform:translateY(1px)}
+/* In the button's em, not the label's: a font-size on .td-dice-q resizes every face and leaves the words. */
+.td-dice-q svg{flex:0 0 auto;width:1.45em;height:1.45em;display:block;
+  overflow:visible}
+.td-dice-qn{font-family:Cinzel,serif;font-weight:700;font-size:.72rem;
+  letter-spacing:.03em;color:var(--dq-fill);white-space:nowrap;
+  text-shadow:0 1px 0 var(--dq-ink),0 0 6px color-mix(in srgb,var(--black) 70%,transparent)}
+
+.td-dice-coin{--dq-fill:#e8c96a;--dq-ink:#4a3818;padding-left:9px;padding-right:9px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--black) 96%,transparent),color-mix(in srgb,var(--black) 96%,transparent)) padding-box,
+             var(--td-gold) border-box}
+.td-dice-coin:hover{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--grey-deep-2) 98%,transparent),color-mix(in srgb,var(--black) 98%,transparent)) padding-box,
+             var(--td-gold) border-box;
+  box-shadow:0 0 12px -1px var(--g2)}
+.td-dice-coin .td-dice-qn{color:#f5ecd0;letter-spacing:.05em}
+
+.td-dice-face{font-family:Cinzel,serif;font-weight:800;font-size:1.05rem;
+  letter-spacing:.14em;color:#f5ecd0;
+  text-shadow:0 0 10px color-mix(in srgb,var(--g2) 75%,transparent),0 1px 0 #4a3818}
+/* Reserved while empty, or an error appearing pushes the formula bar under the pointer. */
+.td-dice-err{min-height:1.2em;padding:5px 10px 0;
+  font-family:'Crimson Pro',Georgia,serif;font-size:.84rem;color:var(--re-hi)}
+
+.td-play .td-mkrow-drops .td-mkbtn.td-dicebtn{
+  height:29px;font-size:.74rem;letter-spacing:.05em;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  white-space:nowrap;
+  font-family:Cinzel,serif;font-weight:700;
+  border:2px solid transparent;border-radius:8px;cursor:pointer;
+  background:linear-gradient(180deg,#3a3168,#241d45) padding-box,
+             var(--td-gold) border-box;
+  color:#f0e0b0;
+  text-shadow:0 1px 0 #1a1430,0 0 7px rgba(232,201,106,.35);
+  transition:background .15s,color .15s,box-shadow .15s}
+.td-play .td-mkrow-drops .td-mkbtn.td-dicebtn:hover{
+  background:linear-gradient(180deg,#4a3f84,#2e2557) padding-box,
+             var(--td-gold) border-box;
+  color:#fff6d8;box-shadow:0 0 11px rgba(232,201,106,.34)}
+/* tdDiceSyncBtn puts .on back after every re-render of the counter row. */
+.td-play .td-mkrow-drops .td-mkbtn.td-dicebtn.on{
+  background:linear-gradient(180deg,#5b4ea0,#382d6b) padding-box,
+             var(--td-gold) border-box;
+  color:#fff6d8;box-shadow:0 0 12px rgba(232,201,106,.5),
+                           inset 0 0 10px rgba(232,201,106,.22)}
+
+@media (prefers-reduced-motion:reduce){
+  .td-dice-total.on{animation:none;transform:none;
+    box-shadow:0 0 10px 2px color-mix(in srgb,var(--g2) 42%,transparent)}
+}
+
+/* Inside .tbl-dlg, so dark in both themes; hover lifts and never repaints (HANDOFF §12.1 G). */
+.dr-ov{z-index:9200;padding:12px}
+.dr-dlg{width:min(1560px,98vw);height:min(960px,96vh);max-height:none}
+.dr-head{flex-wrap:wrap;row-gap:8px}
+.dr-status{font-size:.95rem;color:var(--tx);white-space:nowrap}
+.dr-status b{color:var(--g2);font-weight:700}
+.dr-clock{font-family:Cinzel,serif;font-weight:700;font-size:1.05rem;color:var(--tx);
+  min-width:3.2em;text-align:right;font-variant-numeric:tabular-nums}
+.dr-clock.low{color:var(--re-ink)}
+.dr-body{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 300px}
+.dr-main{overflow:auto;padding:16px 18px;min-width:0;position:relative}
+.dr-side{border-left:1px solid var(--b1);overflow:auto;padding:12px 14px;display:flex;
+  flex-direction:column;gap:9px;background:var(--s1);border-radius:0 0 12px 0}
+.dr-sideh{font-family:Cinzel,serif;font-size:.74rem;font-weight:700;letter-spacing:.08em;
+  color:var(--tx);display:flex;align-items:center;gap:8px;margin-top:4px}
+.dr-n{margin-left:auto;font-family:Cinzel,serif;font-size:.8rem;color:var(--g2);letter-spacing:.02em}
+.dr-n.ok{color:var(--gr)}
+.dr-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(168px,1fr))}
+.dr-card{position:relative;border-radius:8px;overflow:hidden;background:var(--s2);
+  border:1px solid var(--b1);cursor:pointer;transition:transform .12s,box-shadow .12s,opacity .12s}
+.dr-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px color-mix(in srgb,var(--black) 55%,transparent)}
+.dr-card.sel{outline:3px solid var(--g2);outline-offset:2px;box-shadow:0 0 18px color-mix(in srgb,var(--g2) 45%,transparent)}
+.dr-card.out{opacity:.32}
+.dr-card .td-face,.dr-top .td-face,.dr-wcard .td-face{aspect-ratio:409/571;height:auto}
+.dr-cnt{position:absolute;top:34%;right:6px;padding:1px 8px;border-radius:9px;
+  background:color-mix(in srgb,var(--black) 74%,transparent);color:var(--g2);font-family:Cinzel,serif;font-weight:700;font-size:.8rem}
+.dr-empty{display:flex;align-items:center;justify-content:center;min-height:260px;
+  font-family:Cinzel,serif;color:var(--tm);font-size:1rem}
+.dr-none{color:var(--tm);font-size:.9rem;padding:4px 6px}
+/* Never taller than the window: the six piles and the middle must be on screen at once. */
+.dr-hex{position:relative;width:min(100%,calc((min(960px,96vh) - 150px) * 1.25));
+  aspect-ratio:1.25;margin:0 auto}
+.dr-pile{position:absolute;width:15%;transform:translate(-50%,-50%);cursor:pointer;
+  border-radius:9px;transition:box-shadow .12s}
+.dr-pile:hover{box-shadow:0 0 18px var(--hv-glow)}
+.dr-top{border-radius:8px;overflow:hidden;border:1px solid var(--b1);background:var(--s2);
+  box-shadow:3px 3px 0 var(--b2),6px 6px 0 var(--s3)}
+.dr-pile.sel .dr-top{outline:3px solid var(--g2);outline-offset:2px}
+.dr-pile.pair .dr-top{outline:2px dashed var(--g2);outline-offset:2px}
+.dr-pile.off{cursor:default}
+.dr-pile.taken{opacity:.42}
+.dr-h{display:block;text-align:center;margin:8px 0 4px;font-size:.86rem;color:var(--tx);white-space:nowrap}
+.dr-hexmid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;
+  font-family:Cinzel,serif;color:var(--tx);font-size:1rem;line-height:1.6}
+.dr-hexmid b{color:var(--g2)}
+.dr-win{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:start}
+.dr-wpile{border:1px solid var(--b1);border-radius:10px;padding:8px 10px 12px;background:var(--s1);
+  cursor:pointer;min-height:220px;transition:box-shadow .12s}
+.dr-wpile:hover{box-shadow:0 0 16px var(--hv-glow)}
+.dr-wpile.sel{outline:3px solid var(--g2);outline-offset:2px}
+.dr-wpile.off{cursor:default}
+.dr-wstack{display:flex;flex-direction:column}
+.dr-wcard{border-radius:7px;overflow:hidden;border:1px solid var(--b1);background:var(--s2);
+  box-shadow:0 -2px 8px color-mix(in srgb,var(--black) 45%,transparent)}
+.dr-wcard + .dr-wcard{margin-top:-108%}
+.dr-seats{display:flex;flex-direction:column;gap:6px}
+.dr-seat{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--b1);
+  border-radius:8px;font-size:.92rem;color:var(--tx)}
+.dr-seat.on{border-color:var(--g2);box-shadow:0 0 10px color-mix(in srgb,var(--g2) 22%,transparent)}
+.tbl-av.dr-av{width:24px;height:24px;font-size:.78rem}
+.dr-sname{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dr-seat small{margin-left:auto;color:var(--td);white-space:nowrap;font-size:.8rem}
+.dr-last{font-size:.88rem;color:var(--td);line-height:1.5}
+.dr-last b{color:var(--tx);font-weight:600}
+.dr-plist{display:flex;flex-direction:column;gap:1px;min-height:0}
+.dr-prow{display:flex;gap:8px;align-items:center;padding:3px 6px;border-radius:5px;
+  font-size:.94rem;color:var(--tx);cursor:default}
+.dr-prow:hover{background:var(--hv-fill)}
+.dr-pc{min-width:1.7em;text-align:right;color:var(--g2);font-family:Cinzel,serif;font-weight:700;font-size:.8rem}
+.dr-pn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ed2-btn.tiny.dr-minus{padding:0 8px;line-height:1.3}
+.dr-save{display:flex;flex-direction:column;gap:8px;margin-top:auto;padding-top:10px;border-top:1px solid var(--b1)}
+.dr-save input{background:var(--s2);border:1px solid var(--b2);border-radius:6px;color:var(--tx);
+  padding:7px 9px;font-family:'Crimson Pro',serif;font-size:.98rem}
+.dr-save input:focus{outline:none;border-color:var(--g2)}
+.dr-setdlg{width:min(760px,96vw)}
+.dr-setbody{padding:6px 18px 10px}
+.tbl-lbl.dr-lw{min-width:92px}
+.tbl-lbl.dr-lw2{margin-left:10px}
+.dr-setfoot{display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:1px solid var(--b1)}
+.dr-poolline{color:var(--td);font-size:.98rem}
+.dr-poolline b{color:var(--g2)}
+@media (max-width:900px){
+  .dr-body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}
+  .dr-side{border-left:0;border-top:1px solid var(--b1);max-height:34vh;border-radius:0 0 12px 12px}
+  .dr-win{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dr-pile{width:24%}
+}
+
+/* Near the end of the cascade, with every selector two classes (.nb.nb), so it beats a button's own rules; a heavier
+   variant (.ed2-btn.tiny.warn) comes off the button rather than being fought. */
+.nb.nb{--nb-c:var(--td);--nb-edge:var(--b2);--nb-fill:var(--s2);--nb-rgb:168,175,192;--nb-metal:var(--metal-silver);
+  --nb-h:32px;--nb-fs:16px;--nb-px:14px;--nb-top:0px;--nb-lift:.5px;
+  align-items:center;justify-content:center;gap:.4em;box-sizing:border-box;
+  height:var(--nb-h);min-width:var(--nb-h);padding:var(--nb-top) var(--nb-px) var(--nb-lift) calc(var(--nb-px) + .02em);
+  font-family:var(--btn-font);font-size:var(--nb-fs);font-size-adjust:none;font-weight:600;letter-spacing:.02em;line-height:1;
+  text-transform:none;white-space:nowrap;color:var(--nb-c);background:var(--nb-fill);
+  border:1px solid var(--nb-edge);border-radius:0;box-shadow:none;cursor:pointer;
+  transition:background .15s,color .15s,box-shadow .15s}
+/* :where, weightless, so a button's own display rule still decides whether it shows. */
+:where(.nb){display:inline-flex}
+.nb.nb[hidden]{display:none}
+.nb.nb:hover:not(:disabled),.nb.nb.on{background:rgba(var(--nb-rgb),.25);border-color:transparent;
+  border-image:var(--nb-metal) 1;box-shadow:0 0 8px rgba(var(--nb-rgb),.25)}
+.nb.nb.on:not(:hover){box-shadow:none}
+.nb.nb:disabled{opacity:.45;cursor:default}
+.nb.nb:focus-visible{outline:2px solid var(--nb-edge);outline-offset:2px}
+.nb.nb .ico{width:1.15em;height:1.15em;flex:0 0 auto}
+.nb.nb-s{--nb-h:26px;--nb-fs:14px;--nb-px:10px;--nb-top:0px;--nb-lift:1.5px}
+.nb.nb-m{--nb-h:32px;--nb-fs:16px;--nb-px:14px;--nb-top:0px;--nb-lift:.5px}
+.nb.nb-l{--nb-h:40px;--nb-fs:17.5px;--nb-px:18px;--nb-top:.75px;--nb-lift:0px}
+.nb.nb-green{--nb-c:var(--gr);--nb-edge:var(--gr);--nb-fill:rgba(92,158,110,.1);--nb-rgb:92,158,110;--nb-metal:var(--metal-green)}
+.nb.nb-red{--nb-c:var(--re-ink);--nb-edge:var(--re);--nb-fill:rgba(196,92,92,.12);--nb-rgb:196,92,92;--nb-metal:var(--metal-red)}
+.nb.nb-blue{--nb-c:var(--ac);--nb-edge:var(--ac);--nb-fill:rgba(123,156,218,.1);--nb-rgb:123,156,218;--nb-metal:var(--metal-blue)}
+.nb.nb-gold{--nb-c:var(--go);--nb-edge:var(--go);--nb-fill:rgba(201,168,76,.1);--nb-rgb:201,168,76;--nb-metal:var(--metal-gold)}
+.nb.nb-purple{--nb-c:var(--spect-ink);--nb-edge:var(--spect);--nb-fill:rgba(180,120,240,.1);--nb-rgb:180,120,240;--nb-metal:var(--metal-purple)}
+/* One rule per family, so check_cli.py's hover check reads each pair side by side. */
+.nb.nb-plain{color:var(--td)}
+.nb.nb-plain:hover:not(:disabled){color:var(--white)}
+.nb.nb-green{color:var(--gr)}
+.nb.nb-green:hover:not(:disabled){color:var(--white)}
+.nb.nb-red{color:var(--re-ink)}
+.nb.nb-red:hover:not(:disabled){color:var(--white)}
+.nb.nb-blue{color:var(--ac)}
+.nb.nb-blue:hover:not(:disabled){color:var(--white)}
+.nb.nb-gold{color:var(--go)}
+.nb.nb-gold:hover:not(:disabled){color:var(--white)}
+.nb.nb-purple{color:var(--spect-ink)}
+.nb.nb-purple:hover:not(:disabled){color:var(--white)}
+/* On a light page white words need a solid fill, so the hover fills with the family's colour. */
+body.light .nb.nb{--nb-fill:var(--s1)}
+body.light .nb.nb:hover:not(:disabled){background:var(--nb-solid,var(--td))}
+body.light .nb.nb-green{--nb-solid:var(--gr);--nb-fill:rgba(46,112,64,.08)}
+body.light .nb.nb-red{--nb-solid:var(--re);--nb-fill:rgba(160,40,40,.07)}
+body.light .nb.nb-blue{--nb-solid:var(--ac);--nb-fill:rgba(40,96,168,.07)}
+body.light .nb.nb-gold{--nb-solid:var(--go);--nb-fill:rgba(138,104,32,.08)}
+body.light .nb.nb-purple{--nb-solid:var(--spect);--nb-fill:rgba(122,63,192,.07)}
+/* --nb-rgb is three numbers no colour name can carry, so Arcane restates the fills and glows. */
+body.arcane .nb.nb{--nb-rgb:164,156,207}
+body.arcane .nb.nb-green{--nb-fill:rgba(79,209,165,.1);--nb-rgb:79,209,165}
+body.arcane .nb.nb-red{--nb-fill:rgba(255,107,139,.12);--nb-rgb:255,107,139}
+body.arcane .nb.nb-blue{--nb-fill:rgba(111,183,255,.1);--nb-rgb:111,183,255}
+body.arcane .nb.nb-gold{--nb-fill:rgba(183,166,255,.1);--nb-rgb:183,166,255}
+body.arcane .nb.nb-purple{--nb-fill:rgba(229,139,255,.12);--nb-rgb:229,139,255}
+.nb.nb.nb-over{--nb-fill:linear-gradient(rgba(var(--nb-rgb),.14),rgba(var(--nb-rgb),.14)),var(--s1)}
+body.light .nb.nb.nb-over{--nb-fill:linear-gradient(rgba(var(--nb-rgb),.1),rgba(var(--nb-rgb),.1)),var(--s1)}
+body:not(.light) .nb.nb.nb-over:hover:not(:disabled){background:linear-gradient(rgba(var(--nb-rgb),.3),rgba(var(--nb-rgb),.3)),var(--s1)}
+
+/* A window's bar is its title (.wh-t) and its Close (.wh-x) alone; anything else wraps to a row under it, but .wh-in and .wh-keep. */
+.wh-t{font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);font-weight:600;font-size:20px;
+  letter-spacing:.02em;line-height:1.2;color:var(--tx)}
+@media (min-width:900px){
+  .wh.wh{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:0 12px;
+    height:auto;min-height:0;padding:10px 12px 10px 16px;background:var(--s2);border-bottom:1px solid var(--b1)}
+  .wh.wh > .wh-t{order:0;flex:1 1 auto;min-width:0;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .wh.wh > .wh-keep,.wh.wh > .wh-x{order:1;flex:0 0 auto;margin:0}
+  .wh.wh > .wh-t:has(~ .wh-in){flex:0 1 auto}
+  .wh.wh > .wh-in{order:0;flex:1 1 auto;min-width:0;margin:0 0 0 10px}
+  /* the break: everything after it starts the row under the bar */
+  .wh.wh::after{content:'';order:2;flex:0 0 100%;height:0}
+  .wh.wh > :not(.wh-t):not(.wh-keep):not(.wh-x):not(.wh-in){order:3;margin-top:8px}
+  .wh.wh > :is(.sg-head-gap,.fx-grow){display:none}
+}
+
+body.light .td-zcount{color:var(--td);background:var(--s3)}
+body.light .td-zbtn-un.on,body.light .td-turn-tog.on{color:var(--gr);
+  background:color-mix(in srgb,var(--gr) 14%,var(--s1))}
+body.light .td-zbtn-un.on:hover,body.light .td-turn-tog.on:hover{color:var(--white);background:var(--gr)}
+body.light .td-zbtn-lk.on{color:var(--re);background:color-mix(in srgb,var(--re) 12%,var(--s1))}
+body.light .td-zbtn-lk.on:hover{color:var(--white);background:var(--re)}
+body.light .dv-pbtn.td-shuffle{color:var(--spect-ink);background:var(--spect-fill)}
+body.light .ed2-btn.tiny.tbl-tool.on{color:var(--white)}
+body.light .td-dice-q:not(.td-dice-coin) .td-dice-qn{color:var(--dq-ink);text-shadow:none}
+
+/* --td-ch again, as .td-half declares it: the Field is in nobody's half. Only tdRbRender makes a .rb-table (HANDOFF §84). */
+#tdBoard .rb-table{--td-ch:calc(var(--td-cw) * 1.39609);
+  display:grid;gap:10px;padding:12px 14px;align-items:stretch;position:relative;
+  grid-template-columns:var(--td-play-w,212px)
+                        calc(var(--td-cw) + 22px + var(--td-rail))
+                        calc(var(--td-cw) + 22px + var(--td-rail))
+                        minmax(0,1fr) minmax(0,1fr);
+  /* The panel runs down the whole left side, which leaves the Field more width than two columns would; tdRbFit tries both. */
+  grid-template-areas:
+    "play   others others others  others"
+    "play   field  field  field   field"
+    "play   deck   grave  essarea hand"}
+#tdBoard .rb-table.rb-play2{--td-play-w:432px}
+#tdBoard .rb-table.rb-spect{grid-template-columns:minmax(0,1fr);
+  grid-template-areas:"others" "field"}
+/* display:contents, so your corner's zones and panel stand in the table's own grid. */
+#tdBoard .rb-table > .rb-mine{display:contents}
+/* 4.4 cards and 160px of rails, padding and frames (measured) for each other player's Hand, Armament and Essence; tdRbFit weighs a wrap. */
+.rb-others{grid-area:others;display:grid;gap:10px;min-width:0;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(var(--td-cw) * 4.4 + 160px)),1fr))}
+.rb-others > .rb-other{min-width:0}
+/* Their hand wears .td-seen (shown by default in Rebirth), which lays out rows; here it fans on one row as yours does. */
+#tdBoard .rb-other .td-zone.td-seen .td-zbody{flex-wrap:nowrap;gap:0}
+/* Beats body.rebirth .td-half, whose rows are a whole board's. */
+#tdBoard .rb-table .rb-other{display:grid;gap:4px 8px;padding:0;align-items:stretch;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  grid-template-areas:"who who" "hand essarea"}
+.rb-oname{grid-area:who;font-family:Cinzel,serif;font-weight:700;font-size:.8rem;
+  letter-spacing:.06em;color:var(--rb-ink,var(--go));padding:0 4px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 14 and 3 are RB_FIELD_W and RB_FIELD_ASPECT in cat_rbtable.js; safe center, so a Field too wide runs off right, never under the panel. */
+#tdBoard .rb-table > .rb-field{grid-area:field;justify-self:safe center;align-self:center;
+  width:max-content;min-width:0}
+#tdBoard .rb-field > .td-zbody{flex:0 0 auto;box-sizing:border-box;padding:0;min-height:0;
+  width:calc(var(--td-cw) * 14);height:calc(var(--td-cw) * 14 / 3)}
+.rb-flayer{position:absolute;inset:0;pointer-events:none}
+.rb-flayer > .td-card,.rb-flayer > .td-group{pointer-events:auto}
+.rb-flayer .td-card{box-shadow:0 0 0 2px var(--rb-ink,var(--go))}
+.rb-flayer .td-card:hover{box-shadow:0 0 0 2px var(--rb-ink,var(--go)),
+  0 2px 10px color-mix(in srgb,var(--black) 45%,transparent)}
+.rb-cstats{display:inline-flex;align-items:center;gap:3px}
+.rb-corb{display:inline-flex;width:24px;height:24px;flex:0 0 auto}
+.rb-clvl{display:inline-flex;align-items:center;gap:1px;margin-left:3px}
+.rb-clvl .td-colmana{width:13px;height:13px}
+.rb-cdm{font-family:Cinzel,serif;font-weight:700;letter-spacing:.08em}
+.rb-cmap b{margin-left:4px}
+.rb-odm{font-size:.62rem;letter-spacing:.12em;color:var(--g2);border:1px solid var(--gd);
+  padding:0 4px;margin-left:6px;vertical-align:1px}
+
+.td-zone[data-zone=dmdeck]{grid-area:dmdeck}
+.td-zone[data-zone=dmgrave]{grid-area:dmgrave}
+.td-zone[data-zone=dmrow]{grid-area:dmrow}
+#tdBoard .rb-table.rb-dm{
+  grid-template-areas:
+    "play   others others  others others"
+    "play   field  field   field  field"
+    "play   dmdeck dmgrave dmrow  dmrow"}
+#tdBoard .rb-table.rb-dmp{
+  grid-template-columns:var(--td-play-w,212px)
+                        calc(var(--td-cw) + 22px + var(--td-rail))
+                        calc(var(--td-cw) * .62 + 22px + var(--td-rail))
+                        calc(var(--td-cw) + 22px + var(--td-rail))
+                        minmax(0,1fr) minmax(0,1fr);
+  grid-template-areas:
+    "play   others others others others  others"
+    "play   field  field  field  field   field"
+    "play   deck   dmdeck grave  essarea hand"}
+#tdBoard .rb-dmpile-sm .td-card{width:calc(var(--td-cw) * .62);height:calc(var(--td-ch) * .62);
+  --cback-w:calc(var(--td-cw) * .62)}
+.rb-dmpile,.rb-dmpile .td-card{cursor:pointer}
+
+:root,body{--gi-gold:var(--seat-a);--gi-blue:var(--seat-b);--gi-green:var(--seat-c);
+  --gi-pink:var(--seat-d);--gi-orange:var(--seat-e);--gi-violet:var(--seat-f);
+  --gi-red:#e5534b;--gi-teal:#2ec4b6;--gi-white:#f4f1ea;--gi-silver:#b9c2cf;
+  --gi-brown:#9a6a3a;--gi-lime:#a6e22e;
+  /* --gf-pic-bg: a large picture made into a JPEG loses its transparency and is laid on white. */
+  --gf-fill:#3d414a;--gf-line:rgba(240,234,216,.22);--gf-pic-bg:#fff}
+body.light{--gf-fill:#e8e9ec;--gf-line:rgba(26,20,16,.28)}
+/* A grid, so the bar is a row of the section and nothing that measures the body measures it; a wrapped row would share out its height. */
+.td-zone.td-gfz{display:grid;grid-template-columns:auto minmax(0,1fr);
+  grid-template-rows:auto minmax(0,1fr)}
+.td-zone.td-gfz > .td-gbar{grid-column:1 / -1;grid-row:1}
+.td-zone.td-gfz > .td-zhdr{grid-column:1;grid-row:2}
+.td-zone.td-gfz > .td-zbody{grid-column:2;grid-row:2}
+.td-zone.td-gfz.td-fold{display:flex}
+/* Under the bar, whose height tdGfFrame writes to --gf-bar-h. */
+.td-zone.td-gfz > .td-zacts{top:calc(var(--gf-bar-h,30px) + 5px)}
+/* contain:inline-size: the Field is as wide as its body, never as its tools, which wrap instead. */
+.td-gbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;padding:4px 8px;
+  min-width:0;contain:inline-size;border-bottom:1px solid var(--bd)}
+.td-gb{flex:0 0 auto;padding:3px 9px;border:1px solid var(--b1);border-radius:7px;
+  background:var(--s2);color:var(--td);cursor:pointer;white-space:nowrap;
+  font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);font-size:.72rem;letter-spacing:.02em}
+.td-gb:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+.td-gb[aria-pressed=true]{border-color:var(--go);color:var(--tx);
+  background:color-mix(in srgb,var(--go) 22%,var(--s2))}
+.td-gseg{display:inline-flex;flex:0 0 auto}
+.td-gseg > .td-gb:first-child{border-radius:7px 0 0 7px}
+.td-gseg > .td-gb:last-child{border-radius:0 7px 7px 0;margin-left:-1px}
+.td-gsp{flex:1 1 auto}
+/* touch-action:none, so a finger pans the map, not the page. */
+.td-gview{position:relative;touch-action:none}
+.td-gview.td-gzoom{overflow:hidden}
+.td-gview.td-gpanning,.td-gview.td-gpanning *{cursor:grabbing}
+.td-gview.td-gruling,.td-gview.td-gruling *{cursor:crosshair}
+.td-gview.td-gadj,.td-gview.td-gadj *{cursor:move}
+.td-gcan,.td-gover{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+/* The drawing reads its colours from here: the lines from color, the fill from border-top-color. */
+.td-gcan{z-index:0;color:var(--gf-line);border-top:0 solid var(--gf-fill)}
+.td-gover{z-index:2}
+.td-gpan{position:absolute;inset:0;z-index:1;transform-origin:0 0}
+.td-gbox{position:absolute;z-index:62;pointer-events:none}
+.td-gtok{position:absolute;box-sizing:border-box;border-radius:999px;pointer-events:auto;
+  background:var(--gt,var(--go));color:var(--ink-dark);
+  border:2px solid color-mix(in srgb,var(--black) 35%,var(--gt,var(--go)));
+  display:flex;align-items:center;justify-content:center;
+  font-family:Cinzel,serif;font-weight:700;line-height:1;
+  font-size:calc(var(--gf-cell,24px) * var(--gts,.4));
+  rotate:var(--gr,0deg);cursor:grab;user-select:none;-webkit-user-select:none;
+  box-shadow:0 1px 3px color-mix(in srgb,var(--black) 55%,transparent)}
+.td-gtok[data-ink=lt]{color:var(--white)}
+.td-gtlab{white-space:nowrap;pointer-events:none}
+.td-gtok.td-gdrag{z-index:3;cursor:grabbing;opacity:.92}
+.td-gtrot{position:absolute;right:-6px;top:-6px;width:20px;height:20px;padding:0;
+  display:none;align-items:center;justify-content:center;border-radius:50%;
+  border:1px solid var(--b1);background:var(--s2);color:var(--tx);
+  font-size:12px;line-height:1;cursor:pointer}
+.td-gtok:hover .td-gtrot{display:flex}
+#tdBoard .td-card.td-glink,#tdBoard .td-gtok.td-glink{
+  box-shadow:0 0 0 2px var(--gl,var(--go)),0 0 16px 5px var(--gl,var(--go))}
+.td-card > .td-glab{position:absolute;left:3px;top:3px;z-index:5;min-width:18px;height:18px;
+  padding:0 4px;box-sizing:border-box;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--rb-ink,var(--go));color:var(--ink-dark);
+  font-family:Cinzel,serif;font-weight:700;font-size:11px;line-height:1;white-space:nowrap;
+  box-shadow:0 1px 3px color-mix(in srgb,var(--black) 60%,transparent);pointer-events:none}
+.td-gicon{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
+  box-sizing:border-box;width:20px;height:20px;padding:0;border-radius:50%;overflow:hidden;
+  background:var(--gt,var(--go));color:var(--ink-dark);
+  border:1px solid color-mix(in srgb,var(--black) 35%,var(--gt,var(--go)));
+  font-family:Cinzel,serif;font-weight:700;font-size:9px;line-height:1;white-space:nowrap;
+  letter-spacing:-.02em}
+.td-gicon[data-ink=lt]{color:var(--white)}
+button.td-gicon{cursor:pointer}
+button.td-gicon:hover{box-shadow:0 0 0 2px var(--hv-glow)}
+.td-gicon-bar{width:24px;height:24px;font-size:10px}
+.td-gicon-chip{width:18px;height:18px;font-size:8px}
+.tbl-av.td-gav{background:var(--gt,var(--go));color:var(--ink-dark);border:0;padding:0;
+  font-size:.85rem;overflow:hidden;white-space:nowrap}
+.tbl-av.td-gav[data-ink=lt]{color:var(--white)}
+button.tbl-av.td-gav{cursor:pointer}
+button.tbl-av.td-gav:hover{box-shadow:0 0 0 3px var(--hv-glow)}
+/* Over the waiting room's window too, which it also opens from. */
+.td-gipick{position:fixed;z-index:9650;width:248px;box-sizing:border-box;padding:10px;
+  display:flex;flex-direction:column;gap:8px;
+  border:1px solid var(--b1);border-radius:10px;background:var(--s1);color:var(--tx);
+  box-shadow:0 8px 28px color-mix(in srgb,var(--black) 55%,transparent)}
+.td-gip-h{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-family:Cinzel,serif;font-weight:700;font-size:.82rem;letter-spacing:.04em}
+.td-gip-row{display:flex;align-items:center;gap:8px}
+.td-gip-prev{width:40px;height:40px;font-size:14px}
+.td-gip-in{flex:1 1 auto;min-width:0;box-sizing:border-box;padding:5px 8px;
+  border:1px solid var(--b1);border-radius:7px;background:var(--s2);color:var(--tx);
+  font-family:Cinzel,serif;font-size:.9rem}
+.td-gip-in:focus{outline:none;border-color:var(--txt-accent)}
+.td-gip-cols{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.td-gip-col{width:26px;height:26px;padding:0;border-radius:50%;cursor:pointer;
+  background:var(--gt,var(--go));border:2px solid color-mix(in srgb,var(--black) 30%,var(--gt,var(--go)))}
+.td-gip-col[aria-pressed=true]{box-shadow:0 0 0 2px var(--s1),0 0 0 4px var(--tx)}
+.td-gip-btns{display:flex;justify-content:flex-end;gap:6px}
+.td-mform{flex-wrap:wrap;align-items:flex-end}
+.td-mform-l{display:flex;flex-direction:column;gap:2px;flex:1 1 0;min-width:0;
+  font-family:'Crimson Pro',serif;font-size:.74rem;color:var(--tm)}
+.td-mform-in{width:100%;min-width:52px}
+
+/* Last in the file, so .spect-ink wins over its line's colour (HANDOFF §12.1 D). */
+.spect-ink,.tbl-cm b.spect-ink{color:var(--spect-ink)}

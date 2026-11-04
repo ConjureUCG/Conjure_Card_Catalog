@@ -1,0 +1,1328 @@
+
+#pane-editor{padding:0}
+:root,body{--ed-info:#7fb0dc;--ed-info-edge:#3c5f80;--ed-info-hi:#5f8fb8;
+  --ed-pur:#b9aef0;--ed-pur-edge:#5b5290;--ed-pur-hi:#d6cfff;--ed-pur-hi-edge:#8a7fc8;
+  --ed-warn:#ffb4b4;--ed-warn-edge:#5a2b2b;--ed-warn-hi:#ffd0d0;--ed-warn-hi-edge:#8a4242;
+  --ed-hint:#8b95a8;--ed-chip-on:#cfe2f4;--ed-del:#e8a0a0}
+body.light{--ed-info:#235b8c;--ed-info-edge:#7ea3c6;--ed-info-hi:#4f7fae;
+  --ed-pur:#5641ad;--ed-pur-edge:#a49ad8;--ed-pur-hi:#45329a;--ed-pur-hi-edge:#7d70c8;
+  --ed-warn:#a02828;--ed-warn-edge:#d4a0a0;--ed-warn-hi:#7a1818;--ed-warn-hi-edge:#b05a5a;
+  --ed-hint:#5b6476;--ed-chip-on:#1f4f7a;--ed-del:#a02828}
+/* :where() weighs nothing, so a field styled elsewhere keeps its look; this is only the floor. */
+:where(.ed2-in){background:var(--s2);border:1px solid var(--b1);color:var(--tx)}
+.ed2-wrap{display:flex;gap:0;height:calc(100vh - var(--chrome) - 4px);min-height:520px}
+
+.ed2-preview{flex:0 0 auto;width:clamp(380px,40%,520px);border-right:1px solid var(--b1);
+  background:var(--s1);display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;
+  padding:20px 18px;overflow:auto}
+.ed2-navrow{display:flex;align-items:center;gap:8px;margin:0 0 10px}
+.ed2-navrow>.ed2-btn{flex:0 0 auto;min-width:34px}
+.ed2-navpos{flex:1 1 auto;text-align:center;font-family:'Crimson Pro',serif;
+  font-size:.78rem;color:var(--tm);letter-spacing:.04em;white-space:nowrap}
+#edPvHost{display:flex;align-items:center;justify-content:center;width:100%;flex:1 1 auto;min-height:0}
+
+.ed2-fields{flex:1;min-width:0;overflow-y:auto;padding:18px 20px}
+.ed2-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;
+  color:var(--tm);text-align:center;gap:12px;font-family:'Crimson Pro',serif}
+.ed2-empty .ei{font-size:3rem;opacity:.4}
+
+.ed2-field label{display:block;font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;
+  letter-spacing:.05em;color:var(--tx);margin-bottom:3px}
+.ed2-inl{display:flex;align-items:center;gap:7px;min-width:0}
+.ed2-field.ed2-inl>label,.ed2-field .ed2-inl>label{margin:0;flex:0 0 auto;white-space:nowrap}
+.ed2-inl>.ed2-input,.ed2-inl>.ed2-combo{flex:1 1 0;min-width:0}
+.ed2-inl>.ed2-rev-date{flex:0 0 auto;white-space:nowrap;margin-left:0}
+.ed2-field.ed2-flavor-row{display:flex;align-items:flex-start;gap:8px}
+.ed2-field.ed2-flavor-row>.ed2-stack-lbl{margin:0;flex:0 0 auto;line-height:1.3;padding-top:3px}
+.ed2-input,.ed2-textarea{width:100%;background:var(--s2);border:1px solid var(--b1);
+  border-radius:0;color:var(--tx);font-family:'Crimson Pro',serif;font-size:.98rem;padding:6px 8px;box-sizing:border-box}
+.ed2-input:focus,.ed2-textarea:focus{outline:none;border-color:var(--go)}
+.ed2-textarea{resize:vertical;line-height:1.4}
+
+.ed2-mn-row{display:flex;gap:12px;align-items:flex-end;margin-bottom:16px;flex-wrap:wrap}
+.ed2-mn-row .f-mana-wrap{flex:0 0 auto;width:120px}
+.ed2-mn-row .f-name-wrap{flex:0 1 320px;min-width:180px}
+
+.ed2-row2{display:flex;gap:18px;margin-bottom:16px;flex-wrap:wrap}
+.ed2-row2 .ed2-field{flex:0 0 auto;width:min(48%,340px)}
+
+.ed2-combo{position:relative}
+.ed2-combo input{width:100%}
+.ed2-combo-list{position:absolute;z-index:40;left:0;right:0;top:100%;background:var(--s2);
+  border:1px solid var(--b2);border-top:none;max-height:220px;overflow-y:auto;box-shadow:0 6px 18px var(--sh)}
+.ed2-combo-list.hidden{display:none}
+.ed2-combo-opt{padding:5px 9px;font-family:'Crimson Pro',serif;font-size:.92rem;color:var(--tx);cursor:pointer}
+.ed2-combo-opt:hover,.ed2-combo-opt.active{background:color-mix(in srgb,var(--go) 16%,transparent);color:var(--go)}
+.ed2-combo-add{color:var(--go);font-style:italic;border-bottom:1px solid var(--b2)}
+.dash-list{max-height:340px;overflow:auto;border:1px solid var(--b2);padding:4px 6px;margin-top:6px}
+.dash-row{display:flex;gap:6px;align-items:baseline;padding:2px 0;font-size:.84rem;color:var(--tx);cursor:pointer}
+.dash-row.dash-word{opacity:.72}
+.dash-f{color:var(--tm);font-size:.76rem;white-space:nowrap}
+.dash-ctx{font-family:'Crimson Pro',serif;white-space:pre-wrap;word-break:break-word;flex:1;min-width:0}
+.dash-mk{background:color-mix(in srgb,var(--go) 38%,transparent);color:inherit;padding:0 1px;border-radius:2px}
+.ed2-combo-empty{padding:6px 9px;color:var(--tm);font-style:italic;font-family:'Crimson Pro',serif;font-size:.86rem}
+
+.ed2-tokrow{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px;min-height:0}
+.ed2-tok{display:inline-flex;align-items:center;gap:4px;background:var(--s3);border:1px solid var(--b2);
+  padding:2px 5px 2px 8px;font-family:'Crimson Pro',serif;font-size:.86rem;color:var(--tx)}
+.ed2-tok button{background:none;border:none;color:var(--ed-hint);cursor:pointer;font-size:.95rem;line-height:1;padding:0}
+.ed2-tok button:hover{color:var(--re)}
+.ed2-tok-drag{cursor:grab;touch-action:none;user-select:none}
+.ed2-tok-drag:active{cursor:grabbing}
+.ed2-tok-drag.dragging{opacity:.55;border-color:var(--go);cursor:grabbing}
+.ed2-tokrow:has(.dragging) .ed2-tok-drag:not(.dragging){transition:transform .12s ease}
+
+.ed2-row3{display:grid;grid-template-columns:190px minmax(0,min(55%,396px));gap:18px;margin-bottom:14px}
+.ed2-stats{display:flex;flex-direction:column;gap:8px}
+.ed2-rules-col{display:flex;flex-direction:column;gap:10px;min-width:0}
+.ed2-textarea.ed2-rules{min-height:150px;flex:1}
+.ed2-textarea.ed2-flavor{min-height:52px}
+
+/* Its grid is overruled: .ed2-group-stats lays each slot out as a row (O50, HANDOFF §10). */
+.ed2-nf{display:grid;grid-template-columns:80px 1fr;align-items:center;gap:6px;padding:4px}
+.ed2-nf input{width:100%;box-sizing:border-box;color:var(--tx);font-family:'Crimson Pro',serif;
+  font-size:.92rem;padding:4px 6px;border-radius:0;outline:none}
+.ed2-nf-atk{border:2px solid var(--re);border-image:linear-gradient(180deg,#3a1818 0%,#803030 15%,#f0b8b8 40%,#c45c5c 50%,#a04040 60%,#803030 85%,#3a1818 100%) 1}
+.ed2-nf-hp{border:2px solid var(--go);border-image:linear-gradient(180deg,#4a3818 0%,#7a6030 15%,#f5ecd0 40%,#c9a84c 50%,#7a6030 60%,#7a6030 85%,#4a3818 100%) 1}
+.ed2-nf-arc{border:2px solid var(--ac);border-image:linear-gradient(180deg,#1a2440 0%,#3a5080 15%,#c8d8f8 40%,#7b9cda 50%,#5a78b0 60%,#3a5080 85%,#1a2440 100%) 1}
+.ed2-nf-atk input{background:color-mix(in srgb,var(--re) 12%,transparent);border:1px solid color-mix(in srgb,var(--re) 30%,transparent)}
+.ed2-nf-hp input{background:color-mix(in srgb,var(--go) 10%,transparent);border:1px solid color-mix(in srgb,var(--go) 30%,transparent)}
+.ed2-nf-arc input{background:color-mix(in srgb,var(--ac) 12%,transparent);border:1px solid color-mix(in srgb,var(--ac) 30%,transparent)}
+
+.ed2-orb{grid-template-columns:1fr 50px 26px !important;gap:5px}
+.ed2-orb-type{background:var(--s2);border:1px solid var(--b1);color:var(--tx);font-family:'Crimson Pro',serif;
+  font-size:.85rem;padding:4px 4px;border-radius:0;outline:none;min-width:0}
+.ed2-orb-type:focus{border-color:var(--go)}
+.ed2-orb-val{width:100%;box-sizing:border-box;color:var(--tx);font-family:'Crimson Pro',serif;font-size:.92rem;
+  padding:4px 6px;border-radius:0;outline:none;text-align:center}
+.ed2-orb-val:disabled{opacity:.5}
+/* The orb boxes draw no outline, so the keyboard's place is drawn here. */
+.ed2-nf input:focus-visible,.ed2-orb-val:focus-visible,.ed2-orb-type:focus-visible{
+  outline:2px solid var(--go);outline-offset:1px}
+.ed2-orb-star{display:flex;align-items:center;gap:2px;font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;
+  color:var(--td);cursor:pointer;user-select:none;justify-content:center}
+.ed2-orb-star input{margin:0;cursor:pointer}
+.ed2-nf-blank{border:2px solid var(--b2)}
+.ed2-nf-blank .ed2-orb-val{background:var(--s2);border:1px solid var(--b1)}
+.ed2-nf-atkarc{border:2px solid transparent;border-image:linear-gradient(90deg,#c45c5c 0%,#803030 30%,#1a2440 55%,#2980b9 80%,#7b9cda 100%) 1}
+.ed2-nf-hparc{border:2px solid transparent;border-image:linear-gradient(90deg,#c9a84c 0%,#7a6030 30%,#1a2440 55%,#2980b9 80%,#7b9cda 100%) 1}
+.ed2-nf-atkarc .ed2-orb-val{background:linear-gradient(90deg,color-mix(in srgb,var(--re) 14%,transparent),color-mix(in srgb,var(--ac) 14%,transparent));border:1px solid color-mix(in srgb,var(--purple-mid) 35%,transparent)}
+.ed2-nf-hparc .ed2-orb-val{background:linear-gradient(90deg,color-mix(in srgb,var(--go) 14%,transparent),color-mix(in srgb,var(--ac) 14%,transparent));border:1px solid color-mix(in srgb,var(--grey-mid-2) 35%,transparent)}
+
+.ed2-meta{display:flex;flex-wrap:wrap;gap:12px 18px;margin-top:6px}
+.ed2-meta .ed2-field{flex:0 0 auto;width:min(23%,200px)}
+.ed2-rev-date{font-family:'Crimson Pro',serif;font-size:.7rem;font-weight:400;color:var(--tm);
+  text-transform:none;letter-spacing:0;margin-left:6px}
+
+.ed2-kwbar{margin-top:18px;padding-top:14px;border-top:1px solid var(--b1)}
+.ed2-kwbar-title{font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;letter-spacing:.05em;
+  color:var(--tx);margin-bottom:8px}
+.ed2-kwbtns{display:flex;flex-wrap:wrap;gap:8px}
+.ed2-kwbtn{font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;letter-spacing:.02em;padding:5px 12px;
+  border:1px solid var(--b2);border-radius:14px;background:var(--s2);color:var(--td);cursor:pointer;transition:all .15s}
+.ed2-kwbtn:not(.on):hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+.ed2-kwbtn.on:hover{background:var(--gd);box-shadow:0 0 8px var(--hv-glow)}
+.ed2-kwbtn.on{background:var(--gd);color:#fff;border-color:var(--go);box-shadow:0 0 8px rgba(201,168,76,.3)}
+.ed2-kwbar-empty{font-family:'Crimson Pro',serif;font-size:.85rem;color:var(--tm);font-style:italic}
+
+.ed2-hint{font-family:'Crimson Pro',serif;font-size:.76rem;color:var(--tm);margin-top:2px;font-style:italic}
+
+.ed2-btn{font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);font-size:.78rem;font-weight:600;letter-spacing:.02em;padding:6px 12px;
+  border:1px solid var(--b2);border-radius:0;background:var(--s2);color:var(--td);cursor:pointer;transition:all .15s;white-space:nowrap}
+.ed2-btn:hover{box-shadow:0 0 8px var(--hv-glow);background:var(--hv-fill)}
+/* Each coloured variant restates its :hover glow, ink and edge: left to .ed2-btn:hover, it would glow colourless (HANDOFF §12.1 G). */
+.ed2-btn.primary{color:var(--gr);border-color:var(--gr)}
+.ed2-btn.primary:hover{background:color-mix(in srgb,var(--gr) 12%,transparent);color:var(--gr);
+  border-color:var(--gr);box-shadow:0 0 8px color-mix(in srgb,var(--gr) 25%,transparent)}
+.ed2-btn.danger{color:var(--re);border-color:var(--re)}
+.ed2-btn.danger:hover{background:color-mix(in srgb,var(--re) 12%,transparent);color:var(--re);
+  border-color:var(--re);box-shadow:0 0 8px color-mix(in srgb,var(--re) 25%,transparent)}
+
+/* Every Close is a red "Close ✕" with no Cancel beside it (HANDOFF §12.1 A); .mcl, .sb-close, .kw-close, .doc-close, .td-dice-x and .td-fbbtn wear the same red. */
+.ed2-btn.close-x{border-color:var(--re,var(--re));color:#f0b8b8;
+  background:rgba(128,48,48,.35)}
+.ed2-btn.close-x:hover{background:rgba(128,48,48,.75);color:var(--white);
+  border-color:#f0b8b8;box-shadow:0 0 8px color-mix(in srgb,var(--re) 30%,transparent)}
+body.light .ed2-btn.close-x{color:var(--re);border-color:var(--re);
+  background:color-mix(in srgb,var(--re) 8%,transparent)}
+body.light .ed2-btn.close-x:hover{color:var(--ink-on-fill);background:var(--re);border-color:var(--re)}
+
+/* Spectating is purple (HANDOFF §12.1 D): --spect the edge, --spect-ink the words, lighter so they read on the dark panels. */
+:root,body{--spect:#b478f0;--spect-ink:#c9a0ff;--spect-fill:rgba(180,120,240,.14);
+  --spect-glow:rgba(180,120,240,.35)}
+body.light{--spect:#7a3fc0;--spect-ink:#6a2fb0;--spect-fill:rgba(122,63,192,.10);
+  --spect-glow:rgba(122,63,192,.28)}
+.ed2-btn.spect{color:var(--spect-ink);border-color:var(--spect)}
+.ed2-btn.spect:hover{background:var(--spect-fill);color:var(--spect-ink);
+  border-color:var(--spect);box-shadow:0 0 8px var(--spect-glow)}
+
+.ed-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--s3);
+  border:1px solid var(--go);color:var(--tx);font-family:'Crimson Pro',serif;font-size:.9rem;padding:10px 18px;
+  border-radius:0;box-shadow:0 4px 16px var(--sh);z-index:9999;opacity:0;transition:opacity .25s;pointer-events:none}
+.ed-toast.show{opacity:1}
+/* Above the toast, so the two never cover each other, and it takes the pointer, for its Cancel. */
+.ed-busy{position:fixed;bottom:64px;left:50%;transform:translateX(-50%);background:var(--s3);
+  border:1px solid var(--go);color:var(--tx);font-family:'Crimson Pro',serif;font-size:.95rem;
+  padding:10px 14px 10px 18px;box-shadow:0 4px 16px var(--sh);z-index:10000;
+  display:flex;align-items:center;gap:14px;max-width:min(640px,92vw)}
+.ed-busy .ed-busy-msg{font-variant-numeric:tabular-nums}
+
+.ci-qedit{width:28px;height:28px;border-radius:50%;
+  border:2.5px solid var(--gr);background:color-mix(in srgb,var(--bg) 72%,transparent);color:var(--gr);
+  font-size:.9rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  padding:0;transition:all .15s;flex-shrink:0}
+body.light .ci-qedit{background:var(--s2);border-color:var(--gr);color:var(--gr)}
+.ci-qedit:hover{background:color-mix(in srgb,var(--gr) 85%,transparent);color:var(--white);border:2.5px solid;border-image:linear-gradient(180deg,#1a3a22 0%,#2d6b3e 15%,#b8f0c8 40%,#5c9e6e 50%,#3d7a4e 60%,#2d6b3e 85%,#1a3a22 100%) 1;border-radius:0}
+
+.ed2-topsplit{display:flex;gap:12px;align-items:stretch}
+/* 50%, as .ed2-group is, so these boxes line up with the toolbar's above and the credits' below. */
+.ed2-topsplit-main{flex:0 0 50%;min-width:0}
+.ed2-topsplit-main .ed2-group{width:100%}
+.ed2-art{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:8px;
+  align-self:stretch;overflow:hidden}
+/* Outranks .ed2-group's margin, which is set later in this file. */
+.ed2-topsplit .ed2-art{margin-bottom:0}
+.ed2-stage{position:relative;width:100%;flex:1 1 auto;min-height:150px;
+  overflow:hidden;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--b2);background:var(--bg);cursor:grab;touch-action:none;user-select:none}
+.ed2-stage.dragging{cursor:grabbing}
+/* Sized by edArtStageLayout, not here: it has to match whatever frame the card is on. */
+.ed2-stage-box{position:relative;flex:0 0 auto}
+/* transform-origin must match .m-art-img's on the card, or rotate and zoom pivot elsewhere here. */
+.ed2-stage-xf{position:absolute;inset:0;transform-origin:center center;
+  pointer-events:none}
+/* Sized to the drawn image's own rectangle: a background never paints outside its element. */
+.ed2-stage-spill{position:absolute;background-size:100% 100%;
+  background-repeat:no-repeat;opacity:.3;filter:saturate(.55)}
+.ed2-stage-clip{position:absolute;inset:0;overflow:hidden;border-radius:3px}
+.ed2-stage-img{position:absolute;inset:0;background-position:center;
+  background-repeat:no-repeat;transform-origin:center center}
+.ed2-stage-edge{position:absolute;inset:0;pointer-events:none;border-radius:3px;
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--black) 85%,transparent), 0 0 0 2px var(--go),
+             0 0 0 3px color-mix(in srgb,var(--black) 55%,transparent)}
+/* The thirds are the window's, not the stage's: the card never sees the stage. */
+.ed2-stage-box::after{content:'';position:absolute;inset:0;pointer-events:none;
+  z-index:2;
+  background:linear-gradient(90deg,transparent 33.2%,rgba(255,255,255,.18) 33.2%,rgba(255,255,255,.18) 33.5%,transparent 33.5%,transparent 66.4%,rgba(255,255,255,.18) 66.4%,rgba(255,255,255,.18) 66.7%,transparent 66.7%),
+             linear-gradient(180deg,transparent 33.2%,rgba(255,255,255,.18) 33.2%,rgba(255,255,255,.18) 33.5%,transparent 33.5%,transparent 66.4%,rgba(255,255,255,.18) 66.4%,rgba(255,255,255,.18) 66.7%,transparent 66.7%);
+  opacity:0;transition:opacity .15s}
+.ed2-stage:hover .ed2-stage-box::after{opacity:1}
+.ed2-xf-row{display:flex;gap:10px;flex:0 0 auto}
+.ed2-xf{flex:1 1 0;min-width:0;display:flex;align-items:center;gap:5px}
+.ed2-xf label{flex:0 0 40px;font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:.04em;
+  color:var(--tx);overflow:hidden}
+.ed2-xf input[type=range]{flex:1 1 0;min-width:0;accent-color:var(--go)}
+.ed2-xf input[type=number]{flex:0 0 50px;width:50px;box-sizing:border-box;
+  background:var(--s2);border:1px solid var(--b1);border-radius:0;
+  color:var(--tx);font-family:'Crimson Pro',serif;font-size:.8rem;padding:3px 4px}
+.ed2-xf-foot{flex:0 0 auto}
+.ed2-art-empty{font-size:.8rem;color:var(--tm);padding:14px 0;line-height:1.5}
+.ed2-art-empty.ed2-stage-none{position:absolute;inset:0;display:flex;align-items:center;
+  justify-content:center;padding:0 8px;text-align:center}
+
+@media(max-width:900px){.ed2-preview{width:300px}}
+@media(max-width:720px){.ed2-wrap{flex-direction:column;height:auto}.ed2-preview{width:100%;border-right:none;border-bottom:1px solid var(--b1)}
+  .ed2-topsplit{flex-direction:column}.ed2-art{flex:0 0 auto;min-height:260px}}
+
+
+
+
+/* The face is a fixed 340x476 that JS scales to each slot. */
+.mcard-fit{position:relative;width:100%;aspect-ratio:340/476;overflow:hidden}
+.mcard-fit .mcard-scale{position:absolute;top:0;left:0;transform-origin:top left;width:340px;height:476px}
+.ci .mcard-fit .mcard{box-shadow:none;transform:none;transition:none}
+.mcard-fit .mcard-inner{border-radius:8px}
+
+
+.mcard .m-orb-img{position:relative;width:100%;height:100%;display:grid;place-items:center}
+.mcard .m-orb-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.mcard .m-orb-img span{position:relative;font:700 15px/1 var(--card-font,serif);
+  color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.85),0 0 2px rgba(0,0,0,.7)}
+.mcard .m-sym{vertical-align:-2px;margin:0 1px}
+/* !important outranks the inline size symToken and manaImg write, so symbols shrink with fitFace's text; .95em is 13px against 13.75px. */
+.mcard .m-rules-body .m-sym,.mcard .m-rules-body .mico,
+.mcard .m-flavor .m-sym,.mcard .m-flavor .mico{
+  width:.95em!important;height:.95em!important;vertical-align:-.14em}
+
+/* !important: buildFaceHTML writes the background inline. .edge-* sets only the outer ring (.mcard's background), .pin-* only --pin, so the two stay independent.
+   'none' is transparent, not zero width: Classic is a flex column, and a zeroed border would move every box. */
+body.edge-black .mcard{background:#000!important}
+body.edge-white .mcard{background:#fff!important}
+body.edge-none  .mcard{background:transparent!important}
+
+body.pin-black .mcard{--pin:linear-gradient(#000,#000)!important}
+body.pin-white .mcard{--pin:linear-gradient(#fff,#fff)!important}
+body.pin-none  .mcard{--pin:linear-gradient(transparent,transparent)!important}
+
+.ed2-overlay{position:fixed;inset:0;background:color-mix(in srgb,var(--black) 62%,transparent);z-index:9000;
+  display:flex;align-items:center;justify-content:center;padding:24px}
+.ed2-modal{background:var(--s1);border:1px solid var(--b1);border-radius:12px;
+  width:min(760px,96vw);max-height:88vh;display:flex;flex-direction:column;
+  box-shadow:0 24px 64px color-mix(in srgb,var(--black) 60%,transparent)}
+.ed2-modal-head{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;border-bottom:1px solid var(--b1);color:var(--tx);font-size:15px}
+.ed2-modal-body{overflow:auto;padding:14px 16px}
+/* A window is dark in both themes, so under the light theme it takes the dark theme's tokens back. */
+body.light .ed2-modal{color:var(--tx);color-scheme:dark;
+  --re-ink:#e07a7a;--re-hi:#f0b8b8;--ink-on-fill:#0c0e14;--tm2:#9a8f79;
+  --bg:#0c0e14;--s1:#13161f;--s2:#1a1e2b;--s3:#212638;--b1:#2a2f45;--b2:#363d58;
+  --go:#c9a84c;--g2:#e8c96a;--gd:#7a6030;--tx:#f0ead8;--td:#c0b89a;--tm:#7a7060;
+  --ac:#7b9cda;--a2:#a0b8e8;--re:#c45c5c;--gr:#5c9e6e;--sh:rgba(0,0,0,.5);--txt-accent:#f0ead8;
+  --pan:#13161f;--bd:#2a2f45;
+  --hv-fill:rgba(255,255,255,.07);--hv-glow:rgba(255,255,255,.15);
+  --spect:#b478f0;--spect-ink:#c9a0ff;--spect-fill:rgba(180,120,240,.14);--spect-glow:rgba(180,120,240,.35);
+  --ed-info:#7fb0dc;--ed-info-edge:#3c5f80;--ed-info-hi:#5f8fb8;
+  --ed-pur:#b9aef0;--ed-pur-edge:#5b5290;--ed-pur-hi:#d6cfff;--ed-pur-hi-edge:#8a7fc8;
+  --ed-warn:#ffb4b4;--ed-warn-edge:#5a2b2b;--ed-warn-hi:#ffd0d0;--ed-warn-hi-edge:#8a4242;
+  --ed-hint:#8b95a8;--ed-chip-on:#cfe2f4;--ed-del:#e8a0a0}
+body.light .ed2-modal .ed2-btn.close-x{color:#f0b8b8;border-color:var(--re);
+  background:rgba(128,48,48,.35)}
+body.light .ed2-modal .ed2-btn.close-x:hover{background:rgba(128,48,48,.75);color:var(--white);
+  border-color:#f0b8b8;box-shadow:0 0 8px color-mix(in srgb,var(--re) 30%,transparent)}
+
+.dup-list{margin-top:10px;max-height:340px;overflow:auto}
+.dup-grp{border:1px solid var(--s3);border-radius:8px;padding:6px 8px;margin-bottom:6px;background:var(--s2)}
+.dup-row{display:flex;align-items:center;gap:8px;padding:3px 0;color:var(--tx);font-size:12.5px;
+  flex-wrap:wrap}
+.dup-row b{color:var(--tx);font-weight:600}
+.shp-name{flex:0 0 auto;max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  background:none;border:0;padding:0;cursor:pointer;text-align:left;
+  font-family:'Crimson Pro',serif;font-size:12.5px;font-weight:600;color:var(--tx)}
+/* underline only: check_cli fails a hover that repaints a button's ink (HANDOFF §12.1 G) */
+.shp-name:hover{text-decoration:underline}
+.shp-rules{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:var(--tm);font-size:11.5px;font-style:italic}
+.shp-cost{display:inline-flex;align-items:center;gap:2px;flex:0 0 auto}
+.shp-cost img{width:13px;height:13px}
+.shp-stats{color:var(--tm2);font-size:11.5px}
+.dup-row i{color:var(--tm2);font-size:11.5px;font-style:normal}
+.dup-tag{flex:none;min-width:52px;text-align:center;padding:1px 6px;border-radius:8px;
+  background:var(--b1);color:var(--tx);font-size:10.5px;letter-spacing:.05em;}
+.dup-row.keep .dup-tag{background:var(--green-dark);color:var(--ink-light)}
+.dup-art{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+.dup-art code{background:var(--bg);border:1px solid var(--b1);border-radius:4px;padding:1px 5px;
+  color:var(--g2);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px}
+
+.ed2-gate{width:min(560px,96vw)}
+.ed2-gate .gate-title{color:var(--re-hi)}
+.gate-lose{border:1px solid var(--red-dark);background:var(--bg);border-radius:8px;
+  padding:10px 12px 10px 14px;margin-bottom:6px}
+.gate-lose h5{margin:0 0 6px;color:var(--re-hi);font-size:11px;letter-spacing:.08em;
+  font-weight:700}
+.gate-lose ul{margin:0;padding-left:16px;color:var(--tx);font-size:13px;line-height:1.6}
+.gate-step{display:flex;align-items:flex-start;gap:10px;padding:12px 0;
+  border-top:1px solid var(--s3);margin-top:8px}
+.gate-num{flex:none;width:20px;height:20px;border-radius:50%;background:var(--b1);
+  color:var(--tx);font-size:11.5px;line-height:20px;text-align:center;margin-top:1px}
+.gate-step.ok .gate-num{background:var(--green-dark);color:var(--ink-light)}
+.gate-txt{flex:1;min-width:0;color:var(--tx);font-size:13px;line-height:1.5}
+.gate-txt code{background:var(--bg);border:1px solid var(--b1);border-radius:4px;
+  padding:1px 6px;color:var(--g2);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
+.gate-note{color:var(--tm2);font-size:11.5px;line-height:1.45;margin:5px 0 8px}
+.gate-step.ok .gate-note{color:var(--gr)}
+.gate-in{width:100%;box-sizing:border-box;margin-top:8px;padding:7px 9px;font-size:13px;
+  background:var(--s1);border:1px solid var(--b1);border-radius:6px;color:var(--tx)}
+.gate-in:focus{outline:none;border-color:var(--go)}
+.gate-actions{display:flex;justify-content:flex-end;gap:8px;padding-top:14px;
+  margin-top:8px;border-top:1px solid var(--s3)}
+.gate-keep{border:1px solid var(--b1);background:var(--s1);border-radius:8px;
+  padding:8px 12px 8px 14px;margin-bottom:6px}
+.gate-keep ul{margin:0;padding-left:16px;color:var(--tx);font-size:12.5px;line-height:1.55}
+.gate-bk-btns{display:flex;flex-wrap:wrap;gap:8px}
+.gate-step.skipped .gate-num{background:var(--gd);color:var(--g2)}
+.gate-step.skipped .gate-note{color:var(--g2)}
+.gate-bk-btns .ed2-btn[aria-pressed='true']{border-color:var(--go);color:var(--g2)}
+/* Above everything until answered: a notice nobody can see is the fault it replaces. */
+.ed-store-notes{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:100000;
+  display:flex;flex-direction:column;gap:6px;width:min(640px,calc(100vw - 32px))}
+.ed-store-note{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;
+  background:var(--black);border:1px solid var(--gd);color:var(--orange-pale);font-size:13px;line-height:1.45;
+  box-shadow:0 6px 24px color-mix(in srgb,var(--black) 45%,transparent)}
+.ed-store-note-msg{flex:1;min-width:0}
+.ed-store-note .ed2-btn{flex:none}
+.ed2-choices{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.ed2-choice{display:block;width:100%;text-align:left;cursor:pointer;
+  background:var(--s1);border:1px solid var(--b1);border-radius:8px;padding:11px 13px;
+  color:var(--tx);font-family:inherit}
+.ed2-choice:hover{background:var(--s2);box-shadow:0 0 8px var(--hv-glow)}
+.ed2-choice:focus-visible{outline:2px solid var(--go);outline-offset:2px}
+.ed2-choice b{display:block;font-size:13.5px;margin-bottom:3px}
+.ed2-choice span{display:block;color:var(--tm2);font-size:11.5px;line-height:1.45}
+.ed2-choice.warn{border-color:var(--red-dark);background:var(--bg)}
+.ed2-choice.warn b{color:var(--re-hi)}
+.ed2-choice.warn:hover{border-color:var(--re)}
+
+.ed2-hint.warn{color:var(--orange-light);border-left:2px solid var(--gd);padding-left:9px}
+/* a disabled button fires no click at all, so this only has to look inert */
+.ed2-btn[disabled],.ed2-btn[disabled]:hover{opacity:.38;cursor:not-allowed;
+  box-shadow:none;background:none}
+.tpl-sec{margin-bottom:18px}
+.tpl-sec h4{margin:0 0 6px;color:var(--tx);font-size:13px;letter-spacing:.04em;}
+.tpl-hint{display:block;color:var(--ed-hint);font-size:11.5px;font-style:normal;margin:0 0 8px;line-height:1.45}
+.tpl-opts{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.tpl-lbl{color:var(--tx);font-size:12px;min-width:74px}
+.tpl-slot{display:flex;align-items:center;gap:10px;padding:6px 8px;border:1px solid var(--s3);
+  border-radius:8px;margin-bottom:6px;background:var(--s2)}
+.tpl-slot.has{border-color:var(--b2)}
+.tpl-thumb{width:44px;height:60px;flex:0 0 auto;border-radius:4px;background:var(--bg);
+  display:grid;place-items:center;overflow:hidden}
+.tpl-thumb img{width:100%;height:100%;object-fit:contain}
+.tpl-thumb span{color:var(--tm);font-size:10px}
+.tpl-meta{flex:1;min-width:0;color:var(--tx);font-size:12.5px}
+.tpl-meta i{display:block;color:var(--tm);font-size:11px;font-style:normal}
+.tpl-acts{display:flex;gap:6px;flex:0 0 auto}
+.ed2-btn.tiny{padding:3px 8px;font-size:11.5px;cursor:pointer}
+.ed2-btn.tiny.on{background:var(--blue-mid-2);border-color:var(--ac);color:var(--white)}
+.ed2-btn.tiny.on:hover{background:var(--ac);color:var(--white);border-color:var(--ac);
+  box-shadow:0 0 8px color-mix(in srgb,var(--ac) 30%,transparent)}
+.ed2-btn.tiny.warn{color:var(--ed-warn);border-color:var(--ed-warn-edge)}
+.ed2-in.tiny{width:80px;padding:3px 6px;font-size:12px;background:var(--s1);
+  border:1px solid var(--b1);border-radius:5px;color:var(--tx)}
+
+#edPrintRoot{display:none}
+#edPrintRoot .pr-card{overflow:hidden;page-break-inside:avoid;break-inside:avoid;
+  display:inline-block;vertical-align:top;margin:0}
+#edPrintRoot .pr-scale{transform-origin:top left;width:340px;height:476px}
+/* on paper the drop shadow would darken the bleed band */
+#edPrintRoot .mcard{box-shadow:none}
+@media print{
+  /* Only while body.ed-printing (edPrintCards): unscoped, Ctrl+P anywhere else printed a blank sheet. */
+  body.ed-printing>*{display:none!important}
+  body.ed-printing>#edPrintRoot{display:block!important;page:edcards}
+  @page edcards{margin:0.25in}
+  html:has(>body.ed-printing),body.ed-printing{background:#fff!important}
+  /* Browsers drop backgrounds in print unless told, and the face, its art too, is backgrounds; after the white page rule, on every layer. */
+  body.ed-printing *,body.ed-printing *::before,body.ed-printing *::after{
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+  }
+}
+.ed2-btn.warn{color:var(--ed-warn);border-color:var(--ed-warn-edge)}
+.ed2-btn.warn:hover{color:var(--ed-warn-hi);border-color:var(--ed-warn-hi-edge);
+  background:color-mix(in srgb,var(--re) 12%,transparent);box-shadow:0 0 8px color-mix(in srgb,var(--re) 25%,transparent)}
+
+/* The outline is the element's own gradient and ::before the fill over it, so a gradient outline survives clip-path; point depth is in em, not %. */
+.kw-pill{position:relative;z-index:0;display:inline-block;
+  padding:0 .5em;margin:0 .04em;line-height:1.28;border-radius:.8em;
+  background:var(--kw-out);cursor:pointer;
+  border-bottom:0 !important;text-decoration:none}
+.kw-pill::before{content:'';position:absolute;inset:1.5px;z-index:-1;
+  border-radius:.68em;background:var(--kw-fill)}
+.kw-box{border-radius:2px}
+.kw-box::before{border-radius:1px}
+.kw-point{border-radius:2px 0 0 2px;padding-right:.95em;
+  clip-path:polygon(0 0,calc(100% - .45em) 0,100% 50%,calc(100% - .45em) 100%,0 100%)}
+.kw-point::before{border-radius:1px 0 0 1px;
+  clip-path:polygon(0 0,calc(100% - .49em) 0,calc(100% - 2.2px) 50%,calc(100% - .49em) 100%,0 100%)}
+.kw-dpoint{border-radius:0;padding:0 .95em;
+  clip-path:polygon(.45em 0,calc(100% - .45em) 0,100% 50%,calc(100% - .45em) 100%,.45em 100%,0 50%)}
+.kw-dpoint::before{
+  clip-path:polygon(.49em 0,calc(100% - .49em) 0,calc(100% - 2.2px) 50%,calc(100% - .49em) 100%,.49em 100%,2.2px 50%)}
+
+/* The shadow is on a wrapper: clip-path applies after filter, so on the pill it clipped the drop-shadow away. */
+.kw-pill{font-weight:700}
+.kw-shadow{display:inline-block;
+  filter:drop-shadow(var(--ico-sx,.91px) var(--ico-sy,1.82px) var(--ico-blur,3.03px) color-mix(in srgb,var(--black) 75%,transparent))}
+.kw-pill::before{inset:var(--kw-w,1.5px)}
+.kw-lpoint{border-radius:0 2px 2px 0;padding-left:.95em;
+  clip-path:polygon(.45em 0,100% 0,100% 100%,.45em 100%,0 50%)}
+.kw-lpoint::before{border-radius:0 1px 1px 0;
+  clip-path:polygon(.49em 0,100% 0,100% 100%,.49em 100%,calc(0px + var(--kw-w,1.5px)*1.5) 50%)}
+.kw-slant{border-radius:1px;padding:0 .8em;
+  clip-path:polygon(.42em 0,100% 0,calc(100% - .42em) 100%,0 100%)}
+.kw-slant::before{border-radius:0;
+  clip-path:polygon(.46em 0,calc(100% - 2px) 0,calc(100% - .46em) 100%,2px 100%)}
+
+.ed2-help-row{padding:10px 12px;margin:0 0 12px;border:1px solid var(--b1);border-radius:8px;background:var(--s2)}
+.ed2-help-row label{display:block;color:var(--tx);font-size:13px;cursor:pointer}
+.ed2-help-row span{display:block;color:var(--tm2);font-size:11.5px;margin-top:3px}
+
+.kw-pill{
+  text-shadow:0 1px 0 var(--kw-o,#000), 1px 0 0 var(--kw-o,#000),
+              0 -1px 0 var(--kw-o,#000), -1px 0 0 var(--kw-o,#000),
+              1px 1px 0 var(--kw-o,#000), -1px 1px 0 var(--kw-o,#000),
+              1px -1px 0 var(--kw-o,#000), -1px -1px 0 var(--kw-o,#000)}
+
+/* Two background layers, not border-image, which ignores border-radius (HANDOFF §8); the first is a gradient, as only the last layer may be a colour. */
+.ed2-group{--grp-face:#141821;
+  border:4px solid transparent;border-radius:10px;margin:0 0 12px;padding:12px 14px;
+  background:linear-gradient(var(--grp-face),var(--grp-face)) padding-box,
+             var(--td-gold) border-box;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--white) 6%,transparent)}
+/* --s1, not a dark face: under the light theme its labels are dark; inside a window --s1 is the window's dark one again. */
+body.light .ed2-group,body.arcane .ed2-group{--grp-face:var(--s1)}
+
+.ed2-btnbox{padding:10px 12px}
+/* 1em of the grid's font-size (edFitBtnRows), never a custom property: Chromium left the computed font-size stale and the fit bottomed out.
+   The padding is in em so it shrinks with the type. */
+/* align-self:stretch: fallback-font glyphs make some labels taller, and stretched, the row is one height (the tops are measured). */
+.ed2-btnbox .ed2-btn{font-size:1em;padding:6px .92em;flex:0 0 auto;min-width:0;
+  align-self:stretch;display:inline-flex;align-items:center;justify-content:center}
+/* The right-hand column is Fix's and Delete card's, placed rather than flowed so neither drifts; Save and Save All share a cell. */
+.ed2-btngrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;font-size:.78rem}
+.ed2-btngrid .ed2-bg-back{grid-column:span 1}
+.ed2-btngrid .ed2-bg-auto.on{background:var(--green-deep);border-color:var(--green-mid-3);color:var(--green-light-2);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--green-mid-3) 35%,transparent)}
+.ed2-btngrid .ed2-bg-test.on{background:var(--gd);border-color:var(--go);color:var(--g2);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--go) 35%,transparent)}
+.ed2-btngrid .ed2-bg-fix{grid-column:5;grid-row:1}
+.ed2-btngrid .ed2-bg-del{grid-column:5;grid-row:2}
+.ed2-btngrid .ed2-bg-pair{display:flex;gap:4px;min-width:0;position:relative}
+.ed2-btnbox .ed2-btngrid .ed2-bg-pair .ed2-btn{flex:1 1 0;min-width:0;padding:6px .2em}
+/* No font-size-adjust: Chromium draws it in steps, so one measurement cannot fit the size; ED_BTN_FS_MAX scales by .51 / .43 instead. */
+.ed2-btnbox .ed2-btngrid .ed2-btn{width:100%;padding:6px .35em;white-space:nowrap;overflow:hidden;font-size-adjust:none}
+/* 5px past the button each way is the grid's gap, so it touches no neighbour; a press on it goes through to Save All. */
+.ed2-btngrid .ed2-count{position:absolute;top:-5px;right:-5px;z-index:1;min-width:13px;height:13px;
+  box-sizing:border-box;padding:0 3px;border-radius:7px;background:var(--gr);color:var(--bg);
+  box-shadow:0 0 0 1.5px var(--s1);font:700 8.5px/13px system-ui,sans-serif;letter-spacing:0;
+  text-align:center;pointer-events:none}
+
+.ed2-btn.ed2-btn-pur{color:var(--ed-pur);border-color:var(--ed-pur-edge)}
+.ed2-btn.ed2-btn-pur:hover{background:color-mix(in srgb,var(--spect-ink) 12%,transparent);color:var(--ed-pur-hi);
+  border-color:var(--ed-pur-hi-edge);box-shadow:0 0 8px color-mix(in srgb,var(--spect-ink) 25%,transparent)}
+
+.ed2-group .ed2-row3{display:flex;gap:12px;align-items:stretch}
+.ed2-group .ed2-rules-col{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:10px}
+.ed2-group .ed2-rules-col .ed2-field{width:100%}
+.ed2-group .ed2-textarea{width:100%;box-sizing:border-box}
+.ed2-group .ed2-stats{flex:0 0 auto}
+
+.ed2-group .ed2-row2{display:flex;gap:12px}
+.ed2-group .ed2-row2>.ed2-field{flex:1 1 0;min-width:0}
+.ed2-group .ed2-row2 .ed2-combo,
+.ed2-group .ed2-row2 .ed2-input{width:100%;box-sizing:border-box}
+.ed2-group .ed2-mn-row{display:flex;gap:12px}
+.ed2-group .ed2-mn-row .f-mana-wrap{flex:0 0 190px}
+.ed2-group .ed2-mn-row .f-name-wrap{flex:1 1 auto;min-width:0}
+/* A 220px basis, or the row's wrap sends Name onto a line of its own at any width. */
+.ed2-group .ed2-mn-row .f-name-wrap.ed2-inl{flex:1 1 220px}
+.ed2-group .ed2-row2{align-items:flex-end}
+.ed2-group .ed2-mn-row .ed2-input{width:100%;box-sizing:border-box}
+.ed2-group .ed2-meta{display:flex;gap:12px}
+.ed2-group .ed2-meta>.ed2-field{flex:1 1 0;min-width:0}
+.ed2-group .ed2-meta .ed2-input{width:100%;box-sizing:border-box}
+.tpl-sub{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.08em;
+  color:var(--go);margin:12px 0 2px}
+.tpl-align{flex-wrap:wrap}
+.tpl-align .tpl-lbl-gap{min-width:0;margin-left:8px}
+.tpl-align-base{border-bottom:1px solid var(--b1);padding-bottom:7px;margin-bottom:2px}
+.tpl-align-base .tpl-lbl{color:var(--go);font-weight:700}
+.tpl-rm{margin-left:auto}
+.tpl-pick{background:var(--s2);border:1px solid var(--b1);color:var(--tx);
+  font-family:'Crimson Pro',serif;font-size:.82rem;padding:3px 5px;border-radius:0;
+  max-width:190px}
+.tpl-align-new{min-width:150px}
+.ed2-field-rar{flex:1 1 0;min-width:0}
+.ed2-field-rar select{width:100%;box-sizing:border-box;background:var(--s2);
+  border:1px solid var(--b1);color:var(--tx);font-family:'Crimson Pro',serif;
+  font-size:.9rem;padding:4px 5px;border-radius:0}
+
+.ed2-modal-wide{width:min(1760px,99vw)}
+
+.kwm-form{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+.kwm-form label{display:flex;flex-direction:column;gap:4px;color:var(--tx);font-size:11.5px}
+.kwm-form .ed2-in{padding:5px 7px;font-size:12.5px;background:var(--s1);
+  border:1px solid var(--b1);border-radius:5px;color:var(--tx);width:100%;box-sizing:border-box}
+
+.ed2-group{width:50%;box-sizing:border-box}
+/* This is the rule that wins for .f-mana-wrap: the widths earlier in this file are overridden, so change it here. */
+.ed2-group .ed2-mn-row .f-mana-wrap{flex:0 0 auto;width:auto}
+.ed2-group .ed2-mn-row .f-mana-wrap .ed2-input{flex:0 0 136px;width:136px}
+
+/* Layout only: a border or background here would flatten the per-stat metal (.ed2-nf-atk/-hp/-arc) to one grey box. */
+.ed2-group-stats .ed2-stats{display:flex;flex-direction:row;flex-wrap:nowrap;gap:5px;align-items:stretch}
+.ed2-group-stats .ed2-orb{display:flex;flex-direction:row;align-items:center;gap:6px;
+  flex:1 1 0;min-width:0;padding:5px}
+.ed2-group-stats .ed2-orb-pv{flex:0 0 30px;width:30px;height:30px;margin:6px}
+.ed2-orb-fields{display:flex;flex-direction:column;gap:4px;width:100%;min-width:0}
+.ed2-orb-valrow{display:flex;align-items:center;gap:4px;min-width:0}
+.ed2-orb-pv{flex:0 0 38px;width:38px;height:38px;display:block}
+.ed2-orb-pv svg{display:block;overflow:visible}
+.ed2-orb-pv-none{border:1px dashed var(--b1);border-radius:6px;opacity:.5}
+.ed2-group-stats .ed2-orb-type{max-width:none;width:100%;min-width:0;padding:1px 2px;font-size:.7rem}
+.ed2-group-stats .ed2-orb-val{flex:1 1 0;width:auto;min-width:0;text-align:center;padding:2px 3px;font-size:.82rem}
+.ed2-group-stats .ed2-orb-star{flex:0 0 auto;font-size:.72rem;gap:1px}
+.ed2-group-stats .ed2-orb-valrow{gap:3px}
+.ed2-group-stats .ed2-orb-fields{gap:3px}
+
+
+.ed2-kwbtn-pill{padding:3px 5px;line-height:1}
+.ed2-kwbtn-pill .kw-pill{font-family:"Book Antiqua",Georgia,serif;font-size:12.5px;pointer-events:none}
+
+.fr-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fr-cols h4{margin:0 0 5px;color:var(--tx);font-size:12px;letter-spacing:.04em}
+.fr-pre{margin:0;padding:10px;border:1px solid var(--s3);border-radius:8px;background:var(--s1);
+  color:var(--tx);font-size:12.5px;line-height:1.45;white-space:pre-wrap;max-height:340px;overflow:auto}
+.fr-after{border-color:var(--green-dark)}
+
+.ed2-textwrap{display:flex;gap:8px;align-items:flex-start;flex:1}
+.ed2-rows{display:flex;flex-direction:column;align-items:center;gap:3px;flex:0 0 auto}
+.ed2-rows span{color:var(--tm);font-size:10px;letter-spacing:.04em}
+.ed2-rowsin{width:46px;padding:4px 5px;font-size:12px;text-align:center;
+  background:var(--s1);border:1px solid var(--b1);border-radius:5px;color:var(--tx)}
+.ed2-textwrap .ed2-textarea{flex:1 1 auto;min-width:0}
+
+.ed2-artcol{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:0;align-self:stretch}
+.ed2-artcol .ed2-art{flex:1 1 auto;min-height:0}
+/* The stage gives way (basis 0, a low floor), or one more row above it pushes Upload / Reset / Flip / Remove out of sight under overflow:hidden. */
+.ed2-artcol .ed2-art{overflow-y:auto;overflow-x:hidden}
+.ed2-artcol .ed2-stage{flex:1 1 0;min-height:76px}
+.ed2-artcol .ed2-xf-row,.ed2-artcol .ed2-xf-foot,
+.ed2-artcol .ed2-var-row{flex:0 0 auto}
+
+.ed2-xf-foot{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+
+.ed2-hlbox{display:grid;grid-template-columns:auto 1fr auto 1fr auto;gap:6px 8px;align-items:center;
+  margin-bottom:0}
+.ed2-hl-row{display:contents}
+.ed2-hl-h{font-family:'Cinzel',serif;font-size:.66rem;font-weight:700;letter-spacing:.05em;
+  color:var(--tx);white-space:nowrap}
+.ed2-hlbox select{min-width:0;background:var(--s2);border:1px solid var(--b1);color:var(--tx);
+  font-family:'Crimson Pro',serif;font-size:.8rem;padding:3px 4px;border-radius:0}
+.ed2-hlbox input[type=range]{min-width:0;width:100%;accent-color:var(--go)}
+.ed2-hl-n{width:4.4em;min-width:0;background:var(--s2);border:1px solid var(--b1);
+  color:var(--tx);font-family:'Crimson Pro',serif;font-size:.78rem;padding:3px 4px;
+  border-radius:0;text-align:right;font-variant-numeric:tabular-nums}
+.ed2-hl-mark select{grid-column:2 / -1}
+.ed2-hl-markbtn{justify-self:start;font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);font-size:.62rem;
+  letter-spacing:.02em;padding:3px 7px;white-space:nowrap}
+
+/* Its flex never applies: `.ed2-field label` outranks it, so the header is an inline flow (see .ed2-split-ctl). */
+.ed2-fmt-lbl{display:flex;align-items:center;justify-content:flex-start;gap:8px}
+.ed2-fmt{display:inline-flex;gap:3px}
+.ed2-fmtbtn{background:var(--s2);color:var(--td);border:1px solid var(--b1);
+  border-radius:4px;width:22px;height:19px;line-height:1;padding:0;cursor:pointer;
+  font-family:'Crimson Pro',serif;font-size:.8rem}
+.ed2-fmtbtn:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+
+.wm-wrap{display:flex;gap:16px;align-items:flex-start}
+.wm-list{flex:0 0 230px;display:flex;flex-direction:column;gap:4px;max-height:60vh;overflow-y:auto}
+.wm-add{margin-bottom:6px}
+.wm-item{display:flex;align-items:center;gap:8px;padding:5px 7px;cursor:pointer;
+  border:1px solid transparent;font-family:'Crimson Pro',serif;font-size:.9rem;color:var(--tx)}
+.wm-item:hover{border-color:var(--b2)}
+.wm-item.on{border-color:var(--go);background:color-mix(in srgb,var(--go) 12%,transparent)}
+.wm-thumb{flex:0 0 34px;height:24px;background:var(--bg) center/contain no-repeat;border:1px solid var(--b1)}
+.wm-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wm-use{flex:0 0 auto;font-size:.74rem;color:var(--tm)}
+.wm-right{flex:1 1 auto;min-width:0}
+.wm-edit{display:flex;flex-direction:column;gap:8px}
+.wm-namelbl{flex:1;font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;letter-spacing:.05em;
+  color:var(--tx)}
+/* The rules box's own 326x118, the only place a watermark is drawn. */
+.wm-stage{position:relative;width:100%;aspect-ratio:326/118;overflow:hidden;
+  border:1px solid var(--b2);background:
+    repeating-conic-gradient(var(--s2) 0% 25%, var(--s1) 0% 50%) 50%/16px 16px}
+.wm-stage-img{position:absolute;inset:0;background:center/contain no-repeat;transform-origin:center center}
+.wm-stage-empty{position:absolute;inset:0;display:grid;place-items:center;color:var(--tm);
+  font-family:'Crimson Pro',serif;font-size:.85rem}
+
+.mst-orb{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:56px}
+.mst-orb svg{display:block;overflow:visible;
+  filter:drop-shadow(var(--ico-sx,.91px) var(--ico-sy,1.82px) var(--ico-blur,3.03px) color-mix(in srgb,var(--black) 75%,transparent))}
+.mst-lbl{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.1em;
+  color:var(--tx);white-space:nowrap}
+
+.sg-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.sg-list{display:flex;flex-direction:column;gap:6px}
+/* A variable so the light theme can move it; the edge is a background layer, as border-image ignores border-radius (HANDOFF §8). */
+.sg-row{--sg-face:#141821;
+  display:flex;align-items:center;gap:10px;padding:9px 12px;flex-wrap:wrap;
+  border:2px solid transparent;border-radius:10px;
+  background:linear-gradient(var(--sg-face),var(--sg-face)) padding-box,
+             linear-gradient(135deg,#3a4152 0%,#8a93a8 22%,#e8ecf4 46%,#4b5364 62%,#2e3543 100%) border-box}
+body.light .sg-row,body.arcane .sg-row{--sg-face:var(--s1)}
+.sg-row.off{opacity:.5}
+.sg-main{flex:1 1 100%;min-width:0;font-family:'Crimson Pro',serif;color:var(--tx);
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sg-meta{font-size:.78rem;color:var(--tm);white-space:nowrap}
+.sg-stamp{font-size:.72rem;color:var(--tm);white-space:nowrap}
+.sg-sub{font-size:.78rem;color:var(--tm);margin-top:2px}
+
+.sg-head{align-items:center}
+.sg-head .sg-title{margin:0;flex:0 0 auto}
+.sg-head-gap{flex:1 1 auto}
+.sg-tag{margin-left:6px;padding:1px 6px;border-radius:8px;background:var(--b2);
+  color:var(--tx);font-size:.66rem;letter-spacing:.06em;}
+.sg-ck{display:flex;align-items:center;gap:4px;font-family:'Crimson Pro',serif;
+  font-size:.8rem;color:var(--td);white-space:nowrap;cursor:pointer}
+.sg-ck input{margin:0;cursor:pointer}
+
+#pane-keywords{padding:0 0 40px}
+/* Below the chrome, not at 0: the header and tab bar are sticky too and would hide it. */
+.kwp-bar{position:sticky;top:calc(var(--chrome));z-index:80;display:flex;align-items:center;
+  gap:10px;padding:12px 16px;background:var(--s1);
+  border-bottom:1px solid color-mix(in srgb,var(--th-fill) 20%,var(--b1))}
+.kwp-jump{display:flex;gap:6px;flex:0 0 auto}
+.kwp-search{flex:1 1 auto;min-width:160px;font-size:1.1rem;padding:7px 12px}
+.kwp-baracts{display:flex;gap:6px;flex:0 0 auto}
+.kwp-bar .ed2-btn{font-size:23px;padding:6px 16px}
+/* A grid, not CSS columns, which would break a row across the gutter. */
+.kwp-body{padding:14px 16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;align-items:start}
+.kwp-body{grid-template-columns:repeat(auto-fill,minmax(min(1150px,100%),1fr))}
+.kwp-body > .kwp-head,.kwp-body > .kwp-row.kwp-open{grid-column:1/-1}
+@media (max-width:1100px){.kwp-body{grid-template-columns:minmax(0,1fr)}}
+.kwp-head{margin:16px 0 2px;font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;
+  letter-spacing:.06em;color:var(--go);
+  display:flex;align-items:center;gap:8px;scroll-margin-top:64px}
+.kwp-count{font-family:'Crimson Pro',serif;font-size:.8rem;font-weight:400;color:var(--tm)}
+
+/* Two background layers, as .ed2-group, for the same reason (HANDOFF §8). */
+.kwp-row{
+  border:2px solid transparent;border-radius:10px;padding:10px 12px;
+  background:linear-gradient(var(--s1),var(--s1)) padding-box,
+             var(--td-gold) border-box}
+.kwp-main{display:flex;align-items:center;gap:14px;flex-wrap:wrap;text-align:left}
+.kwp-main{flex-wrap:nowrap}
+.kwp-lead{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:14px}
+.kwp-pill{flex:0 0 auto;min-width:0;word-break:break-word;font-size:1.2rem}
+.kwp-plain{font-family:'Cinzel',serif;font-size:1.23rem;font-weight:700;color:var(--tx)}
+.kwp-rem{flex:1 1 200px;min-width:180px;font-family:'Crimson Pro',serif;font-size:1.04rem;
+  line-height:1.4;color:var(--td);text-align:left}
+.kwp-rem p{margin:0 0 4px}
+.kwp-main{min-height:78px}
+.kwp-lead{align-self:stretch}
+.kwp-lead .kwp-rem{flex:1 1 auto;min-width:0;align-self:stretch;position:relative;overflow:hidden}
+.kwp-lead .kwp-rem-t{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);
+  line-height:1.3}
+.kwp-lead .kwp-rem-t p{margin:0 0 2px}
+.kwp-lead .kwp-rem-t p:last-child{margin-bottom:0}
+.kwp-lead .kwp-rem-t img{width:1em!important;height:1em!important;vertical-align:-.12em}
+.kwp-acts{flex:0 0 auto;display:flex;flex-direction:column;gap:4px;align-items:stretch}
+
+.kwp-ctl{flex:1 1 100%;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.kwp-main > .kwp-ctl,.kwp-main > .kwp-acts{flex:0 0 auto;flex-wrap:nowrap;margin-left:auto}
+.kwp-main > .kwp-ctl .kwp-cstack{display:grid;grid-template-columns:max-content auto auto;
+  align-items:center;gap:4px 6px}
+.kwp-main > .kwp-ctl .kwp-cstack > .kwp-acts{grid-column:1/-1}
+.kwp-main > .kwp-ctl .kwp-col{display:contents}
+.kwp-main > .kwp-ctl .kwp-col>span{text-align:right}
+.kwp-main > .kwp-ctl .kwp-num>span{flex:0 0 auto;min-width:44px}
+.kwp-main > .kwp-ctl .kwp-num .ed2-in{width:96px}
+.kwp-cstack{display:flex;flex-direction:column;gap:4px}
+.kwp-col{display:flex;align-items:center;gap:6px;font-family:'Crimson Pro',serif;
+  font-size:.9rem;font-weight:700;color:var(--td);white-space:nowrap}
+.kwp-col>span{flex:0 0 92px;text-align:right}
+.kwp-col input[type=color]{width:30px;height:36px;padding:0;border:1px solid var(--b1);
+  border-radius:3px;background:none;cursor:pointer;flex:0 0 auto}
+.kwp-hex{width:66px;flex:0 0 auto;background:var(--s2);border:1px solid var(--b1);
+  border-radius:3px;color:var(--tx);font-family:ui-monospace,Consolas,monospace;
+  font-size:.78rem;padding:2px 4px;text-align:center}
+.kwp-hex:focus{outline:none;border-color:var(--go)}
+.kwp-nums{display:flex;flex-direction:column;gap:3px}
+.kwp-num{display:flex;align-items:center;gap:6px;font-family:'Crimson Pro',serif;
+  font-size:.9rem;font-weight:700;color:var(--td);white-space:nowrap}
+.kwp-num>span{flex:0 0 56px;text-align:right}
+.kwp-num .ed2-in{width:104px}
+.kwp-edit{margin-top:10px;padding-top:10px;border-top:1px solid var(--b1)}
+.kwe-form{display:flex;flex-direction:column;gap:8px}
+.kwe-row{display:flex;gap:18px;align-items:center}
+.kwm-form label.kwe-f{flex:1 1 0;min-width:0;flex-direction:row;align-items:center;gap:8px;
+  font-size:12.5px;font-weight:700}
+.kwm-form label.kwe-f > span{flex:0 0 auto;white-space:nowrap}
+.kwm-form label.kwe-f > span i{font-weight:400}
+.kwm-form label.kwe-f .ed2-in{flex:1 1 auto;min-width:0;width:auto}
+.kwm-form label.kwe-sel{flex:0 0 auto}
+.kwm-form label.kwe-sel .ed2-in{width:130px;flex:0 0 auto}
+
+@media(max-width:1200px){
+  .kwp-main{flex-wrap:wrap}
+  .kwp-ctl{flex:1 1 100%;justify-content:flex-start}
+  .kwp-main > .kwp-ctl{margin-left:0}
+  .kwp-lead .kwp-rem-t{position:static;transform:none}
+}
+/* These overrule the older row rules above: a row is now the pill, its reminder and a green Edit, two across. */
+.kwp-body{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px}
+@media (max-width:900px){.kwp-body{grid-template-columns:minmax(0,1fr)}}
+.kwp-row{padding:7px 10px}
+.kwp-main{min-height:0;flex-wrap:nowrap;gap:12px}
+.kwp-lead{align-self:center;gap:12px}
+.kwp-pill{font-size:1.1rem}
+.kwp-lead .kwp-rem{align-self:center;position:static;overflow:visible;min-width:0}
+.kwp-lead .kwp-rem-t{position:static;transform:none;display:-webkit-box;-webkit-box-orient:vertical;
+  -webkit-line-clamp:2;overflow:hidden}
+.kwp-open .kwp-lead .kwp-rem-t{display:block;-webkit-line-clamp:none;overflow:visible}
+.kwp-main > .kwp-acts{flex-direction:row;align-items:center;margin-left:auto}
+.kwp-row > .kwp-ctl{margin-top:10px;padding-top:10px;border-top:1px solid var(--b1)}
+
+.ed2-var-row{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+/* .ed2-fit-row, not .ed2-var-row, which the Variant row carries too: stretched, its ✎ ✕ + buttons would blow up. */
+.ed2-fit-row>.ed2-btn{flex:1 1 0;min-width:0}
+.ed2-var-h{flex:0 0 auto;font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;
+  letter-spacing:.05em;color:var(--tx);}
+.ed2-var-row select{flex:1 1 0;min-width:0;background:var(--s2);border:1px solid var(--b1);
+  color:var(--tx);font-family:'Crimson Pro',serif;font-size:.82rem;padding:3px 4px;border-radius:0}
+
+
+.ed2-btn.info{color:var(--ed-info);border-color:var(--ed-info-edge)}
+.ed2-btn.info:hover{background:color-mix(in srgb,var(--a2) 12%,transparent);color:var(--ed-info);
+  border-color:var(--ed-info-hi);box-shadow:0 0 8px color-mix(in srgb,var(--a2) 25%,transparent)}
+
+.ed2-sagabox{margin-top:12px}
+.ed2-sagabox>label{display:block;font-family:'Cinzel',serif;font-size:.62rem;
+  font-weight:700;letter-spacing:.05em;color:var(--tx);
+  margin-bottom:6px}
+.ed2-sagacount{display:inline-block;margin-left:6px;padding:0 6px;border-radius:8px;
+  background:var(--b2);color:var(--tx);font-size:.62rem;letter-spacing:0}
+.ed2-sagachips{display:flex;flex-wrap:wrap;gap:6px}
+/* A card in one saga shows its X greyed rather than hidden, so the row keeps its shape and the title can say why. */
+.ed2-sagachip{display:inline-flex;align-items:center;gap:2px;
+  font-family:'Crimson Pro',serif;font-size:.82rem;line-height:1.2;
+  padding:4px 6px 4px 10px;border-radius:999px;cursor:default;
+  background:var(--s2);border:1px solid var(--b1);color:var(--td)}
+.ed2-sagachip:not(:has(.ed2-sagax)){padding-right:10px}
+.ed2-sagapick{font:inherit;letter-spacing:inherit;color:inherit;background:none;
+  border:0;padding:0;cursor:pointer}
+/* A hover lifts a chip, never repaints it (HANDOFF §12.1 G): the fill is an image, so a chosen chip keeps its blue. */
+.ed2-sagachip:hover{box-shadow:0 0 8px var(--hv-glow);
+  background-image:linear-gradient(var(--hv-fill),var(--hv-fill))}
+.ed2-sagax{display:inline-flex;align-items:center;justify-content:center;
+  width:16px;height:16px;padding:0;border:0;border-radius:50%;cursor:pointer;
+  background:none;color:var(--tm);font-family:inherit;font-size:.9rem;line-height:1}
+.ed2-sagax:hover{background:color-mix(in srgb,var(--re) 22%,transparent);color:var(--ed-del)}
+.ed2-sagax.off{opacity:.3;cursor:not-allowed}
+.ed2-sagax.off:hover{background:none;color:var(--tm)}
+.ed2-sagachip.on{background:color-mix(in srgb,var(--a2) 14%,transparent);border-color:var(--ed-info-edge);color:var(--ed-chip-on);
+  font-weight:600}
+span.ed2-sagachip{cursor:default}
+
+.ed2-xf-foot{display:flex;gap:6px;flex-wrap:nowrap;align-items:center}
+.ed2-xf-foot > .ed2-btn{flex:1 1 0;min-width:0;padding-left:.3em;padding-right:.3em}
+
+.sg-src{flex:1 1 260px;display:flex;align-items:center;gap:8px;flex-wrap:nowrap;min-width:0}
+.sg-url{flex:1 1 120px;min-width:0;font-family:'Crimson Pro',serif;font-size:.82rem}
+.sg-msg{flex:1 1 100%;font-family:'Crimson Pro',serif;font-size:.8rem;color:var(--tm);
+  line-height:1.35}
+.sg-msg.warn{color:var(--re)}
+.sg-msg.on{color:var(--txt-accent);font-weight:600}
+.sg-tag.ofc{background:color-mix(in srgb,var(--gr) 20%,transparent);color:var(--gr)}
+.sg-tag.tcopy{background:color-mix(in srgb,var(--spect-ink) 20%,transparent);color:var(--spect-ink)}
+.sg-follow{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;
+  border-top:1px solid var(--b1)}
+.sg-follow .sg-url{flex:1 1 260px}
+.sg-tag.orph{background:color-mix(in srgb,var(--go) 18%,transparent);color:var(--txt-accent)}
+.orph-row .dup-tag.in-deck{background:color-mix(in srgb,var(--re) 18%,transparent);color:var(--re)}
+.deck-warn-row.orphan{background:color-mix(in srgb,var(--go) 12%,transparent);color:var(--txt-accent)}
+
+
+.sg-tag.shr{background:color-mix(in srgb,var(--a2) 18%,transparent);color:var(--a2)}
+.shr-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.shr-sagas{display:flex;gap:4px;flex-wrap:wrap}
+.shr-sagas code{font-size:.7rem;padding:1px 5px;border-radius:6px;
+  background:color-mix(in srgb,var(--a2) 15%,transparent);color:var(--a2)}
+.shr-diff{margin-top:4px;font-size:.76rem;color:var(--txt-accent);font-style:italic}
+.shr-warn{margin-top:10px;padding:8px 10px;border-radius:8px;
+  background:color-mix(in srgb,var(--go) 12%,transparent);color:var(--txt-accent);
+  font-family:'Crimson Pro',serif;font-size:.84rem;line-height:1.4}
+
+
+.stat-pick{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 12px}
+/* A small basis that grows, so a narrow window wraps the count's words rather than sending Close to a row of its own. */
+.stat-pick .stat-cover{flex:1 1 120px;min-width:120px;margin:0 0 0 6px;line-height:1.2}
+.stat-end{margin-left:auto;display:flex;align-items:center;gap:6px}
+.ed2-btn.stat-orient{min-width:92px;color:var(--spect-ink);border-color:var(--spect)}
+.ed2-btn.stat-orient:hover{background:var(--spect-fill);color:var(--spect-ink);
+  border-color:var(--spect);box-shadow:0 0 8px var(--spect-glow)}
+.stat-sum{color:var(--tm2);font-size:11.5px;margin-bottom:8px}
+.stat-sum i{color:var(--tm)}
+.stat-chart{max-height:44vh;overflow:auto;padding-right:4px;
+  border-top:1px solid var(--s3);border-bottom:1px solid var(--s3)}
+.stat-row{display:flex;align-items:center;gap:8px;padding:3px 4px;cursor:pointer;border-radius:5px}
+.stat-row:hover{background:var(--s2)}
+.stat-row.on{background:var(--s3)}
+.stat-lbl{flex:0 0 190px;max-width:190px;overflow:hidden;display:flex;align-items:center;gap:6px;
+  white-space:nowrap;color:var(--tx);font-size:12px}
+.stat-lbl-t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stat-pips{flex:0 0 auto;display:inline-flex;align-items:center}
+.stat-pips .mana-s{display:inline-flex;align-items:center;gap:1px}
+.stat-more{margin-left:2px;color:var(--tx);font-size:13px;font-weight:700;line-height:1}
+.stat-cards h4 .stat-pips,.stat-cards h4 .stat-lbl-t{vertical-align:middle}
+.stat-track{flex:1 1 auto;min-width:0;height:17px;background:var(--s1);border-radius:4px;overflow:hidden;
+  box-shadow:inset 0 1px 3px color-mix(in srgb,var(--black) 60%,transparent)}
+.stat-bar{display:block;width:var(--p);height:100%;border-radius:4px;
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--black) 35%,transparent),inset 0 1px 0 color-mix(in srgb,var(--white) 35%,transparent)}
+.stat-n{flex:0 0 auto;min-width:40px;box-sizing:border-box;padding:1px 7px;text-align:center;
+  color:var(--white);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;
+  text-shadow:0 1px 1px color-mix(in srgb,var(--black) 70%,transparent);border-radius:4px;border:1px solid var(--s2);
+  background:linear-gradient(180deg,#5d616b 0%,#3c3f47 24%,#747882 46%,#44474f 58%,#2c2f36 82%,#1f2126 100%);
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--white) 35%,transparent),0 1px 2px color-mix(in srgb,var(--black) 50%,transparent)}
+.stat-title{margin:14px 0 4px;color:var(--tx);font-size:12px;letter-spacing:.06em;}
+.stat-cards{margin-top:12px}
+.stat-cards h4{margin:0 0 6px;color:var(--tx);font-size:12px;letter-spacing:.04em;}
+.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;
+  max-height:46vh;overflow-y:auto;padding:2px 4px 2px 2px}
+@media (max-width:1100px){ .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.stat-card{display:flex;flex-direction:row;align-items:center;gap:7px;
+  padding:5px 9px;cursor:pointer;
+  background:var(--s2);border:1px solid var(--b1);border-radius:6px;color:var(--tx);
+  font-family:'Crimson Pro',serif;text-align:left;min-width:0}
+.stat-card:hover{border-color:var(--blue-dark-2);background:var(--s3)}
+.sc-name{flex:1 1 auto;min-width:0;font-size:13px;font-weight:600;color:var(--tx);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sc-cost{flex:0 0 auto;display:flex;align-items:center;gap:2px}
+.sc-cost img{width:13px;height:13px}
+.sc-type{flex:0 1 auto;min-width:0;font-size:11.5px;color:var(--tm2);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stat-card:hover .sc-name{color:var(--a2)}
+.stat-track.stat-none{background:none;box-shadow:none;overflow:visible;height:auto;
+  display:flex;align-items:center}
+.ed2-btn.stat-view{padding:1px 10px}
+/* Turned on end: --p is the bar's height here, not its width. */
+.stat-chart.vert{display:flex;align-items:flex-start;gap:3px;max-height:none;
+  overflow-x:auto;overflow-y:hidden;padding:8px 4px 6px}
+.stat-chart.vert .stat-row{flex:0 0 auto;width:46px;flex-direction:column;align-items:center;
+  gap:5px;padding:4px 2px}
+.stat-chart.vert .stat-n{order:0;min-width:38px;padding:1px 3px}
+.stat-chart.vert .stat-track{order:1;flex:0 0 auto;width:22px;height:200px;
+  display:flex;align-items:flex-end}
+.stat-chart.vert .stat-bar{width:100%;height:var(--p)}
+.stat-chart.vert .stat-lbl{order:2;flex:0 0 auto;max-width:none;max-height:150px;
+  writing-mode:vertical-rl;gap:4px}
+.stat-chart.vert .stat-lbl-t{min-height:0}
+.stat-chart.vert .stat-track.stat-none{width:auto;height:200px;justify-content:center;
+  align-items:flex-end}
+.stat-chart.vert .stat-view{writing-mode:vertical-rl;padding:8px 1px}
+
+.stat-pick{flex-wrap:nowrap;align-items:flex-start}
+.stat-btns{flex:1 1 auto;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.stat-end{flex:0 0 auto}
+.stat-seg{display:inline-flex}
+.stat-seg>.ed2-btn{border-radius:0}
+.stat-seg>.ed2-btn:first-child{border-radius:6px 0 0 6px}
+.stat-seg>.ed2-btn+.ed2-btn{margin-left:-1px;border-radius:0 6px 6px 0}
+.stat-opts{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 8px}
+.stat-num{display:inline-flex;align-items:center;gap:5px;color:var(--tx);font-size:12px}
+.ed2-input.stat-numin{width:64px;height:24px;padding:2px 6px;box-sizing:border-box}
+.stat-grow{flex:1 1 auto}
+.stat-line{display:flex;align-items:center;gap:8px;margin:0 0 6px;color:var(--tx);font-size:12px}
+.stat-line-t{flex:1 1 auto;min-width:0;line-height:1.35;overflow-wrap:anywhere}
+.stat-copy{flex:0 0 auto}
+.stat-colline{margin:-2px 0 6px;color:var(--tx);font-size:12px}
+.sc-note{flex:0 0 auto;color:var(--tx);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.stat-names{display:flex;flex-wrap:wrap;gap:6px}
+.stat-name{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border:1px solid var(--b1);
+  border-radius:5px;background:var(--s2);color:var(--tx);font-size:12px}
+.stat-track-parts{display:flex}
+.stat-track-parts .stat-bar{flex:0 0 auto;border-radius:0}
+.stat-has-gold .stat-track{position:relative;overflow:visible}
+.stat-has-gold .stat-n{min-width:56px}
+.stat-gold{position:absolute;top:-3px;bottom:-3px;width:2px;margin-left:-1px;background:var(--go);
+  box-shadow:0 0 4px var(--go);pointer-events:none}
+.stat-axis{display:flex;align-items:flex-start;gap:8px;padding:2px 4px 6px}
+.stat-axis .stat-lbl{height:1px}
+.stat-n-ghost{visibility:hidden}
+.stat-ticks{flex:1 1 auto;min-width:0;position:relative;height:16px}
+.stat-ticks i{position:absolute;top:0;transform:translateX(-50%);font-style:normal;font-size:10.5px;
+  color:var(--tx);white-space:nowrap}
+.stat-ticks i:last-child{transform:translateX(-100%)}
+.stat-band-track{position:relative;overflow:visible}
+.stat-band{position:absolute;top:2px;bottom:2px;border-radius:3px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--white) 45%,var(--a2)) 0%,var(--a2) 50%,
+    color-mix(in srgb,var(--black) 30%,var(--a2)) 100%)}
+.stat-med{position:absolute;top:-2px;bottom:-2px;width:4px;margin-left:-2px;border-radius:2px;
+  background:var(--black);box-shadow:0 0 0 1px color-mix(in srgb,var(--white) 70%,transparent)}
+.stat-rng{flex:0 0 150px;color:var(--tx);font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stat-tblwrap{max-height:52vh;overflow:auto;border-top:1px solid var(--s3);border-bottom:1px solid var(--s3)}
+.stat-tbl{border-collapse:separate;border-spacing:2px;width:100%;color:var(--tx);font-size:12px}
+.stat-tbl thead th{position:sticky;top:0;z-index:1;background:var(--s1)}
+.stat-tbl th,.stat-tbl td{padding:0;text-align:center;font-weight:600}
+.stat-tbl th.on .stat-sort{color:var(--g2)}
+.stat-tbl .stat-tl{text-align:left;padding:0 8px 0 2px;white-space:nowrap;max-width:240px;overflow:hidden}
+.stat-tl .stat-lbl-t{display:inline-block;max-width:200px;vertical-align:middle}
+.stat-sort{display:inline-flex;align-items:center;gap:3px;padding:4px 6px;border:0;background:none;
+  color:var(--tx);font:inherit;cursor:pointer}
+.stat-arrow{font-size:9px}
+.stat-cell{width:100%;min-width:44px;padding:3px 6px;border:1px solid transparent;border-radius:4px;
+  background:none;color:var(--tx);font:inherit;font-variant-numeric:tabular-nums;cursor:pointer}
+.stat-cell:disabled{cursor:default}
+.stat-cell.on{border-color:var(--tx)}
+.stat-bycol .stat-num-c{padding:4px 8px;text-align:right;font-variant-numeric:tabular-nums}
+.stat-bycol thead th{padding:4px 8px;cursor:help}
+.stat-bycol tr.on{background:var(--s3)}
+.stat-cl-pick .ed2-btn{display:inline-flex;align-items:center;gap:4px}
+.stat-cl-tier{margin:0 0 8px}
+.stat-cl-list{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:0 0 4px}
+.stat-cl-e{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border:1px solid var(--b1);
+  border-radius:5px;background:var(--s2);color:var(--tx);font-size:12px}
+.stat-cl-e b{font-variant-numeric:tabular-nums}
+.stat-cl-e.z{border-color:var(--red-dark-3);background:color-mix(in srgb,var(--re) 22%,var(--s2))}
+.stat-cl-e.one{border-color:var(--gd);background:color-mix(in srgb,var(--go) 22%,var(--s2))}
+.stat-cl-any{font-style:normal;font-size:10.5px;color:var(--tx)}
+.stat-cl-k{flex:0 0 76px;color:var(--tx);font-size:12px;font-weight:700}
+.stat-cl-edit{flex:0 0 100%;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.ed2-input.stat-cl-in{width:200px;height:26px;box-sizing:border-box}
+.ed2-input.stat-cl-sel{width:auto;height:26px;box-sizing:border-box}
+.fx-words{display:inline-flex;flex-wrap:wrap;gap:4px 8px;min-width:0}
+
+.ed2-rate-t{margin:0 0 6px;color:var(--tx);font-family:'Cinzel',serif;font-size:12px;font-weight:700}
+.ed2-rate-row{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 12px}
+.ed2-rate-f{display:flex;flex-direction:column;gap:3px;color:var(--tx);font-size:12px}
+.ed2-rate-f .ed2-input{width:84px;box-sizing:border-box}
+.ed2-rate-f #edRateLink{width:170px}
+.ed2-rate-out{margin-top:8px;color:var(--tx);font-size:13px;line-height:1.45}
+.ed2-rate-big{font-size:14px;font-weight:700}
+@media (min-width:900px){ #edFields > .ed2-g-rate{grid-column:1 / -1;grid-row:7} }
+
+/* Over every editor window (9000): opened from Statistics, the card would be behind it. */
+.mo{z-index:9500}
+
+/* Close ✕, Edit (or Duplicate) and Download in one stack against one right edge: placed beside Close at an offset, Download collided. */
+.mo{--m-ctlw:104px;--m-ctlgap:7px;--m-ctlright:11px;--m-ctlh:34px}
+.mo .mdn{top:calc(11px + (var(--m-ctlh) + var(--m-ctlgap)) * 2);right:var(--m-ctlright);
+  width:var(--m-ctlw);height:var(--m-ctlh);padding:0;justify-content:center;
+  border-width:2.5px;box-sizing:border-box}
+.mo.no-edit .mdn{top:calc(11px + var(--m-ctlh) + var(--m-ctlgap))}
+.mo .mcl{width:var(--m-ctlw);height:34px;border-radius:0;gap:6px;font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);
+  font-size:.8rem;font-weight:600;letter-spacing:.02em;
+  white-space:nowrap;padding:0;right:var(--m-ctlright)}
+.mo .medit{position:absolute;top:52px;right:var(--m-ctlright);width:var(--m-ctlw);height:34px;
+  background:color-mix(in srgb,var(--gr) 10%,transparent);border:2.5px solid var(--gr);color:var(--gr);
+  border-radius:0;display:flex;align-items:center;justify-content:center;gap:6px;
+  cursor:pointer;font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);font-size:.8rem;font-weight:600;
+  letter-spacing:.02em;white-space:nowrap;
+  transition:all .15s;z-index:10}
+.mo .medit:hover{background:color-mix(in srgb,var(--gr) 25%,transparent);color:var(--white);
+  box-shadow:0 0 8px color-mix(in srgb,var(--gr) 25%,transparent)}
+/* Tighter spacing than its neighbours: at .07em and a 6px gap "Duplicate" would be 3px wider than the column. */
+.mo .mdup{position:absolute;top:52px;right:var(--m-ctlright);width:var(--m-ctlw);height:34px;
+  background:color-mix(in srgb,var(--purple-dark-2) 45%,transparent);border:2.5px solid var(--spect-ink);color:var(--purple-pale);
+  border-radius:0;display:flex;align-items:center;justify-content:center;gap:4px;
+  cursor:pointer;font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);font-size:.8rem;font-weight:600;
+  letter-spacing:.02em;white-space:nowrap;z-index:10;
+  padding:0;transition:all .15s}
+.mo .mdup:hover{background:color-mix(in srgb,var(--spect) 60%,transparent);color:var(--white);border:2.5px solid;
+  border-image:linear-gradient(180deg,#2a1a44 0%,#4a3080 15%,#e0d0ff 40%,#9b7bda 50%,#7a5ab8 60%,#4a3080 85%,#2a1a44 100%) 1;
+  box-shadow:0 0 8px color-mix(in srgb,var(--spect-ink) 35%,transparent)}
+body.light .mo .mdup{color:var(--spect-ink);background:rgba(155,123,218,.2)}
+.m-upd{font-family:'Crimson Pro',serif;font-size:.86rem;color:var(--td);
+  white-space:nowrap;margin-left:2px}
+.gh-page{display:flex;flex-direction:column;gap:18px;padding:4px 2px 10px}
+.gh-sec{border:1px solid var(--bd);border-radius:8px;padding:12px 14px;
+  background:var(--pan)}
+.gh-sec h4{margin:0 0 6px;font-family:Cinzel,serif;font-size:1rem;color:var(--tx)}
+.gh-h4row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 6px}
+.gh-h4row h4{margin:0}
+.gh-h4ctl{margin-left:auto;display:flex;align-items:center;gap:6px;
+  font-family:'Crimson Pro',serif;font-size:.82rem;color:var(--tx)}
+.gh-h4ctl input{flex:0 0 auto}
+.gh-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:8px 0}
+.gh-lbl{flex:0 0 132px;font-size:.9rem;color:var(--tx)}
+.gh-ctl{flex:1 1 320px;display:flex;align-items:center;gap:6px}
+.gh-ctl .ed2-in{flex:1 1 auto;min-width:0}
+.gh-ctl .ed2-in.tiny{flex:0 1 150px}
+.gh-hint{flex:1 1 100%;color:var(--td);font-size:.8rem;line-height:1.4;
+  padding-left:132px}
+.gh-btns{display:flex;gap:8px;margin:10px 0 4px;flex-wrap:wrap}
+.gh-msg{font-size:.88rem;color:var(--td);min-height:1.2em;line-height:1.45}
+.gh-msg.on{color:var(--ok,var(--gr));font-weight:600}
+.gh-msg.warn{color:var(--warn,var(--go))}
+.gh-tok{font-family:monospace;color:var(--td);letter-spacing:.1em}
+.gh-age{font-family:'Crimson Pro',serif;font-size:.8rem;color:var(--tm);margin-right:4px}
+/* Scrolls rather than grows: a first publish lists everything and would push Publish off the screen. */
+.gh-diff{margin:6px 0 10px;padding:8px 10px;border:1px solid var(--b1);
+  border-radius:8px;background:var(--bg);font-size:.86rem;color:var(--td)}
+.gh-diff b{color:var(--tx)}
+.gh-difflist{margin:6px 0 0;padding-left:18px;max-height:220px;overflow:auto;
+  line-height:1.55;font-family:monospace;font-size:.8rem}
+.gh-onerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 0}
+.gh-onerow > input.ed2-in{flex:1 1 320px;min-width:0}
+.gh-toggles label{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.gh-badge{background:var(--ok,#5c9e6e)!important;color:#fff!important;
+  border-color:var(--ok,#5c9e6e)!important;font-weight:600}
+.gh-badge:hover{filter:brightness(1.1)}
+@media (max-width:900px){
+  .gh-lbl{flex:1 1 100%}
+  .gh-hint{padding-left:0}
+}
+.sg-group{border:1px solid var(--bd);border-radius:10px;background:var(--pan);
+  padding:8px 10px;display:flex;flex-direction:column;gap:6px}
+.sg-group.off{opacity:.5}
+.sg-group.official{border-color:var(--txt-accent)}
+.sg-group-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  font-family:Cinzel,serif;color:var(--tx)}
+.sg-gname{font-size:1rem}
+.sg-group-src{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
+.sg-group-src .sg-url{flex:1 1 260px}
+.sg-group-src input[readonly]{opacity:.75;cursor:default}
+.sg-group-body{display:flex;flex-direction:column;gap:6px}
+.sg-group-body:empty{display:none}
+/* Rotated, not swapped for another glyph, so it keeps its width and the header does not jump. */
+.sg-caret{background:none;border:0;color:var(--tm);cursor:pointer;padding:0 2px;
+  font-size:.9rem;line-height:1;transition:transform .15s;transform:rotate(0deg)}
+.sg-caret.open{transform:rotate(90deg)}
+.sg-caret:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+.sg-caret-gap{display:inline-block;width:14px}
+
+.tpl-defset{border:1px solid var(--b1);border-radius:9px;padding:9px 11px;
+  margin-bottom:10px;background:color-mix(in srgb,var(--white) 2%,transparent)}
+.tpl-defset h5{margin:0 0 4px;color:var(--tx);font-size:12px;letter-spacing:.04em;
+  font-weight:700}
+.tpl-defset .ed2-xf-row{margin-top:6px}
+.tpl-defset .tpl-opts{margin-bottom:0}
+
+/* No margin-left:auto here or on .ed2-fmt: the control follows the words and B / I / U follow it (check.js holds the order). */
+/* inline-flex, not flex: `.ed2-field label` makes the header a block, (0,1,1) over (0,1,0), and a block-level flex would break the line. */
+.ed2-split-ctl{display:inline-flex;vertical-align:middle;align-items:center;
+  gap:8px;margin-left:8px}
+.ed2-split-ctl .ed2-in.tiny{width:96px}
+.ed2-split-id{display:flex;align-items:center;gap:5px;cursor:pointer;
+  color:var(--tm2);font-size:11.5px;white-space:nowrap}
+.ed2-split-id input{accent-color:var(--go);cursor:pointer}
+.ed2-secs{display:flex;flex-direction:column;gap:9px;flex:1;min-height:0}
+.ed2-sec{border:1px solid var(--b1);border-radius:8px;padding:7px 9px;
+  background:color-mix(in srgb,var(--white) 2%,transparent);display:flex;flex-direction:column;gap:5px}
+.ed2-sec-h{font-family:'Cinzel',serif;font-size:.66rem;font-weight:700;
+  letter-spacing:.08em;color:var(--tx);
+  display:flex;align-items:center;gap:8px}
+.ed2-sec-id{display:flex;align-items:center;gap:5px;cursor:pointer;
+  margin-left:auto;color:var(--tm2);font-size:11.5px;letter-spacing:.04em;
+  text-transform:none;font-family:'Crimson Pro',serif;white-space:nowrap}
+.ed2-sec-id input{accent-color:var(--go);cursor:pointer}
+.ed2-sec-idrow{display:flex;gap:7px}
+.ed2-sec-idrow .ed2-input{flex:1 1 0;min-width:0;padding:4px 7px;font-size:12.5px}
+.ed2-sec-idrow .ed2-input:first-child{flex:0 0 108px}
+.ed2-textarea.ed2-sec-ta{min-height:62px;flex:1 1 auto}
+
+/* flex-start, not center: centred, the label floats halfway down however tall the textarea is dragged. */
+.ed2-choice-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:4px}
+.ed2-choice-row>span{font-family:'Cinzel',serif;font-size:.66rem;font-weight:700;
+  letter-spacing:.08em;color:var(--tx);white-space:nowrap;
+  padding-top:7px}
+.ed2-choice-row .ed2-input{flex:1 1 auto;min-width:0;padding:4px 7px;font-size:12.5px}
+/* Two lines tall, or a Choice line that wraps has its second line clipped in the field. */
+.ed2-choice-row .ed2-choice-ta{flex:1 1 auto;min-width:0;padding:4px 7px;
+  font-size:12.5px;min-height:30px;height:48px;line-height:1.4}
+.ed2-choice-row .ed2-rows{padding-top:0}
+
+
+/* The swatch images are sized here: the sidebar sets theirs inline in JS, and these are markup. */
+/* In the art column its grid-column and wrap do nothing, as it sits in no grid; the .ed2-artcol rule below decides. */
+.ed2-hl-ovr{--ovr-face:#11151d;grid-column:1 / -1;display:flex;align-items:center;gap:6px;
+  flex-wrap:wrap;margin-top:2px;padding:5px 4px;
+  border:3px solid transparent;border-radius:8px;
+  background:linear-gradient(var(--ovr-face),var(--ovr-face)) padding-box,
+             var(--td-gold) border-box}
+body.light .ed2-hl-ovr,body.arcane .ed2-hl-ovr{--ovr-face:var(--s1)}
+.ed2-hl-ovr .ed2-hl-h{grid-column:auto;margin:0;flex:0 0 auto;line-height:1.1;
+  font-size:.6rem;letter-spacing:.04em}
+.ed2-ovr{grid-column:1/-1;flex:1 1 100%;min-width:0;
+  display:flex;align-items:center;justify-content:flex-start;
+  gap:1px;flex-wrap:wrap;margin-top:3px}
+/* One row at any width: the frame is a size container, the label and Clear are in cqw and the swatches split the rest (check.js holds it). */
+/* No readable floor on the label and Clear: the swatches would pay for it, 5px dots at 1100px. */
+.ed2-artcol .ed2-hl-ovr{width:50%;box-sizing:border-box;margin-top:8px;flex-wrap:nowrap;
+  align-items:center;gap:3px;padding:5px 4px;container-type:inline-size}
+.ed2-artcol .ed2-hl-ovr .ed2-hl-h{font-size:clamp(6px,3.9cqw,.8rem);letter-spacing:.02em;
+  line-height:1;white-space:nowrap}
+.ed2-artcol .ed2-hl-ovr .ed2-ovr{flex:1 1 0;min-width:0;margin-top:0;gap:0;flex-wrap:nowrap}
+.ed2-artcol .ed2-hl-ovr .ed2-ovr-b{flex:1 1 0;min-width:0;max-width:34px;width:auto;height:auto;
+  aspect-ratio:1/1;border-width:clamp(1.5px,.9cqw,3px)}
+.ed2-artcol .ed2-hl-ovr .ed2-ovr-b img,
+.ed2-artcol .ed2-hl-ovr .ed2-ovr-dot{width:90%;height:auto;aspect-ratio:1/1}
+.ed2-artcol .ed2-hl-ovr .ed2-ovr-sep{align-self:stretch;height:auto;margin:3px 1px}
+.ed2-artcol .ed2-hl-ovr .ed2-ovr-clr{flex:0 0 auto;align-self:stretch;height:auto;
+  margin:0;padding:0 .4em;border-radius:999px;font-size:clamp(6px,4.4cqw,1.1rem)}
+.ed2-ovr-b{width:20px;height:20px;padding:0;border:2px solid transparent;
+  border-radius:50%;background:none;cursor:pointer;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .12s,border-color .12s,box-shadow .12s}
+.ed2-ovr-b img{width:15px;height:15px;display:block;border-radius:50%;
+  filter:drop-shadow(0 0 2px color-mix(in srgb,var(--white) 35%,transparent))}
+.ed2-ovr-b:hover{transform:scale(1.15)}
+.ed2-ovr-b.on{border-color:var(--go,var(--go));
+  box-shadow:0 0 8px color-mix(in srgb,var(--go) 55%,transparent)}
+.ed2-ovr-dot{width:15px;height:15px;border-radius:50%;display:block;
+  background:radial-gradient(circle at 32% 28%,var(--tm2) 0%,var(--tm) 45%,var(--b1) 100%);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--white) 18%,transparent)}
+.ed2-ovr-sep{width:1px;height:16px;background:var(--b2,var(--b1));
+  margin:0;flex:0 0 auto}
+/* Always present, dimmed when idle (.ed2-nowt): a control that comes and goes reflows the row under the pointer. */
+.ed2-ovr-clr{flex:0 0 auto;margin:0 0 0 auto;padding:0 5px;height:20px;
+  border:1px solid var(--b2,var(--b1));border-radius:11px;background:none;
+  color:var(--tx,var(--white));font-family:inherit;font-size:.75rem;letter-spacing:.02em;
+  white-space:nowrap;cursor:pointer;transition:border-color .12s,color .12s}
+.ed2-ovr-clr:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+/* Dim, not disabled or hidden: a disabled button cannot show its title saying why, and a hidden one reflows the row. */
+.ed2-nowt{opacity:.42}
+.ed2-nowt:hover{opacity:.7}
+
+/* The pickers are position:fixed, placed by hand: the editor pane scrolls, and a scroll container clips its children whatever their z-index. */
+/* .ed2-clbtn is how checkfix_scope.js finds the card-link button. */
+.ed2-clbtn,.ed2-dashbtn,.ed2-symbtn{width:auto;padding:0 8px;font-size:.66rem;letter-spacing:.03em;white-space:nowrap}
+.ed2-cl-pop{position:fixed;z-index:9000;width:300px;max-height:340px;display:flex;
+  flex-direction:column;gap:6px;padding:8px;border:1px solid var(--b2);border-radius:4px;
+  background:var(--s2);box-shadow:0 8px 28px color-mix(in srgb,var(--black) 55%,transparent)}
+.ed2-cl-pop .ed2-input{width:100%}
+/* The rows must not shrink: a flex item shrinks by default, and 46 results came out 8px tall. */
+.ed2-cl-list{flex:1 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column}
+.ed2-cl-list > *{flex:0 0 auto}
+.ed2-cl-row{display:block;width:100%;text-align:left;padding:4px 7px;border:0;border-radius:3px;
+  background:none;color:var(--td);font-family:inherit;font-size:.76rem;cursor:pointer;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ed2-cl-row:hover{background:var(--s3)}
+.ed2-cl-row.on{background:var(--s3);color:var(--go);box-shadow:inset 2px 0 0 var(--go)}
+.ed2-cl-sep{padding:6px 7px 2px;font-size:.6rem;letter-spacing:.09em;
+  color:var(--tx);border-top:1px solid var(--b2);margin-top:4px}
+.ed2-cl-none{padding:8px 7px;font-size:.72rem;color:var(--tm)}
+
+.ed2-caret{font-size:.85em;opacity:.8}
+.ed2-sym-pop{position:fixed;z-index:9000;display:flex;flex-direction:column;gap:8px;width:max-content;
+  max-width:calc(100vw - 16px);padding:6px 8px 8px;border:1px solid var(--b2);border-radius:4px;background:var(--s2);
+  box-shadow:0 8px 28px color-mix(in srgb,var(--black) 55%,transparent)}
+.ed2-sym-top{display:flex;justify-content:flex-end}
+.ed2-sym-grid{display:grid;grid-template-columns:repeat(11,28px);gap:3px}
+.ed2-sym-btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;padding:0;
+  border:1px solid var(--b1);border-radius:3px;background:var(--s1);color:var(--tx);cursor:pointer}
+.ed2-sym-btn:hover:not(:disabled){background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+.ed2-sym-btn:focus-visible{outline:2px solid var(--go);outline-offset:1px}
+.ed2-sym-btn:disabled{opacity:.4;cursor:default}
+/* so the title shown is the button's, not its picture's */
+.ed2-sym-btn>*{pointer-events:none}
+.ed2-sym-btn .m-statmark,.ed2-sym-btn .m-dicemark{display:inline-flex;width:20px;height:20px}
+.ed2-sym-btn .m-statmark svg,.ed2-sym-btn .m-dicemark svg{width:100%;height:100%}
+.ed2-sym-hyb{display:flex;align-items:center;gap:3px}
+.ed2-sym-hyb-lbl{margin-right:5px;font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);font-size:13px;
+  font-weight:600;color:var(--tx)}
+.ed2-sym-btn.ed2-sym-tick[aria-pressed='true']{border-color:var(--go);box-shadow:inset 0 0 0 1px var(--go)}
+.ed2-sym-hadd{width:auto;gap:4px;margin-left:5px;padding:0 8px;font-family:var(--btn-font);
+  font-size-adjust:var(--btn-adjust);font-size:13px;font-weight:600}
+.ed2-cost-box{position:relative;display:inline-flex;flex:0 0 auto}
+.ed2-cost-box>.ed2-input{padding-right:24px}
+.ed2-costbtn{position:absolute;top:1px;right:1px;bottom:1px;width:22px;padding:0;border:0;
+  border-left:1px solid var(--b1);background:transparent;color:var(--td);font-size:.8rem;line-height:1;cursor:pointer}
+.ed2-costbtn:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+
+.mcard .mcard-test{position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:40;
+  pointer-events:none;background:#e0a020;color:#1a1206;font:700 10px/1 'Cinzel',serif;
+  letter-spacing:.16em;padding:3px 9px 3px 10px;border-radius:0 0 7px 7px;
+  box-shadow:0 2px 6px rgba(0,0,0,.45)}
+
+.kwp-hacts{display:inline-flex;gap:6px;margin-left:12px;vertical-align:middle}
+.kwe-dmgcls{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px}
+.kwe-dmgcls[hidden]{display:none}
+.kwe-dmglab{font-size:.78rem;color:var(--tm,var(--tm2))}
+.kwe-chk{display:inline-flex;align-items:center;gap:5px;font-size:.84rem;cursor:pointer}
+/* Every colour here is the window's own, as a window is dark in both themes (.ed2-modal). */
+.fx-modal{height:88vh}
+.fx-modal .ed2-modal-head{justify-content:flex-start;flex-wrap:wrap;gap:12px;padding:12px 18px;background:var(--s2)}
+.fx-title{font-family:'Cinzel',serif;font-size:20px;letter-spacing:.06em;color:var(--g2)}
+.fx-sum{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-left:10px}
+.fx-grow{flex:1 1 auto}
+.fx-modal .ed2-modal-body.fx-body{display:flex;padding:0;overflow:hidden;flex:1 1 auto;min-height:0}
+.fx-nav{flex:0 0 290px;overflow:auto;padding:4px 12px 16px;border-right:1px solid var(--b1);background:var(--s1)}
+.fx-gh{margin:16px 8px 6px;font-family:'Cinzel',serif;font-size:12.5px;font-weight:700;letter-spacing:.1em;color:var(--tx)}
+.fx-nav-item{display:flex;align-items:center;gap:10px;width:100%;margin:2px 0;padding:9px 10px;text-align:left;
+  border:1px solid transparent;border-radius:8px;background:none;color:var(--tx);cursor:pointer;
+  font-family:'Crimson Pro',serif;font-size:15.5px;line-height:1.2}
+.fx-nav-item:hover{background:var(--hv-fill)}
+.fx-nav-item.on{background:var(--s3);border-color:var(--go)}
+.fx-nav-item.on:hover{background:var(--b1)}
+.fx-nav-name{flex:1 1 auto;min-width:0}
+.fx-num{flex:none;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid var(--gd);border-radius:50%;color:var(--g2);font-family:'Cinzel',serif;font-size:11.5px;font-weight:700}
+.fx-pill{flex:none;padding:1px 9px;border:1px solid var(--b2);border-radius:999px;color:var(--tx);white-space:nowrap;
+  font-family:'Crimson Pro',serif;font-size:13px;line-height:1.4}
+.fx-pill:empty{display:none}
+.fx-pill.ok{background:color-mix(in srgb,var(--gr) 15%,transparent);border-color:var(--gr);color:var(--green-light-4)}
+.fx-pill.warn{background:color-mix(in srgb,var(--go) 14%,transparent);border-color:var(--gd);color:var(--g2)}
+.fx-pill.info{background:color-mix(in srgb,var(--a2) 12%,transparent);border-color:var(--blue-dark-2);color:var(--a2)}
+.fx-chip{flex:none;padding:2px 9px;border:1px solid var(--b2);border-radius:6px;color:var(--tx);white-space:nowrap;
+  font-family:'Crimson Pro',serif;font-size:13px}
+.fx-chip.red{background:color-mix(in srgb,var(--re) 10%,transparent);border-color:var(--red-dark-3);color:var(--re-hi)}
+.fx-chip.amber{background:color-mix(in srgb,var(--go) 8%,transparent);border-color:var(--gd);color:var(--g2)}
+.fx-chip.blue{background:color-mix(in srgb,var(--a2) 8%,transparent);border-color:var(--blue-dark-2);color:var(--a2)}
+.fx-main{flex:1 1 auto;min-width:0;overflow:auto;padding:18px 24px 26px}
+.fx-crumb{display:flex;align-items:center;gap:8px;margin:0 0 12px;color:var(--td);font-family:'Crimson Pro',serif;font-size:15px}
+.fx-crumb b{color:var(--tx)}
+.fx-sep{color:var(--td)}
+.fx-panel{display:none;margin:0 0 18px;border:1px solid var(--b1);border-radius:12px;background:var(--s1);overflow:hidden}
+.fx-panel.fx-on{display:block}
+.fx-phead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;background:var(--s2);border-bottom:1px solid var(--b1)}
+.fx-phead h4{margin:0;font-family:'Cinzel',serif;font-size:17px;letter-spacing:.04em;color:var(--g2)}
+.fx-pbody{padding:14px 16px 16px;color:var(--tx);font-family:'Crimson Pro',serif;font-size:15px}
+.fx-about summary{width:max-content;padding:2px 0;color:var(--td);font-size:15px;cursor:pointer}
+.fx-about .tpl-hint{margin:8px 0 0;padding:10px 12px;border:1px solid var(--s3);border-radius:8px;background:var(--s1);
+  color:var(--tx);font-size:14.5px;line-height:1.55}
+.fx-acts{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--s3)}
+.fx-pbody>.fx-acts:first-child{margin-top:0;padding-top:0;border-top:0}
+.fx-zone{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.fx-zone.fx-danger{margin-left:auto;padding-left:14px;border-left:1px solid var(--s2)}
+.fx-zl{margin-right:2px;color:var(--tx);font-family:'Cinzel',serif;font-size:12px;font-weight:700;letter-spacing:.06em}
+.fx-modal .ed2-btn,.fx-modal .ed2-btn.tiny{padding:8px 15px;border-radius:7px;font-size:12.5px}
+.fx-modal .dup-row .ed2-btn.tiny{padding:5px 11px}
+.fx-modal .ed2-btn.fx-look{background:var(--s3);border-color:var(--ac);color:var(--tx)}
+.fx-modal .ed2-btn.fx-look:hover{background:var(--blue-dark-5);border-color:var(--ac);color:var(--tx);box-shadow:0 0 8px color-mix(in srgb,var(--a2) 25%,transparent)}
+.fx-modal .ed2-btn.warn{background:var(--s2);border-color:var(--re);color:var(--tx)}
+.fx-modal .ed2-btn.warn:hover{background:var(--red-dark-4);border-color:var(--re);color:var(--ink-light);box-shadow:0 0 8px color-mix(in srgb,var(--re) 25%,transparent)}
+.fx-seg{display:inline-flex;border:1px solid var(--b2);border-radius:8px;overflow:hidden}
+.fx-modal .fx-seg .ed2-btn{border:0;border-radius:0;background:var(--s2)}
+.fx-modal .fx-seg .ed2-btn+.ed2-btn{border-left:1px solid var(--b2)}
+.fx-modal .fx-seg .ed2-btn.on{background:var(--blue-mid-2);color:var(--white)}
+.fx-modal .fx-seg .ed2-btn.on:hover{background:var(--blue-mid-5);color:var(--white);box-shadow:0 0 8px color-mix(in srgb,var(--ac) 30%,transparent)}
+.fx-res{margin-top:14px;padding:10px 12px;border:1px solid var(--b1);border-radius:10px;background:var(--s1)}
+.fx-res:empty{display:none}
+.fx-res>.tpl-opts{margin:-10px -12px 10px;padding:10px 12px;border-bottom:1px solid var(--b1);background:var(--s2);font-size:15px}
+.fx-res>.tpl-opts:last-child{margin-bottom:-10px;border-bottom:0}
+.fx-res .tpl-hint{margin-bottom:6px;font-size:14.5px}
+.fx-res .tpl-sec{margin:0}
+.fx-res .dash-list,.fx-res .dup-list{border:0;padding:0;margin-top:4px;max-height:360px}
+.fx-res .dash-row{align-items:center;padding:6px 4px;border-bottom:1px solid var(--s2);font-size:14.5px}
+.fx-res .dash-row input{width:16px;height:16px;accent-color:var(--blue-mid-2)}
+.fx-res .dup-row{padding:5px 2px;font-size:14px}
+.fx-res .fr-cols{margin-top:4px}
+.fx-res .fr-pre{font-size:15px}
+.fx-sel-lbl{display:inline-flex;align-items:center;gap:8px;color:var(--tx)}
+.fx-modal .fx-sel{height:34px;padding:0 10px;border-radius:7px;font-family:'Crimson Pro',serif;font-size:15px;cursor:pointer}
+.fx-ok{color:var(--green-pale-2)}
+.fx-msg{white-space:pre-line;font-size:15px;line-height:1.5}
+.fx-pager{display:flex;align-items:center;gap:10px}
+@media (max-width:760px){
+  .fx-modal .ed2-modal-body.fx-body{flex-direction:column;overflow:auto}
+  .fx-nav{flex:none;max-height:38vh;border-right:0;border-bottom:1px solid var(--b1)}
+  .fx-main{overflow:visible}
+  .fx-zone.fx-danger{margin-left:0;padding-left:0;border-left:0}
+}
+
+/* THE EDITOR ON A DESKTOP: one grid; contain:size lets the art editor take its rows' height without adding to them, so the credits box stays under the rules box.
+   The topsplit and its columns are display:contents here; a phone keeps them as blocks (mobile.css). */
+@media (min-width:900px){
+  #edFields:has(> .ed2-topsplit){display:grid;grid-template-columns:50% minmax(0,1fr);column-gap:12px;
+    grid-template-rows:auto auto auto auto auto 1fr;align-content:start}
+  #edFields > .ed2-topsplit,#edFields .ed2-topsplit-main,#edFields .ed2-artcol{display:contents}
+  #edFields > .ed2-group{width:auto}
+  #edFields > .ed2-btnbox{grid-column:1;grid-row:1}
+  #edFields .ed2-g-id{grid-column:1;grid-row:2}
+  #edFields .ed2-g-rules{grid-column:1;grid-row:3 / span 2}
+  #edFields > .ed2-g-meta{grid-column:1;grid-row:5}
+  #edFields .ed2-artcol > .ed2-art{grid-column:2;grid-row:1 / span 3;align-self:stretch;contain:size;
+    margin:0 0 6px}
+  #edFields .ed2-artrest{grid-column:2;grid-row:4 / span 3;min-width:0;margin-top:-6px}
+
+  .ed2-row2 .ed2-inl > .ed2-tokrow{flex:0 1 auto;min-width:0;margin:0}
+  .ed2-row2 .ed2-inl > .ed2-combo{min-width:56px}
+  .ed2-row2 .ed2-inl > .ed2-combo:focus-within{min-width:150px}
+
+  .ed2-group .ed2-meta{display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr);
+    gap:10px 10px;align-items:center}
+  .ed2-group .ed2-meta > .ed2-field.ed2-inl{display:contents}
+
+  .ed2-sagabox{display:flex;align-items:center;gap:10px}
+  .ed2-sagabox > label{flex:0 0 auto;margin:0}
+  .ed2-sagabox > .ed2-sagachips{flex:1 1 auto;min-width:0}
+}
+
+/* The button style's hover (testdeck.css) on every editor button, each keeping its size, colour and place; a colourless one lights pale blue, as --td is warm. */
+@media (min-width:900px){
+  #pane-editor .ed2-btn,#pane-editor .ed2-fmtbtn{--eb-c:var(--a2);--eb-metal:var(--metal-silver)}
+  #pane-editor .ed2-btn.primary,#pane-editor .ed2-btn.ed2-bg-auto{--eb-c:var(--gr);--eb-metal:var(--metal-green)}
+  #pane-editor .ed2-btn.info,#pane-editor .ed2-btn.tiny.on{--eb-c:var(--ed-info);--eb-metal:var(--metal-blue)}
+  #pane-editor .ed2-btn.warn,#pane-editor .ed2-btn.danger{--eb-c:var(--re);--eb-metal:var(--metal-red)}
+  #pane-editor .ed2-btn.ed2-btn-pur{--eb-c:var(--ed-pur);--eb-metal:var(--metal-purple)}
+  #pane-editor .ed2-btn.ed2-bg-test.on{--eb-c:var(--go);--eb-metal:var(--metal-gold)}
+  #pane-editor .ed2-btn:not(.nb):hover:not(:disabled),#pane-editor .ed2-fmtbtn:hover{color:var(--white);
+    background:color-mix(in srgb,var(--eb-c) 25%,transparent);border-color:transparent;
+    border-image:var(--eb-metal) 1;box-shadow:0 0 8px color-mix(in srgb,var(--eb-c) 25%,transparent)}
+  body.light #pane-editor .ed2-btn:not(.nb):hover:not(:disabled),body.light #pane-editor .ed2-fmtbtn:hover{background:var(--eb-c)}
+}

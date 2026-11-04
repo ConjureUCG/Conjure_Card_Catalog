@@ -1,0 +1,186 @@
+/* z-index 68: over the board's counters (60), arrows (65) and pointers (66), under the top row (70), Record Log (85), chat (86) and header (100). */
+#tdFxCanvas{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:68}
+
+/* --fx-age is minus the time since the card was declared, so a re-render lands mid-float instead of replaying the lift. */
+.td-card{--fx-lk:0deg}
+.td-card.locked{--fx-lk:90deg}
+.td-card.td-fx-decl,.td-card.td-fx-play{overflow:visible;z-index:30;
+  animation:tdFxLift .4s cubic-bezier(.2,.9,.3,1.2) both,tdFxFloat 2.6s ease-in-out infinite;
+  animation-delay:var(--fx-age,0ms),calc(var(--fx-age,0ms) + .4s)}
+@keyframes tdFxLift{from{transform:rotate(var(--fx-lk))}
+  to{transform:rotate(var(--fx-lk)) perspective(520px) translateY(var(--fx-lift,-10px)) rotateX(14deg) rotate(-2deg) scale(1.05)}}
+@keyframes tdFxFloat{0%,100%{transform:rotate(var(--fx-lk)) perspective(520px) translateY(var(--fx-lift,-10px)) rotateX(14deg) rotate(-2deg) scale(1.05)}
+  50%{transform:rotate(var(--fx-lk)) perspective(520px) translateY(calc(var(--fx-lift,-10px) - 5px)) rotateX(14deg) rotate(2deg) scale(1.05)}}
+
+/* Masked in a box 20px bigger all round so the outer glow is never cut; the stops are on the card's own height. */
+.td-fx-gwrap{position:absolute;inset:-20px;pointer-events:none;z-index:5;animation:tdFxGlowPulse 2.6s ease-in-out infinite}
+.td-fx-gwrap.td-fx-top{
+  -webkit-mask-image:linear-gradient(to bottom,#000 calc(20px + (100% - 40px)*.375),transparent calc(20px + (100% - 40px)*.625));
+  mask-image:linear-gradient(to bottom,#000 calc(20px + (100% - 40px)*.375),transparent calc(20px + (100% - 40px)*.625))}
+.td-fx-gwrap.td-fx-bot{
+  -webkit-mask-image:linear-gradient(to bottom,transparent calc(20px + (100% - 40px)*.375),#000 calc(20px + (100% - 40px)*.625));
+  mask-image:linear-gradient(to bottom,transparent calc(20px + (100% - 40px)*.375),#000 calc(20px + (100% - 40px)*.625))}
+.td-fx-glow{position:absolute;inset:19px;border-radius:7px;
+  box-shadow:0 0 0 2px var(--g),0 0 14px 3px var(--g),inset 0 0 8px var(--g)}
+/* The 2.6s beat is shared with the block lines (tdBlockPulse) and the diamonds (TD_PULSE_MS). */
+@keyframes tdFxGlowPulse{0%,100%{opacity:.62;filter:brightness(.9)}50%{opacity:1;filter:brightness(1.25)}}
+
+.td-fx-icon{position:absolute;left:50%;top:var(--fx-art,40%);width:36%;aspect-ratio:24/32;transform:translate(-50%,-50%);
+  z-index:6;pointer-events:none;color:var(--ic);
+  filter:drop-shadow(0 0 2px #000) drop-shadow(0 0 6px var(--ic)) drop-shadow(0 0 12px var(--ic));
+  animation:tdFxStamp .45s cubic-bezier(.2,1.6,.4,1) both;animation-delay:var(--fx-age,0ms)}
+.td-fx-icon svg{width:100%;height:100%;display:block;overflow:visible}
+@keyframes tdFxStamp{0%{transform:translate(-50%,-50%) scale(2.6) rotate(-20deg);opacity:0}
+  100%{transform:translate(-50%,-50%) scale(1) rotate(0);opacity:1}}
+.td-fx-dia{position:absolute;left:50%;width:30.8%;aspect-ratio:1;transform:translate(-50%,-50%);
+  animation:tdFxDiaPulse 2.6s ease-in-out infinite}
+.td-fx-dia b{position:absolute;inset:0;background:#fff;
+  clip-path:polygon(50% 0,64.9% 35.1%,100% 50%,64.9% 64.9%,50% 100%,35.1% 64.9%,0 50%,35.1% 35.1%)}
+@keyframes tdFxDiaPulse{0%,100%{transform:translate(-50%,-50%) scale(.9);filter:drop-shadow(0 0 1px #fff)}
+  50%{transform:translate(-50%,-50%) scale(1.3);filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 8px #fff)}}
+
+.td-fx-stat{position:absolute;left:50%;bottom:calc(100% + 5px);width:40%;transform:translateX(-50%);z-index:7;pointer-events:none;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.7));
+  animation:tdFxStampS .45s cubic-bezier(.2,1.6,.4,1) both;animation-delay:calc(var(--fx-age,0ms) + .12s)}
+.td-fx-stat svg{width:100%!important;height:auto!important;display:block}
+@keyframes tdFxStampS{0%{transform:translateX(-50%) scale(2.2);opacity:0}100%{transform:translateX(-50%) scale(1);opacity:1}}
+
+.td-ghost>.td-fx-gwrap,.td-ghost>.td-fx-icon,.td-ghost>.td-fx-stat,.td-ghost>.td-fx-gem,
+.td-ghost>.td-fx-fangs,.td-ghost>.td-fx-banner,
+.td-ghost>.td-fx-shadow,.td-ghost>.td-fx-vw,.td-ghost>.td-pfx-u,.td-ghost>.td-pfx-o,.td-ghost>.td-resolve{display:none}
+
+.td-fx-gem{position:absolute;left:50%;top:var(--fx-art,40%);width:30%;aspect-ratio:30/35;transform:translate(-50%,-50%);
+  z-index:4;pointer-events:none;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  background:linear-gradient(135deg,color-mix(in srgb,var(--g1) 55%,#fff) 0%,var(--g1) 45%,var(--g2) 55%,color-mix(in srgb,var(--g2) 60%,#000) 100%);
+  filter:drop-shadow(0 0 4px rgba(0,0,0,.6));transition:filter .4s}
+.td-fx-gem::after{content:"";position:absolute;inset:18% 30% 50% 18%;background:rgba(255,255,255,.55);
+  clip-path:polygon(50% 0,100% 30%,40% 100%,0 40%)}
+.td-fx-gem.td-fx-pop{animation:tdFxGemPop .5s cubic-bezier(.2,1.8,.4,1)}
+@keyframes tdFxGemPop{0%{transform:translate(-50%,-50%) scale(0)}100%{transform:translate(-50%,-50%) scale(1)}}
+.td-fx-gem.td-fx-mythic{background:linear-gradient(135deg,#fff,var(--g1),var(--g2),#fff);background-size:300% 300%;
+  animation:tdFxSheen 4.8s linear infinite}
+.td-fx-gem.td-fx-mythic.td-fx-pop{animation:tdFxGemPop .5s cubic-bezier(.2,1.8,.4,1),tdFxSheen 4.8s linear infinite .5s}
+@keyframes tdFxSheen{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+.td-fx-gem.td-fx-unique::before{content:"\2726";position:absolute;left:0;right:0;top:28%;text-align:center;font-size:9px;
+  line-height:1;color:#fff;text-shadow:0 0 5px #fff;z-index:1}
+.td-card.locked .td-fx-gem{filter:grayscale(1) brightness(.62) contrast(.9)}
+
+.td-card.td-fx-hold{visibility:hidden}
+.td-fx-ghost{position:fixed!important;z-index:67!important;margin:0!important;pointer-events:none}
+
+.td-card.td-fx-myth{overflow:visible;animation:tdFxMyth 2.2s ease-out}
+@keyframes tdFxMyth{0%{box-shadow:0 0 0 2px #fff,0 0 30px 9px #ffd86b}
+  40%{box-shadow:0 0 0 2px hsl(300 90% 70%),0 0 26px 8px hsl(200 90% 60%)}100%{box-shadow:none}}
+
+.td-card.td-fx-k-airborne{--fx-lift:-30px}
+.td-fx-shadow{position:absolute;left:10%;width:80%;top:calc(100% + 24px);height:18px;z-index:1;border-radius:50%;pointer-events:none;
+  background:radial-gradient(ellipse,rgba(0,0,0,.6),transparent 70%)}
+/* translate and opacity, not transform, so the float's transform is untouched. */
+.td-card.td-fx-decl.td-fx-k-fury{
+  animation:tdFxLift .4s cubic-bezier(.2,.9,.3,1.2) both,tdFxFloat 2.6s ease-in-out infinite,tdFxTremble .11s steps(2) infinite;
+  animation-delay:var(--fx-age,0ms),calc(var(--fx-age,0ms) + .4s),0s}
+.td-card.td-fx-decl.td-fx-k-shade{filter:brightness(.82) drop-shadow(1.5px 0 0 rgba(170,60,255,.35)) drop-shadow(-1.5px 0 0 rgba(60,160,255,.35));
+  animation:tdFxLift .4s cubic-bezier(.2,.9,.3,1.2) both,tdFxFloat 2.6s ease-in-out infinite,tdFxPhase 2.6s steps(1) infinite;
+  animation-delay:var(--fx-age,0ms),calc(var(--fx-age,0ms) + .4s),0s}
+.td-card.td-fx-decl.td-fx-k-fury.td-fx-k-shade{
+  animation:tdFxLift .4s cubic-bezier(.2,.9,.3,1.2) both,tdFxFloat 2.6s ease-in-out infinite,tdFxTremble .11s steps(2) infinite,tdFxPhase 2.6s steps(1) infinite;
+  animation-delay:var(--fx-age,0ms),calc(var(--fx-age,0ms) + .4s),0s,0s}
+@keyframes tdFxTremble{0%{translate:.8px -.6px}50%{translate:-.8px .7px}100%{translate:.5px .4px}}
+@keyframes tdFxPhase{0%,100%{opacity:1}20%{opacity:.82}26%{opacity:.96}60%{opacity:.85}66%{opacity:1}}
+.td-fx-gwrap.td-fx-a1{
+  -webkit-mask-image:linear-gradient(to bottom,#000 20px,transparent calc(20px + (100% - 40px)*.55));
+  mask-image:linear-gradient(to bottom,#000 20px,transparent calc(20px + (100% - 40px)*.55))}
+.td-fx-gwrap.td-fx-a2{
+  -webkit-mask-image:linear-gradient(to bottom,transparent 20px,#000 calc(20px + (100% - 40px)*.55),transparent calc(100% - 20px));
+  mask-image:linear-gradient(to bottom,transparent 20px,#000 calc(20px + (100% - 40px)*.55),transparent calc(100% - 20px))}
+.td-fx-gwrap.td-fx-a3{
+  -webkit-mask-image:linear-gradient(to bottom,transparent calc(20px + (100% - 40px)*.55),#000 calc(100% - 20px));
+  mask-image:linear-gradient(to bottom,transparent calc(20px + (100% - 40px)*.55),#000 calc(100% - 20px))}
+.td-fx-gwrap.td-fx-b2{
+  -webkit-mask-image:linear-gradient(to bottom,transparent calc(20px + (100% - 40px)*.375),#000 calc(20px + (100% - 40px)*.625),transparent calc(100% - 20px));
+  mask-image:linear-gradient(to bottom,transparent calc(20px + (100% - 40px)*.375),#000 calc(20px + (100% - 40px)*.625),transparent calc(100% - 20px))}
+.td-fx-gwrap.td-fx-b3{
+  -webkit-mask-image:linear-gradient(to bottom,transparent calc(20px + (100% - 40px)*.625),#000 calc(100% - 20px));
+  mask-image:linear-gradient(to bottom,transparent calc(20px + (100% - 40px)*.625),#000 calc(100% - 20px))}
+.td-fx-fangs{position:absolute;left:-21.25%;width:142.5%;height:18.75%;z-index:7;pointer-events:none;color:#f4efe4;
+  filter:drop-shadow(0 0 2px rgba(0,0,0,.85)) drop-shadow(0 0 6px rgba(255,70,50,.5))}
+.td-fx-fangs svg{width:100%;height:100%;display:block;overflow:visible}
+.td-fx-fangs.td-fx-top{top:-14%;animation:tdFxChompT 3.2s ease-in-out infinite}
+.td-fx-fangs.td-fx-bot{bottom:-14%;animation:tdFxChompB 3.2s ease-in-out infinite}
+@keyframes tdFxChompT{0%,100%{transform:translateY(-7.5px)}50%{transform:translateY(4.5px)}}
+@keyframes tdFxChompB{0%,100%{transform:translateY(7.5px) scaleY(-1)}50%{transform:translateY(-4.5px) scaleY(-1)}}
+.td-fx-banner{position:absolute;right:-30%;top:-46%;width:56%;height:78%;z-index:2;pointer-events:none}
+.td-fx-banner svg{width:100%;height:100%;display:block;overflow:visible}
+.td-fx-flag{transform-origin:6% 20%;animation:tdFxWave 1.4s ease-in-out infinite}
+@keyframes tdFxWave{0%,100%{transform:skewY(0) scaleX(1)}50%{transform:skewY(6deg) scaleX(.94)}}
+.td-fx-vw{position:absolute;width:20%;aspect-ratio:24/32;z-index:5;pointer-events:none;color:#ff3b3b;opacity:.85;
+  filter:drop-shadow(0 0 2px #000) drop-shadow(0 0 6px var(--vc,#ff3b3b));animation:tdFxVbob 3.2s ease-in-out infinite}
+.td-fx-vw svg{width:100%;height:100%;display:block;overflow:visible}
+@keyframes tdFxVbob{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-6px) rotate(calc(var(--r,0deg) + var(--sw,8deg)))}}
+
+.td-fx-skullmark{position:absolute;left:50%;top:38%;width:56%;aspect-ratio:1;transform:translate(-50%,-50%);z-index:7;pointer-events:none;
+  color:#f3ece0;filter:drop-shadow(0 0 2px #000) drop-shadow(0 0 8px var(--sk,#7a2cff)) drop-shadow(0 0 16px var(--sk,#7a2cff))}
+.td-fx-skullmark svg{width:100%;height:100%;display:block}
+.td-fx-ghost.td-fx-ash{-webkit-mask-image:linear-gradient(to top,transparent calc(var(--burn,0) * 1%),#000 calc(var(--burn,0) * 1% + 9%));
+  mask-image:linear-gradient(to top,transparent calc(var(--burn,0) * 1%),#000 calc(var(--burn,0) * 1% + 9%))}
+
+/* z-index 29 in .td-pfx-rest: under the card raised to 30, over the board (a page-wide fixed layer covered the card).
+   --fx-age lets a redraw land mid-way; the turn is on the HTML wrapper so the compositor turns it. */
+.td-fx-circle{position:absolute;left:50%;top:50%;aspect-ratio:1;transform:translate(-50%,-50%);z-index:29;pointer-events:none;
+  animation:tdFxCiGlow 5s linear both;animation-delay:var(--fx-age,0ms)}
+.td-fx-circle.td-fx-runes{height:130%}
+.td-fx-circle.td-fx-seal{height:142%}
+.td-fx-turn{width:100%;height:100%}
+.td-fx-circle svg{width:100%;height:100%;display:block;overflow:visible}
+.td-fx-circle .td-fx-draw{animation:tdFxCiDraw .9s ease-out both;animation-delay:calc(var(--fx-age,0ms) + var(--i,0) * 120ms)}
+.td-fx-circle .td-fx-glyph{animation:tdFxCiGlyph .2s linear both;animation-delay:calc(var(--fx-age,0ms) + 300ms + var(--i,0) * 30ms)}
+.td-fx-circle.td-fx-runes .td-fx-turn{animation:tdFxCiTurnR 5s cubic-bezier(.3,0,.4,1) both;animation-delay:var(--fx-age,0ms)}
+.td-fx-circle.td-fx-seal .td-fx-turn{animation:tdFxCiTurnS 5s cubic-bezier(.3,0,.4,1) both;animation-delay:var(--fx-age,0ms)}
+@keyframes tdFxCiDraw{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+@keyframes tdFxCiGlyph{from{opacity:0}to{opacity:.9}}
+@keyframes tdFxCiTurnR{from{transform:rotate(0)}to{transform:rotate(120deg)}}
+@keyframes tdFxCiTurnS{from{transform:rotate(0)}to{transform:rotate(-150deg)}}
+@keyframes tdFxCiGlow{0%{filter:drop-shadow(0 0 3px var(--c0));opacity:1}20%{filter:drop-shadow(0 0 14px var(--c1)) brightness(1.5)}
+  82%{filter:drop-shadow(0 0 6px var(--c0));opacity:1}100%{filter:drop-shadow(0 0 2px var(--c0));opacity:0}}
+/* Lies on cat_playfx.js ground()'s ellipse (116% down the card, squashed to .24): change the two together. */
+.td-fx-circle.td-fx-ground{top:116%;height:auto;transform:translate(-50%,-50%) scaleY(.24);animation:tdFxCiGlowIn 4.1s linear both;animation-delay:var(--fx-age,0ms)}
+.td-fx-circle.td-fx-ground.td-fx-runes{width:202.1%}
+.td-fx-circle.td-fx-ground.td-fx-seal{width:197.9%}
+.td-fx-circle.td-fx-ground.td-fx-runes .td-fx-turn{animation:tdFxCiSpinR 15s linear infinite;animation-delay:var(--fx-age,0ms)}
+.td-fx-circle.td-fx-ground.td-fx-seal .td-fx-turn{animation:tdFxCiSpinS 12s linear infinite;animation-delay:var(--fx-age,0ms)}
+@keyframes tdFxCiSpinR{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes tdFxCiSpinS{from{transform:rotate(0)}to{transform:rotate(-360deg)}}
+@keyframes tdFxCiGlowIn{0%{filter:drop-shadow(0 0 3px var(--c0))}24.4%{filter:drop-shadow(0 0 14px var(--c1)) brightness(1.5)}100%{filter:drop-shadow(0 0 6px var(--c0))}}
+
+.td-fx-pswd{position:fixed;aspect-ratio:24/32;z-index:67;pointer-events:none;color:#ff3b3b;
+  filter:drop-shadow(0 0 2px #000) drop-shadow(0 0 7px #ff3b3b)}
+.td-fx-pswd svg{width:100%;height:100%;display:block;overflow:visible}
+
+/* Two effect canvases: z-index -1 in the card's stacking context (behind its face, over the board), and one under the counters (12). */
+.td-card.td-pfx-burst{overflow:visible;z-index:30}
+.td-pfx-u,.td-pfx-o{position:absolute;left:-110%;top:-75%;width:320%;height:250%;pointer-events:none}
+.td-pfx-u{z-index:-1}
+.td-pfx-o{z-index:9}
+/* No z-index of its own, so its children stack among the cards; the circle comes first, so the ground draws over it at 29. */
+.td-pfx-rest{position:absolute;width:var(--td-cw);height:var(--td-ch);pointer-events:none}
+.td-pfx-gb,.td-pfx-gf{position:absolute;left:-110%;top:-75%;width:320%;height:250%;pointer-events:none}
+.td-pfx-gb{z-index:29}
+.td-pfx-gf{z-index:31}
+.td-resolve{position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);z-index:32;pointer-events:auto;white-space:nowrap;
+  font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);font-weight:600;font-size:.7rem;letter-spacing:.02em;
+  padding:3px 12px;border-radius:999px;border:1px solid #f0d488;background:linear-gradient(#e8c96a,#b8902f);color:#1a1206;
+  box-shadow:0 2px 8px rgba(0,0,0,.55);cursor:pointer}
+.td-resolve:hover{background:linear-gradient(#f3d983,#c9a13d)}
+.td-resolve:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.td-fx-ghost.td-pfx-flash::after{content:"";position:absolute;inset:0;border-radius:6px;background:#fff;animation:tdPfxFlash .38s ease-out forwards}
+@keyframes tdPfxFlash{0%{opacity:0}35%{opacity:.85}100%{opacity:0}}
+
+@media (prefers-reduced-motion:reduce){
+  .td-card.td-fx-decl,.td-card.td-fx-play{animation:none;transform:rotate(var(--fx-lk)) translateY(-6px)}
+  .td-card.td-fx-decl.td-fx-k-fury,.td-card.td-fx-decl.td-fx-k-shade{animation:none}
+  .td-fx-icon,.td-fx-stat,.td-fx-dia,.td-fx-gem.td-fx-pop{animation:none}
+  .td-card.td-fx-myth{animation:none}
+  .td-fx-fangs.td-fx-top,.td-fx-fangs.td-fx-bot,.td-fx-flag,.td-fx-vw{animation:none}
+  .td-fx-circle.td-fx-runes .td-fx-turn,.td-fx-circle.td-fx-seal .td-fx-turn,
+  .td-fx-circle.td-fx-ground.td-fx-runes .td-fx-turn,.td-fx-circle.td-fx-ground.td-fx-seal .td-fx-turn{animation:none}
+}
