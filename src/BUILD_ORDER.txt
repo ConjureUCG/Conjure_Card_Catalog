@@ -10,7 +10,7 @@ src/ed2_style.css
 src/mcard_classic.css
 src/testdeck.css
 src/boardfx.css
-src/card_back.css
+src/card_backs.css
 src/mobile.css
 src/style_close.html
 data/json_islands.txt
@@ -22,7 +22,7 @@ src/markup_tail_a.html
 src/markup_tail_b.html
 src/mobile_markup.html
 data/look_default.txt
-src/card_back_gems.js
+src/card_backs.js
 src/catalog/cat_core.js
 src/catalog/cat_guard.js
 src/catalog/cat_deck.js

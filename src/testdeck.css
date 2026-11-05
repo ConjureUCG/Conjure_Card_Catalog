@@ -1480,6 +1480,13 @@ body.light .ed2-btn.tbl-tool.tbl-green{color:var(--gr);background:rgba(92,158,11
 body.light .ed2-btn.tbl-tool.tbl-purple{color:var(--spect-ink);background:rgba(155,123,218,.2)}
 .td-table .td-more{display:inline-flex}
 .td-table.td-up{z-index:87}
+.td-cbk-pick{position:relative;display:inline-flex}
+.td-cbk-pick .td-moredrop{left:0;right:auto;min-width:168px}
+.td-cbk-item{display:flex;align-items:center;gap:10px}
+.td-cbk-item.on{border-color:var(--gd);background:color-mix(in srgb,var(--g2) 10%,transparent)}
+.td-cbk-thumb{flex:0 0 auto;width:30px;height:42px}
+.td-zoom-back .td-zoom-face{position:relative}
+.td-zoom-face > .cbk{transform:scale(.453333)}
 /* The row gives ground in stages to stay one line (tdTopRowFit). */
 .td-table.td-tight{gap:5px;padding:6px 10px}
 .td-table.td-tight .ed2-btn.tbl-tool{padding:0 7px;gap:5px}
@@ -2238,8 +2245,7 @@ body.light .td-dice-q:not(.td-dice-coin) .td-dice-qn{color:var(--dq-ink);text-sh
     "play   others others others others  others"
     "play   field  field  field  field   field"
     "play   deck   dmdeck grave  essarea hand"}
-#tdBoard .rb-dmpile-sm .td-card{width:calc(var(--td-cw) * .62);height:calc(var(--td-ch) * .62);
-  --cback-w:calc(var(--td-cw) * .62)}
+#tdBoard .rb-dmpile-sm .td-card{width:calc(var(--td-cw) * .62);height:calc(var(--td-ch) * .62)}
 .rb-dmpile,.rb-dmpile .td-card{cursor:pointer}
 
 :root,body{--gi-gold:var(--seat-a);--gi-blue:var(--seat-b);--gi-green:var(--seat-c);

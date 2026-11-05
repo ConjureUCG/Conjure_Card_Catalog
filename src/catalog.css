@@ -107,7 +107,7 @@ header::after{content:'';position:absolute;left:0;right:0;bottom:0;height:4px;ba
 /* The gold right border is a real border-image on .sb, so it stays full height and never scrolls with the panel. */
 .dp::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--metal-gold-side);pointer-events:none;z-index:1}
 
-/* A fixed height, and the row must not grow: the 58px header leaves the art 42px. --conjure-logo comes from card_back.css. */
+/* A fixed height, and the row must not grow: the 58px header leaves the art 42px. --conjure-logo comes from card_backs.css. */
 .hlogo{flex:0 0 auto;height:42px;width:65px;
   background:var(--conjure-logo) center/contain no-repeat}
 /* A drop-shadow, not outline: the white shape is not a rectangle. Four at right angles make an even hairline. */
