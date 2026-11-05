@@ -90,6 +90,33 @@ window.edDuplicateFromCard=function(card){
     return copy;
   });
 };
+/* The saga of yours an official card would join, picked as a new card's saga is; never one it is in, and none when you have no saga of your own. */
+function edMySagaFor(card){
+  if(!card||cardForeignKey(card)!==GROUP_OFFICIAL)return '';
+  var sid=edNewCardSaga(false);
+  if(edOwnSagaId(sid)&&!inSaga(card,sid))return sid;
+  var mine=(SAGAS||[]).filter(function(s){ return s&&ownsGroupKey(groupKeyOf(s))&&!inSaga(card,s.id); })
+    .sort(function(a,b){ return String(a.name||a.id).localeCompare(String(b.name||b.id)); });
+  return mine.length?mine[0].id:'';
+}
+window.edMySagaFor=function(card){ var id=edMySagaFor(card); return id?{id:id,name:(sagaById(id)||{}).name||id}:null; };
+/* Not a copy (Duplicate is): the official card itself joins the saga, and keeps following the official set. Marked as a change made here
+   (_editedSagas) until it is published, so it is never taken back out unasked (srcGoneCards). */
+window.edAddToMySaga=function(card){
+  var sid=edMySagaFor(card);
+  if(!sid||!addSagaMembership(card,sid))return Promise.resolve(false);
+  var sg=sagaById(sid);
+  (card._editedSagas=card._editedSagas||{})[sid]=1;
+  markDirty(card);
+  return persistCard(card).then(function(){ return ensureSagaRecords(); }).then(function(){
+    edRememberNewSaga(sid);
+    applyToCatalog(); try{ refreshSagaFilter(); }catch(_){}
+    try{ window.edRenderSagaPage(); }catch(_){}
+    toast('"'+card.name+'" is in '+((sg&&sg.name)||sid)+' - it keeps following the official card');
+    window.edEditCard(card.__id);
+    return true;
+  });
+};
 window.edDeleteCard=function(id){
   var c=(window.CARDS||[]).find(function(x){return x.__id===id;});
   if(!c)return;
@@ -1661,16 +1688,18 @@ function edNameClashAsk(c, other, was){
 }
 window.edLive=function(){ var c=curCard(); if(!c)return;
   var g=function(id){var el=document.getElementById(id);return el?el.value:'';};
-  c.name=g('f-name'); c.manaCost=g('f-mana').trim();
+  /* an official card in a saga of yours: only that saga's own values are written */
+  var linked=edLinkedSagas(c).length>0;
+  if(!linked){ c.name=g('f-name'); c.manaCost=g('f-mana').trim(); }
   /* Guarded: a split card has no #f-rules, and g() would read '' and wipe its rules; its text is synced by syncSplitRuleText. */
   var _rt=document.getElementById('f-rules');
-  if(_rt)c.ruleText=_rt.value;
+  if(_rt&&!linked)c.ruleText=_rt.value;
   /* Never c.saga here: the Saga field adds a membership (edAddCardSaga), and writing c.saga per keystroke would move mergeKey on a card with no sagaId. */
   /* Per saga through setSagaField: on a shared card, the saga being edited gets its own flavour and credits. */
   var sid=(typeof window.edEditingSaga==='function')?window.edEditingSaga():null;
   setSagaField(c,sid,'flavor',g('f-flavor'));
   /* revision is shared: onto the card, not through setSagaField */
-  c.revision=g('f-rev').trim();
+  if(!linked)c.revision=g('f-rev').trim();
   setSagaField(c,sid,'artist',g('f-artist').trim());
   setSagaField(c,sid,'designer',g('f-designer').trim());
   recompute(c); markDirty(c);
@@ -1687,9 +1716,19 @@ window.edLiveQuiet=function(fn){
 /* Every change moves _cardGen, edSagaSummary's cache key, and stales a backup proof, so the gate never takes a backup older than the edits (HANDOFF §6). */
 var _cardGen=0;
 function markDirty(c){ if(_liveQuiet) return; _dirty[c.__id]=true; _cardGen++; bumpCardGen(c);
+  /* kept until the card is what its set publishes (ghSettlePublished); a read-only card is changed only by the app itself,
+     but for the saga of yours being edited on an official card in it */
+  try{ if(!edCardLocked(c)) c._editedHere=1; else edMarkLinkedEdit(c); }catch(_){}
   try{ if(typeof window.edBackupProofStale==='function') window.edBackupProofStale(); }catch(_){}
   try{ edSyncSaveBtns(); }catch(_){}
   autosaveSoon(); }
+
+function edMarkLinkedEdit(c){
+  if(curCard()!==c)return;
+  var sid=window.edEditingSaga();
+  if(edLinkedSagas(c).indexOf(sid)<0)return;
+  (c._editedSagas=c._editedSagas||{})[sid]=1;
+}
 
 /* Each change is stored half a second after the last, and anything waiting when the tab is hidden or closed; on by default (HANDOFF §12.1).
    It never calls edLive, which marks the card dirty and would schedule the next autosave for ever. */
@@ -1741,8 +1780,8 @@ window.edEditCard=function(nameOrId){
     c=(window.CARDS||[]).find(function(x){return (x.name||'').toLowerCase()===String(nameOrId).toLowerCase();});
   }
   if(!c)return;
-  /* Every way into the editor comes through here, so this one line keeps read-only cards out. */
-  if(typeof edCardLocked==='function'&&edCardLocked(c)){ edLockedToast(c); return; }
+  /* Every way into the editor comes through here, so this one line keeps read-only cards out: all but an official card in a saga of yours. */
+  if(!edCardOpenable(c)){ edLockedToast(c); return; }
   if(c.flavor===undefined)c.flavor='';
   if(c.saga===undefined)c.saga=SETINFO.saga||'';
   if(c.revision===undefined)c.revision='';
@@ -1769,7 +1808,7 @@ function edNavStep(dir){
   var start=(i<0)?-dir:i;               /* no card open: the first step lands on 0 */
   for(var n=1;n<=list.length;n++){
     var j=((start+dir*n)%list.length+list.length)%list.length;
-    if(!edLockedSafe(list[j])){ window.edEditCard(list[j].__id); return; }
+    if(edCardOpenable(list[j])){ window.edEditCard(list[j].__id); return; }
   }
   edLockedToast(list[0]);
 }
@@ -1802,7 +1841,8 @@ addEventListener('keydown',function(ev){
 /* A card leaves _dirty only once its write has landed, and only if its generation (cardGenOf) has not moved since the write began: a change typed meanwhile is not in the record. */
 function edStoreCard(c){
   if(!c) return Promise.resolve(false);
-  c.lastUpdated=new Date().toISOString().slice(0,10);
+  /* a read-only card's date is its source's, as the rest of its content is: on an official card in a saga of yours only that saga's values changed */
+  if(!edLockedSafe(c)) c.lastUpdated=new Date().toISOString().slice(0,10);
   var gen=cardGenOf(c);
   return persistCard(c).then(function(){
     if(cardGenOf(c)!==gen){ try{ edSyncSaveBtns(); }catch(_){} autosaveSoon(); return true; }
@@ -1875,6 +1915,8 @@ function edSyncSaveBtns(){
 }
 window.edSyncSaveBtns=edSyncSaveBtns;
 window.edDuplicate=function(){ var c=curCard(); if(!c)return;
+  /* an official card in a saga of yours: a copy of your own, as the card window's Duplicate makes */
+  if(edLinkedSagas(c).length)return window.edDuplicateFromCard(c);
   var copy=JSON.parse(JSON.stringify(c)); copy.__id=uid(); copy.id=uid(); copy.name=(c.name||'Card')+' (copy)';
   /* the clone copied the cid, and two cards cannot share one: the boot merge matches by it */
   copy.cid=newCid();
@@ -1883,6 +1925,8 @@ window.edDuplicate=function(){ var c=curCard(); if(!c)return;
 /* A new store key for every upload: Publish names the uploaded copy after the key (ghLocalArtUploads), so a replaced picture needs a new name. */
 /* Stored before the card points at it: a refused write (a full store) puts the old picture back and says why. */
 window.edArtUpload=function(file){ var c=curCard(); if(!c||!file)return Promise.resolve(false);
+  /* pictures are the card's in every saga it is in */
+  if(edCardLocked(c)){ edLockedToast(c); return Promise.resolve(false); }
   return new Promise(function(done){
   var rd=new FileReader(); rd.onload=function(ev){ var d=ev.target.result; var key='userart_'+(c.__id)+'_'+Date.now().toString(36);
     var vt=visualTarget(c), was={art:vt.art,imageUrl:vt.imageUrl};
@@ -2699,7 +2743,7 @@ function injectEditButtons(){
     var nm=node.__card ? node.__card.name : ((node.querySelector('.ci-name, .tdnm')||{}).textContent||'');
     var _c=edCardByName(nm);
     if(!_c)return;
-    if(typeof edCardLocked==='function'&&edCardLocked(_c))return;
+    if(!edCardOpenable(_c))return;
     var btn=document.createElement('button');
     btn.className='ci-qedit'; btn.type='button'; btn.title='Edit card'; btn.innerHTML='&#9998;';
     btn.addEventListener('click',function(ev){ ev.stopPropagation();

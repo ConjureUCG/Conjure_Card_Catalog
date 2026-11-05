@@ -2036,13 +2036,15 @@ window.edModalClose=modalClose;
 function openMod(card){
   cur=card;
   var _locked=(typeof window.edCardLocked==='function' && window.edCardLocked(card));
+  /* an official card in a saga of yours opens in the editor for that saga's own values */
+  var _open=(typeof window.edCardOpenable==='function') ? window.edCardOpenable(card) : !_locked;
   var _med=document.querySelector('.mo .medit');
-  if(_med) _med.style.display = _locked ? 'none' : '';
-  var _canDup=!!_locked && typeof window.edDuplicateFromCard==='function';
+  if(_med) _med.style.display = _open ? '' : 'none';
+  var _canDup=!!_locked && !_open && typeof window.edDuplicateFromCard==='function';
   var _mdup=document.querySelector('.mo .mdup');
   if(_mdup) _mdup.style.display = _canDup ? '' : 'none';
   var _mo=document.querySelector('.mo');
-  if(_mo) _mo.classList.toggle('no-edit', !!_locked && !_canDup);
+  if(_mo) _mo.classList.toggle('no-edit', !_open && !_canDup);
   var _mdi=document.getElementById('mdi');
   var _faced=false;
   if(typeof window.edShowCardFace==='function'){
@@ -2120,11 +2122,24 @@ function openMod(card){
       +'<button class="madd madd-wish" id="maddbtn2" type="button" data-deck="wish" style="flex:0.7;font-size:.85rem;padding:13px 10px">'+uiIco('plus')+' Wish</button>'
       +'</div>';
   }
-  h+='<div class="mlink-row"><button class="mlink" id="mlinkBtn" type="button" title="Copy a link that opens this card">Copy link</button></div>';
+  /* not a copy, as Duplicate makes: the official card itself, kept in step with the official set, in a saga of yours */
+  var _mine=null;
+  try{ if(_locked && typeof window.edMySagaFor==='function') _mine=window.edMySagaFor(card); }catch(_){ _mine=null; }
+  h+='<div class="mlink-row"><button class="mlink" id="mlinkBtn" type="button" title="Copy a link that opens this card">Copy link</button>'
+    +(_mine ? '<button class="mlink msaga" id="msagaBtn" type="button" title="'+e('Put this official card in '+_mine.name
+        +'. It keeps following the official card: name, cost, rules, stats and pictures. '+_mine.name
+        +' sets its own flavor text, artist, Owner, watermark, border and reminders, and which picture it shows.')+'">Add to '
+        +e(_mine.name)+'</button>' : '')
+    +'</div>';
 
   document.getElementById('mdb').innerHTML=h;
   var _mlink=document.getElementById('mlinkBtn');
   if(_mlink) _mlink.addEventListener('click', function(){ copyCardLink(card, _mlink); });
+  var _msaga=document.getElementById('msagaBtn');
+  if(_msaga) _msaga.addEventListener('click', function(){
+    closeMod();
+    if(typeof window.edAddToMySaga==='function') window.edAddToMySaga(card);
+  });
   var btn3 = document.getElementById('maddbtn3');
   if(btn3){
     btn3.addEventListener('click', function(){
@@ -2249,7 +2264,8 @@ function closeMod(){
 /* Closes the card window first, or it would stay over the editor that edEditCard switches to. */
 function editCurrentCard(){
   var c=cur; if(!c)return;
-  if(typeof window.edCardLocked==='function' && window.edCardLocked(c)) return;
+  if(typeof window.edCardOpenable==='function' ? !window.edCardOpenable(c)
+     : (typeof window.edCardLocked==='function' && window.edCardLocked(c))) return;
   closeMod();
   if(typeof window.edEditCard==='function')window.edEditCard(c.__id||c.name);
   else alert('The editor has not loaded yet.');

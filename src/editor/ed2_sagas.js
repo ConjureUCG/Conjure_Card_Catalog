@@ -269,24 +269,29 @@ window.edAddCardSaga=function(nameOrId){
 window.edRemoveCardSaga=function(id){
   var c=curCard();
   if(!c||!id)return Promise.resolve(false);
+  /* a saga that comes from its source, as an official card's own does, is that source's to change */
+  if(!sagaOpenFor(c,id)){
+    toast('"'+((sagaById(id)||{}).name||id)+'" comes from its source, so the card stays in it');
+    return Promise.resolve(false);
+  }
   if(sagaIdsOf(c).length<2){
     toast('A card has to be in at least one saga');
     return Promise.resolve(false);
   }
   if(!removeSagaMembership(c,id))return Promise.resolve(false);
-  if(c.sagaFields&&c.sagaFields[id]){
-    delete c.sagaFields[id];
-    if(!Object.keys(c.sagaFields).length)delete c.sagaFields;
-  }
+  srcDropSagaFields(c,id);
   markDirty(c);
   try{
     if(typeof window.edEditingSaga==='function'&&window.edEditingSaga()===id)
       window.edEditSaga(sagaIdsOf(c)[0]);
   }catch(_){}
+  /* an official card out of the last saga of yours is read-only again */
+  var shut=edCardLocked(c)&&!edLinkedSagas(c).length;
   return persistCard(c).then(function(){
     applyToCatalog(); refreshSagaFilter();
     try{ window.edRenderSagaPage(); }catch(_){}
-    try{ renderFields(); }catch(_){}
+    if(shut){ try{ window.edCloseEditor(); }catch(_){} }
+    else{ try{ renderFields(); }catch(_){} }
     toast('"'+c.name+'" taken out of '+((sagaById(id)||{}).name||id));
     return true;
   });
@@ -349,14 +354,24 @@ function captureSagaFields(dst,src,sagaId){
   return n;
 }
 var _editSaga=null, _editSagaFor=null;
+/* A card made here is yours in every saga it names; any other has a saga's values, and its place in it, from that saga's source. */
+function sagaOpenFor(c,id){ return !!c&&(!!c.local||ownsGroupKey(groupKeyOfId(id))); }
+window.edSagaOpenFor=function(c,id){ return sagaOpenFor(c,id); };
+/* On an official card in a saga of yours (edLinkedSagas) it is always one of yours: the official saga's values are the official set's. */
 window.edEditingSaga=function(){
   var c=curCard(); if(!c)return null;
   if(_editSagaFor!==c.__id){ _editSagaFor=c.__id; _editSaga=null; }
-  if(_editSaga&&inSaga(c,_editSaga))return _editSaga;
-  return sagaIdOf(c);
+  var mine=edLinkedSagas(c);
+  if(_editSaga&&inSaga(c,_editSaga)&&(!mine.length||mine.indexOf(_editSaga)>=0))return _editSaga;
+  return mine.length?mine[0]:sagaIdOf(c);
 };
 window.edEditSaga=function(id){
   var c=curCard(); if(!c||!id||!inSaga(c,id))return;
+  /* a saga that comes from its source has its values from there */
+  if(!sagaOpenFor(c,id)){
+    toast('"'+((sagaById(id)||{}).name||id)+'" comes from its source and is read-only here');
+    return;
+  }
   _editSagaFor=c.__id; _editSaga=id;
   try{ renderFields(); }catch(_){}
   try{ renderPreview(c); }catch(_){}
@@ -496,6 +511,14 @@ var SAGA_ID_MAX=200;
 function sagaIdOk(id){
   return typeof id==='string' && id.length>0 && id.length<=SAGA_ID_MAX && !/[\x00-\x1f\x7f]/.test(id);
 }
+/* A saga's own words, published in sagas.json (ghSagaIndex), with a table copy's limits (edImportTableCopy). */
+var SAGA_INFO_KEYS=['author','version','description'], SAGA_INFO_MAX={author:80,version:20,description:2000};
+function sagaInfoClean(k,v){
+  if((typeof v==='number'&&isFinite(v))||typeof v==='boolean')v=String(v);
+  if(typeof v!=='string')return '';
+  v=v.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g,'').slice(0,SAGA_INFO_MAX[k]||200);
+  return k==='description'?v.replace(/\r\n?/g,'\n').trim():v.replace(/\s+/g,' ').trim();
+}
 function sagaRecordClean(sg){
   if(!sg||typeof sg!=='object'||Array.isArray(sg)||!sagaIdOk(sg.id))return null;
   var r=Object.assign({},sg);
@@ -504,7 +527,8 @@ function sagaRecordClean(sg){
     if(r[k]!=null&&typeof r[k]!=='string')r[k]=String(r[k]); });
   return r;
 }
-/* `from`, when a source or a table copy brought the saga: {url} or {table}, and {names}, so a new record is filed under it, named as it names the saga. */
+/* `from`, when a source or a table copy brought the saga: {url} or {table}, {names} and {info} (srcCtx), so a new record is filed under it, named
+   and described as it names and describes the saga. */
 function ensureSagaRecords(from){
   from=(from&&typeof from==='object'&&!Array.isArray(from))?from:null;
   var seen={}; SAGAS.forEach(function(s){seen[s.id]=1;});
@@ -513,9 +537,11 @@ function ensureSagaRecords(from){
     sagaIdsOf(c).forEach(function(id){
       if(seen[id])return; seen[id]=1;
       var nm=from&&from.names&&from.names[id];
+      var inf=(from&&from.info&&from.info[id])||{};
       add.push({id:id,name:(typeof nm==='string'&&nm.trim())?nm.slice(0,SAGA_ID_MAX):id,
-        author:(id===BUILTIN_SAGA?'Conjure UCG LLC':''),
-        version:'1.0',description:'',builtin:id===BUILTIN_SAGA&&!window.REBIRTH,enabled:true,
+        author:(inf.author!==undefined?inf.author:(id===BUILTIN_SAGA?'Conjure UCG LLC':'')),
+        version:inf.version||'1.0',description:inf.description||'',
+        builtin:id===BUILTIN_SAGA&&!window.REBIRTH,enabled:true,
         /* Stamped although the two games' databases are apart: a backup can be carried into the wrong game by hand. */
         mode:(window.REBIRTH?'rebirth':'main'),
         look:null,
@@ -617,10 +643,64 @@ function _deleteSaga(sg,id,doomed,shared){
       toast('Deleted "'+sg.name+'"'+((shared&&shared.length)
         ? ' - '+shared.length+' shared card(s) kept':'')); });
 }
+/* One saga's form at a time; what is typed is kept (_sgDraft), as a check finishing draws the page again. */
+var _sgEditing=null, _sgDraft=null;
+function sagaInfoEditable(sg){
+  if(!sg)return false;
+  try{ return ownsGroupKey(groupKeyOf(sg)); }catch(_){ return false; }
+}
+window.edSagaInfoEditable=function(id){ return sagaInfoEditable(sagaById(id)); };
+function sagaEditHTML(sg){
+  var k=e(sg.id), d=(_sgDraft&&_sgDraft.id===sg.id)?_sgDraft:sg;
+  return "<div class='sg-edit'>"
+    +"<label for='sgEdAuthor'>Author</label><input class='ed2-in' id='sgEdAuthor' type='text' maxlength='80'"
+      +" autocomplete='off' value=\""+e(d.author||'')+"\">"
+    +"<label for='sgEdVersion'>Version</label><input class='ed2-in' id='sgEdVersion' type='text' maxlength='20'"
+      +" autocomplete='off' placeholder='1.0' value=\""+e(d.version==null?'1.0':d.version)+"\">"
+    +"<label for='sgEdDesc'>Description</label><textarea class='ed2-in' id='sgEdDesc' maxlength='2000' rows='3'>"
+      +e(d.description||'')+"</textarea>"
+    +"<div class='sg-edit-btns'><button class='ed2-btn tiny close-x' data-sg-cancel='"+k+"'>Close &#10005;</button>"
+      +"<button class='ed2-btn tiny primary' data-sg-save='"+k+"'>Save</button></div>"
+  +"</div>";
+}
+function sagaEditValues(){
+  var g=function(id){ var el=document.getElementById(id); return el?el.value:undefined; };
+  return {author:g('sgEdAuthor'), version:g('sgEdVersion'), description:g('sgEdDesc')};
+}
+window.edEditSagaInfo=function(id){
+  var sg=sagaById(id);
+  if(!sagaInfoEditable(sg)){ toast('This saga comes from its source and is read-only here'); return false; }
+  _sgEditing=id; _sgDraft=null;
+  window.edRenderSagaPage();
+  try{ var el=document.getElementById('sgEdAuthor'); if(el)el.focus(); }catch(_){}
+  return true;
+};
+window.edCancelSagaInfo=function(){ _sgEditing=null; _sgDraft=null; window.edRenderSagaPage(); };
+/* Kept here until the next Publish, which sends them in sagas.json; a follower takes them at its next check (srcTakeSagaInfo). */
+window.edSaveSagaInfo=function(id,vals){
+  var sg=sagaById(id);
+  if(!sagaInfoEditable(sg)){ toast('This saga comes from its source and is read-only here'); return Promise.resolve(false); }
+  vals=(vals&&typeof vals==='object')?vals:sagaEditValues();
+  var rec=Object.assign({},sg), ch=false;
+  SAGA_INFO_KEYS.forEach(function(k){
+    if(vals[k]===undefined)return;
+    var v=sagaInfoClean(k,vals[k]);
+    if(k==='version'&&!v)v='1.0';
+    if((rec[k]||'')!==v){ rec[k]=v; ch=true; }
+  });
+  _sgEditing=null; _sgDraft=null;
+  if(!ch){ window.edRenderSagaPage(); return Promise.resolve(false); }
+  return sagaPut(rec).then(function(){
+    window.edRenderSagaPage();
+    toast('Saved "'+(rec.name||rec.id)+'" - Publish sends it');
+    return true;
+  });
+};
 function sagaRowHTML(sg){
   var list=sagaCards(sg.id), n=list.length;
   var orph=list.filter(function(c){return c&&c.orphan;}).length;
   var shr=list.filter(isShared).length;
+  var edit=sagaInfoEditable(sg);
   return "<div class='sg-row"+(sg.enabled===false?' off':'')+"'>"
     +"<div class='sg-main'><b>"+e(sg.name)+"</b>"
       +(orph?"<span class='sg-tag orph' title='Cards their source no longer lists. "
@@ -636,9 +716,12 @@ function sagaRowHTML(sg){
         +" data-sg-on='"+e(sg.id)+"'> Enabled</label>"
       +(sg.look?("<label class='sg-ck'><input type='checkbox'"+(sg.useAuthorLook?' checked':'')
         +" data-sg-look='"+e(sg.id)+"'> Author look</label>"):"")
+      +(edit?"<button class='ed2-btn tiny' data-sg-edit='"+e(sg.id)+"'"+(_sgEditing===sg.id?' disabled':'')
+        +" aria-label='Edit the author, version and description of "+e(sg.name)+"'>Edit</button>":"")
       +(sagaDeletable(sg)?"<button class='ed2-btn tiny warn' data-sg-del='"+e(sg.id)+"'"
         +" aria-label='Delete the saga "+e(sg.name)+"'>Delete</button>":"")
     +"</div>"
+    +((edit&&_sgEditing===sg.id)?sagaEditHTML(sg):"")
   +"</div>";
 }
 
@@ -715,10 +798,23 @@ function sgListBind(host){
     if(v!=null)return window.edSetGroupEnabled(v,t.checked);
   });
   host.addEventListener('click',function(ev){
-    var b=(ev.target&&ev.target.closest)?ev.target.closest('[data-sg-del],[data-gk-caret]'):null;
+    var b=(ev.target&&ev.target.closest)
+      ?ev.target.closest('[data-sg-del],[data-gk-caret],[data-sg-edit],[data-sg-save],[data-sg-cancel]'):null;
     if(!b||!host.contains(b))return;
     if(b.hasAttribute('data-sg-del'))return window.edDeleteSaga(b.getAttribute('data-sg-del'));
+    if(b.hasAttribute('data-sg-edit'))return window.edEditSagaInfo(b.getAttribute('data-sg-edit'));
+    if(b.hasAttribute('data-sg-save'))return window.edSaveSagaInfo(b.getAttribute('data-sg-save'));
+    if(b.hasAttribute('data-sg-cancel'))return window.edCancelSagaInfo();
     return window.edToggleGroup(b.getAttribute('data-gk-caret'));
+  });
+  host.addEventListener('input',function(ev){
+    if(!_sgEditing||!ev.target||!ev.target.closest||!ev.target.closest('.sg-edit'))return;
+    _sgDraft=Object.assign({id:_sgEditing},sagaEditValues());
+  });
+  host.addEventListener('keydown',function(ev){
+    if(!_sgEditing||!ev.target||!ev.target.closest||!ev.target.closest('.sg-edit'))return;
+    if(ev.key==='Escape'){ ev.preventDefault(); window.edCancelSagaInfo(); }
+    else if(ev.key==='Enter'&&ev.target.tagName!=='TEXTAREA'){ ev.preventDefault(); window.edSaveSagaInfo(_sgEditing); }
   });
 }
 window.edRenderSagaPage=function(){
@@ -738,6 +834,9 @@ window.edRenderSagaPage=function(){
     +"<button class='ed2-btn tiny primary' onclick=\"edFollowSource(document.getElementById('sgFollowUrl').value)\">Follow</button>"
     +"</div>";
   sgListBind(host);
+  /* a redraw while the form is being typed in keeps the box and the caret */
+  var act=document.activeElement, fid=(act&&act.id&&host.contains(act))?act.id:'', sel=null;
+  try{ if(fid&&typeof act.selectionStart==='number')sel=[act.selectionStart,act.selectionEnd]; }catch(_){}
   host.innerHTML=groups.concat(waiting).map(function(g){
     var open=!groupCollapsed(g.key);
     var many=g.sagas.length>1;
@@ -748,6 +847,10 @@ window.edRenderSagaPage=function(){
       +"<div class='sg-group-body'>"+body+"</div>"
     +"</div>";
   }).join('')+follow;
+  if(fid){
+    var back=document.getElementById(fid);
+    try{ if(back){ back.focus(); if(sel)back.setSelectionRange(sel[0],sel[1]); } }catch(_){}
+  }
   autoCheckSources();
 };
 
@@ -901,8 +1004,7 @@ function orbSig(o){
   return (Array.isArray(o)?o:[]).map(function(x){
     return x?((x.type||'')+':'+(x.value==null?'':x.value)):''; }).join('|');
 }
-/* Once per source per session: edRenderSagaPage also runs after every toggle, delete and restore.
-   Known issue: it ignores Automatic Updates on Open (GH_AUTOCHECK), so opening the Sagas page checks every followed source and takes what ghAutoApply allows. */
+/* Once per source per session: edRenderSagaPage also runs after every toggle, delete and restore. */
 function autoCheckSources(){
   var pane=document.getElementById('pane-sagas');
   if(!pane||pane.offsetParent===null)return;
@@ -1329,8 +1431,12 @@ function srcBlank(v){
 function srcSagasOf(nc,o){
   return sagaIdsOf(nc).filter(function(id){ return o.sagaSet[id]&&!o.skip[id]; });
 }
-/* a table copy is no other source: it is what its real source takes over */
+function srcInOfficial(c){
+  return sagaIdsOf(c).some(function(id){ return groupKeyOfId(id)===GROUP_OFFICIAL; });
+}
+/* a table copy is no other source: it is what its real source takes over; an official card in another set's saga (srcLinkedJoin) is still the official set's */
 function srcBelongsElsewhere(ex,key){
+  if(key===GROUP_OFFICIAL&&srcInOfficial(ex))return false;
   return sagaIdsOf(ex).some(function(id){
     var k=groupKeyOfId(id);
     return k!==GROUP_LOCAL&&k!==key&&k.indexOf('table:')!==0;
@@ -1396,6 +1502,8 @@ function srcMergeInto(ex,nc,o){
     ex[k]=srcCopy(nc[k]);
   });
   delete ex.orphan;
+  /* what was changed here is replaced, so it is no longer this copy's work (markDirty) */
+  delete ex._editedHere;
   /* Test travels only one way here - ghSyncTestState takes it off */
   if(nc.testing)ex.testing=1;
   var list=inc.concat(other.filter(function(id){ return inc.indexOf(id)<0; }));
@@ -1415,6 +1523,89 @@ function srcMergeInto(ex,nc,o){
   if(Object.keys(sf).length)ex.sagaFields=sf; else delete ex.sagaFields;
   return true;
 }
+/* An official card a creator put in a saga of theirs (Add to my saga) goes out marked `linked`, with what each of those sagas sets itself (ghPublishedForm).
+   A copy holding that official card joins it to the saga: its content stays the official set's, and only the membership and the saga's own values
+   (SAGA_FIELDS) come from the creator's set. A copy without it takes nothing until it has it. */
+function srcLinkedJoins(ex,nc,o){
+  return !!(ex&&nc&&nc.linked&&o&&!o.official&&nc.cid&&ex.cid===nc.cid&&srcInOfficial(ex));
+}
+/* What saga id is to carry here: the saga's own values, its picture as this copy's variant of it, and none that only repeats the card's own. */
+function srcLinkedWant(ex,nc,id){
+  var own=(nc.linked&&nc.linked.own&&nc.linked.own[id])||{}, want={};
+  SAGA_FIELDS.forEach(function(f){
+    if(f==='variant'){
+      var key=own.picture?artKeyOf(own.picture):'';
+      var hit=key?(cardVariants(ex)||[]).filter(function(v){
+        return v&&((v.imageUrl&&artKeyOf(v.imageUrl)===key)||(v.art&&artKeyOf(v.art)===key)); })[0]:null;
+      if(hit&&!sagaFieldSame(hit.id,ex.variant))want.variant=hit.id;
+      return;
+    }
+    if(own[f]!==undefined&&!sagaFieldSame(own[f],ex[f]))want[f]=srcCopy(own[f]);
+  });
+  return want;
+}
+/* Exact, as sagaFieldSame calls a blank override and none the same: a saga that clears its flavour has one. */
+function srcLinkedSagaDiffers(ex,nc,id){
+  var want=srcLinkedWant(ex,nc,id), have=(ex.sagaFields&&ex.sagaFields[id])||{};
+  return SAGA_FIELDS.some(function(f){
+    if((want[f]===undefined)!==(have[f]===undefined))return true;
+    return want[f]!==undefined&&!sagaFieldSame(want[f],have[f]);
+  });
+}
+function srcLinkedDiffers(ex,nc,o){
+  var inc=srcSagasOf(nc,o), mine=sagaIdsOf(ex).filter(function(id){ return o.sagaSet[id]; });
+  if(inc.slice().sort().join('|')!==mine.slice().sort().join('|'))return true;
+  return inc.some(function(id){ return srcLinkedSagaDiffers(ex,nc,id); });
+}
+/* Whether a join would replace what was set here: on the copy that owns the set, any difference; elsewhere, a saga changed here (_editedSagas, markDirty). */
+function srcLinkedRisk(ex,nc,o){
+  var inc=srcSagasOf(nc,o), mark=ex._editedSagas||{};
+  var mine=function(id){ return !!o.owned||!!mark[id]; };
+  return inc.some(function(id){ return mine(id)&&srcLinkedSagaDiffers(ex,nc,id); })
+    ||sagaIdsOf(ex).some(function(id){ return o.sagaSet[id]&&inc.indexOf(id)<0&&mine(id); });
+}
+function srcUnmarkSaga(c,id){
+  if(c&&c._editedSagas&&c._editedSagas[id]){
+    delete c._editedSagas[id];
+    if(!Object.keys(c._editedSagas).length)delete c._editedSagas;
+  }
+}
+function srcDropSagaFields(c,id){
+  if(c&&c.sagaFields&&c.sagaFields[id]){
+    delete c.sagaFields[id];
+    if(!Object.keys(c.sagaFields).length)delete c.sagaFields;
+  }
+  srcUnmarkSaga(c,id);
+}
+function srcLinkedJoin(ex,nc,o){
+  var inc=srcSagasOf(nc,o);
+  sagaIdsOf(ex).forEach(function(id){
+    if(o.sagaSet[id]&&inc.indexOf(id)<0&&removeSagaMembership(ex,id))srcDropSagaFields(ex,id);
+  });
+  inc.forEach(function(id){
+    /* never the official card's own fields */
+    if(id===sagaIdOf(ex))return;
+    if(!inSaga(ex,id))addSagaMembership(ex,id);
+    var want=srcLinkedWant(ex,nc,id);
+    SAGA_FIELDS.forEach(function(f){ setSagaField(ex,id,f,want[f]!==undefined?want[f]:ex[f]); });
+    /* what was set here is replaced, as srcMergeInto does with _editedHere */
+    srcUnmarkSaga(ex,id);
+  });
+}
+/* What a saga of yours sets itself on an official card in it, as ghPublishedForm sends it: its picture by address, as a variant id is this copy's. */
+function srcLinkedOwn(c,id,pictureOf){
+  var bag=(c.sagaFields&&c.sagaFields[id])||{}, own={};
+  SAGA_FIELDS.forEach(function(f){
+    if(f==='variant'||bag[f]===undefined)return;
+    own[f]=srcCopy(bag[f]);
+  });
+  if(bag.variant!==undefined){
+    var v=(cardVariants(c)||[]).filter(function(x){ return x&&x.id===bag.variant; })[0];
+    var pic=v?pictureOf(v):'';
+    if(pic)own.picture=pic;
+  }
+  return own;
+}
 function srcImportRows(cards,o){
   var mineList=(window.CARDS||[]), ix=cardIndex(mineList);
   var byCid={}, byId={};
@@ -1430,6 +1621,13 @@ function srcImportRows(cards,o){
     if(!inc.length){ skipped++; return; }
     var at=ix.at(nc), ex=(at==null)?null:mineList[at];
     if(ex&&ex.local&&!(nc.cid&&ex.cid===nc.cid))ex=null;
+    if(nc.linked&&!o.official){
+      if(!srcLinkedJoins(ex,nc,o)){ skipped++; return; }
+      if(!srcLinkedDiffers(ex,nc,o)){ same++; return; }
+      srcLinkedJoin(ex,nc,o);
+      srcTouched(ex); touched.push(ex); updated++;
+      return;
+    }
     if(ex&&srcBelongsElsewhere(ex,o.key)){
       /* a table copy of a card this copy has from its own source joins the copied saga, and its content is left to its source */
       if(o.table&&nc.cid&&ex.cid===nc.cid){
@@ -1450,7 +1648,7 @@ function srcImportRows(cards,o){
       return;
     }
     var c=srcCopy(srcNormCard(nc));
-    delete c.local; delete c.orphan;
+    delete c.local; delete c.orphan; delete c._editedHere;
     c.__id=uid();
     c.sagaIds=inc; c.sagaId=inc[0];
     var hsg=sagaById(inc[0]);

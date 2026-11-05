@@ -638,7 +638,14 @@ body.light .sg-row,body.arcane .sg-row{--sg-face:var(--s1)}
   display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .sg-meta{font-size:.78rem;color:var(--tm);white-space:nowrap}
 .sg-stamp{font-size:.72rem;color:var(--tm);white-space:nowrap}
-.sg-sub{font-size:.78rem;color:var(--tm);margin-top:2px}
+.sg-sub{font-size:.78rem;color:var(--tm);margin-top:2px;white-space:pre-line}
+/* A saga's author, version and description, under its row (edEditSagaInfo); a grid, so the labels line up at any width. */
+.sg-edit{flex:1 1 100%;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 10px;align-items:center;
+  font-family:'Crimson Pro',serif;font-size:.85rem}
+.sg-edit label{color:var(--td)}
+.sg-edit .ed2-in{width:100%;box-sizing:border-box;padding:4px 7px;font-size:13px;background:var(--s1)}
+.sg-edit textarea.ed2-in{min-height:4.5em;resize:vertical;font-family:inherit}
+.sg-edit-btns{grid-column:1 / -1;display:flex;gap:8px;justify-content:flex-end}
 
 .sg-head{align-items:center}
 .sg-head .sg-title{margin:0;flex:0 0 auto}
@@ -787,6 +794,13 @@ body.light .sg-row,body.arcane .sg-row{--sg-face:var(--s1)}
 .ed2-sagachip.on{background:color-mix(in srgb,var(--a2) 14%,transparent);border-color:var(--ed-info-edge);color:var(--ed-chip-on);
   font-weight:600}
 span.ed2-sagachip{cursor:default}
+/* a saga that comes from its source, on a card open here: no pick, no X (sagaBoxHTML) */
+.ed2-sagachip-src{border-style:dashed;opacity:.8}
+/* An official card in a saga of yours (edLinkedMask): what the official set holds is inert and dimmed, and the note says why. */
+.ed2-linked-note{margin:0 0 10px;padding:8px 12px;border-left:3px solid var(--ed-info-edge);background:var(--s2);
+  font-family:'Crimson Pro',serif;font-size:.92rem;line-height:1.4;color:var(--tx)}
+#edFields.ed2-linked [data-linked-shut]{opacity:.45}
+#edFields.ed2-linked [data-linked-shut] [data-linked-shut]{opacity:1}
 
 .ed2-xf-foot{display:flex;gap:6px;flex-wrap:nowrap;align-items:center}
 .ed2-xf-foot > .ed2-btn{flex:1 1 0;min-width:0;padding-left:.3em;padding-right:.3em}
@@ -1028,7 +1042,6 @@ body.light .mo .mdup{color:var(--spect-ink);background:rgba(155,123,218,.2)}
   line-height:1.55;font-family:monospace;font-size:.8rem}
 .gh-onerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 0}
 .gh-onerow > input.ed2-in{flex:1 1 320px;min-width:0}
-.gh-toggles label{display:flex;align-items:center;gap:7px;white-space:nowrap}
 .gh-badge{background:var(--ok,#5c9e6e)!important;color:#fff!important;
   border-color:var(--ok,#5c9e6e)!important;font-weight:600}
 .gh-badge:hover{filter:brightness(1.1)}

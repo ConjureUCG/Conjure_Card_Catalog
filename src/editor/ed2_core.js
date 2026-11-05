@@ -1776,15 +1776,18 @@ window.edSetCardMark=function(id){
   markDirty(c); renderPreview(c);
   try{ scheduleFace(); }catch(_){}
 };
+/* Every watermark a card can wear: its own, one per saga and one per variant (markIdOf picks the one drawn). */
+function cardMarkIds(c){
+  var out=[], at=function(o){ if(o&&typeof o.mark==='string'&&o.mark)out.push(o.mark); };
+  if(!c)return out;
+  at(c);
+  var sf=c.sagaFields;
+  if(sf&&typeof sf==='object')for(var k in sf)at(sf[k]);
+  (cardVariants(c)||[]).forEach(at);
+  return out;
+}
 function markUsedBy(id){
-  return (window.CARDS||[]).filter(function(c){
-    if(c.mark===id)return true;
-    var sf=c.sagaFields;
-    if(sf)for(var k in sf){ if(sf[k]&&sf[k].mark===id)return true; }
-    var vs=cardVariants(c)||[];
-    for(var i=0;i<vs.length;i++) if(vs[i]&&vs[i].mark===id)return true;
-    return false;
-  });
+  return (window.CARDS||[]).filter(function(c){ return cardMarkIds(c).indexOf(id)>=0; });
 }
 function markDropFrom(c,id){
   if(c.mark===id)delete c.mark;

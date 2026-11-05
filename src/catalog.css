@@ -624,7 +624,7 @@ body.light .ci-qbtn{background:var(--s2)}
 .mnav{position:absolute;top:50%;transform:translateY(-50%);background:color-mix(in srgb,var(--black) 45%,transparent);border:1px solid color-mix(in srgb,var(--white) 15%,transparent);color:var(--white);width:36px;height:54px;border-radius:0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;transition:background .15s;z-index:10}
 .mnav:hover{background:color-mix(in srgb,var(--black) 72%,transparent);box-shadow:0 0 8px var(--hv-glow)}
 .mnav-l{left:-18px}.mnav-r{right:-18px}
-.mlink-row{display:flex;justify-content:flex-end;margin-top:8px}
+.mlink-row{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;margin-top:8px}
 .mlink{background:transparent;border:1px solid var(--b2);color:var(--td);font-family:'Crimson Pro',serif;font-size:.9rem;padding:4px 12px;border-radius:0;cursor:pointer;transition:background .15s,box-shadow .15s}
 .mlink:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
 .mnm{font-family:'Cinzel',serif;font-size:2rem;font-weight:700;color:var(--tx);margin-bottom:5px;padding-right:30px;line-height:1.2}

@@ -585,7 +585,7 @@ body.light .ci-qbtn{background:var(--s2)}
 .mnav{position:absolute;top:50%;transform:translateY(-50%);background:color-mix(in srgb,var(--black) 45%,transparent);border:1px solid color-mix(in srgb,var(--white) 15%,transparent);color:var(--white);width:36px;height:54px;border-radius:0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;transition:background .15s;z-index:10}
 .mnav:hover{background:color-mix(in srgb,var(--black) 72%,transparent);box-shadow:0 0 8px var(--hv-glow)}
 .mnav-l{left:-18px}.mnav-r{right:-18px}
-.mlink-row{display:flex;justify-content:flex-end;margin-top:8px}
+.mlink-row{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;margin-top:8px}
 .mlink{background:transparent;border:1px solid var(--b2);color:var(--td);font-family:'Crimson Pro',serif;font-size:.9rem;padding:4px 12px;border-radius:0;cursor:pointer;transition:background .15s,box-shadow .15s}
 .mlink:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
 .mnm{font-family:'Cinzel',serif;font-size:2rem;font-weight:700;color:var(--tx);margin-bottom:5px;padding-right:30px;line-height:1.2}
@@ -1519,7 +1519,13 @@ body.light .sg-row,body.arcane .sg-row{--sg-face:var(--s1)}
   display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .sg-meta{font-size:.78rem;color:var(--tm);white-space:nowrap}
 .sg-stamp{font-size:.72rem;color:var(--tm);white-space:nowrap}
-.sg-sub{font-size:.78rem;color:var(--tm);margin-top:2px}
+.sg-sub{font-size:.78rem;color:var(--tm);margin-top:2px;white-space:pre-line}
+.sg-edit{flex:1 1 100%;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 10px;align-items:center;
+  font-family:'Crimson Pro',serif;font-size:.85rem}
+.sg-edit label{color:var(--td)}
+.sg-edit .ed2-in{width:100%;box-sizing:border-box;padding:4px 7px;font-size:13px;background:var(--s1)}
+.sg-edit textarea.ed2-in{min-height:4.5em;resize:vertical;font-family:inherit}
+.sg-edit-btns{grid-column:1 / -1;display:flex;gap:8px;justify-content:flex-end}
 
 .sg-head{align-items:center}
 .sg-head .sg-title{margin:0;flex:0 0 auto}
@@ -1661,6 +1667,11 @@ body.light .sg-row,body.arcane .sg-row{--sg-face:var(--s1)}
 .ed2-sagachip.on{background:color-mix(in srgb,var(--a2) 14%,transparent);border-color:var(--ed-info-edge);color:var(--ed-chip-on);
   font-weight:600}
 span.ed2-sagachip{cursor:default}
+.ed2-sagachip-src{border-style:dashed;opacity:.8}
+.ed2-linked-note{margin:0 0 10px;padding:8px 12px;border-left:3px solid var(--ed-info-edge);background:var(--s2);
+  font-family:'Crimson Pro',serif;font-size:.92rem;line-height:1.4;color:var(--tx)}
+#edFields.ed2-linked [data-linked-shut]{opacity:.45}
+#edFields.ed2-linked [data-linked-shut] [data-linked-shut]{opacity:1}
 
 .ed2-xf-foot{display:flex;gap:6px;flex-wrap:nowrap;align-items:center}
 .ed2-xf-foot > .ed2-btn{flex:1 1 0;min-width:0;padding-left:.3em;padding-right:.3em}
@@ -1896,7 +1907,6 @@ body.light .mo .mdup{color:var(--spect-ink);background:rgba(155,123,218,.2)}
   line-height:1.55;font-family:monospace;font-size:.8rem}
 .gh-onerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 0}
 .gh-onerow > input.ed2-in{flex:1 1 320px;min-width:0}
-.gh-toggles label{display:flex;align-items:center;gap:7px;white-space:nowrap}
 .gh-badge{background:var(--ok,#5c9e6e)!important;color:#fff!important;
   border-color:var(--ok,#5c9e6e)!important;font-weight:600}
 .gh-badge:hover{filter:brightness(1.1)}
@@ -6458,7 +6468,6 @@ button.tbl-av.td-gav:hover{box-shadow:0 0 0 3px var(--hv-glow)}
   #edSyncOverlay .gh-btns:empty{display:none}
   #edSyncOverlay .gh-msg{margin-top:8px;font-size:15px}
   #edSyncOverlay .gh-toggles{padding-top:10px}
-  #edSyncOverlay .gh-toggles label{flex:1 1 200px;min-height:44px;white-space:normal;font-size:16px}
   #edSyncOverlay .gh-toggles .gh-hint{flex:1 0 100%;padding:0;font-size:14px}
   #edSyncOverlay .gh-h4ctl{min-height:44px;font-size:15px}
   #edSyncOverlay .gh-row{gap:4px;margin:12px 0 0}
@@ -9264,13 +9273,14 @@ window.edModalClose=modalClose;
 function openMod(card){
   cur=card;
   var _locked=(typeof window.edCardLocked==='function' && window.edCardLocked(card));
+  var _open=(typeof window.edCardOpenable==='function') ? window.edCardOpenable(card) : !_locked;
   var _med=document.querySelector('.mo .medit');
-  if(_med) _med.style.display = _locked ? 'none' : '';
-  var _canDup=!!_locked && typeof window.edDuplicateFromCard==='function';
+  if(_med) _med.style.display = _open ? '' : 'none';
+  var _canDup=!!_locked && !_open && typeof window.edDuplicateFromCard==='function';
   var _mdup=document.querySelector('.mo .mdup');
   if(_mdup) _mdup.style.display = _canDup ? '' : 'none';
   var _mo=document.querySelector('.mo');
-  if(_mo) _mo.classList.toggle('no-edit', !!_locked && !_canDup);
+  if(_mo) _mo.classList.toggle('no-edit', !_open && !_canDup);
   var _mdi=document.getElementById('mdi');
   var _faced=false;
   if(typeof window.edShowCardFace==='function'){
@@ -9347,11 +9357,23 @@ function openMod(card){
       +'<button class="madd madd-wish" id="maddbtn2" type="button" data-deck="wish" style="flex:0.7;font-size:.85rem;padding:13px 10px">'+uiIco('plus')+' Wish</button>'
       +'</div>';
   }
-  h+='<div class="mlink-row"><button class="mlink" id="mlinkBtn" type="button" title="Copy a link that opens this card">Copy link</button></div>';
+  var _mine=null;
+  try{ if(_locked && typeof window.edMySagaFor==='function') _mine=window.edMySagaFor(card); }catch(_){ _mine=null; }
+  h+='<div class="mlink-row"><button class="mlink" id="mlinkBtn" type="button" title="Copy a link that opens this card">Copy link</button>'
+    +(_mine ? '<button class="mlink msaga" id="msagaBtn" type="button" title="'+e('Put this official card in '+_mine.name
+        +'. It keeps following the official card: name, cost, rules, stats and pictures. '+_mine.name
+        +' sets its own flavor text, artist, Owner, watermark, border and reminders, and which picture it shows.')+'">Add to '
+        +e(_mine.name)+'</button>' : '')
+    +'</div>';
 
   document.getElementById('mdb').innerHTML=h;
   var _mlink=document.getElementById('mlinkBtn');
   if(_mlink) _mlink.addEventListener('click', function(){ copyCardLink(card, _mlink); });
+  var _msaga=document.getElementById('msagaBtn');
+  if(_msaga) _msaga.addEventListener('click', function(){
+    closeMod();
+    if(typeof window.edAddToMySaga==='function') window.edAddToMySaga(card);
+  });
   var btn3 = document.getElementById('maddbtn3');
   if(btn3){
     btn3.addEventListener('click', function(){
@@ -9470,7 +9492,8 @@ function closeMod(){
 }
 function editCurrentCard(){
   var c=cur; if(!c)return;
-  if(typeof window.edCardLocked==='function' && window.edCardLocked(c)) return;
+  if(typeof window.edCardOpenable==='function' ? !window.edCardOpenable(c)
+     : (typeof window.edCardLocked==='function' && window.edCardLocked(c))) return;
   closeMod();
   if(typeof window.edEditCard==='function')window.edEditCard(c.__id||c.name);
   else alert('The editor has not loaded yet.');
@@ -34885,15 +34908,17 @@ window.edSetCardMark=function(id){
   markDirty(c); renderPreview(c);
   try{ scheduleFace(); }catch(_){}
 };
+function cardMarkIds(c){
+  var out=[], at=function(o){ if(o&&typeof o.mark==='string'&&o.mark)out.push(o.mark); };
+  if(!c)return out;
+  at(c);
+  var sf=c.sagaFields;
+  if(sf&&typeof sf==='object')for(var k in sf)at(sf[k]);
+  (cardVariants(c)||[]).forEach(at);
+  return out;
+}
 function markUsedBy(id){
-  return (window.CARDS||[]).filter(function(c){
-    if(c.mark===id)return true;
-    var sf=c.sagaFields;
-    if(sf)for(var k in sf){ if(sf[k]&&sf[k].mark===id)return true; }
-    var vs=cardVariants(c)||[];
-    for(var i=0;i<vs.length;i++) if(vs[i]&&vs[i].mark===id)return true;
-    return false;
-  });
+  return (window.CARDS||[]).filter(function(c){ return cardMarkIds(c).indexOf(id)>=0; });
 }
 function markDropFrom(c,id){
   if(c.mark===id)delete c.mark;
@@ -35508,24 +35533,27 @@ window.edAddCardSaga=function(nameOrId){
 window.edRemoveCardSaga=function(id){
   var c=curCard();
   if(!c||!id)return Promise.resolve(false);
+  if(!sagaOpenFor(c,id)){
+    toast('"'+((sagaById(id)||{}).name||id)+'" comes from its source, so the card stays in it');
+    return Promise.resolve(false);
+  }
   if(sagaIdsOf(c).length<2){
     toast('A card has to be in at least one saga');
     return Promise.resolve(false);
   }
   if(!removeSagaMembership(c,id))return Promise.resolve(false);
-  if(c.sagaFields&&c.sagaFields[id]){
-    delete c.sagaFields[id];
-    if(!Object.keys(c.sagaFields).length)delete c.sagaFields;
-  }
+  srcDropSagaFields(c,id);
   markDirty(c);
   try{
     if(typeof window.edEditingSaga==='function'&&window.edEditingSaga()===id)
       window.edEditSaga(sagaIdsOf(c)[0]);
   }catch(_){}
+  var shut=edCardLocked(c)&&!edLinkedSagas(c).length;
   return persistCard(c).then(function(){
     applyToCatalog(); refreshSagaFilter();
     try{ window.edRenderSagaPage(); }catch(_){}
-    try{ renderFields(); }catch(_){}
+    if(shut){ try{ window.edCloseEditor(); }catch(_){} }
+    else{ try{ renderFields(); }catch(_){} }
     toast('"'+c.name+'" taken out of '+((sagaById(id)||{}).name||id));
     return true;
   });
@@ -35582,14 +35610,21 @@ function captureSagaFields(dst,src,sagaId){
   return n;
 }
 var _editSaga=null, _editSagaFor=null;
+function sagaOpenFor(c,id){ return !!c&&(!!c.local||ownsGroupKey(groupKeyOfId(id))); }
+window.edSagaOpenFor=function(c,id){ return sagaOpenFor(c,id); };
 window.edEditingSaga=function(){
   var c=curCard(); if(!c)return null;
   if(_editSagaFor!==c.__id){ _editSagaFor=c.__id; _editSaga=null; }
-  if(_editSaga&&inSaga(c,_editSaga))return _editSaga;
-  return sagaIdOf(c);
+  var mine=edLinkedSagas(c);
+  if(_editSaga&&inSaga(c,_editSaga)&&(!mine.length||mine.indexOf(_editSaga)>=0))return _editSaga;
+  return mine.length?mine[0]:sagaIdOf(c);
 };
 window.edEditSaga=function(id){
   var c=curCard(); if(!c||!id||!inSaga(c,id))return;
+  if(!sagaOpenFor(c,id)){
+    toast('"'+((sagaById(id)||{}).name||id)+'" comes from its source and is read-only here');
+    return;
+  }
   _editSagaFor=c.__id; _editSaga=id;
   try{ renderFields(); }catch(_){}
   try{ renderPreview(c); }catch(_){}
@@ -35722,6 +35757,13 @@ var SAGA_ID_MAX=200;
 function sagaIdOk(id){
   return typeof id==='string' && id.length>0 && id.length<=SAGA_ID_MAX && !/[\x00-\x1f\x7f]/.test(id);
 }
+var SAGA_INFO_KEYS=['author','version','description'], SAGA_INFO_MAX={author:80,version:20,description:2000};
+function sagaInfoClean(k,v){
+  if((typeof v==='number'&&isFinite(v))||typeof v==='boolean')v=String(v);
+  if(typeof v!=='string')return '';
+  v=v.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g,'').slice(0,SAGA_INFO_MAX[k]||200);
+  return k==='description'?v.replace(/\r\n?/g,'\n').trim():v.replace(/\s+/g,' ').trim();
+}
 function sagaRecordClean(sg){
   if(!sg||typeof sg!=='object'||Array.isArray(sg)||!sagaIdOk(sg.id))return null;
   var r=Object.assign({},sg);
@@ -35738,9 +35780,11 @@ function ensureSagaRecords(from){
     sagaIdsOf(c).forEach(function(id){
       if(seen[id])return; seen[id]=1;
       var nm=from&&from.names&&from.names[id];
+      var inf=(from&&from.info&&from.info[id])||{};
       add.push({id:id,name:(typeof nm==='string'&&nm.trim())?nm.slice(0,SAGA_ID_MAX):id,
-        author:(id===BUILTIN_SAGA?'Conjure UCG LLC':''),
-        version:'1.0',description:'',builtin:id===BUILTIN_SAGA&&!window.REBIRTH,enabled:true,
+        author:(inf.author!==undefined?inf.author:(id===BUILTIN_SAGA?'Conjure UCG LLC':'')),
+        version:inf.version||'1.0',description:inf.description||'',
+        builtin:id===BUILTIN_SAGA&&!window.REBIRTH,enabled:true,
         mode:(window.REBIRTH?'rebirth':'main'),
         look:null,
         source:(from&&from.url&&!from.official)?{url:from.url,lastSync:null}
@@ -35839,10 +35883,62 @@ function _deleteSaga(sg,id,doomed,shared){
       toast('Deleted "'+sg.name+'"'+((shared&&shared.length)
         ? ' - '+shared.length+' shared card(s) kept':'')); });
 }
+var _sgEditing=null, _sgDraft=null;
+function sagaInfoEditable(sg){
+  if(!sg)return false;
+  try{ return ownsGroupKey(groupKeyOf(sg)); }catch(_){ return false; }
+}
+window.edSagaInfoEditable=function(id){ return sagaInfoEditable(sagaById(id)); };
+function sagaEditHTML(sg){
+  var k=e(sg.id), d=(_sgDraft&&_sgDraft.id===sg.id)?_sgDraft:sg;
+  return "<div class='sg-edit'>"
+    +"<label for='sgEdAuthor'>Author</label><input class='ed2-in' id='sgEdAuthor' type='text' maxlength='80'"
+      +" autocomplete='off' value=\""+e(d.author||'')+"\">"
+    +"<label for='sgEdVersion'>Version</label><input class='ed2-in' id='sgEdVersion' type='text' maxlength='20'"
+      +" autocomplete='off' placeholder='1.0' value=\""+e(d.version==null?'1.0':d.version)+"\">"
+    +"<label for='sgEdDesc'>Description</label><textarea class='ed2-in' id='sgEdDesc' maxlength='2000' rows='3'>"
+      +e(d.description||'')+"</textarea>"
+    +"<div class='sg-edit-btns'><button class='ed2-btn tiny close-x' data-sg-cancel='"+k+"'>Close &#10005;</button>"
+      +"<button class='ed2-btn tiny primary' data-sg-save='"+k+"'>Save</button></div>"
+  +"</div>";
+}
+function sagaEditValues(){
+  var g=function(id){ var el=document.getElementById(id); return el?el.value:undefined; };
+  return {author:g('sgEdAuthor'), version:g('sgEdVersion'), description:g('sgEdDesc')};
+}
+window.edEditSagaInfo=function(id){
+  var sg=sagaById(id);
+  if(!sagaInfoEditable(sg)){ toast('This saga comes from its source and is read-only here'); return false; }
+  _sgEditing=id; _sgDraft=null;
+  window.edRenderSagaPage();
+  try{ var el=document.getElementById('sgEdAuthor'); if(el)el.focus(); }catch(_){}
+  return true;
+};
+window.edCancelSagaInfo=function(){ _sgEditing=null; _sgDraft=null; window.edRenderSagaPage(); };
+window.edSaveSagaInfo=function(id,vals){
+  var sg=sagaById(id);
+  if(!sagaInfoEditable(sg)){ toast('This saga comes from its source and is read-only here'); return Promise.resolve(false); }
+  vals=(vals&&typeof vals==='object')?vals:sagaEditValues();
+  var rec=Object.assign({},sg), ch=false;
+  SAGA_INFO_KEYS.forEach(function(k){
+    if(vals[k]===undefined)return;
+    var v=sagaInfoClean(k,vals[k]);
+    if(k==='version'&&!v)v='1.0';
+    if((rec[k]||'')!==v){ rec[k]=v; ch=true; }
+  });
+  _sgEditing=null; _sgDraft=null;
+  if(!ch){ window.edRenderSagaPage(); return Promise.resolve(false); }
+  return sagaPut(rec).then(function(){
+    window.edRenderSagaPage();
+    toast('Saved "'+(rec.name||rec.id)+'" - Publish sends it');
+    return true;
+  });
+};
 function sagaRowHTML(sg){
   var list=sagaCards(sg.id), n=list.length;
   var orph=list.filter(function(c){return c&&c.orphan;}).length;
   var shr=list.filter(isShared).length;
+  var edit=sagaInfoEditable(sg);
   return "<div class='sg-row"+(sg.enabled===false?' off':'')+"'>"
     +"<div class='sg-main'><b>"+e(sg.name)+"</b>"
       +(orph?"<span class='sg-tag orph' title='Cards their source no longer lists. "
@@ -35857,9 +35953,12 @@ function sagaRowHTML(sg){
         +" data-sg-on='"+e(sg.id)+"'> Enabled</label>"
       +(sg.look?("<label class='sg-ck'><input type='checkbox'"+(sg.useAuthorLook?' checked':'')
         +" data-sg-look='"+e(sg.id)+"'> Author look</label>"):"")
+      +(edit?"<button class='ed2-btn tiny' data-sg-edit='"+e(sg.id)+"'"+(_sgEditing===sg.id?' disabled':'')
+        +" aria-label='Edit the author, version and description of "+e(sg.name)+"'>Edit</button>":"")
       +(sagaDeletable(sg)?"<button class='ed2-btn tiny warn' data-sg-del='"+e(sg.id)+"'"
         +" aria-label='Delete the saga "+e(sg.name)+"'>Delete</button>":"")
     +"</div>"
+    +((edit&&_sgEditing===sg.id)?sagaEditHTML(sg):"")
   +"</div>";
 }
 
@@ -35933,10 +36032,23 @@ function sgListBind(host){
     if(v!=null)return window.edSetGroupEnabled(v,t.checked);
   });
   host.addEventListener('click',function(ev){
-    var b=(ev.target&&ev.target.closest)?ev.target.closest('[data-sg-del],[data-gk-caret]'):null;
+    var b=(ev.target&&ev.target.closest)
+      ?ev.target.closest('[data-sg-del],[data-gk-caret],[data-sg-edit],[data-sg-save],[data-sg-cancel]'):null;
     if(!b||!host.contains(b))return;
     if(b.hasAttribute('data-sg-del'))return window.edDeleteSaga(b.getAttribute('data-sg-del'));
+    if(b.hasAttribute('data-sg-edit'))return window.edEditSagaInfo(b.getAttribute('data-sg-edit'));
+    if(b.hasAttribute('data-sg-save'))return window.edSaveSagaInfo(b.getAttribute('data-sg-save'));
+    if(b.hasAttribute('data-sg-cancel'))return window.edCancelSagaInfo();
     return window.edToggleGroup(b.getAttribute('data-gk-caret'));
+  });
+  host.addEventListener('input',function(ev){
+    if(!_sgEditing||!ev.target||!ev.target.closest||!ev.target.closest('.sg-edit'))return;
+    _sgDraft=Object.assign({id:_sgEditing},sagaEditValues());
+  });
+  host.addEventListener('keydown',function(ev){
+    if(!_sgEditing||!ev.target||!ev.target.closest||!ev.target.closest('.sg-edit'))return;
+    if(ev.key==='Escape'){ ev.preventDefault(); window.edCancelSagaInfo(); }
+    else if(ev.key==='Enter'&&ev.target.tagName!=='TEXTAREA'){ ev.preventDefault(); window.edSaveSagaInfo(_sgEditing); }
   });
 }
 window.edRenderSagaPage=function(){
@@ -35956,6 +36068,8 @@ window.edRenderSagaPage=function(){
     +"<button class='ed2-btn tiny primary' onclick=\"edFollowSource(document.getElementById('sgFollowUrl').value)\">Follow</button>"
     +"</div>";
   sgListBind(host);
+  var act=document.activeElement, fid=(act&&act.id&&host.contains(act))?act.id:'', sel=null;
+  try{ if(fid&&typeof act.selectionStart==='number')sel=[act.selectionStart,act.selectionEnd]; }catch(_){}
   host.innerHTML=groups.concat(waiting).map(function(g){
     var open=!groupCollapsed(g.key);
     var many=g.sagas.length>1;
@@ -35966,6 +36080,10 @@ window.edRenderSagaPage=function(){
       +"<div class='sg-group-body'>"+body+"</div>"
     +"</div>";
   }).join('')+follow;
+  if(fid){
+    var back=document.getElementById(fid);
+    try{ if(back){ back.focus(); if(sel)back.setSelectionRange(sel[0],sel[1]); } }catch(_){}
+  }
   autoCheckSources();
 };
 
@@ -36504,7 +36622,11 @@ function srcBlank(v){
 function srcSagasOf(nc,o){
   return sagaIdsOf(nc).filter(function(id){ return o.sagaSet[id]&&!o.skip[id]; });
 }
+function srcInOfficial(c){
+  return sagaIdsOf(c).some(function(id){ return groupKeyOfId(id)===GROUP_OFFICIAL; });
+}
 function srcBelongsElsewhere(ex,key){
+  if(key===GROUP_OFFICIAL&&srcInOfficial(ex))return false;
   return sagaIdsOf(ex).some(function(id){
     var k=groupKeyOfId(id);
     return k!==GROUP_LOCAL&&k!==key&&k.indexOf('table:')!==0;
@@ -36567,6 +36689,7 @@ function srcMergeInto(ex,nc,o){
     ex[k]=srcCopy(nc[k]);
   });
   delete ex.orphan;
+  delete ex._editedHere;
   if(nc.testing)ex.testing=1;
   var list=inc.concat(other.filter(function(id){ return inc.indexOf(id)<0; }));
   if(!list.length)list=mine;
@@ -36585,6 +36708,80 @@ function srcMergeInto(ex,nc,o){
   if(Object.keys(sf).length)ex.sagaFields=sf; else delete ex.sagaFields;
   return true;
 }
+function srcLinkedJoins(ex,nc,o){
+  return !!(ex&&nc&&nc.linked&&o&&!o.official&&nc.cid&&ex.cid===nc.cid&&srcInOfficial(ex));
+}
+function srcLinkedWant(ex,nc,id){
+  var own=(nc.linked&&nc.linked.own&&nc.linked.own[id])||{}, want={};
+  SAGA_FIELDS.forEach(function(f){
+    if(f==='variant'){
+      var key=own.picture?artKeyOf(own.picture):'';
+      var hit=key?(cardVariants(ex)||[]).filter(function(v){
+        return v&&((v.imageUrl&&artKeyOf(v.imageUrl)===key)||(v.art&&artKeyOf(v.art)===key)); })[0]:null;
+      if(hit&&!sagaFieldSame(hit.id,ex.variant))want.variant=hit.id;
+      return;
+    }
+    if(own[f]!==undefined&&!sagaFieldSame(own[f],ex[f]))want[f]=srcCopy(own[f]);
+  });
+  return want;
+}
+function srcLinkedSagaDiffers(ex,nc,id){
+  var want=srcLinkedWant(ex,nc,id), have=(ex.sagaFields&&ex.sagaFields[id])||{};
+  return SAGA_FIELDS.some(function(f){
+    if((want[f]===undefined)!==(have[f]===undefined))return true;
+    return want[f]!==undefined&&!sagaFieldSame(want[f],have[f]);
+  });
+}
+function srcLinkedDiffers(ex,nc,o){
+  var inc=srcSagasOf(nc,o), mine=sagaIdsOf(ex).filter(function(id){ return o.sagaSet[id]; });
+  if(inc.slice().sort().join('|')!==mine.slice().sort().join('|'))return true;
+  return inc.some(function(id){ return srcLinkedSagaDiffers(ex,nc,id); });
+}
+function srcLinkedRisk(ex,nc,o){
+  var inc=srcSagasOf(nc,o), mark=ex._editedSagas||{};
+  var mine=function(id){ return !!o.owned||!!mark[id]; };
+  return inc.some(function(id){ return mine(id)&&srcLinkedSagaDiffers(ex,nc,id); })
+    ||sagaIdsOf(ex).some(function(id){ return o.sagaSet[id]&&inc.indexOf(id)<0&&mine(id); });
+}
+function srcUnmarkSaga(c,id){
+  if(c&&c._editedSagas&&c._editedSagas[id]){
+    delete c._editedSagas[id];
+    if(!Object.keys(c._editedSagas).length)delete c._editedSagas;
+  }
+}
+function srcDropSagaFields(c,id){
+  if(c&&c.sagaFields&&c.sagaFields[id]){
+    delete c.sagaFields[id];
+    if(!Object.keys(c.sagaFields).length)delete c.sagaFields;
+  }
+  srcUnmarkSaga(c,id);
+}
+function srcLinkedJoin(ex,nc,o){
+  var inc=srcSagasOf(nc,o);
+  sagaIdsOf(ex).forEach(function(id){
+    if(o.sagaSet[id]&&inc.indexOf(id)<0&&removeSagaMembership(ex,id))srcDropSagaFields(ex,id);
+  });
+  inc.forEach(function(id){
+    if(id===sagaIdOf(ex))return;
+    if(!inSaga(ex,id))addSagaMembership(ex,id);
+    var want=srcLinkedWant(ex,nc,id);
+    SAGA_FIELDS.forEach(function(f){ setSagaField(ex,id,f,want[f]!==undefined?want[f]:ex[f]); });
+    srcUnmarkSaga(ex,id);
+  });
+}
+function srcLinkedOwn(c,id,pictureOf){
+  var bag=(c.sagaFields&&c.sagaFields[id])||{}, own={};
+  SAGA_FIELDS.forEach(function(f){
+    if(f==='variant'||bag[f]===undefined)return;
+    own[f]=srcCopy(bag[f]);
+  });
+  if(bag.variant!==undefined){
+    var v=(cardVariants(c)||[]).filter(function(x){ return x&&x.id===bag.variant; })[0];
+    var pic=v?pictureOf(v):'';
+    if(pic)own.picture=pic;
+  }
+  return own;
+}
 function srcImportRows(cards,o){
   var mineList=(window.CARDS||[]), ix=cardIndex(mineList);
   var byCid={}, byId={};
@@ -36600,6 +36797,13 @@ function srcImportRows(cards,o){
     if(!inc.length){ skipped++; return; }
     var at=ix.at(nc), ex=(at==null)?null:mineList[at];
     if(ex&&ex.local&&!(nc.cid&&ex.cid===nc.cid))ex=null;
+    if(nc.linked&&!o.official){
+      if(!srcLinkedJoins(ex,nc,o)){ skipped++; return; }
+      if(!srcLinkedDiffers(ex,nc,o)){ same++; return; }
+      srcLinkedJoin(ex,nc,o);
+      srcTouched(ex); touched.push(ex); updated++;
+      return;
+    }
     if(ex&&srcBelongsElsewhere(ex,o.key)){
       if(o.table&&nc.cid&&ex.cid===nc.cid){
         inc.forEach(function(id){ if(!inSaga(ex,id))addSagaMembership(ex,id); captureSagaFields(ex,nc,id); });
@@ -36619,7 +36823,7 @@ function srcImportRows(cards,o){
       return;
     }
     var c=srcCopy(srcNormCard(nc));
-    delete c.local; delete c.orphan;
+    delete c.local; delete c.orphan; delete c._editedHere;
     c.__id=uid();
     c.sagaIds=inc; c.sagaId=inc[0];
     var hsg=sagaById(inc[0]);
@@ -38860,8 +39064,10 @@ function sagaBoxHTML(c){
   try{ if(typeof window.edEditingSaga==='function')cur=window.edEditingSaga()||ids[0]; }catch(_){}
   var live=(typeof window.edEditSaga==='function');
   var canDrop=(typeof window.edRemoveCardSaga==='function');
+  var open=function(id){ try{ return typeof window.edSagaOpenFor!=='function'||window.edSagaOpenFor(c,id); }catch(_){ return true; } };
   var chips=ids.map(function(id,i){
     var lbl=names[id]||id, on=(id===cur?' on':'');
+    if(!open(id))return "<span class='ed2-sagachip ed2-sagachip-src"+on+"' title='"+e(lbl)+" comes from its source'>"+e(lbl)+"</span>";
     var last=(ids.length<2);
     var x=!canDrop ? ''
       : last
@@ -38890,13 +39096,24 @@ window.edRenderFields=function(){ return renderFields(); };
 function renderFields(){
   var host=document.getElementById('edFields'); if(!host)return;
   var c=curCard();
-  if(!c){ host.innerHTML=
+  if(!c){ edLinkedMask(false); host.innerHTML=
     "<div class='ed2-empty'><div class='ei'>&#9997;</div>"
     +"<p>Pick a card's <b>Edit</b> button in the catalog, or make a new one.</p>"
     +"<div style='display:flex;gap:8px'>"
     +"<button class='ed2-btn primary' onclick='edNewCard()'>"+uiIco('plus')+" New card</button>"
     +"</div></div>"; return; }
   var m=edFieldSource(c);
+  var linked=[];
+  try{ if(typeof window.edLinkedSagas==='function')linked=window.edLinkedSagas(c)||[]; }catch(_){}
+  var linkNote='';
+  if(linked.length){
+    var lnm=edSagaNameMap(), lsid=linked[0];
+    try{ if(typeof window.edEditingSaga==='function')lsid=window.edEditingSaga()||lsid; }catch(_){}
+    var lname="<b>"+e(lnm[lsid]||lsid)+"</b>";
+    linkNote="<div class='ed2-linked-note' role='note'>An official card in "+lname+". Its name, cost, rules, stats and "
+      +"pictures follow the official card. "+lname+" sets its own flavor text, artist, Owner, watermark, border and "
+      +"reminders, and which of the card's pictures it shows.</div>";
+  }
   host.innerHTML=
     "<div class='ed2-group ed2-btnbox'>"
     +"<div class='ed2-btngrid'>"
@@ -38921,6 +39138,7 @@ function renderFields(){
       +"<button class='ed2-btn warn ed2-bg-del' onclick='edDeleteCard(curIdNow())'>✕ Delete card</button>"
     +"</div>"
     +"</div>"
+    +linkNote
     +"<div class='ed2-topsplit'><div class='ed2-topsplit-main'>"
     +"<div class='ed2-group ed2-g-id'>"
       +"<div class='ed2-mn-row'>"
@@ -38989,6 +39207,27 @@ function renderFields(){
   if(typeof window.edLiveQuiet==='function') window.edLiveQuiet(edLive);
   else edLive();
   try{ window.edSyncSaveBtns(); }catch(_){}
+  edLinkedMask(linked.length>0);
+}
+var ED_LINKED_OPEN='.ed2-bg-back,#edAutoBtn,.ed2-bg-dup,.ed2-bg-kw,.ed2-bg-pair,.ed2-bg-new,.ed2-flavor-row,'
+  +'#edArtPanel>.ed2-var-row:first-child>select,.ed2-hlbox,#edOvrRow,#f-kwbar,.f-owner-wrap,.f-artist-wrap,.ed2-sagabox';
+var _edLinkedOn=false, _edLinkedMO=null;
+function edLinkedMask(on){
+  var host=document.getElementById('edFields'); if(!host)return;
+  if(on!==undefined)_edLinkedOn=!!on;
+  host.classList.toggle('ed2-linked',_edLinkedOn);
+  if(!_edLinkedOn){
+    host.querySelectorAll('[data-linked-shut]').forEach(function(el){ el.removeAttribute('inert'); el.removeAttribute('data-linked-shut'); });
+    return;
+  }
+  if(!_edLinkedMO&&typeof MutationObserver==='function'){
+    _edLinkedMO=new MutationObserver(function(){ if(_edLinkedOn)edLinkedMask(); });
+    _edLinkedMO.observe(host,{childList:true,subtree:true});
+  }
+  host.querySelectorAll('input,select,textarea,button,[contenteditable],#edArtStage,.ed2-combo').forEach(function(el){
+    if(el.closest(ED_LINKED_OPEN)||el.hasAttribute('inert'))return;
+    el.setAttribute('inert',''); el.setAttribute('data-linked-shut','1');
+  });
 }
 
 var ED_BTN_FS_MAX = 14.8, ED_BTN_FS_MIN = 10.2;
@@ -39762,6 +40001,30 @@ window.edDuplicateFromCard=function(card){
     toast('Duplicated into '+((sg&&sg.name)||sid));
     window.edEditCard(copy.__id);
     return copy;
+  });
+};
+function edMySagaFor(card){
+  if(!card||cardForeignKey(card)!==GROUP_OFFICIAL)return '';
+  var sid=edNewCardSaga(false);
+  if(edOwnSagaId(sid)&&!inSaga(card,sid))return sid;
+  var mine=(SAGAS||[]).filter(function(s){ return s&&ownsGroupKey(groupKeyOf(s))&&!inSaga(card,s.id); })
+    .sort(function(a,b){ return String(a.name||a.id).localeCompare(String(b.name||b.id)); });
+  return mine.length?mine[0].id:'';
+}
+window.edMySagaFor=function(card){ var id=edMySagaFor(card); return id?{id:id,name:(sagaById(id)||{}).name||id}:null; };
+window.edAddToMySaga=function(card){
+  var sid=edMySagaFor(card);
+  if(!sid||!addSagaMembership(card,sid))return Promise.resolve(false);
+  var sg=sagaById(sid);
+  (card._editedSagas=card._editedSagas||{})[sid]=1;
+  markDirty(card);
+  return persistCard(card).then(function(){ return ensureSagaRecords(); }).then(function(){
+    edRememberNewSaga(sid);
+    applyToCatalog(); try{ refreshSagaFilter(); }catch(_){}
+    try{ window.edRenderSagaPage(); }catch(_){}
+    toast('"'+card.name+'" is in '+((sg&&sg.name)||sid)+' - it keeps following the official card');
+    window.edEditCard(card.__id);
+    return true;
   });
 };
 window.edDeleteCard=function(id){
@@ -41295,12 +41558,13 @@ function edNameClashAsk(c, other, was){
 }
 window.edLive=function(){ var c=curCard(); if(!c)return;
   var g=function(id){var el=document.getElementById(id);return el?el.value:'';};
-  c.name=g('f-name'); c.manaCost=g('f-mana').trim();
+  var linked=edLinkedSagas(c).length>0;
+  if(!linked){ c.name=g('f-name'); c.manaCost=g('f-mana').trim(); }
   var _rt=document.getElementById('f-rules');
-  if(_rt)c.ruleText=_rt.value;
+  if(_rt&&!linked)c.ruleText=_rt.value;
   var sid=(typeof window.edEditingSaga==='function')?window.edEditingSaga():null;
   setSagaField(c,sid,'flavor',g('f-flavor'));
-  c.revision=g('f-rev').trim();
+  if(!linked)c.revision=g('f-rev').trim();
   setSagaField(c,sid,'artist',g('f-artist').trim());
   setSagaField(c,sid,'designer',g('f-designer').trim());
   recompute(c); markDirty(c);
@@ -41315,9 +41579,17 @@ window.edLiveQuiet=function(fn){
 };
 var _cardGen=0;
 function markDirty(c){ if(_liveQuiet) return; _dirty[c.__id]=true; _cardGen++; bumpCardGen(c);
+  try{ if(!edCardLocked(c)) c._editedHere=1; else edMarkLinkedEdit(c); }catch(_){}
   try{ if(typeof window.edBackupProofStale==='function') window.edBackupProofStale(); }catch(_){}
   try{ edSyncSaveBtns(); }catch(_){}
   autosaveSoon(); }
+
+function edMarkLinkedEdit(c){
+  if(curCard()!==c)return;
+  var sid=window.edEditingSaga();
+  if(edLinkedSagas(c).indexOf(sid)<0)return;
+  (c._editedSagas=c._editedSagas||{})[sid]=1;
+}
 
 var AUTOSAVE = true, _autoT = 0;
 function autosaveSoon(){
@@ -41366,7 +41638,7 @@ window.edEditCard=function(nameOrId){
     c=(window.CARDS||[]).find(function(x){return (x.name||'').toLowerCase()===String(nameOrId).toLowerCase();});
   }
   if(!c)return;
-  if(typeof edCardLocked==='function'&&edCardLocked(c)){ edLockedToast(c); return; }
+  if(!edCardOpenable(c)){ edLockedToast(c); return; }
   if(c.flavor===undefined)c.flavor='';
   if(c.saga===undefined)c.saga=SETINFO.saga||'';
   if(c.revision===undefined)c.revision='';
@@ -41392,7 +41664,7 @@ function edNavStep(dir){
   var start=(i<0)?-dir:i;
   for(var n=1;n<=list.length;n++){
     var j=((start+dir*n)%list.length+list.length)%list.length;
-    if(!edLockedSafe(list[j])){ window.edEditCard(list[j].__id); return; }
+    if(edCardOpenable(list[j])){ window.edEditCard(list[j].__id); return; }
   }
   edLockedToast(list[0]);
 }
@@ -41423,7 +41695,7 @@ addEventListener('keydown',function(ev){
 
 function edStoreCard(c){
   if(!c) return Promise.resolve(false);
-  c.lastUpdated=new Date().toISOString().slice(0,10);
+  if(!edLockedSafe(c)) c.lastUpdated=new Date().toISOString().slice(0,10);
   var gen=cardGenOf(c);
   return persistCard(c).then(function(){
     if(cardGenOf(c)!==gen){ try{ edSyncSaveBtns(); }catch(_){} autosaveSoon(); return true; }
@@ -41491,11 +41763,13 @@ function edSyncSaveBtns(){
 }
 window.edSyncSaveBtns=edSyncSaveBtns;
 window.edDuplicate=function(){ var c=curCard(); if(!c)return;
+  if(edLinkedSagas(c).length)return window.edDuplicateFromCard(c);
   var copy=JSON.parse(JSON.stringify(c)); copy.__id=uid(); copy.id=uid(); copy.name=(c.name||'Card')+' (copy)';
   copy.cid=newCid();
   var idx=window.CARDS.indexOf(c); window.CARDS.splice(idx+1,0,copy);
   curId=copy.__id; persistCard(copy).then(function(){ renderFields(); applyToCatalog(); toast('Duplicated'); }); };
 window.edArtUpload=function(file){ var c=curCard(); if(!c||!file)return Promise.resolve(false);
+  if(edCardLocked(c)){ edLockedToast(c); return Promise.resolve(false); }
   return new Promise(function(done){
   var rd=new FileReader(); rd.onload=function(ev){ var d=ev.target.result; var key='userart_'+(c.__id)+'_'+Date.now().toString(36);
     var vt=visualTarget(c), was={art:vt.art,imageUrl:vt.imageUrl};
@@ -42272,7 +42546,7 @@ function injectEditButtons(){
     var nm=node.__card ? node.__card.name : ((node.querySelector('.ci-name, .tdnm')||{}).textContent||'');
     var _c=edCardByName(nm);
     if(!_c)return;
-    if(typeof edCardLocked==='function'&&edCardLocked(_c))return;
+    if(!edCardOpenable(_c))return;
     var btn=document.createElement('button');
     btn.className='ci-qedit'; btn.type='button'; btn.title='Edit card'; btn.innerHTML='&#9998;';
     btn.addEventListener('click',function(ev){ ev.stopPropagation();
@@ -43711,10 +43985,10 @@ var GH_SOURCES={
 function ghMode(){ return window.REBIRTH ? 'rebirth' : 'main'; }
 var GH_DEFAULT_SOURCE=GH_SOURCES[window.REBIRTH?'rebirth':'main']||'';
 var GH_TREE_CHUNK=200;
-var GH_ART_CAP=150;
+var GH_ART_BATCH=150;
 var GH_SECRET='_secret_ghToken';
 
-var GH_SOURCE='', GH_OWNER_MODE=false, GH_AUTOCHECK=true;
+var GH_SOURCE='', GH_OWNER_MODE=false;
 var GH_HAS_WHOLE_SET=false;
 var GH_WEEKLY_LAST='';
 var GH_REPO={owner:'',repo:'',branch:'main'};
@@ -43736,7 +44010,6 @@ function ghOfficialRepo(){
 }
 function ghTokenHeld(){ return !!GH_TOKEN||!!GH_TOKEN_SINCE; }
 function edOwnerUnlocked(){
-  if(!ghTokenHeld()) return false;
   var off = ghOfficialRepo();
   if(!off) return false;
   return String(GH_REPO.owner || '').toLowerCase() === off.owner
@@ -43751,7 +44024,6 @@ function repoOfUrl(u){
   return m ? {owner:m[1].toLowerCase(), repo:m[2].toLowerCase().replace(/\.git$/,'')} : null;
 }
 function edOwnsSource(url){
-  if(!ghTokenHeld()) return false;
   var r=repoOfUrl(url);
   if(!r) return false;
   return String(GH_REPO.owner||'').toLowerCase()===r.owner
@@ -43766,6 +44038,7 @@ function ownsGroupKey(k){
 }
 function cardForeignKey(c){
   if(!c||c.local||typeof sagaIdsOf!=='function') return '';
+  if(edOfficialCard(c)) return ownsGroupKey(GROUP_OFFICIAL) ? '' : GROUP_OFFICIAL;
   var ids=sagaIdsOf(c);
   for(var i=0;i<ids.length;i++){
     var sg=sagaById(ids[i]);
@@ -43779,6 +44052,13 @@ function edCardLocked(c){
   return !!cardForeignKey(c);
 }
 window.edCardLocked = edCardLocked;
+function edLinkedSagas(c){
+  if(!c||!edCardLocked(c)||cardForeignKey(c)!==GROUP_OFFICIAL)return [];
+  return sagaIdsOf(c).filter(function(id){ var sg=sagaById(id); return !!sg&&ownsGroupKey(groupKeyOf(sg)); });
+}
+window.edLinkedSagas=function(c){ return edLinkedSagas(c); };
+function edCardOpenable(c){ return !!c&&(!edCardLocked(c)||edLinkedSagas(c).length>0); }
+window.edCardOpenable=function(c){ return edCardOpenable(c); };
 function edLockedToast(c){
   var k=c?cardForeignKey(c):'';
   try{ toast(k===GROUP_OFFICIAL ? 'Official cards are read-only' : 'This card is read-only'); }catch(_){}
@@ -43788,7 +44068,6 @@ window.edLockedToast = edLockedToast;
 function ghSettingsFrom(r){
   GH_SOURCE=(r&&r.src)||GH_DEFAULT_SOURCE;
   GH_OWNER_MODE=!!(r&&r.owner);
-  GH_AUTOCHECK=(r&&r.autoCheck!=null)?!!r.autoCheck:true;
   var rp=(r&&r.repo)||null;
   if(rp&&typeof rp==='object')GH_REPO={owner:rp.owner||'',repo:rp.repo||'',branch:rp.branch||'main'};
   if(!GH_TOKEN)GH_TOKEN=(r&&r.token)||'';
@@ -43808,7 +44087,7 @@ function ghTokenDays(){
 window.edGhTokenDays=function(){ return ghTokenDays(); };
 function ghLoadSettings(){
   return Promise.all([getMeta('ghSourceUrl'),getMeta('ghOwnerMode'),
-                      getMeta('ghRepo'),getMeta(GH_SECRET),getMeta('ghAutoCheck'),
+                      getMeta('ghRepo'),getMeta(GH_SECRET),Promise.resolve(null),
                       Promise.resolve(null),getMeta('ghWeeklyLast'),getMeta('ghTokenSince'),
                       getMeta('officialIds'),getMeta('bakeCaptured'),
                       getMeta('sources'),getMeta('lastNewSaga')])
@@ -43816,7 +44095,7 @@ function ghLoadSettings(){
       SOURCES=Array.isArray(v[10])?v[10].filter(function(s){ return s&&s.url; }):[];
       LAST_NEW_SAGA=v[11]||'';
       srcMigrateLinks();
-      ghSettingsFrom({src:v[0],owner:v[1],repo:v[2],token:v[3],autoCheck:v[4],since:v[7]});
+      ghSettingsFrom({src:v[0],owner:v[1],repo:v[2],token:v[3],since:v[7]});
       if(v[3]!=null)ghDropStoredToken();
       GH_WEEKLY_LAST=v[6]||'';
       if(!OFFICIAL_IDS&&Array.isArray(v[8])&&v[8].length)OFFICIAL_IDS=v[8];
@@ -43844,11 +44123,8 @@ window.edGhSetOwnerMode=function(on){
   ghBadgeRefresh();
   edRenderOwnerSync();
 };
-window.edGhSetAutoCheck=function(on){
-  GH_AUTOCHECK=!!on; setMetaSafe('ghAutoCheck',GH_AUTOCHECK);
-};
 window.edGhSwitches=function(){
-  return {ownerMode:!!GH_OWNER_MODE, autoCheck:!!GH_AUTOCHECK, source:GH_SOURCE||''};
+  return {ownerMode:!!GH_OWNER_MODE, source:GH_SOURCE||''};
 };
 window.edGhSetRepo=function(field,val,fromPage){
   if(field!=='owner'&&field!=='repo'&&field!=='branch')return;
@@ -43970,8 +44246,15 @@ function srcNormalizeCards(pkg,src,index){
   });
 }
 function srcCtx(src,pkg,index){
-  var set={}, names={};
-  (index||[]).forEach(function(s){ if(s&&s.id){ set[s.id]=1; names[s.id]=s.name||s.id; } });
+  var set={}, names={}, info={};
+  (index||[]).forEach(function(s){
+    if(!s||!s.id)return;
+    set[s.id]=1; names[s.id]=s.name||s.id;
+    if(s.derived)return;
+    var x={};
+    SAGA_INFO_KEYS.forEach(function(k){ if(s[k]!=null)x[k]=sagaInfoClean(k,s[k]); });
+    info[s.id]=x;
+  });
   if(pkg&&pkg.zip){
     var m=pkg.man||{}, id=m.id||m.name;
     if(id){ set[id]=1; names[id]=m.name||id; }
@@ -43979,8 +44262,28 @@ function srcCtx(src,pkg,index){
   ((pkg&&pkg.cards)||[]).forEach(function(c){ if(c) sagaIdsOf(c).forEach(function(id){ set[id]=1; }); });
   var skip={}; (src.skip||[]).forEach(function(id){ skip[id]=1; });
   return {key:src.key, url:src.url, official:!!src.official, table:src.table||'',
-          sagaSet:set, names:names, skip:skip, owned:srcOwned(src),
+          sagaSet:set, names:names, info:info, skip:skip, owned:srcOwned(src),
           cids:srcCidsOf(pkg&&pkg.cards)};
+}
+function srcTakeSagaInfo(o){
+  var info=(o&&o.info)||{}, changed=[];
+  Object.keys(info).forEach(function(id){
+    var sg=sagaById(id); if(!sg)return;
+    var k=groupKeyOf(sg);
+    if(k!==o.key||ownsGroupKey(k))return;
+    var x=info[id], rec=Object.assign({},sg), ch=false;
+    SAGA_INFO_KEYS.forEach(function(f){
+      if(x[f]===undefined)return;
+      var v=(f==='version'&&!x[f])?'1.0':x[f];
+      if((rec[f]||'')!==v){ rec[f]=v; ch=true; }
+    });
+    if(ch)changed.push(rec);
+  });
+  if(!changed.length)return Promise.resolve(0);
+  return Promise.all(changed.map(sagaPut)).then(function(){
+    try{ window.edRenderSagaPage(); }catch(_){}
+    return changed.length;
+  });
 }
 function srcAllTheSources(id,o){
   var cids={};
@@ -44031,6 +44334,11 @@ function ghDiff(incoming,o){
     bySaga[sid]=(bySaga[sid]||0)+1;
     var at=ix.at(nc), ex=(at==null)?null:mine[at];
     if(ex&&o&&ex.local&&!(nc.cid&&ex.cid===nc.cid))ex=null;
+    if(nc.linked&&o&&!o.official){
+      if(!srcLinkedJoins(ex,nc,o))skipped++;
+      else if(srcLinkedDiffers(ex,nc,o))changed++; else same++;
+      return;
+    }
     if(ex&&o&&srcBelongsElsewhere(ex,o.key)){ skipped++; return; }
     if(!ex){ added++; return; }
     var adopt=!!(o&&nc.cid&&ex.cid!==nc.cid&&!held[nc.cid]);
@@ -44073,6 +44381,19 @@ function ghRefreshOfficialIndex(){
   });
 }
 
+function srcGameOf(pkg,url){
+  var m=(pkg&&pkg.man)||{};
+  if(m.game==='main'||m.game==='rebirth')return m.game;
+  var r=repoOfUrl(url), same=function(u){ var o=repoOfUrl(u); return !!(r&&o&&r.owner===o.owner&&r.repo===o.repo); };
+  return same(GH_SOURCES.rebirth)?'rebirth':same(GH_SOURCES.main)?'main':'';
+}
+function srcGameProblem(pkg,url){
+  var g=srcGameOf(pkg,url), here=ghMode();
+  if(!g||g===here)return '';
+  var nm=function(x){ return x==='rebirth'?'Conjure Rebirth':'Conjure'; };
+  return 'it holds '+nm(g)+' cards, and this is '+nm(here)+'. Switch to '
+    +(g==='rebirth'?'Rebirth':'Main')+' in the header, then follow it there.';
+}
 function ghCheckSource(src){
   var url=src&&src.url;
   if(!url){ srcSetState(src,{err:'No source address set.'}); srcRender(); return Promise.resolve(); }
@@ -44088,6 +44409,8 @@ function ghCheckSource(src){
     }
     return pkgFromJson(res.json);
   }).then(function(pkg){
+    var wrong=srcGameProblem(pkg,url);
+    if(wrong){ var ge=new Error(wrong); ge.wrongGame=true; throw ge; }
     if(!pkg.cards||!pkg.cards.length)throw new Error('no cards in what came back.');
     return ghFetchTesting(url,src).then(function(t){
       if(t.length)pkg.cards=pkg.cards.concat(t);
@@ -44096,12 +44419,11 @@ function ghCheckSource(src){
   }).then(function(pkg){
     return (pkg.zip?Promise.resolve(null):ghFetchIndex(url)).then(function(index){
       srcNormalizeCards(pkg,src,index);
-      try{ ghClearPublishedLocal(pkg.cards,src); }catch(_){}
-      var ctx=srcCtx(src,pkg,index);
+      var ctx=srcCtx(src,pkg,index), inc=ghIncoming(pkg.cards,src);
+      try{ ghSettlePublished(inc,src,ctx); }catch(_){}
       var now=new Date().toISOString();
       _srcCheckedAt[src.key]=Date.now();
-      var st={pkg:pkg, ctx:ctx, index:index, checked:now,
-              diff:ghDiff(ghIncoming(pkg.cards,src),ctx)};
+      var st={pkg:pkg, ctx:ctx, index:index, checked:now, diff:ghDiff(inc,ctx)};
       srcSetState(src,st);
       if(src.official){
         if(!st.diff.added&&!window.REBIRTH&&!GH_HAS_WHOLE_SET
@@ -44115,13 +44437,15 @@ function ghCheckSource(src){
       }
       ghBadgeRefresh();
       srcRender();
-      if(src.official) return ghFetchLook(url).then(function(lk){
+      var words=srcTakeSagaInfo(ctx).catch(function(){ return 0; });
+      if(src.official) return words.then(function(){ return ghFetchLook(url); }).then(function(lk){
         var s2=srcState(src);
         if(s2&&!s2.err){ s2.lookPkg=lk; edRenderOwnerSync(); }
       });
+      return words;
     });
   }).catch(function(err){
-    srcSetState(src,{err:(err&&err.message)||String(err)});
+    srcSetState(src,{err:(err&&err.message)||String(err), wrongGame:!!(err&&err.wrongGame)});
     srcRender();
   });
 }
@@ -44131,7 +44455,11 @@ window.edGhCheck=function(){
 window.edGhCheckSource=function(key){
   var s=srcByKey(key||GROUP_OFFICIAL);
   if(!s) return Promise.resolve(null);
-  return s.official ? window.edGhCheck() : ghCheckSource(s);
+  if(s.official) return window.edGhCheck();
+  return ghCheckSource(s).then(function(){
+    var st=srcState(s);
+    if(st&&!st.err&&st.pkg)return srcSyncExtras(s,st.pkg,false);
+  });
 };
 
 function ghNotLocal(cards){
@@ -44240,11 +44568,15 @@ function ghWouldOverwriteOwnWork(cards,o){
     if(o&&!srcSagasOf(nc,o).length)return;
     var at=ix.at(nc), ex=(at==null)?null:mine[at];
     if(ex&&o&&ex.local&&!(nc.cid&&ex.cid===nc.cid))return;
+    if(nc.linked&&o&&!o.official){
+      if(srcLinkedJoins(ex,nc,o)&&srcLinkedRisk(ex,nc,o))n++;
+      return;
+    }
     if(ex&&o&&srcBelongsElsewhere(ex,o.key))return;
     if(!ex||!(cardDiffers(ex,nc,o)||ghTestDiffers(ex,nc)))return;
     var locked=false;
     try{ locked=!!edCardLocked(ex); }catch(_){}
-    if(!locked)n++;
+    if(!locked||ex._editedHere)n++;
   });
   return n;
 }
@@ -44255,9 +44587,10 @@ function srcGoneCards(incoming,o){
   if(!inc.length)return [];
   var ix=cardIndex(inc), from=0;
   var gone=(window.CARDS||[]).filter(function(c){
-    if(!c||c.local||c.__deleted||c.testing)return false;
+    if(!c||c.local||c.__deleted||c.testing||c._editedHere)return false;
     var mine=sagaIdsOf(c).filter(function(id){ return groupKeyOfId(id)===o.key; });
     if(!mine.length)return false;
+    if(c._editedSagas&&mine.some(function(id){ return c._editedSagas[id]; }))return false;
     from++;
     if(!mine.some(function(id){ return o.sagaSet[id]; }))return false;
     return !ix.has(c);
@@ -44277,7 +44610,7 @@ function srcRemoveGone(gone,o){
     var rest=sagaIdsOf(c).filter(function(id){ return groupKeyOfId(id)!==o.key; });
     if(rest.length){
       sagaIdsOf(c).filter(function(id){ return rest.indexOf(id)<0; })
-        .forEach(function(id){ removeSagaMembership(c,id); });
+        .forEach(function(id){ if(removeSagaMembership(c,id))srcDropSagaFields(c,id); });
       srcTouched(c); kept.push(c);
       return;
     }
@@ -44298,13 +44631,34 @@ window.edGhGoneCards=function(){
   var st=_ghState; return (st&&st.pkg)?ghGoneCards(ghIncoming(st.pkg.cards,srcOfficial())).map(function(c){ return c.name; }):[];
 };
 
-function ghClearPublishedLocal(incoming,src){
-  try{ if(srcOwned(src||srcOfficial()))return 0; }catch(_){ return 0; }
-  var ids={};
-  (incoming||[]).forEach(function(c){ if(c&&c.cid&&c.id)ids[c.cid]=c.id; });
-  var fixed=(window.CARDS||[]).filter(function(c){ return c&&c.local&&c.cid&&c.id&&ids[c.cid]===c.id; });
-  fixed.forEach(function(c){ delete c.local; try{ persistCard(c); }catch(_){} });
-  return fixed.length;
+function ghSettlePublished(incoming,src,o){
+  var owned;
+  try{ owned=srcOwned(src||srcOfficial()); }catch(_){ return 0; }
+  var mine=(window.CARDS||[]), ix=cardIndex(mine), n=0;
+  (incoming||[]).forEach(function(nc){
+    if(!nc||!nc.name)return;
+    if(o&&o.sagaSet&&!srcSagasOf(nc,o).length)return;
+    var at=ix.at(nc), c=(at==null)?null:mine[at];
+    if(!c||(c.local&&!(nc.cid&&c.cid===nc.cid)))return;
+    var ch=false;
+    if(nc.linked&&o&&o.sagaSet&&!o.official){
+      if(!srcLinkedJoins(c,nc,o))return;
+      srcSagasOf(nc,o).forEach(function(id){
+        var m=c._editedSagas||{};
+        if(!srcLinkedSagaDiffers(c,nc,id)){ if(m[id]){ srcUnmarkSaga(c,id); ch=true; } }
+        else if(owned&&!m[id]){ (c._editedSagas=c._editedSagas||{})[id]=1; ch=true; }
+      });
+      if(ch){ n++; try{ persistCard(c); }catch(_){} }
+      return;
+    }
+    if(o&&o.key&&srcBelongsElsewhere(c,o.key))return;
+    if(!cardDiffers(c,nc,o)){
+      if(c._editedHere){ delete c._editedHere; ch=true; }
+      if(c.local&&!owned&&c.id&&nc.id===c.id){ delete c.local; ch=true; }
+    } else if(owned&&!c._editedHere){ c._editedHere=1; ch=true; }
+    if(ch){ n++; try{ persistCard(c); }catch(_){} }
+  });
+  return n;
 }
 
 window.edGhUpdateNow=function(){
@@ -44346,8 +44700,7 @@ function ghApplyUpdateNow(fromPage,src){
   var gate=risk
     ? edDangerGate({phrase:'UPDATE',
         title:'Apply update from the source',
-        body:'This overwrites '+risk+' card(s) you can edit with the source’s version. '
-            +'Any local edit to a field the source also sets is replaced.'})
+        lose:['Your changes to '+risk+' card(s) here, in every field the source also sets: its version replaces them']})
     : Promise.resolve(true);
 
   return gate.then(function(ok){
@@ -44389,15 +44742,142 @@ function ghApplyUpdateNow(fromPage,src){
            +(res.gone?', removed '+res.gone+' the source no longer has':''))
         : 'Removed '+res.gone+' card(s) '+srcLabel(src)+' no longer has');
       srcRender();
-      return src.official ? ghSyncOfficialExtras(false) : srcAddKeywords(src);
+      return src.official ? ghSyncOfficialExtras(false) : srcSyncExtras(src,st.pkg,true);
     });
   }).catch(function(err){ alert('Update failed: '+((err&&err.message)||err)); });
 }
-function srcAddKeywords(src){
-  if(!src||src.official||!src.url||/\.zip(\?.*)?$/i.test(src.url))return Promise.resolve(0);
-  return ghFetchKeywords(src.url).then(function(list){
-    return kwExtraAdd(list);
+var SRC_FROM=null, _srcExtrasQ=Promise.resolve(), _srcMarksTried={};
+function srcSyncExtras(src,pkg,taken){
+  if(!src||src.official||!src.url||syncBlockedReason(src.url))return Promise.resolve(0);
+  if(srcOwned(src)&&!taken)return Promise.resolve(0);
+  var zip=!!(pkg&&pkg.zip)||/\.zip(\?.*)?$/i.test(src.url);
+  var p=_srcExtrasQ.then(srcFromLoad).then(function(from){
+    var was=JSON.stringify(from);
+    return Promise.all([zip?null:srcFetchKeywords(src),srcFetchMarks(src,pkg,from)]).then(function(v){
+      var n=srcTakeKeywords(src,v[0],from);
+      return srcTakeMarks(src,v[1]&&v[1].marks,pkg,from).then(function(m){
+        if(v[1]&&v[1].print)from.prints[src.key]=v[1].print;
+        if(JSON.stringify(from)!==was)srcFromSave(from);
+        return n+m;
+      });
+    });
   }).catch(function(){ return 0; });
+  _srcExtrasQ=p;
+  return p;
+}
+function srcFromLoad(){
+  if(SRC_FROM)return Promise.resolve(SRC_FROM);
+  return getMeta('srcExtrasFrom').then(function(v){
+    var o=(v&&typeof v==='object')?v:{};
+    var obj=function(x){ return (x&&typeof x==='object'&&!Array.isArray(x))?x:{}; };
+    SRC_FROM={kw:obj(o.kw),marks:obj(o.marks),prints:obj(o.prints)};
+    return SRC_FROM;
+  });
+}
+function srcFromSave(from){ return setMetaSafe('srcExtrasFrom',from,'where followed keywords and watermarks came from'); }
+function srcFromForget(key){
+  var p=_srcExtrasQ.then(srcFromLoad).then(function(from){
+    var was=JSON.stringify(from);
+    Object.keys(from.kw).forEach(function(k){ if(from.kw[k]===key)delete from.kw[k]; });
+    Object.keys(from.marks).forEach(function(k){ if(from.marks[k]&&from.marks[k].key===key)delete from.marks[k]; });
+    delete from.prints[key];
+    if(JSON.stringify(from)!==was)return srcFromSave(from);
+  }).catch(function(){});
+  _srcExtrasQ=p;
+  return p;
+}
+function srcKwKey(k){ return (k.mode||'keyword')+'\u0000'+k.name; }
+function srcTakeKeywords(src,list,from){
+  if(!Array.isArray(list)||!list.length)return 0;
+  var base={};
+  (KW_BAKED||[]).concat(rbDamageBuiltins()).forEach(function(k){ if(k&&k.name)base[srcKwKey(k)]=1; });
+  (KWCUSTOM||[]).forEach(function(c){
+    if(!c||!c.name)return;
+    base[srcKwKey(c)]=1;
+    if(c.replaces)base[(c.mode||'keyword')+'\u0000'+c.replaces]=1;
+  });
+  var inc={}, order=[];
+  list.map(srcNormKw).filter(Boolean).forEach(function(k){
+    delete k.__custom;
+    var kk=srcKwKey(k);
+    if(base[kk])return;
+    if(!inc[kk]){ inc[kk]=[]; order.push(kk); }
+    inc[kk].push(k);
+  });
+  var out=(KW_EXTRA||[]).slice(), n=0;
+  order.forEach(function(kk){
+    var by=from.kw[kk];
+    if(by&&by!==src.key)return;
+    from.kw[kk]=src.key;
+    var cur=out.filter(function(k){ return k&&k.name&&srcKwKey(k)===kk; });
+    if(ghStableJson(cur)===ghStableJson(inc[kk]))return;
+    var at=cur.length?out.indexOf(cur[0]):-1;
+    out=out.filter(function(k){ return cur.indexOf(k)<0; });
+    if(at<0)at=out.length;
+    Array.prototype.splice.apply(out,[at,0].concat(inc[kk]));
+    n++;
+  });
+  if(!n)return 0;
+  KW_EXTRA=out;
+  setMetaSafe('kwFromSources',KW_EXTRA,'keywords from followed sources');
+  try{ ghKwRefresh(); }catch(_){}
+  return n;
+}
+function srcFetchJson(url){
+  if(!url||syncBlockedReason(url))return Promise.resolve(null);
+  return fetchSource(url).then(function(res){ return (res&&!res.zip)?res.json:null; },function(){ return null; });
+}
+function srcFetchKeywords(src){
+  return srcFetchJson(ghKwUrl(src.url)).then(function(j){ return (Array.isArray(j)&&j.length)?j:null; });
+}
+function srcFetchMarks(src,pkg,from){
+  if(!pkg)return Promise.resolve(null);
+  if(Array.isArray(pkg.marks)&&pkg.marks.length)return Promise.resolve({marks:pkg.marks,print:''});
+  if(pkg.zip)return Promise.resolve(null);
+  var man=pkg.man||{};
+  if(man.markCount===0)return Promise.resolve(null);
+  var print=(typeof man.markPrint==='string')?man.markPrint:'';
+  var have={}; (MARKS||[]).forEach(function(m){ if(m&&m.id)have[m.id]=1; });
+  var lacking=(pkg.cards||[]).some(function(c){
+    return cardMarkIds(c).some(function(id){ return !have[id]; }); });
+  if(!lacking&&(!print||print===from.prints[src.key]))return Promise.resolve(null);
+  var tag=src.key+'\u0000'+print;
+  if(_srcMarksTried[tag])return Promise.resolve(null);
+  _srcMarksTried[tag]=1;
+  return srcFetchJson(ghLookUrl(src.url)).then(function(j){
+    return (j&&typeof j==='object'&&Array.isArray(j.marks))?{marks:j.marks,print:print}:null;
+  });
+}
+function srcMarkClean(m){
+  if(!m||typeof m!=='object'||Array.isArray(m)||typeof m.id!=='string'||!m.id)return null;
+  return {id:m.id,name:(typeof m.name==='string')?m.name:'',src:(typeof m.src==='string')?m.src:'',
+          xf:markXf(m),a:numAttr(m.a,0.35,0,1)};
+}
+function srcTakeMarks(src,list,pkg,from){
+  if(!Array.isArray(list)||!list.length)return Promise.resolve(0);
+  var have={}, worn={};
+  (MARKS||[]).forEach(function(m){ if(m&&m.id)have[m.id]=1; });
+  (window.CARDS||[]).filter(function(c){ return c&&c.local; }).concat((pkg&&pkg.cards)||[]).forEach(function(c){
+    cardMarkIds(c).forEach(function(id){ worn[id]=1; }); });
+  var take=[];
+  list.forEach(function(raw){
+    var m=srcMarkClean(raw); if(!m)return;
+    var pr=ghFingerprint(ghStableJson(m)), by=from.marks[m.id];
+    if(have[m.id]){
+      if(!by||by.key!==src.key||by.print===pr)return;
+      if(_markSaveTm[m.id])return;
+    } else if(!worn[m.id])return;
+    take.push({m:m,pr:pr});
+  });
+  var n=0;
+  return take.reduce(function(p,t){
+    return p.then(function(){
+      return put('marks',t.m).then(function(){ from.marks[t.m.id]={key:src.key,print:t.pr}; n++; },function(){});
+    });
+  },Promise.resolve()).then(function(){
+    if(!n)return 0;
+    return marksRefresh().then(function(){ try{ marksChanged(); }catch(_){} return n; });
+  });
 }
 function srcNormKw(k){
   if(!k||typeof k!=='object'||Array.isArray(k))return null;
@@ -44486,6 +44966,9 @@ function ghApiError(r,t){
   return err;
 }
 var GH_RETRY_MAX=2, GH_RETRY_WAIT_CAP=60;
+function ghSafeTwice(method,path){
+  return method==='GET'||(method==='POST'&&(path==='/git/blobs'||path==='/git/trees'));
+}
 function ghApi(method,path,body,tries){
   if(!GH_TOKEN)return Promise.reject(new Error('no token set.'));
   if(!GH_REPO.owner||!GH_REPO.repo)return Promise.reject(new Error('no repository set.'));
@@ -44504,7 +44987,7 @@ function ghApi(method,path,body,tries){
     'Authorization':'Bearer '+GH_TOKEN}};
   if(body!==undefined){ opt.headers['Content-Type']='application/json';
     opt.body=JSON.stringify(body); }
-  var canRetry=(method==='GET'&&tries<GH_RETRY_MAX);
+  var canRetry=(ghSafeTwice(method,path)&&tries<GH_RETRY_MAX);
   return fetch(url,opt).then(function(r){
     return r.text().then(function(t){
       if(!r.ok){
@@ -44519,6 +45002,15 @@ function ghApi(method,path,body,tries){
   },function(netErr){
     if(canRetry)return again((tries+1)*2);
     throw netErr;
+  });
+}
+var GH_WRITE_GAP=800, GH_WRITE_FREE=70, _ghLastWrite=0;
+function ghPacedApi(pace,method,path,body){
+  if(!pace)return ghApi(method,path,body);
+  var wait=Math.max(0,_ghLastWrite+GH_WRITE_GAP-Date.now());
+  return new Promise(function(res){ setTimeout(res,wait); }).then(function(){
+    _ghLastWrite=Date.now();
+    return ghApi(method,path,body);
   });
 }
 
@@ -44562,6 +45054,14 @@ function ghOutName(p){
 function ghCdnBase(){
   return 'https://cdn.jsdelivr.net/gh/'+GH_REPO.owner+'/'+GH_REPO.repo
         +'@'+(GH_REPO.branch||'main');
+}
+function ghOfficialCdnBase(){
+  var o=ghOfficialParts();
+  return o?'https://cdn.jsdelivr.net/gh/'+o.owner+'/'+o.repo+'@'+o.branch:ghCdnBase();
+}
+function ghLinkedOut(c,keep){
+  return !!(c&&keep&&typeof keep==='object')&&!ghTargetIsOfficial()&&sagaIdsOf(c).some(function(id){
+    return !keep[id]&&groupKeyOfId(id)===GROUP_OFFICIAL; });
 }
 
 function ghTargetRepo(){
@@ -44637,13 +45137,14 @@ function ghScopeSagas(o,keep){
   }
 }
 function ghPublishedForm(c,keep){
-  var base=ghCdnBase();
+  var linked=ghLinkedOut(c,keep);
+  var base=linked?ghOfficialCdnBase():ghCdnBase();
   var o=JSON.parse(JSON.stringify(c));
   delete o.__id;
   if(keep&&typeof keep==='object')ghScopeSagas(o,keep);
-  delete o.local;
+  delete o.local; delete o._editedHere; delete o._editedSagas;
   artBearers(o).forEach(function(b){
-    var local=ghLocalArtKey(b);
+    var local=linked?'':ghLocalArtKey(b);
     if(local&&ghOnDisk(c,local))local='';
     ['art','imageUrl'].forEach(function(f){
       var v=b[f]||'';
@@ -44654,12 +45155,20 @@ function ghPublishedForm(c,keep){
     });
     if(local&&!b.imageUrl)b.imageUrl=base+'/'+GH_UPLOAD_DIR+'/'+ghOutName(local);
   });
+  if(linked){
+    var own={}, pic=function(v){
+      var w=(o.variants||[]).filter(function(x){ return x&&x.id===v.id; })[0];
+      return (w&&(w.imageUrl||w.art))||'';
+    };
+    sagaIdsOf(o).forEach(function(id){ own[id]=srcLinkedOwn(c,id,pic); });
+    o.linked={to:'official',own:own};
+  }
   return o;
 }
 function ghLocalArtUploads(){
   var out=[], seen={}, keep=ghPublishSagaSet();
   (window.CARDS||[]).forEach(function(c){
-    if(!c||c.__deleted||!ghInScope(c,keep))return;
+    if(!c||c.__deleted||!ghInScope(c,keep)||ghLinkedOut(c,keep))return;
     artBearers(c).forEach(function(b){
       var k=ghLocalArtKey(b);
       if(!k||ghOnDisk(c,k))return;
@@ -44687,21 +45196,67 @@ function ghWebpBytes(key){
     }).then(function(out){ return out.arrayBuffer(); }).then(function(ab){ return new Uint8Array(ab); });
 }
 window.edGhWebpBytes=function(key){ return ghWebpBytes(key); };
-function ghArtCapText(n){
-  return 'This publish would send '+n+' pictures that exist only in this browser, and one publish '
-    +'from the app sends at most '+GH_ART_CAP+'. Use the command-line tool instead: '
-    +'tools/github_sync.py (Publish-All.bat) publishes the pictures in art/ from disk.';
+function ghArtParts(pics){
+  var parts=[];
+  for(var i=0;i<pics.length;i+=GH_ART_BATCH)parts.push(pics.slice(i,i+GH_ART_BATCH));
+  return parts.length?parts:[[]];
 }
-function ghAddLocalArt(rt,local){
-  var todo=ghLocalArtUploads().filter(function(u){ return !(rt&&rt.paths&&rt.paths[u.path]); });
-  if(todo.length>GH_ART_CAP)return Promise.reject(new Error(ghArtCapText(todo.length)));
-  return todo.reduce(function(p,u){
-    return p.then(function(done){
+function ghPartsText(n){
+  return 'The '+n+' pictures go up in '+Math.ceil(n/GH_ART_BATCH)+' parts of at most '+GH_ART_BATCH
+    +', the cards with the last. Keep this page open until it says Published; if it stops part-way, '
+    +'Publish again carries on from there.';
+}
+function ghSendPart(run,k,pics,data,local,pace){
+  var entries=[], part=run.parts>1?'part '+(k+1)+' of '+run.parts:'', label=part?part+': ':'';
+  var send=function(path,bytes,sha){
+    return ghPacedApi(pace,'POST','/git/blobs',{content:ghB64Bytes(bytes),encoding:'base64'})
+      .then(function(r){
+        if(r.sha!==sha)
+          throw new Error('GitHub stored a different hash for '+path+' than this page computed. '
+            +'Refusing to build a tree from it.');
+        entries.push({path:path,mode:'100644',type:'blob',sha:sha});
+      });
+  };
+  var p=Promise.resolve();
+  pics.forEach(function(u,i){
+    p=p.then(function(){
+      ghPushStatus('Uploading '+label+'picture '+(i+1)+' of '+pics.length+'…');
       return ghWebpBytes(u.key).then(function(bytes){
-        return ghBlobSha(bytes).then(function(sha){ local[u.path]={sha:sha,bytes:bytes}; done.push(u.path); return done; });
+        return ghBlobSha(bytes).then(function(sha){ return send(u.path,bytes,sha); });
       });
     });
-  },Promise.resolve([]));
+  });
+  if(data.length)p=p.then(function(){ ghPushStatus('Uploading '+label+data.length+' file(s)…'); });
+  data.forEach(function(n){
+    p=p.then(function(){ return send(n,local[n].bytes,local[n].sha); });
+  });
+  var tree='';
+  return p.then(function(){
+    var base=run.tree, i=0;
+    function step(){
+      if(i>=entries.length)return Promise.resolve(base);
+      var body={tree:entries.slice(i,i+GH_TREE_CHUNK)};
+      if(base)body.base_tree=base;
+      i+=GH_TREE_CHUNK;
+      return ghPacedApi(pace,'POST','/git/trees',body).then(function(t){ base=t.sha; return step(); });
+    }
+    return step();
+  }).then(function(treeSha){
+    tree=treeSha;
+    ghPushStatus('Committing'+(part?' '+part:'')+'…');
+    return ghPacedApi(pace,'POST','/git/commits',
+      {message:'Publish from the app'+(part?', '+part:'')+': '+entries.length+' file(s)',
+       tree:treeSha,parents:[run.head]});
+  }).then(function(commit){
+    var br=GH_REPO.branch||'main';
+    run.stage='ref'; run.commit=String(commit.sha||'');
+    return (run.made
+      ? ghPacedApi(pace,'PATCH','/git/refs/heads/'+ghRefPath(br),{sha:commit.sha})
+      : ghPacedApi(pace,'POST','/git/refs',{ref:'refs/heads/'+br,sha:commit.sha}))
+      .then(function(){
+        run.stage='prep'; run.made=true; run.head=run.commit; run.tree=tree; run.landed=k+1;
+      });
+  });
 }
 
 
@@ -44764,9 +45319,11 @@ function ghPayload(prev){
   var sagas=ghSagaIndex(cards);
   var look=ghBuildLook(), marks=ghBuildMarks();
   var slots=(look&&look.slots)?Object.keys(look.slots).length:0;
-  var manifest={name:(prev&&prev.name)||'Conjure UCG',format:2,
+  var name=ghTargetIsOfficial()?((prev&&prev.name)||'Conjure UCG')
+    :(String(GH_REPO.repo||'').trim()||(prev&&prev.name)||'Conjure UCG');
+  var manifest={name:name,format:2,game:ghMode(),
     cardCount:cards.length,keywordCount:kw.length,
-    lookSlots:slots,markCount:marks.length,
+    lookSlots:slots,markCount:marks.length,markPrint:ghFingerprint(ghStableJson(marks)),
     artBase:ghCdnBase()+'/art/'};
   if(prev&&prev.artFiles!=null)manifest.artFiles=prev.artFiles;
   if(prev&&prev.artEncoding)manifest.artEncoding=prev.artEncoding;
@@ -45190,7 +45747,7 @@ window.edGhPreview=function(){
     ghPushStatus(ghTargetNote(rt)+(up.length
       ? 'Would upload: '+up.join(', ')+'. Nothing else is touched.'
       : 'Already up to date - the repository matches this catalog.')
-      +(art.length>GH_ART_CAP?' '+ghArtCapText(art.length):''));
+      +(art.length>GH_ART_BATCH?' '+ghPartsText(art.length):''));
     return {up:up,local:local,rt:rt};
   }).catch(function(err){
     _ghBusy=false; ghPushStatus('Could not check: '+((err&&err.message)||err));
@@ -45225,7 +45782,7 @@ window.edGhPublish=function(){
   _ghBusy=true; _ghStarted=false; ghPushStatus('Preparing…');
   var files=null, names=null, enc=new TextEncoder();
   var local={};
-  var stage='prep', commitSha='';
+  var run={stage:'prep',commit:'',parts:1,landed:0,head:'',tree:'',made:false};
   return ghPublishTarget().then(function(go){
     if(go!==true)return go;
   return ghPublishDiff().then(function(d){
@@ -45261,56 +45818,29 @@ window.edGhPublish=function(){
     var bytes=enc.encode(files[n]);
     return ghBlobSha(bytes).then(function(s){ local[n]={sha:s,bytes:bytes}; });
   })).then(ghRemoteTree).then(function(rt){
-    ghPushStatus('Preparing pictures…');
-    return ghAddLocalArt(rt,local).then(function(paths){ paths.forEach(function(n){ names.push(n); }); return rt; });
-  }).then(function(rt){
     if(!rt.head)throw new Error('the repository has no commit to build on.');
-    var up=names.filter(function(n){ return rt.paths[n]!==local[n].sha; });
-    if(!up.length){
+    var data=names.filter(function(n){ return rt.paths[n]!==local[n].sha; });
+    var pics=ghLocalArtUploads().filter(function(u){ return !rt.paths[u.path]; });
+    if(!data.length&&!pics.length){
       _ghBusy=false;
       ghPushStatus(rt.newBranch
         ? 'Nothing to upload - "'+rt.from+'" already holds this catalog, so no branch was created.'
         : 'Already up to date - nothing to do.');
       return;
     }
-    ghPushStatus('Uploading '+up.length+' file(s)…');
-    return up.reduce(function(p,n){
-      return p.then(function(shas){
-        return ghApi('POST','/git/blobs',{content:ghB64Bytes(local[n].bytes),encoding:'base64'})
-          .then(function(r){
-            if(r.sha!==local[n].sha)
-              throw new Error('GitHub stored a different hash for '+n+' than this page computed. '
-                +'Refusing to build a tree from it.');
-            shas[n]=r.sha; return shas;
-          });
+    var parts=ghArtParts(pics);
+    run.parts=parts.length; run.head=rt.head; run.tree=rt.tree; run.made=!rt.newBranch;
+    run.newBranch=rt.newBranch||''; run.from=rt.from||'';
+    var pace=pics.length+data.length+3*parts.length>GH_WRITE_FREE;
+    return parts.reduce(function(p,part,k){
+      return p.then(function(){
+        return ghSendPart(run,k,part,k===parts.length-1?data:[],local,pace);
       });
-    },Promise.resolve({})).then(function(shas){
-      var entries=up.map(function(n){
-        return {path:n,mode:'100644',type:'blob',sha:shas[n]}; });
-      var base=rt.tree, i=0;
-      function step(){
-        if(i>=entries.length)return Promise.resolve(base);
-        var body={tree:entries.slice(i,i+GH_TREE_CHUNK)};
-        if(base)body.base_tree=base;
-        i+=GH_TREE_CHUNK;
-        return ghApi('POST','/git/trees',body).then(function(t){ base=t.sha; return step(); });
-      }
-      return step();
-    }).then(function(treeSha){
-      ghPushStatus('Committing…');
-      return ghApi('POST','/git/commits',
-        {message:'Publish from the app: '+up.length+' file(s)',tree:treeSha,parents:[rt.head]});
-    }).then(function(commit){
-      var br=GH_REPO.branch||'main';
-      stage='ref'; commitSha=String(commit.sha||'');
-      return (rt.newBranch
-        ? ghApi('POST','/git/refs',{ref:'refs/heads/'+br,sha:commit.sha})
-        : ghApi('PATCH','/git/refs/heads/'+ghRefPath(br),{sha:commit.sha}))
-        .then(function(){ return commit; });
-    }).then(function(commit){
-      _ghBusy=false; stage='done';
+    },Promise.resolve()).then(function(){
+      _ghBusy=false; run.stage='done';
       _ghDiff=null;
-      ghPushStatus('Published. Commit '+commit.sha.slice(0,10)+'.'
+      ghPushStatus('Published. Commit '+run.head.slice(0,10)+'.'
+        +(run.parts>1?' The pictures went up in '+run.parts+' parts.':'')
         +(rt.newBranch?' Branch "'+rt.newBranch+'" was created from "'+rt.from+'".':''));
       toast('Published to '+GH_REPO.owner+'/'+GH_REPO.repo);
       try{ ghAfterPublish(); }catch(_){}
@@ -45320,10 +45850,22 @@ window.edGhPublish=function(){
   }).catch(function(err){
     _ghBusy=false;
     var m=(err&&err.message)||String(err);
-    if(stage==='ref'&&!(err&&err.status)){
-      ghPushStatus('Publish may have gone through: the connection failed while the branch was '
-        +'being moved to commit '+commitSha.slice(0,10)+' ('+m+'). Press Preview changes - '
-        +'"Already up to date" means it landed.');
+    var last=run.landed+1>=run.parts;
+    if(run.stage==='ref'&&!(err&&err.status)){
+      ghPushStatus(last
+        ? 'Publish may have gone through: the connection failed while the branch was '
+          +'being moved to commit '+run.commit.slice(0,10)+' ('+m+'). Press Preview changes - '
+          +'"Already up to date" means it landed.'
+        : 'Publish stopped: the connection failed while the branch was being moved to part '
+          +(run.landed+1)+' of '+run.parts+' ('+m+'). No card is published yet. Press Publish '
+          +'again to carry on: a picture already there is not sent twice.');
+      return;
+    }
+    if(run.landed){
+      ghPushStatus('Publish stopped part-way: '+m+(/[.!?]$/.test(m)?' ':'. ')
+        +(run.landed>1?'Parts 1 to '+run.landed+' of '+run.parts+', pictures only, are':'Part 1 of '+run.parts+', pictures only, is')
+        +' in the repository, but no card is published yet. Press Publish again to send the rest.'
+        +(run.newBranch?' Branch "'+run.newBranch+'" was created from "'+run.from+'".':''));
       return;
     }
     ghPushStatus('Publish failed: '+m
@@ -45563,7 +46105,6 @@ window.edGhEmptyState=function(){
   if(why)return {line:why};
   if(st.err)return {line:'Could not reach the official catalogue', btn:'Try again'};
   if(st.pkg)return {line:'The official catalogue is ready', btn:'Load it'};
-  if(!GH_AUTOCHECK)return {line:'Automatic updates are off', btn:'Load the official catalogue'};
   return {line:'Loading the official catalogue…'};
 };
 function ghEmptyRefresh(){
@@ -45614,9 +46155,6 @@ function edRenderOwnerSync(){
     +"<div class='gh-onerow gh-toggles'>"
     +"<button class='ed2-btn tiny' onclick='edGhWeeklyRun()'"
     +" title='Every saga with a source, now'>Sync All Sagas</button>"
-    +"<label title='Takes the update as the catalog opens. In owner mode it only "
-    +"tells you, and the badge waits for your press.'><input type='checkbox'"+(GH_AUTOCHECK?' checked':'')
-    +" onchange='edGhSetAutoCheck(this.checked)'> Enable Automatic Updates on Open</label>"
     +(GH_WEEKLY_LAST
         ?"<span class='gh-hint'>Last run "+e(String(GH_WEEKLY_LAST).slice(0,10))+"</span>":'')
     +"</div>"
@@ -45691,7 +46229,7 @@ window.edFollowSource=function(url){
   }
   var why=syncBlockedReason(url);
   if(why){ toast(why); return Promise.resolve(null); }
-  var s=srcByKey(key);
+  var s=srcByKey(key), fresh=!s;
   if(!s){
     s={url:url, added:new Date().toISOString(), lastCheck:'', lastSync:'', skip:[]};
     SOURCES.push(s); srcWrap(s); srcSave();
@@ -45700,6 +46238,12 @@ window.edFollowSource=function(url){
   srcRender();
   return ghCheckSource(s).then(function(){ return ghAutoApply(s); }).then(function(){
     var st=srcState(s);
+    if(st&&st.wrongGame&&fresh){
+      SOURCES=SOURCES.filter(function(x){ return srcKeyOf(x.url)!==s.key; });
+      delete _srcState[s.key]; srcSave(); srcRender();
+      toast('Could not follow that set: '+st.err);
+      return null;
+    }
     if(st&&st.err)toast('Could not read that set: '+st.err);
     return s;
   });
@@ -45736,12 +46280,13 @@ window.edUnfollowSource=function(key){
     var gone={}; only.forEach(function(c){ gone[c.__id]=1; });
     window.CARDS=(window.CARDS||[]).filter(function(c){ return !gone[c.__id]; });
     shared.forEach(function(c){
-      Object.keys(ids).forEach(function(id){ removeSagaMembership(c,id); });
+      Object.keys(ids).forEach(function(id){ if(removeSagaMembership(c,id))srcDropSagaFields(c,id); });
       markDirty(c);
     });
     SAGAS=SAGAS.filter(function(sg){ return !ids[sg.id]; });
     SOURCES=SOURCES.filter(function(x){ return srcKeyOf(x.url)!==s.key; });
     delete _srcState[s.key]; srcSave();
+    srcFromForget(s.key);
     return Promise.all(only.map(function(c){
         return put('cards',{id:c.id||uid(),name:c.name,cid:cardCid(c),sagaId:sagaIdOf(c),
                             saga:c.saga,__deleted:true}); })
@@ -45946,14 +46491,8 @@ window.edImportTableCopy=function(pkg,from){
 };
 
 function ghAutoCheck(){
-  if(_ghChecked||_ghWeeklyOnOpen)return;
+  if(_ghChecked)return;
   if(!GH_SOURCE||syncBlockedReason(GH_SOURCE))return;
-  if(!GH_AUTOCHECK){
-    _ghWeeklyOnOpen=true;
-    return new Promise(function(done){
-      setTimeout(function(){ var w; try{ w=ghWeeklyMaybe(); }catch(_){} done(w); },1200);
-    });
-  }
   _ghChecked=true;
   return new Promise(function(done){ setTimeout(function(){
     try{ ghRefreshOfficialIndex(); }catch(_){}
@@ -45991,18 +46530,20 @@ function ghAutoApply(src){
   src=src||srcOfficial();
   var st=srcState(src);
   if(!st||st.err||!st.pkg)return Promise.resolve(null);
+  var extrasOnly=function(){
+    return src.official?Promise.resolve(null):srcSyncExtras(src,st.pkg,false).then(function(){ return null; });
+  };
   var d=st.diff;
-  if(!d||(!d.added&&!d.changed&&!d.removed))return Promise.resolve(null);
-  if(src.official&&GH_OWNER_MODE)return Promise.resolve(null);
-  if(!src.official&&srcOwned(src))return Promise.resolve(null);
-  if(src.official&&edOwnerUnlocked())return Promise.resolve(null);
-  if(ghWouldOverwriteOwnWork(ghIncoming(st.pkg.cards,src),st.ctx))return Promise.resolve(null);
+  if(!d||(!d.added&&!d.changed&&!d.removed))return extrasOnly();
+  if(src.official&&GH_OWNER_MODE)return extrasOnly();
+  if(!src.official&&srcOwned(src))return extrasOnly();
+  if(src.official&&edOwnerUnlocked())return extrasOnly();
+  if(ghWouldOverwriteOwnWork(ghIncoming(st.pkg.cards,src),st.ctx))return extrasOnly();
   ghBadge(null);
   return ghApplyUpdate(false,src);
 }
 
 var GH_WEEK_MS=7*24*60*60*1000;
-var _ghWeeklyOnOpen=false;
 
 function ghNextFriday(from){
   var d=new Date(from.getFullYear(),from.getMonth(),from.getDate());
@@ -46034,7 +46575,7 @@ function ghWeeklyRun(force){
         if(!st||st.err||!st.pkg){ failed++; return; }
         var d=st.diff||{};
         var n=(d.added||0)+(d.changed||0)+(d.removed||0);
-        if(!n)return;
+        if(!n)return srcSyncExtras(s,st.pkg,false);
         return Promise.resolve(ghAutoApply(s)).then(function(){
           var st2=srcState(s);
           if(st2&&st2.pkg)held+=n; else added+=(d.added||0)+(d.changed||0);

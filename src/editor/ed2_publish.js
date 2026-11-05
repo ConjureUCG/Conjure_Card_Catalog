@@ -9,12 +9,12 @@ var GH_SOURCES={
 function ghMode(){ return window.REBIRTH ? 'rebirth' : 'main'; }
 var GH_DEFAULT_SOURCE=GH_SOURCES[window.REBIRTH?'rebirth':'main']||'';
 var GH_TREE_CHUNK=200;   /* GitHub answers 502 on a tree with everything in it */
-/* Each picture is re-encoded and held in memory until the commit, and hundreds meet GitHub's limits part-way: more is refused before anything is sent. */
-var GH_ART_CAP=150;
+/* One commit holds at most this many pictures that exist only in this browser; more go up in parts, each its own commit, with the cards in the last (ghSendPart). */
+var GH_ART_BATCH=150;
 /* The key older copies stored the token under: nothing writes it now, and a record found there is taken for the visit and deleted (ghLoadSettings). */
 var GH_SECRET='_secret_ghToken';
 
-var GH_SOURCE='', GH_OWNER_MODE=false, GH_AUTOCHECK=true;
+var GH_SOURCE='', GH_OWNER_MODE=false;
 /* True once this profile is known to hold the whole official set (a bake captured, a check finding none missing, a full update applied); see ghWholeSetProblem. */
 var GH_HAS_WHOLE_SET=false;
 var GH_WEEKLY_LAST='';
@@ -39,10 +39,9 @@ function ghOfficialRepo(){
   var m = /raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\//i.exec(GH_SOURCES[ghMode()] || '');
   return m ? {owner:m[1].toLowerCase(), repo:m[2].toLowerCase()} : null;
 }
-/* (HANDOFF §10) */
 function ghTokenHeld(){ return !!GH_TOKEN||!!GH_TOKEN_SINCE; }
+/* (HANDOFF §10) By the Repository row alone, token or not: Forget it, or a restore before the token is pasted, leaves the set this copy's. */
 function edOwnerUnlocked(){
-  if(!ghTokenHeld()) return false;
   var off = ghOfficialRepo();
   if(!off) return false;
   return String(GH_REPO.owner || '').toLowerCase() === off.owner
@@ -57,7 +56,6 @@ function repoOfUrl(u){
   return m ? {owner:m[1].toLowerCase(), repo:m[2].toLowerCase().replace(/\.git$/,'')} : null;
 }
 function edOwnsSource(url){
-  if(!ghTokenHeld()) return false;
   var r=repoOfUrl(url);
   if(!r) return false;
   return String(GH_REPO.owner||'').toLowerCase()===r.owner
@@ -70,12 +68,13 @@ function ownsGroupKey(k){
   if(String(k).indexOf('table:')===0) return false;
   return edOwnsSource(k);
 }
-/* Every saga the card is in counts, not the primary alone. */
+/* Every saga the card is in counts, not the primary alone; an official card's content is the official set's alone, whatever other set's saga it is also in (srcLinkedJoin).
+   A saga with no record yet locks nothing, as in edOfficialCard. */
 function cardForeignKey(c){
   if(!c||c.local||typeof sagaIdsOf!=='function') return '';
+  if(edOfficialCard(c)) return ownsGroupKey(GROUP_OFFICIAL) ? '' : GROUP_OFFICIAL;
   var ids=sagaIdsOf(c);
   for(var i=0;i<ids.length;i++){
-    /* a saga with no record yet locks nothing - as in edOfficialCard */
     var sg=sagaById(ids[i]);
     if(!sg) continue;
     var k=groupKeyOf(sg);
@@ -87,6 +86,15 @@ function edCardLocked(c){
   return !!cardForeignKey(c);
 }
 window.edCardLocked = edCardLocked;
+/* An official card in sagas of yours (Add to my saga): read-only, but each of those sagas sets its own SAGA_FIELDS on it, in the editor. */
+function edLinkedSagas(c){
+  if(!c||!edCardLocked(c)||cardForeignKey(c)!==GROUP_OFFICIAL)return [];
+  return sagaIdsOf(c).filter(function(id){ var sg=sagaById(id); return !!sg&&ownsGroupKey(groupKeyOf(sg)); });
+}
+window.edLinkedSagas=function(c){ return edLinkedSagas(c); };
+/* the editor opens on it: a card this copy may change, or an official card in a saga of yours */
+function edCardOpenable(c){ return !!c&&(!edCardLocked(c)||edLinkedSagas(c).length>0); }
+window.edCardOpenable=function(c){ return edCardOpenable(c); };
 function edLockedToast(c){
   var k=c?cardForeignKey(c):'';
   try{ toast(k===GROUP_OFFICIAL ? 'Official cards are read-only' : 'This card is read-only'); }catch(_){}
@@ -97,7 +105,6 @@ function ghSettingsFrom(r){
   /* Any of these can be missing on an older profile, so each has a default. */
   GH_SOURCE=(r&&r.src)||GH_DEFAULT_SOURCE;
   GH_OWNER_MODE=!!(r&&r.owner);
-  GH_AUTOCHECK=(r&&r.autoCheck!=null)?!!r.autoCheck:true;
   var rp=(r&&r.repo)||null;
   if(rp&&typeof rp==='object')GH_REPO={owner:rp.owner||'',repo:rp.repo||'',branch:rp.branch||'main'};
   /* A token pasted while the settings loaded is kept, as it is held nowhere else; r.token is only ever one an older copy stored. */
@@ -118,9 +125,9 @@ function ghTokenDays(){
 }
 window.edGhTokenDays=function(){ return ghTokenDays(); };
 function ghLoadSettings(){
-  /* v[5] stays an empty slot so the indexes keep their places: the weekly run has no switch (ghWeeklyMaybe). */
+  /* v[4] and v[5] stay empty so the indexes keep their places: neither the check on open nor the weekly run has a switch. */
   return Promise.all([getMeta('ghSourceUrl'),getMeta('ghOwnerMode'),
-                      getMeta('ghRepo'),getMeta(GH_SECRET),getMeta('ghAutoCheck'),
+                      getMeta('ghRepo'),getMeta(GH_SECRET),Promise.resolve(null),
                       Promise.resolve(null),getMeta('ghWeeklyLast'),getMeta('ghTokenSince'),
                       getMeta('officialIds'),getMeta('bakeCaptured'),
                       getMeta('sources'),getMeta('lastNewSaga')])
@@ -128,7 +135,7 @@ function ghLoadSettings(){
       SOURCES=Array.isArray(v[10])?v[10].filter(function(s){ return s&&s.url; }):[];
       LAST_NEW_SAGA=v[11]||'';
       srcMigrateLinks();
-      ghSettingsFrom({src:v[0],owner:v[1],repo:v[2],token:v[3],autoCheck:v[4],since:v[7]});
+      ghSettingsFrom({src:v[0],owner:v[1],repo:v[2],token:v[3],since:v[7]});
       if(v[3]!=null)ghDropStoredToken();
       GH_WEEKLY_LAST=v[6]||'';
       /* the stored official index, unless a fetched one has already arrived */
@@ -160,12 +167,9 @@ window.edGhSetOwnerMode=function(on){
   ghBadgeRefresh();
   edRenderOwnerSync();
 };
-window.edGhSetAutoCheck=function(on){
-  GH_AUTOCHECK=!!on; setMetaSafe('ghAutoCheck',GH_AUTOCHECK);
-};
 /* For the checks: ghLoadSettings lands after the page is usable and overwrites a switch set before it, so a check reads back what is in force. */
 window.edGhSwitches=function(){
-  return {ownerMode:!!GH_OWNER_MODE, autoCheck:!!GH_AUTOCHECK, source:GH_SOURCE||''};
+  return {ownerMode:!!GH_OWNER_MODE, source:GH_SOURCE||''};
 };
 window.edGhSetRepo=function(field,val,fromPage){
   if(field!=='owner'&&field!=='repo'&&field!=='branch')return;
@@ -292,8 +296,16 @@ function srcNormalizeCards(pkg,src,index){
   });
 }
 function srcCtx(src,pkg,index){
-  var set={}, names={};
-  (index||[]).forEach(function(s){ if(s&&s.id){ set[s.id]=1; names[s.id]=s.name||s.id; } });
+  var set={}, names={}, info={};
+  (index||[]).forEach(function(s){
+    if(!s||!s.id)return;
+    set[s.id]=1; names[s.id]=s.name||s.id;
+    /* a derived entry (github_sync.py's) knows no author, version or description */
+    if(s.derived)return;
+    var x={};
+    SAGA_INFO_KEYS.forEach(function(k){ if(s[k]!=null)x[k]=sagaInfoClean(k,s[k]); });
+    info[s.id]=x;
+  });
   if(pkg&&pkg.zip){
     var m=pkg.man||{}, id=m.id||m.name;
     if(id){ set[id]=1; names[id]=m.name||id; }
@@ -301,8 +313,29 @@ function srcCtx(src,pkg,index){
   ((pkg&&pkg.cards)||[]).forEach(function(c){ if(c) sagaIdsOf(c).forEach(function(id){ set[id]=1; }); });
   var skip={}; (src.skip||[]).forEach(function(id){ skip[id]=1; });
   return {key:src.key, url:src.url, official:!!src.official, table:src.table||'',
-          sagaSet:set, names:names, skip:skip, owned:srcOwned(src),
+          sagaSet:set, names:names, info:info, skip:skip, owned:srcOwned(src),
           cids:srcCidsOf(pkg&&pkg.cards)};
+}
+/* At each check, as a set's keywords and watermarks come: what its sagas.json says of each of its sagas here that this copy may not edit. */
+function srcTakeSagaInfo(o){
+  var info=(o&&o.info)||{}, changed=[];
+  Object.keys(info).forEach(function(id){
+    var sg=sagaById(id); if(!sg)return;
+    var k=groupKeyOf(sg);
+    if(k!==o.key||ownsGroupKey(k))return;
+    var x=info[id], rec=Object.assign({},sg), ch=false;
+    SAGA_INFO_KEYS.forEach(function(f){
+      if(x[f]===undefined)return;
+      var v=(f==='version'&&!x[f])?'1.0':x[f];
+      if((rec[f]||'')!==v){ rec[f]=v; ch=true; }
+    });
+    if(ch)changed.push(rec);
+  });
+  if(!changed.length)return Promise.resolve(0);
+  return Promise.all(changed.map(sagaPut)).then(function(){
+    try{ window.edRenderSagaPage(); }catch(_){}
+    return changed.length;
+  });
 }
 /* Claimed only when it has no cards here yet, or every card in it here is the source's by id: names alone can match a saga and card of yours.
    Run on the check and again after an apply, when the copies have taken the published ids. */
@@ -359,6 +392,11 @@ function ghDiff(incoming,o){
     bySaga[sid]=(bySaga[sid]||0)+1;
     var at=ix.at(nc), ex=(at==null)?null:mine[at];
     if(ex&&o&&ex.local&&!(nc.cid&&ex.cid===nc.cid))ex=null;
+    if(nc.linked&&o&&!o.official){
+      if(!srcLinkedJoins(ex,nc,o))skipped++;
+      else if(srcLinkedDiffers(ex,nc,o))changed++; else same++;
+      return;
+    }
     if(ex&&o&&srcBelongsElsewhere(ex,o.key)){ skipped++; return; }
     if(!ex){ added++; return; }
     /* a copy still known by an id of its own takes the published one, so every copy converges on one id */
@@ -407,7 +445,21 @@ function ghRefreshOfficialIndex(){
   });
 }
 
-/* Writes nothing but the source's state and its last-checked time. */
+/* A publish names its game (ghPayload); an older one names none, and then only the two official repositories can be told apart. */
+function srcGameOf(pkg,url){
+  var m=(pkg&&pkg.man)||{};
+  if(m.game==='main'||m.game==='rebirth')return m.game;
+  var r=repoOfUrl(url), same=function(u){ var o=repoOfUrl(u); return !!(r&&o&&r.owner===o.owner&&r.repo===o.repo); };
+  return same(GH_SOURCES.rebirth)?'rebirth':same(GH_SOURCES.main)?'main':'';
+}
+function srcGameProblem(pkg,url){
+  var g=srcGameOf(pkg,url), here=ghMode();
+  if(!g||g===here)return '';
+  var nm=function(x){ return x==='rebirth'?'Conjure Rebirth':'Conjure'; };
+  return 'it holds '+nm(g)+' cards, and this is '+nm(here)+'. Switch to '
+    +(g==='rebirth'?'Rebirth':'Main')+' in the header, then follow it there.';
+}
+/* Writes nothing but the source's state, its last-checked time, what ghSettlePublished settles and the sagas' words (srcTakeSagaInfo). */
 function ghCheckSource(src){
   var url=src&&src.url;
   if(!url){ srcSetState(src,{err:'No source address set.'}); srcRender(); return Promise.resolve(); }
@@ -424,6 +476,8 @@ function ghCheckSource(src){
     }
     return pkgFromJson(res.json);
   }).then(function(pkg){
+    var wrong=srcGameProblem(pkg,url);
+    if(wrong){ var ge=new Error(wrong); ge.wrongGame=true; throw ge; }
     if(!pkg.cards||!pkg.cards.length)throw new Error('no cards in what came back.');
     /* the owner's copy reads the Test cards too, so they follow the publisher between machines */
     return ghFetchTesting(url,src).then(function(t){
@@ -433,13 +487,12 @@ function ghCheckSource(src){
   }).then(function(pkg){
     return (pkg.zip?Promise.resolve(null):ghFetchIndex(url)).then(function(index){
       srcNormalizeCards(pkg,src,index);
-      /* before the diff: no card the source carries was made here */
-      try{ ghClearPublishedLocal(pkg.cards,src); }catch(_){}
-      var ctx=srcCtx(src,pkg,index);
+      var ctx=srcCtx(src,pkg,index), inc=ghIncoming(pkg.cards,src);
+      /* before the diff, which reads `local` */
+      try{ ghSettlePublished(inc,src,ctx); }catch(_){}
       var now=new Date().toISOString();
       _srcCheckedAt[src.key]=Date.now();
-      var st={pkg:pkg, ctx:ctx, index:index, checked:now,
-              diff:ghDiff(ghIncoming(pkg.cards,src),ctx)};
+      var st={pkg:pkg, ctx:ctx, index:index, checked:now, diff:ghDiff(inc,ctx)};
       srcSetState(src,st);
       if(src.official){
         if(!st.diff.added&&!window.REBIRTH&&!GH_HAS_WHOLE_SET
@@ -453,14 +506,16 @@ function ghCheckSource(src){
       }
       ghBadgeRefresh();
       srcRender();
+      var words=srcTakeSagaInfo(ctx).catch(function(){ return 0; });
       /* Never folded into the card diff: the look is its own gated press (edGhApplyLook), or applied after the check while Use Default Look is on. */
-      if(src.official) return ghFetchLook(url).then(function(lk){
+      if(src.official) return words.then(function(){ return ghFetchLook(url); }).then(function(lk){
         var s2=srcState(src);
         if(s2&&!s2.err){ s2.lookPkg=lk; edRenderOwnerSync(); }
       });
+      return words;
     });
   }).catch(function(err){
-    srcSetState(src,{err:(err&&err.message)||String(err)});
+    srcSetState(src,{err:(err&&err.message)||String(err), wrongGame:!!(err&&err.wrongGame)});
     srcRender();
   });
 }
@@ -470,7 +525,12 @@ window.edGhCheck=function(){
 window.edGhCheckSource=function(key){
   var s=srcByKey(key||GROUP_OFFICIAL);
   if(!s) return Promise.resolve(null);
-  return s.official ? window.edGhCheck() : ghCheckSource(s);
+  if(s.official) return window.edGhCheck();
+  /* the cards wait for Apply update; the keywords and watermarks have no press of their own, so they come with the check, as the Official set's do */
+  return ghCheckSource(s).then(function(){
+    var st=srcState(s);
+    if(st&&!st.err&&st.pkg)return srcSyncExtras(s,st.pkg,false);
+  });
 };
 
 /* Nothing that arrives from a source was made here: taken as `local`, a card is editable and never removed when its publisher deletes it. */
@@ -578,7 +638,7 @@ function ghSyncTestState(cards,src){
   });
   return Promise.all(off.map(function(c){ return persistCard(c); })).then(function(){ return off; });
 }
-/* The cards an update would overwrite that this machine may edit: zero means it costs nothing, and nothing asks. */
+/* The cards an update would overwrite that this machine may edit, or changed while it could (_editedHere): zero means it costs nothing, and nothing asks. */
 function ghWouldOverwriteOwnWork(cards,o){
   var mine=(window.CARDS||[]), ix=cardIndex(mine);
   var n=0;
@@ -588,15 +648,19 @@ function ghWouldOverwriteOwnWork(cards,o){
     var at=ix.at(nc), ex=(at==null)?null:mine[at];
     /* the refusals importCardRows makes: no card made here matched by name, never another source's card */
     if(ex&&o&&ex.local&&!(nc.cid&&ex.cid===nc.cid))return;
+    if(nc.linked&&o&&!o.official){
+      if(srcLinkedJoins(ex,nc,o)&&srcLinkedRisk(ex,nc,o))n++;
+      return;
+    }
     if(ex&&o&&srcBelongsElsewhere(ex,o.key))return;
     if(!ex||!(cardDiffers(ex,nc,o)||ghTestDiffers(ex,nc)))return;
     var locked=false;
     try{ locked=!!edCardLocked(ex); }catch(_){}
-    if(!locked)n++;
+    if(!locked||ex._editedHere)n++;
   });
   return n;
 }
-/* Only cards surely the source's to take: never on a copy that owns it, only from sagas it published this time, never `local` or Test.
+/* Only cards surely the source's to take: never on a copy that owns it, only from sagas it published this time, never `local`, Test or changed here.
    More than a tenth of its cards here, and more than 20, is a broken publish and removes nothing (HANDOFF §5). */
 function srcGoneCards(incoming,o){
   if(!o||o.owned)return [];
@@ -605,9 +669,11 @@ function srcGoneCards(incoming,o){
   if(!inc.length)return [];
   var ix=cardIndex(inc), from=0;
   var gone=(window.CARDS||[]).filter(function(c){
-    if(!c||c.local||c.__deleted||c.testing)return false;
+    if(!c||c.local||c.__deleted||c.testing||c._editedHere)return false;
     var mine=sagaIdsOf(c).filter(function(id){ return groupKeyOfId(id)===o.key; });
     if(!mine.length)return false;
+    /* nor a saga's own values on an official card changed here */
+    if(c._editedSagas&&mine.some(function(id){ return c._editedSagas[id]; }))return false;
     from++;
     if(!mine.some(function(id){ return o.sagaSet[id]; }))return false;
     return !ix.has(c);
@@ -628,7 +694,7 @@ function srcRemoveGone(gone,o){
     var rest=sagaIdsOf(c).filter(function(id){ return groupKeyOfId(id)!==o.key; });
     if(rest.length){
       sagaIdsOf(c).filter(function(id){ return rest.indexOf(id)<0; })
-        .forEach(function(id){ removeSagaMembership(c,id); });
+        .forEach(function(id){ if(removeSagaMembership(c,id))srcDropSagaFields(c,id); });
       srcTouched(c); kept.push(c);
       return;
     }
@@ -650,15 +716,40 @@ window.edGhGoneCards=function(){
   var st=_ghState; return (st&&st.pkg)?ghGoneCards(ghIncoming(st.pkg.cards,srcOfficial())).map(function(c){ return c.name; }):[];
 };
 
-/* Clears `local` from readers' copies of published cards, which an older Publish sent with it and an import never touches.
-   By card id and record id both: a reader's own card can share an older card id, never the record id. */
-function ghClearPublishedLocal(incoming,src){
-  try{ if(srcOwned(src||srcOfficial()))return 0; }catch(_){ return 0; }
-  var ids={};
-  (incoming||[]).forEach(function(c){ if(c&&c.cid&&c.id)ids[c.cid]=c.id; });
-  var fixed=(window.CARDS||[]).filter(function(c){ return c&&c.local&&c.cid&&c.id&&ids[c.cid]===c.id; });
-  fixed.forEach(function(c){ delete c.local; try{ persistCard(c); }catch(_){} });
-  return fixed.length;
+/* Each card an update would replace (matched as ghWouldOverwriteOwnWork matches), against what the set publishes now. One that is just what
+   was published loses the mark of a change made here (_editedHere, markDirty) and, where the set is not this copy's, the `local` an older Publish
+   sent with it: by record id too for that, as a reader's own card can share an older card id, never the record id. One that differs keeps both, so
+   an update asks first and removes nothing (srcGoneCards). On the owner's copy one that differs is marked: an edit made before the mark existed is
+   asked about too once the copy is not the owner's. */
+function ghSettlePublished(incoming,src,o){
+  var owned;
+  try{ owned=srcOwned(src||srcOfficial()); }catch(_){ return 0; }
+  var mine=(window.CARDS||[]), ix=cardIndex(mine), n=0;
+  (incoming||[]).forEach(function(nc){
+    if(!nc||!nc.name)return;
+    if(o&&o.sagaSet&&!srcSagasOf(nc,o).length)return;
+    var at=ix.at(nc), c=(at==null)?null:mine[at];
+    if(!c||(c.local&&!(nc.cid&&c.cid===nc.cid)))return;
+    var ch=false;
+    /* an official card in the set's sagas: the same, saga by saga, on what each sets itself */
+    if(nc.linked&&o&&o.sagaSet&&!o.official){
+      if(!srcLinkedJoins(c,nc,o))return;
+      srcSagasOf(nc,o).forEach(function(id){
+        var m=c._editedSagas||{};
+        if(!srcLinkedSagaDiffers(c,nc,id)){ if(m[id]){ srcUnmarkSaga(c,id); ch=true; } }
+        else if(owned&&!m[id]){ (c._editedSagas=c._editedSagas||{})[id]=1; ch=true; }
+      });
+      if(ch){ n++; try{ persistCard(c); }catch(_){} }
+      return;
+    }
+    if(o&&o.key&&srcBelongsElsewhere(c,o.key))return;
+    if(!cardDiffers(c,nc,o)){
+      if(c._editedHere){ delete c._editedHere; ch=true; }
+      if(c.local&&!owned&&c.id&&nc.id===c.id){ delete c.local; ch=true; }
+    } else if(owned&&!c._editedHere){ c._editedHere=1; ch=true; }
+    if(ch){ n++; try{ persistCard(c); }catch(_){} }
+  });
+  return n;
 }
 
 window.edGhUpdateNow=function(){
@@ -702,8 +793,7 @@ function ghApplyUpdateNow(fromPage,src){
   var gate=risk
     ? edDangerGate({phrase:'UPDATE',
         title:'Apply update from the source',
-        body:'This overwrites '+risk+' card(s) you can edit with the source’s version. '
-            +'Any local edit to a field the source also sets is replaced.'})
+        lose:['Your changes to '+risk+' card(s) here, in every field the source also sets: its version replaces them']})
     : Promise.resolve(true);
 
   return gate.then(function(ok){
@@ -749,16 +839,158 @@ function ghApplyUpdateNow(fromPage,src){
            +(res.gone?', removed '+res.gone+' the source no longer has':''))
         : 'Removed '+res.gone+' card(s) '+srcLabel(src)+' no longer has');
       srcRender();
-      return src.official ? ghSyncOfficialExtras(false) : srcAddKeywords(src);
+      return src.official ? ghSyncOfficialExtras(false) : srcSyncExtras(src,st.pkg,true);
     });
   }).catch(function(err){ alert('Update failed: '+((err&&err.message)||err)); });
 }
-/* Added, never replacing the Official entries or yours, so another creator's card still shows its keywords. */
-function srcAddKeywords(src){
-  if(!src||src.official||!src.url||/\.zip(\?.*)?$/i.test(src.url))return Promise.resolve(0);
-  return ghFetchKeywords(src.url).then(function(list){
-    return kwExtraAdd(list);
+/* A followed set's keywords and watermarks come with every check of it, a card update or not (ghAutoApply), and with every update taken; its look never does.
+   Nothing defined here is replaced: an entry is updated only from the set that brought it, which meta srcExtrasFrom remembers. One at a time, as they all write that record. */
+var SRC_FROM=null, _srcExtrasQ=Promise.resolve(), _srcMarksTried={};
+function srcSyncExtras(src,pkg,taken){
+  if(!src||src.official||!src.url||syncBlockedReason(src.url))return Promise.resolve(0);
+  /* your own set's, like its cards, only when you take its update */
+  if(srcOwned(src)&&!taken)return Promise.resolve(0);
+  var zip=!!(pkg&&pkg.zip)||/\.zip(\?.*)?$/i.test(src.url);
+  var p=_srcExtrasQ.then(srcFromLoad).then(function(from){
+    var was=JSON.stringify(from);
+    return Promise.all([zip?null:srcFetchKeywords(src),srcFetchMarks(src,pkg,from)]).then(function(v){
+      var n=srcTakeKeywords(src,v[0],from);
+      return srcTakeMarks(src,v[1]&&v[1].marks,pkg,from).then(function(m){
+        if(v[1]&&v[1].print)from.prints[src.key]=v[1].print;
+        if(JSON.stringify(from)!==was)srcFromSave(from);
+        return n+m;
+      });
+    });
   }).catch(function(){ return 0; });
+  _srcExtrasQ=p;
+  return p;
+}
+function srcFromLoad(){
+  if(SRC_FROM)return Promise.resolve(SRC_FROM);
+  return getMeta('srcExtrasFrom').then(function(v){
+    var o=(v&&typeof v==='object')?v:{};
+    var obj=function(x){ return (x&&typeof x==='object'&&!Array.isArray(x))?x:{}; };
+    SRC_FROM={kw:obj(o.kw),marks:obj(o.marks),prints:obj(o.prints)};
+    return SRC_FROM;
+  });
+}
+function srcFromSave(from){ return setMetaSafe('srcExtrasFrom',from,'where followed keywords and watermarks came from'); }
+/* Stop following keeps the set's keywords and watermarks, as a card of yours may wear them, and forgets where they came from:
+   a keyword passes to the next set that publishes it, a watermark is left as it is. */
+function srcFromForget(key){
+  var p=_srcExtrasQ.then(srcFromLoad).then(function(from){
+    var was=JSON.stringify(from);
+    Object.keys(from.kw).forEach(function(k){ if(from.kw[k]===key)delete from.kw[k]; });
+    Object.keys(from.marks).forEach(function(k){ if(from.marks[k]&&from.marks[k].key===key)delete from.marks[k]; });
+    delete from.prints[key];
+    if(JSON.stringify(from)!==was)return srcFromSave(from);
+  }).catch(function(){});
+  _srcExtrasQ=p;
+  return p;
+}
+function srcKwKey(k){ return (k.mode||'keyword')+'\u0000'+k.name; }
+/* What edApplyCustomEntries lets no extra replace (the Official list, the built-in damage kinds, yours) is skipped; so is an entry another followed set brought.
+   An entry from before sets were remembered is taken over by the first set that publishes it. */
+function srcTakeKeywords(src,list,from){
+  if(!Array.isArray(list)||!list.length)return 0;
+  var base={};
+  (KW_BAKED||[]).concat(rbDamageBuiltins()).forEach(function(k){ if(k&&k.name)base[srcKwKey(k)]=1; });
+  (KWCUSTOM||[]).forEach(function(c){
+    if(!c||!c.name)return;
+    base[srcKwKey(c)]=1;
+    if(c.replaces)base[(c.mode||'keyword')+'\u0000'+c.replaces]=1;
+  });
+  /* by name, as an entry and its aliases share one (kwCustomEntries) and change together */
+  var inc={}, order=[];
+  list.map(srcNormKw).filter(Boolean).forEach(function(k){
+    delete k.__custom;
+    var kk=srcKwKey(k);
+    if(base[kk])return;
+    if(!inc[kk]){ inc[kk]=[]; order.push(kk); }
+    inc[kk].push(k);
+  });
+  var out=(KW_EXTRA||[]).slice(), n=0;
+  order.forEach(function(kk){
+    var by=from.kw[kk];
+    if(by&&by!==src.key)return;
+    from.kw[kk]=src.key;
+    var cur=out.filter(function(k){ return k&&k.name&&srcKwKey(k)===kk; });
+    if(ghStableJson(cur)===ghStableJson(inc[kk]))return;
+    var at=cur.length?out.indexOf(cur[0]):-1;
+    out=out.filter(function(k){ return cur.indexOf(k)<0; });
+    if(at<0)at=out.length;
+    Array.prototype.splice.apply(out,[at,0].concat(inc[kk]));
+    n++;
+  });
+  if(!n)return 0;
+  KW_EXTRA=out;
+  setMetaSafe('kwFromSources',KW_EXTRA,'keywords from followed sources');
+  try{ ghKwRefresh(); }catch(_){}
+  return n;
+}
+/* With the cards' limits (fetchSource): every set checked after this one waits for it (srcEachFollowed). */
+function srcFetchJson(url){
+  if(!url||syncBlockedReason(url))return Promise.resolve(null);
+  return fetchSource(url).then(function(res){ return (res&&!res.zip)?res.json:null; },function(){ return null; });
+}
+function srcFetchKeywords(src){
+  return srcFetchJson(ghKwUrl(src.url)).then(function(j){ return (Array.isArray(j)&&j.length)?j:null; });
+}
+/* look.json for its watermarks alone, as it holds the whole look too (often most of a megabyte): only when the set says they changed
+   (manifest markPrint, ghPayload) or one of its cards wears one this copy lacks, and then once a session for each version. */
+function srcFetchMarks(src,pkg,from){
+  if(!pkg)return Promise.resolve(null);
+  /* a .zip carries its own, as can a cards.json (pkgFromJson) */
+  if(Array.isArray(pkg.marks)&&pkg.marks.length)return Promise.resolve({marks:pkg.marks,print:''});
+  if(pkg.zip)return Promise.resolve(null);
+  var man=pkg.man||{};
+  if(man.markCount===0)return Promise.resolve(null);
+  var print=(typeof man.markPrint==='string')?man.markPrint:'';
+  var have={}; (MARKS||[]).forEach(function(m){ if(m&&m.id)have[m.id]=1; });
+  var lacking=(pkg.cards||[]).some(function(c){
+    return cardMarkIds(c).some(function(id){ return !have[id]; }); });
+  if(!lacking&&(!print||print===from.prints[src.key]))return Promise.resolve(null);
+  var tag=src.key+'\u0000'+print;
+  if(_srcMarksTried[tag])return Promise.resolve(null);
+  _srcMarksTried[tag]=1;
+  return srcFetchJson(ghLookUrl(src.url)).then(function(j){
+    return (j&&typeof j==='object'&&Array.isArray(j.marks))?{marks:j.marks,print:print}:null;
+  });
+}
+/* in the shape the editor makes (edMarkNew), so nothing else a set sends is stored */
+function srcMarkClean(m){
+  if(!m||typeof m!=='object'||Array.isArray(m)||typeof m.id!=='string'||!m.id)return null;
+  return {id:m.id,name:(typeof m.name==='string')?m.name:'',src:(typeof m.src==='string')?m.src:'',
+          xf:markXf(m),a:numAttr(m.a,0.35,0,1)};
+}
+/* By id, as a card names one: added when a card of the set's or one made here wears it (another set's card waits for that set),
+   replaced only when it came from this set and the set has changed it since. */
+function srcTakeMarks(src,list,pkg,from){
+  if(!Array.isArray(list)||!list.length)return Promise.resolve(0);
+  var have={}, worn={};
+  (MARKS||[]).forEach(function(m){ if(m&&m.id)have[m.id]=1; });
+  (window.CARDS||[]).filter(function(c){ return c&&c.local; }).concat((pkg&&pkg.cards)||[]).forEach(function(c){
+    cardMarkIds(c).forEach(function(id){ worn[id]=1; }); });
+  var take=[];
+  list.forEach(function(raw){
+    var m=srcMarkClean(raw); if(!m)return;
+    var pr=ghFingerprint(ghStableJson(m)), by=from.marks[m.id];
+    if(have[m.id]){
+      if(!by||by.key!==src.key||by.print===pr)return;
+      /* nor under an edit of yours still waiting to be saved (markSaveSoon), which would write the old one back */
+      if(_markSaveTm[m.id])return;
+    } else if(!worn[m.id])return;
+    take.push({m:m,pr:pr});
+  });
+  var n=0;
+  return take.reduce(function(p,t){
+    return p.then(function(){
+      return put('marks',t.m).then(function(){ from.marks[t.m.id]={key:src.key,print:t.pr}; n++; },function(){});
+    });
+  },Promise.resolve()).then(function(){
+    if(!n)return 0;
+    return marksRefresh().then(function(){ try{ marksChanged(); }catch(_){} return n; });
+  });
 }
 function srcNormKw(k){
   if(!k||typeof k!=='object'||Array.isArray(k))return null;
@@ -851,8 +1083,11 @@ function ghApiError(r,t){
   err.status=r.status; err.limited=limited; err.wait=wait; err.ghMessage=msg;
   return err;
 }
-/* Only a read is tried again, at most twice, after the wait GitHub names (a minute at most): a second POST of a commit is a second commit. */
+/* A read is tried again, at most twice, after the wait GitHub names (a minute at most), and so is a blob or a tree, which is named by what is in it: a second POST of a commit is a second commit. */
 var GH_RETRY_MAX=2, GH_RETRY_WAIT_CAP=60;
+function ghSafeTwice(method,path){
+  return method==='GET'||(method==='POST'&&(path==='/git/blobs'||path==='/git/trees'));
+}
 function ghApi(method,path,body,tries){
   if(!GH_TOKEN)return Promise.reject(new Error('no token set.'));
   if(!GH_REPO.owner||!GH_REPO.repo)return Promise.reject(new Error('no repository set.'));
@@ -871,7 +1106,7 @@ function ghApi(method,path,body,tries){
     'Authorization':'Bearer '+GH_TOKEN}};
   if(body!==undefined){ opt.headers['Content-Type']='application/json';
     opt.body=JSON.stringify(body); }
-  var canRetry=(method==='GET'&&tries<GH_RETRY_MAX);
+  var canRetry=(ghSafeTwice(method,path)&&tries<GH_RETRY_MAX);
   return fetch(url,opt).then(function(r){
     return r.text().then(function(t){
       if(!r.ok){
@@ -886,6 +1121,16 @@ function ghApi(method,path,body,tries){
   },function(netErr){
     if(canRetry)return again((tries+1)*2);
     throw netErr;
+  });
+}
+/* GitHub takes about 80 new files a minute from one account: a publish that writes more than GH_WRITE_FREE starts each write GH_WRITE_GAP ms after the one before. */
+var GH_WRITE_GAP=800, GH_WRITE_FREE=70, _ghLastWrite=0;
+function ghPacedApi(pace,method,path,body){
+  if(!pace)return ghApi(method,path,body);
+  var wait=Math.max(0,_ghLastWrite+GH_WRITE_GAP-Date.now());
+  return new Promise(function(res){ setTimeout(res,wait); }).then(function(){
+    _ghLastWrite=Date.now();
+    return ghApi(method,path,body);
   });
 }
 
@@ -939,6 +1184,16 @@ function ghOutName(p){
 function ghCdnBase(){
   return 'https://cdn.jsdelivr.net/gh/'+GH_REPO.owner+'/'+GH_REPO.repo
         +'@'+(GH_REPO.branch||'main');
+}
+/* the official repository's, which holds the pictures of an official card in a saga of yours */
+function ghOfficialCdnBase(){
+  var o=ghOfficialParts();
+  return o?'https://cdn.jsdelivr.net/gh/'+o.owner+'/'+o.repo+'@'+o.branch:ghCdnBase();
+}
+/* An official card going out in sagas of yours without the official ones (Add to my saga): sent marked, with each saga's own values (srcLinkedJoin). */
+function ghLinkedOut(c,keep){
+  return !!(c&&keep&&typeof keep==='object')&&!ghTargetIsOfficial()&&sagaIdsOf(c).some(function(id){
+    return !keep[id]&&groupKeyOfId(id)===GROUP_OFFICIAL; });
 }
 
 /* A publish sends only the sagas made here and those whose source is the repository published to; with none set, all but other people's. */
@@ -1023,14 +1278,16 @@ function ghScopeSagas(o,keep){
 }
 /* Shared by cards.json and testing.json, so a card moving in or out of Test reads the same in either. */
 function ghPublishedForm(c,keep){
-  var base=ghCdnBase();
+  /* its pictures are the official repository's, and it sends none of its own */
+  var linked=ghLinkedOut(c,keep);
+  var base=linked?ghOfficialCdnBase():ghCdnBase();
   var o=JSON.parse(JSON.stringify(c));
   delete o.__id;
   if(keep&&typeof keep==='object')ghScopeSagas(o,keep);
-  /* a published card is the set's wherever it lands, never `local` (ghNotLocal) */
-  delete o.local;
+  /* a published card is the set's wherever it lands, never `local` (ghNotLocal) nor changed there */
+  delete o.local; delete o._editedHere; delete o._editedSagas;
   artBearers(o).forEach(function(b){
-    var local=ghLocalArtKey(b);
+    var local=linked?'':ghLocalArtKey(b);
     if(local&&ghOnDisk(c,local))local='';
     ['art','imageUrl'].forEach(function(f){
       var v=b[f]||'';
@@ -1042,13 +1299,21 @@ function ghPublishedForm(c,keep){
     /* a picture only here points at the copy Publish uploads; one on disk (art/...) wins */
     if(local&&!b.imageUrl)b.imageUrl=base+'/'+GH_UPLOAD_DIR+'/'+ghOutName(local);
   });
+  if(linked){
+    var own={}, pic=function(v){
+      var w=(o.variants||[]).filter(function(x){ return x&&x.id===v.id; })[0];
+      return (w&&(w.imageUrl||w.art))||'';
+    };
+    sagaIdsOf(o).forEach(function(id){ own[id]=srcLinkedOwn(c,id,pic); });
+    o.linked={to:'official',own:own};
+  }
   return o;
 }
 /* Only cards this publish sends: one only in sagas left out, or in a table copy, sends no picture. */
 function ghLocalArtUploads(){
   var out=[], seen={}, keep=ghPublishSagaSet();
   (window.CARDS||[]).forEach(function(c){
-    if(!c||c.__deleted||!ghInScope(c,keep))return;
+    if(!c||c.__deleted||!ghInScope(c,keep)||ghLinkedOut(c,keep))return;
     artBearers(c).forEach(function(b){
       var k=ghLocalArtKey(b);
       if(!k||ghOnDisk(c,k))return;
@@ -1077,23 +1342,70 @@ function ghWebpBytes(key){
     }).then(function(out){ return out.arrayBuffer(); }).then(function(ab){ return new Uint8Array(ab); });
 }
 window.edGhWebpBytes=function(key){ return ghWebpBytes(key); };
-/* Named by the store key, new for every upload (edArtUpload): a replaced picture is a new file, and one already up is never sent twice. */
-function ghArtCapText(n){
-  return 'This publish would send '+n+' pictures that exist only in this browser, and one publish '
-    +'from the app sends at most '+GH_ART_CAP+'. Use the command-line tool instead: '
-    +'tools/github_sync.py (Publish-All.bat) publishes the pictures in art/ from disk.';
+/* Named by the store key, new for every upload (edArtUpload): a replaced picture is a new file, and one the repository holds is never sent again, so a publish stopped part-way carries on from there. */
+function ghArtParts(pics){
+  var parts=[];
+  for(var i=0;i<pics.length;i+=GH_ART_BATCH)parts.push(pics.slice(i,i+GH_ART_BATCH));
+  /* never none: the last part carries the cards */
+  return parts.length?parts:[[]];
 }
-function ghAddLocalArt(rt,local){
-  var todo=ghLocalArtUploads().filter(function(u){ return !(rt&&rt.paths&&rt.paths[u.path]); });
-  /* refused whole, before the first one is encoded */
-  if(todo.length>GH_ART_CAP)return Promise.reject(new Error(ghArtCapText(todo.length)));
-  return todo.reduce(function(p,u){
-    return p.then(function(done){
+function ghPartsText(n){
+  return 'The '+n+' pictures go up in '+Math.ceil(n/GH_ART_BATCH)+' parts of at most '+GH_ART_BATCH
+    +', the cards with the last. Keep this page open until it says Published; if it stops part-way, '
+    +'Publish again carries on from there.';
+}
+/* One commit, and the branch moved to it. Its pictures are each encoded as they are sent, so no more than one is held; the last part also carries the data files. */
+function ghSendPart(run,k,pics,data,local,pace){
+  var entries=[], part=run.parts>1?'part '+(k+1)+' of '+run.parts:'', label=part?part+': ':'';
+  var send=function(path,bytes,sha){
+    return ghPacedApi(pace,'POST','/git/blobs',{content:ghB64Bytes(bytes),encoding:'base64'})
+      .then(function(r){
+        if(r.sha!==sha)
+          throw new Error('GitHub stored a different hash for '+path+' than this page computed. '
+            +'Refusing to build a tree from it.');
+        entries.push({path:path,mode:'100644',type:'blob',sha:sha});
+      });
+  };
+  var p=Promise.resolve();
+  pics.forEach(function(u,i){
+    p=p.then(function(){
+      ghPushStatus('Uploading '+label+'picture '+(i+1)+' of '+pics.length+'…');
       return ghWebpBytes(u.key).then(function(bytes){
-        return ghBlobSha(bytes).then(function(sha){ local[u.path]={sha:sha,bytes:bytes}; done.push(u.path); return done; });
+        return ghBlobSha(bytes).then(function(sha){ return send(u.path,bytes,sha); });
       });
     });
-  },Promise.resolve([]));
+  });
+  if(data.length)p=p.then(function(){ ghPushStatus('Uploading '+label+data.length+' file(s)…'); });
+  data.forEach(function(n){
+    p=p.then(function(){ return send(n,local[n].bytes,local[n].sha); });
+  });
+  var tree='';
+  return p.then(function(){
+    var base=run.tree, i=0;
+    function step(){
+      if(i>=entries.length)return Promise.resolve(base);
+      var body={tree:entries.slice(i,i+GH_TREE_CHUNK)};
+      if(base)body.base_tree=base;
+      i+=GH_TREE_CHUNK;
+      return ghPacedApi(pace,'POST','/git/trees',body).then(function(t){ base=t.sha; return step(); });
+    }
+    return step();
+  }).then(function(treeSha){
+    tree=treeSha;
+    ghPushStatus('Committing'+(part?' '+part:'')+'…');
+    return ghPacedApi(pace,'POST','/git/commits',
+      {message:'Publish from the app'+(part?', '+part:'')+': '+entries.length+' file(s)',
+       tree:treeSha,parents:[run.head]});
+  }).then(function(commit){
+    var br=GH_REPO.branch||'main';
+    run.stage='ref'; run.commit=String(commit.sha||'');
+    return (run.made
+      ? ghPacedApi(pace,'PATCH','/git/refs/heads/'+ghRefPath(br),{sha:commit.sha})
+      : ghPacedApi(pace,'POST','/git/refs',{ref:'refs/heads/'+br,sha:commit.sha}))
+      .then(function(){
+        run.stage='prep'; run.made=true; run.head=run.commit; run.tree=tree; run.landed=k+1;
+      });
+  });
 }
 
 /* The in-app Publish never uploads the app: tools/github_sync.py publishes card_catalog.html from disk (HANDOFF §17.7).
@@ -1167,10 +1479,13 @@ function ghPayload(prev){
   var sagas=ghSagaIndex(cards);
   var look=ghBuildLook(), marks=ghBuildMarks();
   var slots=(look&&look.slots)?Object.keys(look.slots).length:0;
-  var manifest={name:(prev&&prev.name)||'Conjure UCG',format:2,
+  /* a creator's set is named for its repository (the author, session 88); an official set keeps the name it has */
+  var name=ghTargetIsOfficial()?((prev&&prev.name)||'Conjure UCG')
+    :(String(GH_REPO.repo||'').trim()||(prev&&prev.name)||'Conjure UCG');
+  var manifest={name:name,format:2,game:ghMode(),
     cardCount:cards.length,keywordCount:kw.length,
-    /* so a reader knows there is a look to fetch before spending a request on it */
-    lookSlots:slots,markCount:marks.length,
+    /* so a reader knows there is a look to fetch before spending a request on it, and a follower whether the watermarks changed (srcFetchMarks) */
+    lookSlots:slots,markCount:marks.length,markPrint:ghFingerprint(ghStableJson(marks)),
     artBase:ghCdnBase()+'/art/'};
   if(prev&&prev.artFiles!=null)manifest.artFiles=prev.artFiles;
   if(prev&&prev.artEncoding)manifest.artEncoding=prev.artEncoding;
@@ -1619,7 +1934,7 @@ window.edGhPreview=function(){
     ghPushStatus(ghTargetNote(rt)+(up.length
       ? 'Would upload: '+up.join(', ')+'. Nothing else is touched.'
       : 'Already up to date - the repository matches this catalog.')
-      +(art.length>GH_ART_CAP?' '+ghArtCapText(art.length):''));
+      +(art.length>GH_ART_BATCH?' '+ghPartsText(art.length):''));
     return {up:up,local:local,rt:rt};
   }).catch(function(err){
     _ghBusy=false; ghPushStatus('Could not check: '+((err&&err.message)||err));
@@ -1655,8 +1970,8 @@ window.edGhPublish=function(){
   _ghBusy=true; _ghStarted=false; ghPushStatus('Preparing…');
   var files=null, names=null, enc=new TextEncoder();
   var local={};
-  /* 'ref' once the commit exists and the branch is moving to it, so a failure there is reported as possibly landed */
-  var stage='prep', commitSha='';
+  /* stage is 'ref' once a part's commit exists and the branch is moving to it, so a failure there is reported as possibly landed; landed counts the parts the branch holds */
+  var run={stage:'prep',commit:'',parts:1,landed:0,head:'',tree:'',made:false};
   return ghPublishTarget().then(function(go){
     if(go!==true)return go;
   /* Removed cards are deleted on every machine that follows the set, so only a publish that removes some asks first (REMOVE). */
@@ -1696,58 +2011,33 @@ window.edGhPublish=function(){
     var bytes=enc.encode(files[n]);
     return ghBlobSha(bytes).then(function(s){ local[n]={sha:s,bytes:bytes}; });
   })).then(ghRemoteTree).then(function(rt){
-    ghPushStatus('Preparing pictures…');
-    return ghAddLocalArt(rt,local).then(function(paths){ paths.forEach(function(n){ names.push(n); }); return rt; });
-  }).then(function(rt){
     /* never a commit with no parent: an empty repository has its README by now */
     if(!rt.head)throw new Error('the repository has no commit to build on.');
-    var up=names.filter(function(n){ return rt.paths[n]!==local[n].sha; });
-    if(!up.length){
+    var data=names.filter(function(n){ return rt.paths[n]!==local[n].sha; });
+    var pics=ghLocalArtUploads().filter(function(u){ return !rt.paths[u.path]; });
+    if(!data.length&&!pics.length){
       _ghBusy=false;
       ghPushStatus(rt.newBranch
         ? 'Nothing to upload - "'+rt.from+'" already holds this catalog, so no branch was created.'
         : 'Already up to date - nothing to do.');
       return;
     }
-    ghPushStatus('Uploading '+up.length+' file(s)…');
-    return up.reduce(function(p,n){
-      return p.then(function(shas){
-        return ghApi('POST','/git/blobs',{content:ghB64Bytes(local[n].bytes),encoding:'base64'})
-          .then(function(r){
-            if(r.sha!==local[n].sha)
-              throw new Error('GitHub stored a different hash for '+n+' than this page computed. '
-                +'Refusing to build a tree from it.');
-            shas[n]=r.sha; return shas;
-          });
+    /* the pictures first and the cards in the last part, so no published card names a picture that is not there yet */
+    var parts=ghArtParts(pics);
+    run.parts=parts.length; run.head=rt.head; run.tree=rt.tree; run.made=!rt.newBranch;
+    run.newBranch=rt.newBranch||''; run.from=rt.from||'';
+    /* a tree, a commit and the branch for each part */
+    var pace=pics.length+data.length+3*parts.length>GH_WRITE_FREE;
+    return parts.reduce(function(p,part,k){
+      return p.then(function(){
+        return ghSendPart(run,k,part,k===parts.length-1?data:[],local,pace);
       });
-    },Promise.resolve({})).then(function(shas){
-      var entries=up.map(function(n){
-        return {path:n,mode:'100644',type:'blob',sha:shas[n]}; });
-      var base=rt.tree, i=0;
-      function step(){
-        if(i>=entries.length)return Promise.resolve(base);
-        var body={tree:entries.slice(i,i+GH_TREE_CHUNK)};
-        if(base)body.base_tree=base;
-        i+=GH_TREE_CHUNK;
-        return ghApi('POST','/git/trees',body).then(function(t){ base=t.sha; return step(); });
-      }
-      return step();
-    }).then(function(treeSha){
-      ghPushStatus('Committing…');
-      return ghApi('POST','/git/commits',
-        {message:'Publish from the app: '+up.length+' file(s)',tree:treeSha,parents:[rt.head]});
-    }).then(function(commit){
-      var br=GH_REPO.branch||'main';
-      stage='ref'; commitSha=String(commit.sha||'');
-      return (rt.newBranch
-        ? ghApi('POST','/git/refs',{ref:'refs/heads/'+br,sha:commit.sha})
-        : ghApi('PATCH','/git/refs/heads/'+ghRefPath(br),{sha:commit.sha}))
-        .then(function(){ return commit; });
-    }).then(function(commit){
-      _ghBusy=false; stage='done';
+    },Promise.resolve()).then(function(){
+      _ghBusy=false; run.stage='done';
       /* the comparison was of the catalogue before this publish, and a list still saying "1 changed" reads as work left */
       _ghDiff=null;
-      ghPushStatus('Published. Commit '+commit.sha.slice(0,10)+'.'
+      ghPushStatus('Published. Commit '+run.head.slice(0,10)+'.'
+        +(run.parts>1?' The pictures went up in '+run.parts+' parts.':'')
         +(rt.newBranch?' Branch "'+rt.newBranch+'" was created from "'+rt.from+'".':''));
       toast('Published to '+GH_REPO.owner+'/'+GH_REPO.repo);
       try{ ghAfterPublish(); }catch(_){}
@@ -1757,11 +2047,24 @@ window.edGhPublish=function(){
   }).catch(function(err){
     _ghBusy=false;
     var m=(err&&err.message)||String(err);
+    var last=run.landed+1>=run.parts;
     /* The last step can land and lose its answer: a refusal leaves the branch where it was, but no answer at all says nothing either way. */
-    if(stage==='ref'&&!(err&&err.status)){
-      ghPushStatus('Publish may have gone through: the connection failed while the branch was '
-        +'being moved to commit '+commitSha.slice(0,10)+' ('+m+'). Press Preview changes - '
-        +'"Already up to date" means it landed.');
+    if(run.stage==='ref'&&!(err&&err.status)){
+      ghPushStatus(last
+        ? 'Publish may have gone through: the connection failed while the branch was '
+          +'being moved to commit '+run.commit.slice(0,10)+' ('+m+'). Press Preview changes - '
+          +'"Already up to date" means it landed.'
+        : 'Publish stopped: the connection failed while the branch was being moved to part '
+          +(run.landed+1)+' of '+run.parts+' ('+m+'). No card is published yet. Press Publish '
+          +'again to carry on: a picture already there is not sent twice.');
+      return;
+    }
+    /* parts before this one hold pictures only, which no card names yet */
+    if(run.landed){
+      ghPushStatus('Publish stopped part-way: '+m+(/[.!?]$/.test(m)?' ':'. ')
+        +(run.landed>1?'Parts 1 to '+run.landed+' of '+run.parts+', pictures only, are':'Part 1 of '+run.parts+', pictures only, is')
+        +' in the repository, but no card is published yet. Press Publish again to send the rest.'
+        +(run.newBranch?' Branch "'+run.newBranch+'" was created from "'+run.from+'".':''));
       return;
     }
     ghPushStatus('Publish failed: '+m
@@ -2019,7 +2322,6 @@ window.edGhEmptyState=function(){
   if(why)return {line:why};
   if(st.err)return {line:'Could not reach the official catalogue', btn:'Try again'};
   if(st.pkg)return {line:'The official catalogue is ready', btn:'Load it'};
-  if(!GH_AUTOCHECK)return {line:'Automatic updates are off', btn:'Load the official catalogue'};
   return {line:'Loading the official catalogue…'};
 };
 /* only an empty grid is redrawn from here */
@@ -2072,13 +2374,10 @@ function edRenderOwnerSync(){
         +((st.lookPkg.marks||[]).length?(", "+st.lookPkg.marks.length+" watermark(s)"):'')
         +".</div>")
       :'')
-    /* The weekly run has no switch: Enable Automatic Updates on Open, beside it, does not stop it (ghWeeklyMaybe). */
+    /* Deliberately no switch here: followers always take updates on open, and only the owner's own set waits for a press. */
     +"<div class='gh-onerow gh-toggles'>"
     +"<button class='ed2-btn tiny' onclick='edGhWeeklyRun()'"
     +" title='Every saga with a source, now'>Sync All Sagas</button>"
-    +"<label title='Takes the update as the catalog opens. In owner mode it only "
-    +"tells you, and the badge waits for your press.'><input type='checkbox'"+(GH_AUTOCHECK?' checked':'')
-    +" onchange='edGhSetAutoCheck(this.checked)'> Enable Automatic Updates on Open</label>"
     +(GH_WEEKLY_LAST
         ?"<span class='gh-hint'>Last run "+e(String(GH_WEEKLY_LAST).slice(0,10))+"</span>":'')
     +"</div>"
@@ -2155,7 +2454,7 @@ window.edFollowSource=function(url){
   }
   var why=syncBlockedReason(url);
   if(why){ toast(why); return Promise.resolve(null); }
-  var s=srcByKey(key);
+  var s=srcByKey(key), fresh=!s;
   if(!s){
     s={url:url, added:new Date().toISOString(), lastCheck:'', lastSync:'', skip:[]};
     SOURCES.push(s); srcWrap(s); srcSave();
@@ -2164,6 +2463,13 @@ window.edFollowSource=function(url){
   srcRender();
   return ghCheckSource(s).then(function(){ return ghAutoApply(s); }).then(function(){
     var st=srcState(s);
+    /* a set for the other game is never right here, so a new one leaves no row behind */
+    if(st&&st.wrongGame&&fresh){
+      SOURCES=SOURCES.filter(function(x){ return srcKeyOf(x.url)!==s.key; });
+      delete _srcState[s.key]; srcSave(); srcRender();
+      toast('Could not follow that set: '+st.err);
+      return null;
+    }
     if(st&&st.err)toast('Could not read that set: '+st.err);
     return s;
   });
@@ -2201,12 +2507,13 @@ window.edUnfollowSource=function(key){
     var gone={}; only.forEach(function(c){ gone[c.__id]=1; });
     window.CARDS=(window.CARDS||[]).filter(function(c){ return !gone[c.__id]; });
     shared.forEach(function(c){
-      Object.keys(ids).forEach(function(id){ removeSagaMembership(c,id); });
+      Object.keys(ids).forEach(function(id){ if(removeSagaMembership(c,id))srcDropSagaFields(c,id); });
       markDirty(c);
     });
     SAGAS=SAGAS.filter(function(sg){ return !ids[sg.id]; });
     SOURCES=SOURCES.filter(function(x){ return srcKeyOf(x.url)!==s.key; });
     delete _srcState[s.key]; srcSave();
+    srcFromForget(s.key);
     return Promise.all(only.map(function(c){
         return put('cards',{id:c.id||uid(),name:c.name,cid:cardCid(c),sagaId:sagaIdOf(c),
                             saga:c.saga,__deleted:true}); })
@@ -2419,16 +2726,10 @@ window.edImportTableCopy=function(pkg,from){
 
 /* setTimeout, never rAF: rAF does not fire in the automation browser pane. */
 function ghAutoCheck(){
-  if(_ghChecked||_ghWeeklyOnOpen)return;
+  if(_ghChecked)return;
   if(!GH_SOURCE||syncBlockedReason(GH_SOURCE))return;
-  /* A promise either way, so boot can say when the open is over (CONJURE_OPENED, ed2_boot.js). */
-  if(!GH_AUTOCHECK){
-    _ghWeeklyOnOpen=true;
-    return new Promise(function(done){
-      setTimeout(function(){ var w; try{ w=ghWeeklyMaybe(); }catch(_){} done(w); },1200);
-    });
-  }
   _ghChecked=true;
+  /* a promise, so boot can say when the open is over (CONJURE_OPENED, ed2_boot.js) */
   return new Promise(function(done){ setTimeout(function(){
     try{ ghRefreshOfficialIndex(); }catch(_){}
     /* the Official source, then each followed one in turn, and only then the weekly run, which would otherwise repeat it all in the same second */
@@ -2468,13 +2769,17 @@ function ghAutoApply(src){
   src=src||srcOfficial();
   var st=srcState(src);
   if(!st||st.err||!st.pkg)return Promise.resolve(null);
+  /* no update taken here, but a followed set's keywords and watermarks still come; ghApplyUpdateNow brings them with one */
+  var extrasOnly=function(){
+    return src.official?Promise.resolve(null):srcSyncExtras(src,st.pkg,false).then(function(){ return null; });
+  };
   var d=st.diff;
-  if(!d||(!d.added&&!d.changed&&!d.removed))return Promise.resolve(null);
-  if(src.official&&GH_OWNER_MODE)return Promise.resolve(null);
-  if(!src.official&&srcOwned(src))return Promise.resolve(null);
+  if(!d||(!d.added&&!d.changed&&!d.removed))return extrasOnly();
+  if(src.official&&GH_OWNER_MODE)return extrasOnly();
+  if(!src.official&&srcOwned(src))return extrasOnly();
   /* Nor on the official token holder's copy, switch or not: a card deleted there but not yet published would come straight back. */
-  if(src.official&&edOwnerUnlocked())return Promise.resolve(null);
-  if(ghWouldOverwriteOwnWork(ghIncoming(st.pkg.cards,src),st.ctx))return Promise.resolve(null);
+  if(src.official&&edOwnerUnlocked())return extrasOnly();
+  if(ghWouldOverwriteOwnWork(ghIncoming(st.pkg.cards,src),st.ctx))return extrasOnly();
   /* down before the apply: a badge that vanishes a second later, unpressed, reads as a failure */
   ghBadge(null);
   return ghApplyUpdate(false,src);
@@ -2482,7 +2787,6 @@ function ghAutoApply(src){
 
 /* A closed page cannot run, so "every Friday" is the first open on or after the Friday it is due; there is no switch. */
 var GH_WEEK_MS=7*24*60*60*1000;
-var _ghWeeklyOnOpen=false;
 
 function ghNextFriday(from){
   var d=new Date(from.getFullYear(),from.getMonth(),from.getDate());
@@ -2517,7 +2821,7 @@ function ghWeeklyRun(force){
         if(!st||st.err||!st.pkg){ failed++; return; }
         var d=st.diff||{};
         var n=(d.added||0)+(d.changed||0)+(d.removed||0);
-        if(!n)return;
+        if(!n)return srcSyncExtras(s,st.pkg,false);
         return Promise.resolve(ghAutoApply(s)).then(function(){
           var st2=srcState(s);
           if(st2&&st2.pkg)held+=n; else added+=(d.added||0)+(d.changed||0);

@@ -1602,9 +1602,12 @@ function sagaBoxHTML(c){
   try{ if(typeof window.edEditingSaga==='function')cur=window.edEditingSaga()||ids[0]; }catch(_){}
   var live=(typeof window.edEditSaga==='function');
   var canDrop=(typeof window.edRemoveCardSaga==='function');
+  var open=function(id){ try{ return typeof window.edSagaOpenFor!=='function'||window.edSagaOpenFor(c,id); }catch(_){ return true; } };
   /* By index, not by id: a saga id can be typed text, and user text never goes into an inline onclick (HANDOFF §24.2). */
   var chips=ids.map(function(id,i){
     var lbl=names[id]||id, on=(id===cur?' on':'');
+    /* a saga that comes from its source: its values and the card's place in it are that source's */
+    if(!open(id))return "<span class='ed2-sagachip ed2-sagachip-src"+on+"' title='"+e(lbl)+" comes from its source'>"+e(lbl)+"</span>";
     /* Every chip can come off, the first too, as cid is the identity; only the last stays, its X saying why. */
     var last=(ids.length<2);
     var x=!canDrop ? ''
@@ -1635,7 +1638,7 @@ window.edRenderFields=function(){ return renderFields(); };
 function renderFields(){
   var host=document.getElementById('edFields'); if(!host)return;
   var c=curCard();
-  if(!c){ host.innerHTML=
+  if(!c){ edLinkedMask(false); host.innerHTML=
     "<div class='ed2-empty'><div class='ei'>&#9997;</div>"
     +"<p>Pick a card's <b>Edit</b> button in the catalog, or make a new one.</p>"
     +"<div style='display:flex;gap:8px'>"
@@ -1643,6 +1646,17 @@ function renderFields(){
     +"</div></div>"; return; }
   /* `m` is the card as the selected saga prints it; on a card in one saga it is c. */
   var m=edFieldSource(c);
+  var linked=[];
+  try{ if(typeof window.edLinkedSagas==='function')linked=window.edLinkedSagas(c)||[]; }catch(_){}
+  var linkNote='';
+  if(linked.length){
+    var lnm=edSagaNameMap(), lsid=linked[0];
+    try{ if(typeof window.edEditingSaga==='function')lsid=window.edEditingSaga()||lsid; }catch(_){}
+    var lname="<b>"+e(lnm[lsid]||lsid)+"</b>";
+    linkNote="<div class='ed2-linked-note' role='note'>An official card in "+lname+". Its name, cost, rules, stats and "
+      +"pictures follow the official card. "+lname+" sets its own flavor text, artist, Owner, watermark, border and "
+      +"reminders, and which of the card's pictures it shows.</div>";
+  }
   host.innerHTML=
     /* A plain .ed2-group, so it is as wide as the box under it without a fixed width. */
     "<div class='ed2-group ed2-btnbox'>"
@@ -1673,6 +1687,7 @@ function renderFields(){
       +"<button class='ed2-btn warn ed2-bg-del' onclick='edDeleteCard(curIdNow())'>✕ Delete card</button>"
     +"</div>"
     +"</div>"
+    +linkNote
     +"<div class='ed2-topsplit'><div class='ed2-topsplit-main'>"
     /* ed2-group-stats stays an inner wrapper: eight ed2_style.css selectors hang off it, and the orb slots need them to fit one row. */
     +"<div class='ed2-group ed2-g-id'>"
@@ -1749,6 +1764,30 @@ function renderFields(){
   if(typeof window.edLiveQuiet==='function') window.edLiveQuiet(edLive);
   else edLive();
   try{ window.edSyncSaveBtns(); }catch(_){}
+  edLinkedMask(linked.length>0);
+}
+/* An official card in a saga of yours (edLinkedSagas): every control but that saga's own values is inert. An observer keeps it so, as the
+   art panel, the keyword bar and the colour row draw themselves again; it is set up the first time such a card opens. */
+var ED_LINKED_OPEN='.ed2-bg-back,#edAutoBtn,.ed2-bg-dup,.ed2-bg-kw,.ed2-bg-pair,.ed2-bg-new,.ed2-flavor-row,'
+  +'#edArtPanel>.ed2-var-row:first-child>select,.ed2-hlbox,#edOvrRow,#f-kwbar,.f-owner-wrap,.f-artist-wrap,.ed2-sagabox';
+var _edLinkedOn=false, _edLinkedMO=null;
+function edLinkedMask(on){
+  var host=document.getElementById('edFields'); if(!host)return;
+  if(on!==undefined)_edLinkedOn=!!on;
+  host.classList.toggle('ed2-linked',_edLinkedOn);
+  if(!_edLinkedOn){
+    host.querySelectorAll('[data-linked-shut]').forEach(function(el){ el.removeAttribute('inert'); el.removeAttribute('data-linked-shut'); });
+    return;
+  }
+  if(!_edLinkedMO&&typeof MutationObserver==='function'){
+    /* attributes are not watched, so the inert written here does not call this again */
+    _edLinkedMO=new MutationObserver(function(){ if(_edLinkedOn)edLinkedMask(); });
+    _edLinkedMO.observe(host,{childList:true,subtree:true});
+  }
+  host.querySelectorAll('input,select,textarea,button,[contenteditable],#edArtStage,.ed2-combo').forEach(function(el){
+    if(el.closest(ED_LINKED_OPEN)||el.hasAttribute('inert'))return;
+    el.setAttribute('inert',''); el.setAttribute('data-linked-shut','1');
+  });
 }
 
 /* The rows may not wrap or clip, so the type shrinks, worked out from the real labels rather than a fixed size; rects are
