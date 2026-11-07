@@ -6,7 +6,9 @@
    is nested strokes, so nothing is re-blurred as a card turns. The stat icon sets draw the stats as layered icons
    (the fill at the stats' depth, the outline and numeral one step above). The Nebula frame paints the Cosmos back's
    sky under the card (NebSky). The chosen frame, icon set and card back are the look (edFrameLook), kept in meta
-   'cardLook', in packs, backups and look.json like every other look field.
+   'cardLook', in packs, backups and look.json like every other look field. Full art is a card's own option (its
+   variant's fullArt, ed2_face.js), a card without a picture wears the placeholder art (frPhHTML), and the highlight
+   slots get their overlays here (frPinHoloHTML), since session 92.
    Sits between ed2_face.js and ed2_tools.js inside the editor's closure: it reads the face helpers (cardOrbs, tplGet,
    e, FRAME_ORDER, svar, orbShapeByType) and the face code calls back into it (frFaceStyle, frTypelineStyle,
    frBoxHTML, frRimHTML, frExtrasHTML, frSecVars, faceOrbHTML, frameDecorate, frameTilt, frameTiltReset).
@@ -27,6 +29,17 @@ var FR_DEEP={Red:'#914227',Orange:'#7f471b',Yellow:'#978f31',Green:'#336b46',Blu
 var FR_DARK={Red:'#200000',Orange:'#2b1b07',Yellow:'#322d00',Green:'#00160b',Blue:'#061922',Indigo:'#1d0a26',Violet:'#2a000f',Grey:'#141418'};
 var FR_JEWEL={Red:'#e2452f',Orange:'#ee8a2a',Yellow:'#f2d13a',Green:'#3fae6a',Blue:'#3f9be0',Indigo:'#6a4fd6',Violet:'#d14fb8',Grey:'#9aa3b2'};
 var FR_A='var(--holo-ang,120deg)';
+/* a palette read along the sheet: at t (0 at the start of the light, 1 at its end) a card's colours blend into one another in
+   the site's own order, as its Default frame runs from one colour to the next; one colour reads the same everywhere */
+function frPalAt(cols){
+  var n=(cols||[]).length;
+  return function(table,t){
+    if(n<2) return table[n?cols[0]:'Grey'];
+    var p=Math.max(0,Math.min(1,t==null?.5:t))*(n-1), k=Math.min(n-2,Math.floor(p));
+    return frMix(table[cols[k]],table[cols[k+1]],p-k);
+  };
+}
+function frJewelAt(cols){ var P=frPalAt(cols); return function(t){ return P(FR_JEWEL,t); }; }
 function frRgb(h){ h=String(h).replace('#',''); if(h.length===3) h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2]; return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
 function frHex(c){ return '#'+c.map(function(v){ v=Math.max(0,Math.min(255,Math.round(v))); return (v<16?'0':'')+v.toString(16); }).join(''); }
 function frShade(h,a){ return frHex(frRgb(h).map(function(v){ return v+a; })); }
@@ -97,21 +110,22 @@ function frLG(id,stops,rot,extra,sheet){
     return '<linearGradient id="'+id+'" gradientUnits="userSpaceOnUse" x1="'+f2(l[0])+'" y1="'+f2(l[1])+'" x2="'+f2(l[2])+'" y2="'+f2(l[3])+'" data-sheet="1" '+extra+'>'+s+'</linearGradient>'; }
   return '<linearGradient id="'+id+'" x1=".5" y1="1" x2=".5" y2="0" '+(rot?'data-rot="1"':'')+' gradientTransform="rotate(120 .5 .5)" '+extra+'>'+s+'</linearGradient>';
 }
-function frFrameGrad(id,col){ var h=FR_PASTEL[col]; return frLG(id,[[0,h],[.31,frShade(h,30)],[.415,'#ffe1ef'],[.44,'#fff7d8'],[.46,'#ffffff'],[.48,'#d8fff1'],[.505,'#dde7ff'],[.58,frShade(h,-42)],[1,h]]); }
+function frFrameGrad(id,cols){ var P=frPalAt(cols), h=function(t){ return P(FR_PASTEL,t); };
+  return frLG(id,[[0,h(0)],[.31,frShade(h(.31),30)],[.415,'#ffe1ef'],[.44,'#fff7d8'],[.46,'#ffffff'],[.48,'#d8fff1'],[.505,'#dde7ff'],[.58,frShade(h(.58),-42)],[1,h(1)]]); }
 var FR_GOLD_STOPS=[[0,'#6b5327'],[.22,'#a8862f'],[.38,'#e8c96a'],[.43,'#fff1c8'],[.46,'#ffffff'],[.49,'#ffeede'],[.55,'#e8c96a'],[.72,'#8a6820'],[1,'#6b5327']];
 var FR_IRON_STOPS=[[0,'#33363b'],[.22,'#5c6169'],[.38,'#aeb4bd'],[.43,'#e8ebf0'],[.46,'#f6f7fa'],[.49,'#e3e6eb'],[.55,'#aeb4bd'],[.72,'#44484f'],[1,'#2e3136']];
 var FR_STEEL_STOPS=[[0,'#1b1d22'],[.30,'#2e3137'],[.44,'#6a6f78'],[.46,'#a9afb9'],[.48,'#6a6f78'],[.62,'#2a2c32'],[1,'#17191d']];
 function frGoldGrad(id,sheet){ return frLG(id,FR_GOLD_STOPS,true,'',sheet==null?true:sheet); }
 function frSteelGrad(id){ return frLG(id,FR_STEEL_STOPS); }
-function frLumGrad(id,j){ var jl=frMix(j,'#fff',.55), jd=frMix(j,'#000',.35); return frLG(id,[[0,jd],[.40,j],[.46,jl],[.52,j],[1,jd]]); }
-function frLumcGrad(id,j){ var jl=frMix(j,'#fff',.55); return frLG(id,[[0,j],[.40,jl],[.46,'#ffffff'],[.52,jl],[1,j]]); }
-function frLumbGrad(id,j){ var jl=frMix(j,'#fff',.75); return frLG(id,[[0,frMix(j,'#fff',.3)],[.40,jl],[.46,'#ffffff'],[.52,jl],[1,frMix(j,'#fff',.3)]]); }
-function frEnamelGrad(id,j){ return frLG(id,[[0,frMix(j,'#000',.3)],[.40,j],[.46,frMix(j,'#fff',.55)],[.52,j],[1,frMix(j,'#000',.3)]]); }
+function frLumGrad(id,cols){ var J=frJewelAt(cols); return frLG(id,[[0,frMix(J(0),'#000',.35)],[.40,J(.4)],[.46,frMix(J(.46),'#fff',.55)],[.52,J(.52)],[1,frMix(J(1),'#000',.35)]]); }
+function frLumcGrad(id,cols){ var J=frJewelAt(cols); return frLG(id,[[0,J(0)],[.40,frMix(J(.4),'#fff',.55)],[.46,'#ffffff'],[.52,frMix(J(.52),'#fff',.55)],[1,J(1)]]); }
+function frLumbGrad(id,cols){ var J=frJewelAt(cols); return frLG(id,[[0,frMix(J(0),'#fff',.3)],[.40,frMix(J(.4),'#fff',.75)],[.46,'#ffffff'],[.52,frMix(J(.52),'#fff',.75)],[1,frMix(J(1),'#fff',.3)]]); }
+function frEnamelGrad(id,cols){ var J=frJewelAt(cols); return frLG(id,[[0,frMix(J(0),'#000',.3)],[.40,J(.4)],[.46,frMix(J(.46),'#fff',.55)],[.52,J(.52)],[1,frMix(J(1),'#000',.3)]]); }
 function frCssStops(stops){ return stops.map(function(s){ return s[1]+' '+(s[0]*100).toFixed(1)+'%'; }).join(','); }
 function frIronCss(){ return 'linear-gradient('+FR_A+','+frCssStops(FR_IRON_STOPS)+')'; }
 function frSteelCss(){ return 'linear-gradient('+FR_A+','+frCssStops(FR_STEEL_STOPS)+')'; }
 function frGlassCss(c){ return 'linear-gradient('+c+','+c+')'; }
-function frRibbonCss(col){ return 'linear-gradient('+FR_A+','+FR_DEEP[col]+' 0%,'+FR_MID[col]+' 40%,'+frMix(FR_MID[col],'#fff',.45)+' 46%,'+FR_MID[col]+' 52%,'+FR_DEEP[col]+' 100%)'; }
+function frRibbonCss(cols){ var P=frPalAt(cols); return 'linear-gradient('+FR_A+','+P(FR_DEEP,0)+' 0%,'+P(FR_MID,.4)+' 40%,'+frMix(P(FR_MID,.46),'#fff',.45)+' 46%,'+P(FR_MID,.52)+' 52%,'+P(FR_DEEP,1)+' 100%)'; }
 /* a texture (frames.css declares it once as --tex-<name>) as a background layer */
 function frTexCss(name){ return 'var(--tex-'+name+') center/100% 100% no-repeat'; }
 function frTexUrl(name){
@@ -119,6 +133,42 @@ function frTexUrl(name){
   var a=v.indexOf('('), b=v.lastIndexOf(')'); if(a<0||b<a) return '';
   v=v.slice(a+1,b).trim(); var q=v.charAt(0); if(q==='"'||q==="'") v=v.slice(1,-1);
   return v;
+}
+/* the Stone frame's texture: a card of several colours takes a crossfade of its colours' stones along the sheet, drawn once per
+   combination (frStoneBlend) into --tex-stone-<a>-<b> on the root; until it is drawn the first colour's stone stands in */
+var FR_STONE_BLENDS={};
+function frStoneCss(cols){
+  var names=(cols&&cols.length?cols:['Grey']).map(function(c){ return c.toLowerCase(); });
+  if(names.length<2) return frTexCss('stone-'+names[0]);
+  frStoneBlend(names);
+  return 'var(--tex-stone-'+names.join('-')+',var(--tex-stone-'+names[0]+')) center/100% 100% no-repeat';
+}
+function frStoneBlend(names){
+  var key=names.join('-'); if(FR_STONE_BLENDS[key]) return; FR_STONE_BLENDS[key]=1;
+  var urls=names.map(function(n){ return frTexUrl('stone-'+n); });
+  if(urls.some(function(u){ return !u; })) return;
+  var imgs=[], left=urls.length;
+  urls.forEach(function(u,i){
+    var im=new Image();
+    im.onload=function(){ imgs[i]=im; if(--left===0) frStoneBlendDraw(key,imgs); };
+    im.src=u;
+  });
+}
+function frStoneBlendDraw(key,imgs){
+  var w=imgs[0].naturalWidth||510, h=imgs[0].naturalHeight||714, c=document.createElement('canvas'); c.width=w; c.height=h;
+  var x=c.getContext('2d'); if(!x) return;
+  var l=frSheetLine(120), sx=w/FR_W, sy=h/FR_H, n=imgs.length, k, g;
+  x.drawImage(imgs[0],0,0,w,h);
+  /* each next stone fades in over its own stretch of the sheet: the one before is cut away there, and it is laid underneath */
+  for(k=1;k<n;k++){
+    g=x.createLinearGradient(l[0]*sx,l[1]*sy,l[2]*sx,l[3]*sy);
+    g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop((k-1)/(n-1),'rgba(0,0,0,0)'); g.addColorStop(k/(n-1),'rgba(0,0,0,1)'); g.addColorStop(1,'rgba(0,0,0,1)');
+    x.globalCompositeOperation='destination-out'; x.fillStyle=g; x.fillRect(0,0,w,h);
+    x.globalCompositeOperation='destination-over'; x.drawImage(imgs[k],0,0,w,h);
+  }
+  x.globalCompositeOperation='source-over';
+  var url=''; try{ url=c.toDataURL('image/jpeg',.86); }catch(_){ return; }
+  if(url) document.documentElement.style.setProperty('--tex-stone-'+key,'url("'+url+'")');
 }
 function frClip(id,d,evenodd){ return '<clipPath id="'+id+'"><path d="'+d+'"'+(evenodd?' clip-rule="evenodd"':'')+'/></clipPath>'; }
 /* ---------------------------------------------------------------- strokes and pieces */
@@ -540,9 +590,10 @@ function frSiteFrameGrad(id,fcols){
   return frLG(id,st.map(function(s){ return [(s[0]/100).toFixed(4),s[1]]; }));
 }
 /* ---------------------------------------------------------------- the frames
-   Each: skin(col) - the variables set on .mcard; layers(col,uid,t) - [[z, markup, depth]] decoration layers; secPin(sc) -
-   an identity section's border material in its own colour; secStyle(sc) - more variables for a section; sheetAll - every
-   layer of a box's background painted from the card-wide sheet. Colours are names from FR_COLS. */
+   Each: skin(col,cols) - the variables set on .mcard; layers(col,uid,t,fcols,cols) - [[z, markup, depth]] decoration layers;
+   extras(col,cols) - markup under the face; secPin(sc) - an identity section's border material in its own colour; secStyle(sc) -
+   more variables for a section; sheetAll - every layer of a box's background painted from the card-wide sheet. Colours are
+   names from FR_COLS: col the card's first, cols all of them, blended along the sheet by frPalAt where a part takes the colour. */
 var FR_DESIGNS={};
 /* Default: the frame the catalog draws today, on the shared layer layout, with the art outlined the way the text box is */
 FR_DESIGNS.classic={orb:'app',
@@ -561,19 +612,19 @@ function frInlay(d,idp,w){
 }
 /* the Inlaid boxes' fill: the parchment at 55% over the card-wide iron, stop by stop, 15% brighter */
 FR_DESIGNS.inlaid={orb:'stone',sheetAll:true,
-  skin:function(col){
-    return {'--frame':frIronCss(),'--pin':frIronCss(),'--frame-dark':'linear-gradient(180deg,'+frMix(FR_DARK[col],FR_DEEP[col],.22)+','+frMix(FR_DARK[col],'#000',.3)+')',
+  skin:function(col,cols){ var P=frPalAt(cols);
+    return {'--frame':frIronCss(),'--pin':frIronCss(),'--frame-dark':'linear-gradient(180deg,'+frMix(P(FR_DARK,0),P(FR_DEEP,0),.22)+','+frMix(P(FR_DARK,1),'#000',.3)+')',
       '--ink-dark':'#0c0d10','--m-panel':'rgba(255,251,240,.55)','--m-ink':'#1c140a','--m-meta-ink':'#f0e6d2','--m-bevel':'rgba(255,255,255,.35)','--m-rule':'rgba(90,60,20,.4)'};
   },
-  layers:function(col,uid,t){
-    var j=FR_JEWEL[col], idp=uid, m=FR_PAD/2;
-    var defs=frGoldGrad(idp+'gold')+frEnamelGrad(idp+'enam',j);
+  layers:function(col,uid,t,fcols,cols){
+    var idp=uid, m=FR_PAD/2;
+    var defs=frGoldGrad(idp+'gold')+frEnamelGrad(idp+'enam',cols);
     var z2='<defs>'+defs+'</defs><g class="bx">'+frInlay(t.boxD('name',2),idp,1.3)+'<path d="'+t.typeD('before')+'" fill="none" stroke="url(#'+idp+'gold)" stroke-width=".7" stroke-opacity=".9"/></g>';
     var z5='<defs>'+defs+'</defs><g class="fr">'+frInlay(t.boxD('art',-1.9,FR_R_ART+1.9),idp,1.3)+'</g>';
     var z7='<defs>'+defs+'</defs><g class="ln">'+frInlay(frCardD(m),idp,1.7)+'</g>';
     if(t.hasRules()) z7+='<g class="bx">'+t.aroundSections(frInlay(t.boxD('rules',2),idp,1.3),idp)+'</g>';
     var sdefs='', sbody='';
-    t.identSections().forEach(function(s){ var ip=idp+'s'+s.i; sdefs+=frGoldGrad(ip+'gold')+frEnamelGrad(ip+'enam',FR_JEWEL[s.col]); sbody+=frInlay(t.secD(s.i,1.5,5),ip,1.1); });
+    t.identSections().forEach(function(s){ var ip=idp+'s'+s.i; sdefs+=frGoldGrad(ip+'gold')+frEnamelGrad(ip+'enam',[s.col]); sbody+=frInlay(t.secD(s.i,1.5,5),ip,1.1); });
     t.dividers().forEach(function(d){ sbody+=frGoldLine(d,.6,idp,null,.4); });
     t.manaRings().forEach(function(rg){ sbody+=frInlay(frCircleD(rg[0],rg[1],rg[2]+2),idp,1.5); });
     if(sbody) z7+='<defs>'+sdefs+'</defs><g class="bx">'+sbody+'</g>';
@@ -583,22 +634,22 @@ FR_DESIGNS.inlaid={orb:'stone',sheetAll:true,
 var FR_ARC_LUM=1.5;
 function frArcGlow(d,idp,w){ return frGlowPath(d,idp,w*2,FR_ARC_LUM,'lumb'); }
 FR_DESIGNS.arcane={orb:'arcane',
-  skin:function(col){
-    var j=FR_JEWEL[col], g='rgba(6,8,14,.86)';
+  skin:function(col,cols){
+    var J=frJewelAt(cols), j=J(.5), g='rgba(6,8,14,.86)';
     return {'--frame':frSteelCss(),'--pin':frGlassCss(g),'--m-panel':'rgba(6,8,14,0)',
-      '--frame-dark':'radial-gradient(ellipse 70% 60% at 50% 0%,'+frRgba(j,.34)+',transparent 70%),radial-gradient(ellipse 60% 50% at 50% 100%,'+frRgba(j,.2)+',transparent 70%),#07080c',
+      '--frame-dark':'radial-gradient(ellipse 70% 60% at 50% 0%,'+frRgba(J(0),.34)+',transparent 70%),radial-gradient(ellipse 60% 50% at 50% 100%,'+frRgba(J(1),.2)+',transparent 70%),#07080c',
       '--ink-dark':'#000','--m-ink':'#f0ead8','--m-meta-ink':'#f0ead8','--m-bevel':'rgba(255,255,255,.08)','--m-rule':'rgba(240,234,216,.18)','--jewel':j};
   },
-  layers:function(col,uid,t){
-    var j=FR_JEWEL[col], idp=uid, m=FR_PAD/2;
-    var defs=frSteelGrad(idp+'steel')+frLumGrad(idp+'lum',j)+frLumcGrad(idp+'lumc',j)+frLumbGrad(idp+'lumb',j)+frClip(idp+'ring',frRingD(),true);
+  layers:function(col,uid,t,fcols,cols){
+    var idp=uid, m=FR_PAD/2;
+    var defs=frSteelGrad(idp+'steel')+frLumGrad(idp+'lum',cols)+frLumcGrad(idp+'lumc',cols)+frLumbGrad(idp+'lumb',cols)+frClip(idp+'ring',frRingD(),true);
     var ab=t.boxD('art',-3.6,FR_R_ART+3.6);
     var z5='<defs>'+defs+'</defs><g class="fr"><path d="'+ab+'" fill="none" stroke="#000" stroke-width="8"/><path d="'+ab+'" fill="none" stroke="url(#'+idp+'steel)" stroke-width="4.8"/>'+frArcGlow(t.boxD('art',-.2,FR_R_ART+.2),idp,.8)+'</g>';
     var z2='<defs>'+defs+'</defs><g class="bx">'+frArcGlow(t.boxD('name',2.2),idp,.8)+frArcGlow(t.typeD('panel'),idp,.6)+'</g>';
     var z7='<defs>'+defs+'</defs><g class="ln"><g clip-path="url(#'+idp+'ring)">'+frArcGlow(frCardD(m),idp,1.0)+'</g></g>';
     if(t.hasRules()) z7+='<g class="bx">'+t.aroundSections(frArcGlow(t.boxD('rules',2.2),idp,.8),idp)+'</g>';
     var sdefs='', sbody='';
-    t.identSections().forEach(function(s){ var ip=idp+'s'+s.i, js=FR_JEWEL[s.col]; sdefs+=frLumGrad(ip+'lum',js)+frLumcGrad(ip+'lumc',js)+frLumbGrad(ip+'lumb',js); sbody+=frArcGlow(t.secD(s.i,1.5,5),ip,.6); });
+    t.identSections().forEach(function(s){ var ip=idp+'s'+s.i; sdefs+=frLumGrad(ip+'lum',[s.col])+frLumcGrad(ip+'lumc',[s.col])+frLumbGrad(ip+'lumb',[s.col]); sbody+=frArcGlow(t.secD(s.i,1.5,5),ip,.6); });
     t.dividers().forEach(function(d){ sbody+=frArcGlow(d,idp,.4); });
     t.manaRings().forEach(function(rg){ var c=frCircleD(rg[0],rg[1],rg[2]+2);
       sbody+='<path d="'+c+'" fill="none" stroke="#000" stroke-width="6.5"/><path d="'+c+'" fill="none" stroke="url(#'+idp+'steel)" stroke-width="4"/>'+frArcGlow(frCircleD(rg[0],rg[1],rg[2]+.4),idp,.7); });
@@ -611,30 +662,31 @@ function frStEdge(dMetal,dGlow,idp){
   return '<path d="'+dMetal+'" fill="none" stroke="url(#'+idp+'fr)" stroke-width="'+FR_ST_LINE+'"/>'+frSoftPath(dGlow,'url(#'+idp+'lum)',2.4,2.2,.55)
     +'<path d="'+dGlow+'" fill="none" stroke="url(#'+idp+'lumc)" stroke-width=".7"/>';
 }
-function frStarfield(col,G){
-  var r=frRandom(FR_COLS.indexOf(col)*7919+11), out=[], ix=G.inner[0], iy=G.inner[1], iw=G.inner[2], ih=G.inner[3], p=FR_PASTEL[col], sizes=[.45,.6,.75,.9,1.1,1.5], i;
-  for(i=0;i<110;i++){ var x=ix+2+r()*(iw-4), y=iy+2+r()*(ih-4), s=sizes[Math.floor(r()*sizes.length)], c=r()<.18?p:'#fff';
+function frStarfield(cols,G){
+  var P=frPalAt(cols), r=frRandom(FR_COLS.indexOf(cols[0])*7919+11), out=[], ix=G.inner[0], iy=G.inner[1], iw=G.inner[2], ih=G.inner[3], sizes=[.45,.6,.75,.9,1.1,1.5], i;
+  /* a tinted star takes the colour at its place along the sheet */
+  for(i=0;i<110;i++){ var x=ix+2+r()*(iw-4), y=iy+2+r()*(ih-4), s=sizes[Math.floor(r()*sizes.length)], c=r()<.18?P(FR_PASTEL,((x-ix)/iw+(y-iy)/ih)/2):'#fff';
     out.push('<g opacity="'+(.2+.7*r()).toFixed(2)+'">'+frStar(x,y,s,c,4,.3)+'</g>'); }
   for(i=0;i<160;i++){ out.push('<circle cx="'+f1(ix+2+r()*(iw-4))+'" cy="'+f1(iy+2+r()*(ih-4))+'" r=".3" fill="#fff" fill-opacity="'+(.15+.5*r()).toFixed(2)+'"/>'); }
   return out.join('');
 }
 FR_DESIGNS.stellar={orb:'stars',
-  skin:function(col){
-    var g='rgba(8,10,16,.72)', j=FR_JEWEL[col];
+  skin:function(col,cols){
+    var g='rgba(8,10,16,.72)', J=frJewelAt(cols);
     return {'--frame':'linear-gradient(#0b0d16,#0b0d16)',
-      '--frame-dark':'radial-gradient(ellipse 80% 50% at 50% 28%,'+frRgba(j,.16)+',transparent 70%),radial-gradient(ellipse 70% 40% at 50% 100%,'+frRgba(j,.10)+',transparent 70%),linear-gradient(180deg,#0d101e,#05060f)',
+      '--frame-dark':'radial-gradient(ellipse 80% 50% at 50% 28%,'+frRgba(J(0),.16)+',transparent 70%),radial-gradient(ellipse 70% 40% at 50% 100%,'+frRgba(J(1),.10)+',transparent 70%),linear-gradient(180deg,#0d101e,#05060f)',
       '--pin':frGlassCss(g),'--m-panel':'rgba(8,10,16,0)','--ink-dark':g,'--m-ink':'#f0ead8','--m-meta-ink':'#f5f0e4','--m-bevel':'rgba(255,255,255,.12)','--m-rule':'rgba(240,234,216,.22)'};
   },
-  layers:function(col,uid,t){
-    var j=FR_JEWEL[col], idp=uid, G=t.G, L=FR_ST_LINE;
-    var defs=frFrameGrad(idp+'fr',col)+frLumGrad(idp+'lum',j)+frLumcGrad(idp+'lumc',j)+t.tlClip(idp)+frClip(idp+'field',frInnerD()+' '+t.boxD('art',0,FR_R_ART),true);
-    var z1='<defs>'+defs+'</defs><g class="fr"><g clip-path="url(#'+idp+'field)">'+frStarfield(col,G)+'</g></g>';
+  layers:function(col,uid,t,fcols,cols){
+    var idp=uid, G=t.G, L=FR_ST_LINE;
+    var defs=frFrameGrad(idp+'fr',cols)+frLumGrad(idp+'lum',cols)+frLumcGrad(idp+'lumc',cols)+t.tlClip(idp)+frClip(idp+'field',frInnerD()+' '+t.boxD('art',0,FR_R_ART),true);
+    var z1='<defs>'+defs+'</defs><g class="fr"><g clip-path="url(#'+idp+'field)">'+frStarfield(cols,G)+'</g></g>';
     var z5='<defs>'+defs+'</defs><g class="fr">'+frStEdge(t.boxD('art',-1.3,FR_R_ART+1.3),t.boxD('art',.4,FR_R_ART-.4),idp)+'</g>';
     var z2='<defs>'+defs+'</defs><g class="bx">'+frStEdge(t.boxD('name',L/2+.3),t.boxD('name',L+1.0),idp)+'<g clip-path="url(#'+idp+'tlclip)">'+frStEdge(t.typeD('el'),t.typeD('after'),idp)+'</g></g>';
     var z7='<defs>'+defs+'</defs><g class="ln">'+frStEdge(frCardD(1.0),frCardD(2.6),idp)+'</g><g class="fr ln">'+frStEdge(frInnerD(-1.0),frInnerD(-2.6),idp)+'</g>';
     if(t.hasRules()) z7+='<g class="bx">'+t.aroundSections(frStEdge(t.boxD('rules',L/2+.3),t.boxD('rules',L+1.0),idp),idp)+'</g>';
     var sdefs='', sbody='';
-    t.identSections().forEach(function(s){ var ip=idp+'s'+s.i, js=FR_JEWEL[s.col]; sdefs+=frFrameGrad(ip+'fr',s.col)+frLumGrad(ip+'lum',js)+frLumcGrad(ip+'lumc',js); sbody+=frStEdge(t.secD(s.i,L/2+.2,5),t.secD(s.i,L+.8,5),ip); });
+    t.identSections().forEach(function(s){ var ip=idp+'s'+s.i; sdefs+=frFrameGrad(ip+'fr',[s.col])+frLumGrad(ip+'lum',[s.col])+frLumcGrad(ip+'lumc',[s.col]); sbody+=frStEdge(t.secD(s.i,L/2+.2,5),t.secD(s.i,L+.8,5),ip); });
     t.dividers().forEach(function(d){ sbody+='<path d="'+d+'" fill="none" stroke="url(#'+idp+'fr)" stroke-width="1"/><path d="'+d+'" fill="none" stroke="url(#'+idp+'lumc)" stroke-width=".5" stroke-opacity=".8"/>'; });
     t.manaRings().forEach(function(rg){ sbody+=frStEdge(frCircleD(rg[0],rg[1],rg[2]+3.2),frCircleD(rg[0],rg[1],rg[2]+1.2),idp); });
     if(sbody) z7+='<defs>'+sdefs+'</defs><g class="bx">'+sbody+'</g>';
@@ -651,22 +703,22 @@ function frRuneBand(){
   return out.join('');
 }
 FR_DESIGNS.stone={orb:'stone',
-  skin:function(col){
-    var st=frTexCss('stone-'+col.toLowerCase());
+  skin:function(col,cols){
+    var st=frStoneCss(cols);
     return {'--frame':st,'--pin':st,'--frame-dark':'linear-gradient(rgba(0,0,0,.34),rgba(0,0,0,.34)),'+st,
       '--ink-dark':'#2b2a2e','--m-panel':'rgba(224,210,180,.92)','--m-ink':'#2a2219','--m-meta-ink':'#ebe4d4','--m-bevel':'rgba(255,255,255,.40)','--m-rule':'rgba(60,40,20,.35)'};
   },
   secPin:function(sc){ return frTexCss('stone-'+sc.toLowerCase()); },
-  layers:function(col,uid,t){
-    var j=FR_JEWEL[col], idp=uid, G=t.G, a=G.art;
-    var defs=frLumGrad(idp+'lum',j)+frLumcGrad(idp+'lumc',j)+frClip(idp+'ic',frInnerD())+frClip(idp+'ac',t.boxD('art',0,FR_R_ART));
+  layers:function(col,uid,t,fcols,cols){
+    var idp=uid, G=t.G, a=G.art;
+    var defs=frLumGrad(idp+'lum',cols)+frLumcGrad(idp+'lumc',cols)+frClip(idp+'ic',frInnerD())+frClip(idp+'ac',t.boxD('art',0,FR_R_ART));
     var z1='<defs>'+defs+'</defs><g class="fr"><g clip-path="url(#'+idp+'ic)">'+frSoftPath(frInnerD(-3),'#000',12,5,.75)+'</g>'+frRecess(frInnerD(),idp+'ic',1.1,.6,.35,1.6)+'</g>'
       +'<g class="bx">'+(t.hasRules()?frCarved(t.boxD('rules',-2.2),.45,.3,.7,.45):'')+frCarved(t.boxD('name',-2.2),.45,.3,.7,.45)+'</g>';
     var z5='<defs>'+defs+'</defs><g class="fr"><g clip-path="url(#'+idp+'ac)">'+frSoftPath(frRR(a[0]-4,a[1]-4,a[2]+8,a[3]+8,FR_R_ART+4),'#000',12,5,.8)+'</g>'
       +frRecess(t.boxD('art',0,FR_R_ART),idp+'ac',1.2,.7,.3,1.6)+frGlowPath(t.boxD('art',-1.15,FR_R_ART+1.15),idp,1.8,1,'lumc',3,1.0)+'</g>';
     var z7='<defs>'+defs+'</defs><g class="fr ln">'+frRuneBand()+'</g><g class="ln">'+frRaised(frCardD(1.0),.7,.55,.45,1.1)+frRaised(frInnerD(-.6),.6,.5,.4,.9)+'</g>';
     var sdefs='', sbody='';
-    t.identSections().forEach(function(s){ var ip=idp+'s'+s.i, js=FR_JEWEL[s.col]; sdefs+=frLumGrad(ip+'lum',js)+frLumcGrad(ip+'lumc',js);
+    t.identSections().forEach(function(s){ var ip=idp+'s'+s.i; sdefs+=frLumGrad(ip+'lum',[s.col])+frLumcGrad(ip+'lumc',[s.col]);
       sbody+=frCarved(t.secD(s.i,-1.2,5),.45,.3,.7,.45)+frGlowPath(t.secD(s.i,1.5,5),ip,1.1,1,'lumc',3,.8); });
     t.dividers().forEach(function(d){ sbody+=frCarved(d,.45,.3,.7,.45); });
     t.manaRings().forEach(function(rg){ sbody+=frCarved(frCircleD(rg[0],rg[1],rg[2]+5.2),.45,.3,.7,.45)+frGlowPath(frCircleD(rg[0],rg[1],rg[2]+2),idp,1.6,1,'lumc',3,1.0); });
@@ -674,8 +726,8 @@ FR_DESIGNS.stone={orb:'stone',
     return [[-1,z1,1],[5,z5,1],[7,z7,3]];
   }};
 /* Scroll: parchment, a band of the card's colour round the border in the wax seals' gloss, the same wax as every box's outline */
-function frClothStops(c){ return [[0,FR_DEEP[c]],[.40,FR_MID[c]],[.46,frMix(FR_MID[c],'#fff',.45)],[.52,FR_MID[c]],[1,FR_DEEP[c]]]; }
-function frClothCss(c){ return 'linear-gradient('+FR_A+','+frCssStops(frClothStops(c))+')'; }
+function frClothStops(cols){ var P=frPalAt(cols); return [[0,P(FR_DEEP,0)],[.40,P(FR_MID,.4)],[.46,frMix(P(FR_MID,.46),'#fff',.45)],[.52,P(FR_MID,.52)],[1,P(FR_DEEP,1)]]; }
+function frClothCss(cols){ return 'linear-gradient('+FR_A+','+frCssStops(frClothStops(cols))+')'; }
 function frWaxEdges(dOut,dIn){
   return '<path d="'+dOut+'" fill="none" stroke="#fff" stroke-opacity=".32" stroke-width="1.2" transform="translate(-.5 -.5)"/>'
     +'<path d="'+dOut+'" fill="none" stroke="#000" stroke-opacity=".42" stroke-width="1.2" transform="translate(.5 .5)"/>'
@@ -697,15 +749,15 @@ function frGrain(idp,t){
   return [defs,body];
 }
 FR_DESIGNS.scroll={orb:'wax',
-  skin:function(col){
+  skin:function(col,cols){
     var p=frTexCss('parchment');
-    return {'--frame':p,'--frame-dark':'linear-gradient(rgba(110,80,40,.10),rgba(110,80,40,.10)),'+p,'--pin':frClothCss(col),
+    return {'--frame':p,'--frame-dark':'linear-gradient(rgba(110,80,40,.10),rgba(110,80,40,.10)),'+p,'--pin':frClothCss(cols),
       '--m-panel':'rgba(244,235,214,.95)','--ink-dark':'rgba(0,0,0,0)','--m-ink':'#2a1c0e','--m-meta-ink':'#4a3010','--m-bevel':'rgba(255,255,255,.3)','--m-rule':'rgba(90,60,20,.45)'};
   },
-  secPin:function(sc){ return frClothCss(sc); },
-  layers:function(col,uid,t){
+  secPin:function(sc){ return frClothCss([sc]); },
+  layers:function(col,uid,t,fcols,cols){
     var idp=uid, m=FR_PAD/2, G=t.G;
-    var defs=frLG(idp+'cloth',frClothStops(col))+t.tlClip(idp);
+    var defs=frLG(idp+'cloth',frClothStops(cols))+t.tlClip(idp);
     var bx=t.hasRules()?G.rules:G.art, x0=bx[0]+4, x1=bx[0]+bx[2]-4;
     if(G.orient==='v'&&G.rules){ x0=Math.min(G.art[0]+4,G.rules[0]+4); x1=Math.max(G.art[0]+G.art[2]-4,G.rules[0]+G.rules[2]-4); }
     var z1='<defs>'+defs+'<linearGradient id="'+idp+'curl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".22"/><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient></defs>'
@@ -725,8 +777,8 @@ FR_DESIGNS.scroll={orb:'wax',
     return [[-1,z1,1],[7,z2,2],[7,z7,3]];
   }};
 /* Leatherbound: dark leather, the Sevenfold halo in the card's colours as every box's border between gold hairlines, gold brackets, the Omnibus seme */
-function frHaloStops(col){ var d=FR_DARK[col], m=FR_MID[col], p=FR_PASTEL[col]; return [[0,d],[.2,m],[.4,p],[.5,frMix(p,'#fff',.6)],[.6,p],[.8,m],[1,d]]; }
-function frHaloCss(col){ return 'linear-gradient('+FR_A+','+frHaloStops(col).map(function(s){ return s[1]+' '+Math.round(s[0]*100)+'%'; }).join(',')+')'; }
+function frHaloStops(cols){ var P=frPalAt(cols); return [[0,P(FR_DARK,0)],[.2,P(FR_MID,.2)],[.4,P(FR_PASTEL,.4)],[.5,frMix(P(FR_PASTEL,.5),'#fff',.6)],[.6,P(FR_PASTEL,.6)],[.8,P(FR_MID,.8)],[1,P(FR_DARK,1)]]; }
+function frHaloCss(cols){ return 'linear-gradient('+FR_A+','+frHaloStops(cols).map(function(s){ return s[1]+' '+Math.round(s[0]*100)+'%'; }).join(',')+')'; }
 function frHairlines(ds,idp,w){ return ds.map(function(d){ return '<path d="'+d+'" fill="none" stroke="url(#'+idp+'gold)" stroke-width="'+(w==null?.7:w)+'"/>'; }).join(''); }
 function frSeme(idp,t){
   var G=t.G, a=G.art, yFull, yZero;
@@ -744,15 +796,15 @@ function frSeme(idp,t){
   return [defs,body];
 }
 FR_DESIGNS.sevenfold={orb:'coin',
-  skin:function(col){
+  skin:function(col,cols){
     var L=frTexCss('leather');
-    return {'--frame':L,'--frame-dark':'linear-gradient(rgba(0,0,0,.22),rgba(0,0,0,.22)),'+L,'--pin':frHaloCss(col),'--m-panel':'rgba(22,13,6,.90)',
+    return {'--frame':L,'--frame-dark':'linear-gradient(rgba(0,0,0,.22),rgba(0,0,0,.22)),'+L,'--pin':frHaloCss(cols),'--m-panel':'rgba(22,13,6,.90)',
       '--ink-dark':'#1a1208','--m-ink':'#f0e6d2','--m-meta-ink':'#e8d9b0','--m-bevel':'rgba(255,255,255,.12)','--m-rule':'rgba(240,230,210,.22)'};
   },
-  secPin:function(sc){ return frHaloCss(sc); },
-  layers:function(col,uid,t){
-    var idp=uid;
-    var defs=frGoldGrad(idp+'gold')+frGemDefs(idp,'#3a2a52')+frLG(idp+'rb',frHaloStops(col))+t.tlClip(idp);
+  secPin:function(sc){ return frHaloCss([sc]); },
+  layers:function(col,uid,t,fcols,cols){
+    var idp=uid, P=frPalAt(cols);
+    var defs=frGoldGrad(idp+'gold')+frGemDefs(idp,'#3a2a52')+frLG(idp+'rb',frHaloStops(cols))+t.tlClip(idp);
     var ab=t.boxD('art',-1.6,FR_R_ART+1.6);
     var z5='<defs>'+defs+'</defs><g class="fr"><path d="'+ab+'" fill="none" stroke="#1a1208" stroke-width="3.6"/><path d="'+ab+'" fill="none" stroke="url(#'+idp+'gold)" stroke-width="2"/><path d="'+t.boxD('art',.4,FR_R_ART-.4)+'" fill="none" stroke="url(#'+idp+'rb)" stroke-width="1" stroke-opacity=".9"/></g>';
     var z2='<defs>'+defs+'</defs><g class="bx">'+frHairlines([t.boxD('name',.35),t.boxD('name',3.65)],idp)+'<g clip-path="url(#'+idp+'tlclip)"><path d="'+t.typeD('el')+'" fill="none" stroke="url(#'+idp+'gold)" stroke-width=".7"/><path d="'+t.typeD('panel')+'" fill="none" stroke="url(#'+idp+'gold)" stroke-width=".6"/></g></g>';
@@ -766,25 +818,36 @@ FR_DESIGNS.sevenfold={orb:'coin',
     t.manaRings().forEach(function(rg){ body+=frHairlines([frCircleD(rg[0],rg[1],rg[2]+.35),frCircleD(rg[0],rg[1],rg[2]+3.65)],idp); });
     if(body) z7+='<g class="bx">'+body+'</g>';
     var S=26*1.25, gr=26*.3*.75, gc=26*.225*.75;
-    var gdefs='<linearGradient id="'+idp+'cgem" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+FR_PASTEL[col]+'"/><stop offset=".45" stop-color="'+FR_MID[col]+'"/><stop offset="1" stop-color="'+FR_DARK[col]+'"/></linearGradient>'
-      +'<radialGradient id="'+idp+'cgemh" cx="35%" cy="25%" r="40%"><stop offset="0" stop-color="#fff" stop-opacity=".8"/><stop offset=".5" stop-color="#fff" stop-opacity=".15"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>';
-    var gems=[[1.4,1.4,1,1],[FR_W-1.4,1.4,-1,1],[1.4,FR_H-1.4,1,-1],[FR_W-1.4,FR_H-1.4,-1,-1]].map(function(p){
-      var cx=f2(p[0]+p[2]*S*.3), cy=f2(p[1]+p[3]*S*.3);
-      return '<circle cx="'+cx+'" cy="'+cy+'" r="'+f2(gr)+'" fill="#1a1208"/><circle cx="'+cx+'" cy="'+cy+'" r="'+f2(gc)+'" fill="url(#'+idp+'cgem)"/><circle cx="'+cx+'" cy="'+cy+'" r="'+f2(gc)+'" fill="url(#'+idp+'cgemh)"/>'; }).join('');
+    /* a corner gem is cut in the colour at its corner along the sheet: the first colour top left, the last bottom right */
+    var gdefs='<radialGradient id="'+idp+'cgemh" cx="35%" cy="25%" r="40%"><stop offset="0" stop-color="#fff" stop-opacity=".8"/><stop offset=".5" stop-color="#fff" stop-opacity=".15"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>';
+    var gems=[[1.4,1.4,1,1,0],[FR_W-1.4,1.4,-1,1,.5],[1.4,FR_H-1.4,1,-1,.5],[FR_W-1.4,FR_H-1.4,-1,-1,1]].map(function(p,i){
+      var cx=f2(p[0]+p[2]*S*.3), cy=f2(p[1]+p[3]*S*.3), gid=idp+'cgem'+i;
+      gdefs+='<linearGradient id="'+gid+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+P(FR_PASTEL,p[4])+'"/><stop offset=".45" stop-color="'+P(FR_MID,p[4])+'"/><stop offset="1" stop-color="'+P(FR_DARK,p[4])+'"/></linearGradient>';
+      return '<circle cx="'+cx+'" cy="'+cy+'" r="'+f2(gr)+'" fill="#1a1208"/><circle cx="'+cx+'" cy="'+cy+'" r="'+f2(gc)+'" fill="url(#'+gid+')"/><circle cx="'+cx+'" cy="'+cy+'" r="'+f2(gc)+'" fill="url(#'+idp+'cgemh)"/>'; }).join('');
     var z8='<defs>'+defs+gdefs+'</defs><g class="ln">'+frBrackets(idp,1.4,S)+gems+'</g>';
     return [[-1,z1,1],[5,z5,1],[7,z2,2],[7,z7,3],[7,z8,4]];
   }};
 /* Nebula: the Cosmos back's sky under the whole card; thin dark-glass boxes, every outline a plain line of the card's colour */
 var FR_NEB_RULE=2.7;
-function frNebWheel(col){ var p=FR_PASTEL[col]; return [FR_JEWEL[col],p,FR_MID[col],frMix(p,'#fff',.5),FR_JEWEL[col],frMix(FR_MID[col],'#fff',.2),p,FR_JEWEL[col]]; }
+/* the Nebula palette (session 92): the frames' Grey is a blue-grey, which made a colourless card's galaxy blue; Nebula's is silver */
+var FR_NEB_GREY={Jewel:'#aeb2ba',Pastel:'#e2e4e8',Mid:'#9a9ea6',Dark:'#141416'};
+function frNebTab(table,name){ var t={}; Object.keys(table).forEach(function(k){ t[k]=table[k]; }); t.Grey=FR_NEB_GREY[name]; return t; }
+var NB_JEWEL=frNebTab(FR_JEWEL,'Jewel'), NB_PASTEL=frNebTab(FR_PASTEL,'Pastel'), NB_MID=frNebTab(FR_MID,'Mid'), NB_DARK=frNebTab(FR_DARK,'Dark');
+/* the sky's eight colour stops, read along the sheet: one colour's are its own tints round the card (a wheel, its ends alike);
+   a card of several colours runs them along the sheet of light, first to last, as its frame does, with no seam (session 92:
+   the wheel's two ends met in a hard line down the card) */
+function frNebWheel(cols){ var P=frPalAt(cols), t=function(i){ return i/7; };
+  return [P(NB_JEWEL,t(0)),P(NB_PASTEL,t(1)),P(NB_MID,t(2)),frMix(P(NB_PASTEL,t(3)),'#fff',.5),P(NB_JEWEL,t(4)),frMix(P(NB_MID,t(5)),'#fff',.2),P(NB_PASTEL,t(6)),P(NB_JEWEL,t(7))]; }
+/* how a sky's wheels are read (NebSky.wheel): along the sheet for several colours, round the card for one; silver for none */
+function frNebFlags(cols){ return ' data-wlin="'+(cols.length>1?1:0)+'" data-silver="'+(cols[0]==='Grey'?1:0)+'"'; }
 function frSat(c,s){ var r=c[0],g=c[1],b=c[2];
   return [(0.213+0.787*s)*r+(0.715-0.715*s)*g+(0.072-0.072*s)*b,(0.213-0.213*s)*r+(0.715+0.285*s)*g+(0.072-0.072*s)*b,(0.213-0.213*s)*r+(0.715-0.715*s)*g+(0.072+0.928*s)*b]; }
-function frNebWheelNeg(col){ return frNebWheel(col).map(function(c){ return frHex(frSat(frRgb(c).map(function(v){ return v*.85; }),.75)); }); }
-function frNebWheelDarkInv(col){ return frNebWheel(col).map(function(c){ return frHex(frRgb(c).map(function(v){ return 255-Math.round(v*.35); })); }); }
-function frNebPanel(sc){ return frMix(FR_DARK[sc],'#06081a',.5)+'26'; }
+function frNebWheelNeg(cols){ return frNebWheel(cols).map(function(c){ return frHex(frSat(frRgb(c).map(function(v){ return v*.85; }),.75)); }); }
+function frNebWheelDarkInv(cols){ return frNebWheel(cols).map(function(c){ return frHex(frRgb(c).map(function(v){ return 255-Math.round(v*.35); })); }); }
+function frNebPanel(cols){ return frMix(frPalAt(cols)(NB_DARK,.5),'#06081a',.5)+'26'; }
 function frNebWindow(kind,sc){
   var w='<div class="nwin nwin-'+kind+'"';
-  if(sc) w+=' data-wn="'+frNebWheelNeg(sc).join(',')+'" data-wdi="'+frNebWheelDarkInv(sc).join(',')+'" data-wh="'+frNebWheel(sc).join(',')+'"';
+  if(sc) w+=' data-wn="'+frNebWheelNeg([sc]).join(',')+'" data-wdi="'+frNebWheelDarkInv([sc]).join(',')+'" data-wh="'+frNebWheel([sc]).join(',')+'"'+frNebFlags([sc]);
   return w+'><div class="nwtint"></div></div>';
 }
 function frNebStars(seed){
@@ -800,58 +863,66 @@ function frNebStars(seed){
 }
 function frNebEdge(d,w){ return '<path d="'+d+'" fill="none" stroke="#06081a" stroke-opacity=".85" stroke-width="'+f2(w+1.2)+'"/>'; }
 FR_DESIGNS.nebula={orb:'stars',
-  skin:function(col){
-    var g='rgba(6,8,20,.15)', none='rgba(6,8,20,0)', pn=frNebPanel(col);
+  skin:function(col,cols){
+    var g='rgba(6,8,20,.15)', none='rgba(6,8,20,0)', pn=frNebPanel(cols);
     return {'--frame':none,'--frame-dark':none,'--pin':frGlassCss(g),'--m-panel':pn,'--tl-bg':pn,'--ink-dark':g,
       '--m-ink':'#eef0ff','--m-meta-ink':'#eef0ff','--m-bevel':'rgba(255,255,255,.14)','--m-rule':'rgba(230,235,255,.22)'};
   },
-  secStyle:function(sc){ return '--m-panel:'+frNebPanel(sc); },
-  extras:function(col){ return '<div class="neb" data-wn="'+frNebWheelNeg(col).join(',')+'" data-wdi="'+frNebWheelDarkInv(col).join(',')+'" data-wh="'+frNebWheel(col).join(',')+'"></div>'; },
-  layers:function(col,uid,t){
-    var idp=uid, G=t.G, j=FR_JEWEL[col], info=G.info;
-    var defs=t.tlClip(idp);
+  secStyle:function(sc){ return '--m-panel:'+frNebPanel([sc]); },
+  extras:function(col,cols){ return '<div class="neb" data-wn="'+frNebWheelNeg(cols).join(',')+'" data-wdi="'+frNebWheelDarkInv(cols).join(',')+'" data-wh="'+frNebWheel(cols).join(',')+'"'+frNebFlags(cols)+'></div>'; },
+  layers:function(col,uid,t,fcols,cols){
+    var idp=uid, G=t.G, P=frPalAt(cols), J=function(q){ return P(NB_JEWEL,q); }, multi=cols.length>1, info=G.info;
+    /* one colour: a plain line of its jewel tint; several: the jewel tints along the sheet */
+    var j=multi?'url(#'+idp+'jl)':J(.5);
+    var defs=t.tlClip(idp)+(multi?frLG(idp+'jl',[[0,J(0)],[.5,J(.5)],[1,J(1)]]):'');
     var line=function(d,w,c){ return '<path d="'+d+'" fill="none" stroke="'+(c||j)+'" stroke-width="'+f2(w)+'"/>'; };
     var z1='<defs><linearGradient id="'+idp+'scrim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".6"/></linearGradient></defs>'
       +'<g class="fr"><rect x="'+FR_PAD+'" y="'+f2(info[1]-8)+'" width="'+f2(FR_W-2*FR_PAD)+'" height="'+f2(info[3]+8)+'" fill="url(#'+idp+'scrim)"/></g>';
-    var z5='<g class="fr">'+line(t.boxD('art',-1.9,FR_R_ART+1.9),3.0)+'</g>';
+    var z5='<defs>'+defs+'</defs><g class="fr">'+line(t.boxD('art',-1.9,FR_R_ART+1.9),3.0)+'</g>';
     var z2='<defs>'+defs+'</defs><g class="bx">'+line(t.boxD('name',1.2),2.4)+'<g clip-path="url(#'+idp+'tlclip)">'+line(t.typeD('el'),2.4)+'</g></g>';
-    var z7='<g class="ln">'+line(frInnerD(-2.4),FR_NEB_RULE)+frNebStars(FR_COLS.indexOf(col)*131+7)+'</g>';
+    var z7='<defs>'+defs+'</defs><g class="ln">'+line(frInnerD(-2.4),FR_NEB_RULE)+frNebStars(FR_COLS.indexOf(col)*131+7)+'</g>';
     if(t.hasRules()) z7+='<g class="bx">'+t.aroundSections(line(t.boxD('rules',1.2),2.4),idp)+'</g>';
     var body='';
-    t.identSections().forEach(function(s){ body+=frNebEdge(t.secD(s.i,1.5,5),2.0)+line(t.secD(s.i,1.5,5),2.0,FR_JEWEL[s.col]); });
+    t.identSections().forEach(function(s){ body+=frNebEdge(t.secD(s.i,1.5,5),2.0)+line(t.secD(s.i,1.5,5),2.0,NB_JEWEL[s.col]); });
     t.dividers().forEach(function(d){ body+=frNebEdge(d,1.0)+line(d,1.0); });
     t.manaRings().forEach(function(rg){ var c=frCircleD(rg[0],rg[1],rg[2]+2); body+=frNebEdge(c,2.4)+line(c,2.4); });
     if(body) z7+='<g class="bx">'+body+'</g>';
     return [[-1,z1,1],[5,z5,1],[7,z2,2],[7,z7,3]];
   }};
 /* ---------------------------------------------------------------- the look: the frame, the icon set and the card back in use */
-var FR_LOOK={frame:'classic',orbs:'',back:''};
+/* the game's own defaults (session 92): Rebirth wears Leatherbound and the Omnibus back, the main game Default and Epitaph */
+var FR_DEF_FRAME=window.REBIRTH?'sevenfold':'classic', FR_DEF_BACK=window.REBIRTH?'omnibus':'epitaph';
+var FR_LOOK={frame:FR_DEF_FRAME,orbs:'',back:''};   /* Full art is a card's own option since session 92 (its variant's fullArt), not the look's */
 var FACE_LOOK_GEN=0;                              /* bumped on every change: a grid tile drawn under another look is stale */
 var FR_UPL=false;   /* the face being built wears an uploaded frame image (tplFrameFor, ed2_face.js): it takes Default's hooks and none of the layers */
 function frFrameKey(){ return (!FR_UPL&&FR_DESIGNS[FR_LOOK.frame])?FR_LOOK.frame:'classic'; }
 function frOrbMode(){ return FR_ORB_SETS.indexOf(FR_LOOK.orbs)>=0?FR_LOOK.orbs:(FR_ORB_OF[frFrameKey()]||'app'); }
 function frCap(n){ n=String(n||''); return n?n.charAt(0).toUpperCase()+n.slice(1).toLowerCase():''; }
-/* the colour a frame is drawn in: the card's first frame colour, grey only when it has no other */
-function frColOf(fcols){
-  var c=(fcols||[]).filter(function(x){ return FRAME_ORDER.indexOf(x)>=0&&x!=='grey'; });
-  var n=frCap(c[0]||'grey'); return FR_COLS.indexOf(n)>=0?n:'Grey';
+/* the colours a frame is drawn in: the card's frame colours in the site's order (frameColorsOf), grey only when it has no other */
+function frColsOf(fcols){
+  var c=(fcols||[]).filter(function(x){ return FRAME_ORDER.indexOf(x)>=0&&x!=='grey'; }).map(frCap).filter(function(n){ return FR_COLS.indexOf(n)>=0; });
+  return c.length?c:['Grey'];
 }
+function frColOf(fcols){ return frColsOf(fcols)[0]; }
 function frCardCol(card){ var m=/(?:^|\s)fc-([a-z]+)(?:\s|$)/.exec(card.className||''); return m?frCap(m[1]):'Grey'; }
 function frCardKey(card){ var m=/(?:^|\s)fr-([a-z]+)(?:\s|$)/.exec(card.className||''); return m&&FR_DESIGNS[m[1]]?m[1]:''; }
 function frVarsStr(o){ var s=''; Object.keys(o).forEach(function(k){ s+=';'+k+':'+o[k]; }); return s; }
 /* what buildFaceHTML puts on .mcard for the frame in use: its classes, its background and the variables the face stylesheet reads */
-function frFaceStyle(fcols,frame,frameDark,inkDark,upl){
+function frFaceStyle(fcols,frame,frameDark,inkDark,upl,full,noArt){
   FR_UPL=!!upl;
-  var key=frFrameKey(), col=frColOf(fcols), skin=FR_DESIGNS[key].skin(col);
+  var key=frFrameKey(), cols=frColsOf(fcols), col=cols[0], skin=FR_DESIGNS[key].skin(col,cols);
   var vars={'--frame':frame,'--frame-dark':frameDark,'--ink-dark':inkDark};
   Object.keys(skin).forEach(function(k){ vars[k]=skin[k]; });
-  return {cls:' fr fr-'+key+' fc-'+col.toLowerCase()+(FR_UPL?' fr-upl':''), bg:vars['--frame'], vars:frVarsStr(vars), key:key, col:col,
+  /* fr-ph: a card without a picture wears the placeholder art (session 92), painted clouds in its colours under its mana symbols */
+  if(noArt) vars['--ph-bg']=frPhBg(cols);
+  /* fr-fa: the card's Full art option (its variant's fullArt, session 92); not on a face wearing an uploaded frame image, which has no layers to give way */
+  return {cls:' fr fr-'+key+' fc-'+col.toLowerCase()+(FR_UPL?' fr-upl':'')+(full&&!FR_UPL?' fr-fa':'')+(noArt?' fr-ph':''), bg:vars['--frame'], vars:frVarsStr(vars), key:key, col:col,
           attrs:" data-fcols='"+e((fcols||[]).join(','))+"'"};
 }
 /* the type line's own variables for the frame in use (Inlaid borders it with a ribbon in the colour) */
 function frTypelineStyle(fcols){
   var key=frFrameKey(); if(key!=='inlaid') return '';
-  return " style='--pin:"+frRibbonCss(frColOf(fcols))+"'";
+  return " style='--pin:"+frRibbonCss(frColsOf(fcols))+"'";
 }
 /* an identity section's variables for the frame in use: its border in its own colour as the frame's material, and the frame's own extras */
 function frSecVars(cols){
@@ -867,12 +938,34 @@ function frBoxHTML(kind,cols){
 }
 /* the rules box's outline, drawn over everything at the outline's depth; placed on the box by frameDecorate */
 function frRimHTML(){ return "<div class='m-rules-rim'><i></i></div>"; }
-/* the layers under the face: the inner frame's fill, the border's shade and lift, and a frame's own extras (Nebula's sky) */
-function frExtrasHTML(fcols){
+/* the placeholder art (session 92): a face without a picture shows painted clouds in its colours (--ph-bg, with the clouds
+   texture in frames.css) under its mana symbols, which sit centred in the art box, or in Full art in the window the boxes
+   leave (frPlacePlaceholder); a colourless card shows the clouds alone */
+function frPhBg(cols){
+  var P=frPalAt(cols);
+  return 'radial-gradient(ellipse 72% 58% at 58% 42%,'+frRgba(P(FR_MID,.5),.5)+' 0%,'+frRgba(P(FR_DEEP,.5),.3)+' 42%,rgba(0,0,0,0) 72%),'
+    +'linear-gradient('+FR_A+','+frMix(P(FR_DARK,0),P(FR_DEEP,0),.45)+' 0%,'+frMix(P(FR_DEEP,.5),P(FR_MID,.5),.25)+' 50%,'+frMix(P(FR_DARK,1),'#000',.35)+' 100%)';
+}
+function frPhHTML(fcols){
+  var cols=frColsOf(fcols), g='';
+  if(cols[0]!=='Grey') cols.forEach(function(c){ g+="<i class='m-ph-g' style='--g:var(--tex-glyph-"+c.toLowerCase()+");--gc:"+frMix(FR_PASTEL[c],'#fff',.6)+"'></i>"; });
+  return "<div class='m-art-ph' style='--n:"+cols.length+"'>"+(g?"<div class='m-ph-em'>"+g+"</div>":'')+"</div>";
+}
+/* the Pinlines highlight (session 92): an overlay per box, placed over the frame's own box lines by frPlacePinHolo, so the
+   slot reads alike on every frame: a 4px ring on the name and rules boxes, the type line's band in its own polygon */
+function frPinHoloHTML(){ return "<div class='m-pin-holo' data-box='name'></div><div class='m-pin-holo' data-box='type'></div><div class='m-pin-holo' data-box='rules'></div>"; }
+/* the Background highlight's sheen, in the field's own shape (frDecorateCard moves it over the frame's field layers) */
+function frBgHoloHTML(){ return "<div class='m-bg-holo'></div>"; }
+/* the layers under the face: the inner frame's fill, the border's shade and lift, a frame's own extras (Nebula's sky), and the
+   Full art option's parts (frames.css shows them on a .fr-fa face): the art over the whole card, the edge rim, the scrim under the info row */
+function frExtrasHTML(fcols,art,holo){
   var upl=FR_UPL; FR_UPL=false;   /* the last of a face's hooks: the flag is cleared for the next face */
   if(upl) return '';
-  var key=frFrameKey(), d=FR_DESIGNS[key];
-  return "<div class='inner-fill'></div><div class='ring-shade'></div><div class='ring-lift'><div class='ring-fill'></div></div>"+(d.extras?d.extras(frColOf(fcols)):'');
+  holo=holo||{};
+  var key=frFrameKey(), d=FR_DESIGNS[key], cols=frColsOf(fcols);
+  return "<div class='inner-fill'></div><div class='ring-shade'></div><div class='ring-lift'><div class='ring-fill'></div></div>"+(d.extras?d.extras(cols[0],cols):'')
+    +"<div class='art-full'"+(art?" style='background-image:"+e(cssUrl(art))+"'":'')+"></div><div class='fa-edge'><i></i></div><div class='fa-scrim'></div>"
+    +(holo.pin?frPinHoloHTML():'')+(holo.bg?frBgHoloHTML():'');
 }
 /* a stat on the face: an uploaded icon as ever; else the stat in the icon set in use */
 function faceOrbHTML(type,value){
@@ -931,6 +1024,9 @@ function frInnerFillClip(G){
   var i=G.inner, a=G.art;
   return frRR(-1.5,-1.5,i[2]+3,i[3]+3,FR_R_INNER+1.5)+' '+frRR(a[0]-i[0],a[1]-i[1],a[2],a[3],FR_R_ART);
 }
+/* with the Outline off (body.edge-none, the Adjustments window) the frame's field reaches the card's edge: the fill covers the card */
+function frFieldClip(G){ var a=G.art; return frRR(0,0,FR_W,FR_H,FR_R_CARD)+' '+frRR(a[0],a[1],a[2],a[3],FR_R_ART); }
+function frOutlineOff(){ return document.body.classList.contains('edge-none'); }
 /* a gradient, clip, mask or pattern defined again under an id the card already has is dropped: each layer repeats its
    frame's defs, the browser only ever uses the first, and the tilt would turn every copy */
 function frDedupe(markup){
@@ -979,19 +1075,54 @@ function frDecorateCard(card){
   var key=frCardKey(card); if(!key) return;
   if(card.classList.contains('fr-upl')) return;   /* an uploaded frame image is the whole frame: no layers over it */
   if(!card.offsetWidth) return;
-  var d=FR_DESIGNS[key], col=frCardCol(card), fcols=(card.getAttribute('data-fcols')||'').split(',').filter(Boolean);
+  var d=FR_DESIGNS[key], col=frCardCol(card), fcols=(card.getAttribute('data-fcols')||'').split(',').filter(Boolean), cols=frColsOf(fcols);
   if(d.sheetAll) frSheetAll(card);
   var G=frMeasure(card); if(!G) return;
   var t=frTools(G), uid='fd'+(++FR_UID).toString(36);
-  var layers=d.layers(col,uid,t,fcols);
+  var layers=d.layers(col,uid,t,fcols,cols);
   var html=frDedupe(layers.map(function(L){
     return '<svg class="deco" style="z-index:'+L[0]+';--fz:'+(L[2]==null?1:L[2])+'" viewBox="0 0 '+FR_W+' '+FR_H+'" aria-hidden="true">'+L[1]+'</svg>';
   }).join(''));
   frChildren(card,'deco').forEach(function(k){ card.removeChild(k); });
   card.insertAdjacentHTML('beforeend',html);
-  frChildren(card,'inner-fill').forEach(function(k){ k.style.clipPath='path(evenodd,"'+frInnerFillClip(G)+'")'; });
+  var field=frOutlineOff()&&!card.classList.contains('fr-fa');
+  frChildren(card,'inner-fill').forEach(function(k){
+    if(field){ k.style.left='0'; k.style.top='0'; k.style.width=FR_W+'px'; k.style.height=FR_H+'px'; k.style.borderRadius=FR_R_CARD+'px'; k.style.clipPath='path(evenodd,"'+frFieldClip(G)+'")'; }
+    else { k.style.left=''; k.style.top=''; k.style.width=''; k.style.height=''; k.style.borderRadius=''; k.style.clipPath='path(evenodd,"'+frInnerFillClip(G)+'")'; }
+  });
+  /* the Background sheen: the field's shape, and last in the card, so it paints over the frame's field layers and under the boxes */
+  var fill=frChildren(card,'inner-fill')[0], fa=card.classList.contains('fr-fa');
+  frChildren(card,'m-bg-holo').forEach(function(k){
+    card.appendChild(k);
+    ['left','top','width','height','borderRadius','clipPath'].forEach(function(p){ k.style[p]=(fill&&!fa)?fill.style[p]:''; });
+  });
   frPlaceRims(card);
+  frPlacePinHolo(card,G);
+  frPlacePlaceholder(card,G);
   if(key==='nebula') NebSky.apply(card);
+}
+/* the Pinlines highlight's overlays over their boxes (session 92): the rules box's cut round sections wearing their own frames,
+   as its rim is; the type line's in the band's own polygon, read off the type line's frame layer */
+function frPlacePinHolo(card,G){
+  var ov=frChildren(card,'m-pin-holo'); if(!ov.length) return;
+  var box={name:G.name,type:G.type,rules:G.rules};
+  ov.forEach(function(o){
+    var k=o.getAttribute('data-box'), r=box[k];
+    if(!r||!r[2]){ o.style.display='none'; return; }
+    o.style.display=''; o.style.left=r[0]+'px'; o.style.top=r[1]+'px'; o.style.width=r[2]+'px'; o.style.height=r[3]+'px';
+    var cp='';
+    if(k==='type'){ try{ cp=getComputedStyle(card.querySelector('.m-typeline'),'::before').clipPath; }catch(_){} }
+    else if(k==='rules'){ var rim=card.querySelector('.m-rules-rim'); if(rim) cp=rim.style.clipPath; }
+    o.style.clipPath=(cp&&cp!=='none')?cp:'';
+  });
+}
+/* the placeholder's symbols: centred in the art box; with Full art the picture is the whole face, so they are centred on the face
+   (the stylesheet keeps them the size they have in the box) */
+function frPlacePlaceholder(card,G){
+  var ph=card.querySelector('.m-art-ph'); if(!ph) return;
+  if(!card.classList.contains('fr-fa')){ ph.style.left=''; ph.style.top=''; ph.style.width=''; ph.style.height=''; return; }
+  var a=G.art;
+  ph.style.left=(-a[0])+'px'; ph.style.top=(-a[1])+'px'; ph.style.width=FR_W+'px'; ph.style.height=FR_H+'px';
 }
 /* ---------------------------------------------------------------- the tilt: what the frames add to the face's own holo handling
    The face code turns every data-rot gradient and sets --holo-ang; the frames add the card-wide sheet their lines are painted
@@ -1022,7 +1153,9 @@ window.edFrameZoom=function(root){ frameDecorate(root); };
    A card under the pointer (the editor's preview, a popped-out face, the board's zoom) has a canvas of its own, drawn again
    when its angle changes, with the back's parallax. */
 var NebSky=(function(){
-  var P={sq:725.3,c:[169.95,237.95],sky:{par:18.1,sc:1.12,rx:238.0,ry:285.6,st:[[0,'#1a1f52'],[0.35,'#0f1238'],[0.7,'#070a1e'],[1,'#04050d']]},
+  var P={sq:725.3,c:[169.95,237.95],sky:{par:18.1,sc:1.12,rx:238.0,ry:285.6,st:[[0,'#1a1f52'],[0.35,'#0f1238'],[0.7,'#070a1e'],[1,'#04050d']],
+         /* a colourless card's sky (session 92): the same depths with no blue in them */
+         sts:[[0,'#36373f'],[0.35,'#212228'],[0.7,'#101013'],[1,'#07070a']],base:'#04050d',bases:'#08080a'},
          stars:[['bl-stars4',1.8,13.6],['bl-stars3',-0.25,10.4]],
          s:{sf:['bl-structure-front',1.25,1.4375,6.8],sc:['bl-structure-copy',0.66,1.4375,5.4],s0:['bl-structure',1,1,3.6]},
          neg:{rot:0.33,sc:1.5625,pre:17.12,par:11.3,op:0.5},spot:[187.0,261.8],specks:'bl-specks1',vig:{par:2.3,r:204.0}};
@@ -1053,9 +1186,11 @@ var NebSky=(function(){
   function units(x,k){ x.setTransform(k,0,0,k,0,0); }
   function pixels(x){ x.setTransform(1,0,0,1,0,0); }
   function stops(g,list){ list.forEach(function(s){ g.addColorStop(s[0],s[1]); }); return g; }
-  function wheel(x,cols){
-    if(!x.createConicGradient) return cols[0];
-    var g=x.createConicGradient(Math.PI/2,W/2,H/2), n=cols.length-1;
+  /* one colour's tints round the card; several colours along the sheet of light (frSheetLine), first to last, no seam */
+  function wheel(x,cols,lin){
+    var n=cols.length-1, g;
+    if(lin){ var l=frSheetLine(120); g=x.createLinearGradient(l[0],l[1],l[2],l[3]); }
+    else { if(!x.createConicGradient) return cols[0]; g=x.createConicGradient(Math.PI/2,W/2,H/2); }
     cols.forEach(function(c,i){ g.addColorStop(i/n,c); });
     return g;
   }
@@ -1067,18 +1202,19 @@ var NebSky=(function(){
   }
   function struct(x,k,q,im){ var s=P.s[k]; layer(x,im||IM[s[0]],s[1],s[2],s[3],q); }
   /* the whole sky into m (w x h pixels at scale k) through the wheels wn, wdi, wh; returns the darkest structure and the front galaxies for the windows */
-  function sky(m,w,h,k,wn,wdi,wh,q){
+  function sky(m,w,h,k,wn,wdi,wh,q,fl){
+    fl=fl||{};
     var sw=Math.round(W*S2), sh=Math.round(H*S2);
-    pixels(m); m.globalCompositeOperation='source-over'; m.globalAlpha=1; m.fillStyle='#04050d'; m.fillRect(0,0,w,h);
+    pixels(m); m.globalCompositeOperation='source-over'; m.globalAlpha=1; m.fillStyle=fl.silver?P.sky.bases:P.sky.base; m.fillRect(0,0,w,h);
     units(m,k); m.save(); m.translate(W/2+(0.5-q[0])*P.sky.par,H/2+(0.5-q[1])*P.sky.par); m.scale(P.sky.sc*P.sky.rx,P.sky.sc*P.sky.ry);
-    m.fillStyle=stops(m.createRadialGradient(0,0,0,0,0,1),P.sky.st); m.fillRect(-4,-4,8,8); m.restore();
+    m.fillStyle=stops(m.createRadialGradient(0,0,0,0,0,1),fl.silver?P.sky.sts:P.sky.st); m.fillRect(-4,-4,8,8); m.restore();
     P.stars.forEach(function(s){ layer(m,IM[s[0]],s[1],1,s[2],q); });
-    var a=scr(0,sw,sh); units(a,S2); a.fillStyle=wheel(a,wn); a.fillRect(0,0,W,H);
+    var a=scr(0,sw,sh); units(a,S2); a.fillStyle=wheel(a,wn,fl.lin); a.fillRect(0,0,W,H);
     a.globalCompositeOperation='screen'; layer(a,IM.inv,P.neg.rot,P.neg.sc,P.neg.par,q,P.neg.pre);
     pixels(m); m.globalAlpha=P.neg.op; m.globalCompositeOperation='multiply'; m.drawImage(a.canvas,0,0,w,h); m.globalAlpha=1;
     var d=scr(1,sw,sh); d.fillStyle='#fff'; d.fillRect(0,0,sw,sh); units(d,S2); d.globalCompositeOperation='darken';
     struct(d,'sf',q); struct(d,'sc',q); struct(d,'s0',q);
-    var e2=scr(2,sw,sh); units(e2,S2); e2.fillStyle=wheel(e2,wdi); e2.fillRect(0,0,W,H);
+    var e2=scr(2,sw,sh); units(e2,S2); e2.fillStyle=wheel(e2,wdi,fl.lin); e2.fillRect(0,0,W,H);
     pixels(e2); e2.globalCompositeOperation='multiply'; e2.drawImage(d.canvas,0,0);
     e2.globalCompositeOperation='difference'; e2.fillStyle='#fff'; e2.fillRect(0,0,sw,sh);
     m.globalCompositeOperation='multiply'; m.drawImage(e2.canvas,0,0,w,h);
@@ -1097,8 +1233,10 @@ var NebSky=(function(){
     });
     pixels(F); F.globalCompositeOperation='difference'; F.drawImage(d.canvas,0,0);
     var Fh=scr(7,sw,sh); Fh.globalCompositeOperation='copy'; Fh.drawImage(F.canvas,0,0);
-    units(Fh,S2); Fh.globalCompositeOperation='hue'; Fh.fillStyle=wheel(Fh,wh); Fh.fillRect(0,0,W,H);
+    units(Fh,S2); Fh.globalCompositeOperation='hue'; Fh.fillStyle=wheel(Fh,wh,fl.lin); Fh.fillRect(0,0,W,H);
     pixels(m); m.globalCompositeOperation='screen'; m.drawImage(Fh.canvas,0,0,w,h);
+    /* a colourless card's sky is silver (session 92): the textures are blue in themselves, so the whole picture gives up its colour here, its light kept */
+    if(fl.silver){ m.globalCompositeOperation='saturation'; m.fillStyle='#808080'; m.fillRect(0,0,w,h); }
     units(m,k); m.globalCompositeOperation='source-over';
     m.save(); m.translate(W/2+(0.5-q[0])*P.vig.par,H/2+(0.5-q[1])*P.vig.par);
     m.fillStyle=stops(m.createRadialGradient(0,0,0,0,0,P.vig.r),[[0,'rgba(0,0,0,0)'],[0.55,'rgba(0,0,0,0)'],[1,'rgba(0,0,0,.5)']]);
@@ -1109,33 +1247,35 @@ var NebSky=(function(){
   function region(q,v,dark,front){
     var rw=Math.max(1,Math.round(v.w*S2)), rh=Math.max(1,Math.round(v.h*S2)), ox=v.x, oy=v.y;
     var at=function(x){ x.setTransform(S2,0,0,S2,-ox*S2,-oy*S2); };
-    var b=scr(8,rw,rh); b.fillStyle='#04050d'; b.fillRect(0,0,rw,rh);
+    var b=scr(8,rw,rh); b.fillStyle=v.silver?P.sky.bases:P.sky.base; b.fillRect(0,0,rw,rh);
     at(b); b.save(); b.translate(W/2+(0.5-q[0])*P.sky.par,H/2+(0.5-q[1])*P.sky.par); b.scale(P.sky.sc*P.sky.rx,P.sky.sc*P.sky.ry);
-    b.fillStyle=stops(b.createRadialGradient(0,0,0,0,0,1),P.sky.st); b.fillRect(-4,-4,8,8); b.restore();
+    b.fillStyle=stops(b.createRadialGradient(0,0,0,0,0,1),v.silver?P.sky.sts:P.sky.st); b.fillRect(-4,-4,8,8); b.restore();
     P.stars.forEach(function(s){ layer(b,IM[s[0]],s[1],1,s[2],q); });
-    var a=scr(9,rw,rh); at(a); a.fillStyle=wheel(a,v.wn); a.fillRect(ox-2,oy-2,v.w+4,v.h+4);
+    var a=scr(9,rw,rh); at(a); a.fillStyle=wheel(a,v.wn,v.lin); a.fillRect(ox-2,oy-2,v.w+4,v.h+4);
     a.globalCompositeOperation='screen'; layer(a,IM.inv,P.neg.rot,P.neg.sc,P.neg.par,q,P.neg.pre);
     pixels(b); b.globalAlpha=P.neg.op; b.globalCompositeOperation='multiply'; b.drawImage(a.canvas,0,0); b.globalAlpha=1;
-    var e2=scr(10,rw,rh); at(e2); e2.fillStyle=wheel(e2,v.wdi); e2.fillRect(ox-2,oy-2,v.w+4,v.h+4);
+    var e2=scr(10,rw,rh); at(e2); e2.fillStyle=wheel(e2,v.wdi,v.lin); e2.fillRect(ox-2,oy-2,v.w+4,v.h+4);
     pixels(e2); e2.globalCompositeOperation='multiply'; e2.drawImage(dark,ox*S2,oy*S2,rw,rh,0,0,rw,rh);
     e2.globalCompositeOperation='difference'; e2.fillStyle='#fff'; e2.fillRect(0,0,rw,rh);
     b.globalCompositeOperation='multiply'; b.drawImage(e2.canvas,0,0);
     var f=scr(11,rw,rh); f.globalCompositeOperation='copy'; f.drawImage(front,ox*S2,oy*S2,rw,rh,0,0,rw,rh);
-    at(f); f.globalCompositeOperation='hue'; f.fillStyle=wheel(f,v.wh); f.fillRect(ox-2,oy-2,v.w+4,v.h+4);
+    at(f); f.globalCompositeOperation='hue'; f.fillStyle=wheel(f,v.wh,v.lin); f.fillRect(ox-2,oy-2,v.w+4,v.h+4);
     pixels(b); b.globalCompositeOperation='screen'; b.drawImage(f.canvas,0,0);
+    if(v.silver){ b.globalCompositeOperation='saturation'; b.fillStyle='#808080'; b.fillRect(0,0,rw,rh); }
     at(b); b.globalCompositeOperation='source-over';
     b.save(); b.translate(W/2+(0.5-q[0])*P.vig.par,H/2+(0.5-q[1])*P.vig.par);
     b.fillStyle=stops(b.createRadialGradient(0,0,0,0,0,P.vig.r),[[0,'rgba(0,0,0,0)'],[0.55,'rgba(0,0,0,0)'],[1,'rgba(0,0,0,.5)']]);
     b.fillRect(-W,-H,2*W,2*H); b.restore();
     var x=v.c.getContext('2d'); pixels(x); x.globalCompositeOperation='copy'; x.drawImage(b.canvas,0,0,rw,rh,0,0,v.c.width,v.c.height);
   }
-  function wheelsOf(el){ return {wn:el.getAttribute('data-wn').split(','),wdi:el.getAttribute('data-wdi').split(','),wh:el.getAttribute('data-wh').split(',')}; }
+  function wheelsOf(el){ return {wn:el.getAttribute('data-wn').split(','),wdi:el.getAttribute('data-wdi').split(','),wh:el.getAttribute('data-wh').split(','),
+                                 lin:el.getAttribute('data-wlin')==='1',silver:el.getAttribute('data-silver')==='1'}; }
   /* the still sky for one set of wheels, once, as a picture every card at rest shares */
   function stillUrl(wl){
-    var key=wl.wn.join()+'|'+wl.wdi.join()+'|'+wl.wh.join();
+    var key=wl.wn.join()+'|'+wl.wdi.join()+'|'+wl.wh.join()+'|'+(wl.lin?'L':'C')+(wl.silver?'S':'');
     if(STILL[key]) return STILL[key];
     var c=document.createElement('canvas'); c.width=W; c.height=H;
-    sky(c.getContext('2d'),W,H,1,wl.wn,wl.wdi,wl.wh,[0.5,0.5,120]);
+    sky(c.getContext('2d'),W,H,1,wl.wn,wl.wdi,wl.wh,[0.5,0.5,120],wl);
     return STILL[key]=c.toDataURL('image/jpeg',0.9);
   }
   function still(card){
@@ -1155,7 +1295,7 @@ var NebSky=(function(){
     var c=neb.querySelector('canvas.nebc');
     if(!c){ c=document.createElement('canvas'); c.className='nebc'; neb.appendChild(c); }
     neb.style.backgroundImage='';
-    var wl=wheelsOf(neb), st={c:c,wn:wl.wn,wdi:wl.wdi,wh:wl.wh,wins:[],last:''};
+    var wl=wheelsOf(neb), st={c:c,wn:wl.wn,wdi:wl.wdi,wh:wl.wh,lin:wl.lin,silver:wl.silver,wins:[],last:''};
     c.width=Math.round(W*S); c.height=Math.round(H*S);
     card.querySelectorAll('.nwin').forEach(function(el){
       var k=el.querySelector('canvas.nwc');
@@ -1163,14 +1303,14 @@ var NebSky=(function(){
       el.style.backgroundImage='';
       var o=frOffs(el,card), v={c:k,x:o[0],y:o[1],w:el.offsetWidth,h:el.offsetHeight};
       if(!v.w||!v.h) return;
-      if(el.getAttribute('data-wn')){ var w2=wheelsOf(el); v.wn=w2.wn; v.wdi=w2.wdi; v.wh=w2.wh; }
+      if(el.getAttribute('data-wn')){ var w2=wheelsOf(el); v.wn=w2.wn; v.wdi=w2.wdi; v.wh=w2.wh; v.lin=w2.lin; v.silver=w2.silver; }
       k.width=Math.max(1,Math.round(v.w*S)); k.height=Math.max(1,Math.round(v.h*S)); st.wins.push(v);
     });
     card.__neb=st; return st;
   }
   function draw(card,q){
     var st=card.__neb, c=st.c, w=c.width, h=c.height, m=c.getContext('2d');
-    var keep=sky(m,w,h,S,st.wn,st.wdi,st.wh,q);
+    var keep=sky(m,w,h,S,st.wn,st.wdi,st.wh,q,st);
     st.wins.forEach(function(v){
       if(v.wn){ region(q,v,keep.d,keep.F); return; }
       var x=v.c.getContext('2d'); pixels(x); x.globalCompositeOperation='copy';
@@ -1209,13 +1349,13 @@ var NebSky=(function(){
    author's choice (LOOK_BAKED) and keeps their own once they pick on the Templates page.
    The card back is mirrored into localStorage 'conjure_card_back', which the Play Test
    board reads (tdBackKind, cat_testdeck.js). */
-var FR_BACK_STORE='conjure_card_back';
+var FR_BACK_STORE='conjure_card_back'+(window.REBIRTH?'_rebirth':'');   /* each game its own (session 92): their defaults differ */
 var FR_LOOK_SAVED=false;      /* this browser has a saved row of its own: the published default follows only until then */
 function frBackKnown(k){ return !!k && (window.CB_LIST||[]).some(function(b){ return b.key===k; }); }
-function frBackDefault(){ var l=window.CB_LIST||[]; return l.length?l[0].key:''; }
+function frBackDefault(){ if(frBackKnown(FR_DEF_BACK)) return FR_DEF_BACK; var l=window.CB_LIST||[]; return l.length?l[0].key:''; }
 function frLookBody(){ return {frame:FR_LOOK.frame,orbs:FR_LOOK.orbs,back:FR_LOOK.back}; }
 function frLookClean(raw){
-  var o={frame:'classic',orbs:'',back:''};
+  var o={frame:FR_DEF_FRAME,orbs:'',back:''};
   if(raw&&typeof raw==='object'){
     if(FR_DESIGNS[raw.frame]) o.frame=raw.frame;
     if(raw.orbs&&FR_ORB_SETS.indexOf(raw.orbs)>=0) o.orbs=raw.orbs;
@@ -1257,9 +1397,12 @@ function frLookSet(patch,what){
   if(!window.edApplyLook(next,true)) return false;
   frLookChanged(what); return true;
 }
-window.edSetFrame=function(k){ if(!FR_DESIGNS[k]) return false; return frLookSet({frame:k},'frame'); };
+/* edSetFrameLook, not edSetFrame: that name is the editor's art layout setter (ed2_face.js), which this slice overwrote in sessions 90 and 91 */
+window.edSetFrameLook=function(k){ if(!FR_DESIGNS[k]) return false; return frLookSet({frame:k},'frame'); };
 window.edSetOrbs=function(k){ k=k||''; if(k&&FR_ORB_SETS.indexOf(k)<0) return false; return frLookSet({orbs:k},'orbs'); };
 window.edSetBack=function(k){ if(!frBackKnown(k)) return false; return frLookSet({back:k},'back'); };
+/* the Outline option changed (edSetEdge): every drawn face is stale, as its fill's shape follows the option */
+window.edFrameOutlineChanged=function(){ FACE_LOOK_GEN++; frLookChanged('edge'); };
 /* Every drawn face follows: the grids (scheduleFace redraws a tile whose look generation is stale), the editor's preview, the board. */
 function frLookChanged(what){
   if(what!=='back'){
@@ -1271,9 +1414,10 @@ function frLookChanged(what){
 }
 window.edFrameBoot=function(){ try{ frGalLoad(); }catch(_){} try{ frNoiseDefs(); }catch(_){} };
 
-/* ===== The Templates page (#pane-templates): the frame, the stat icon set and the card back =====
-   The old Templates window (guides, uploads, custom icons) stays as it was, behind Adjustments. */
-var TPP_SECS=[['frame','Card Frame'],['orbs','Stat Icons'],['back','Card Back']];
+/* ===== The Templates page (#tplPageBody): Card Frame with the Outline row, Card Back, Stat Icons, and Adjustments at the foot =====
+   The old Templates window (guides, uploads, custom icons) stays as it was, behind Adjustments. Since session 92 the page has no
+   jump bar and no Art section: Full art is a card's own option in the editor's art row. */
+var TPP_SECS=[['frame','Card Frame'],['back','Card Back'],['orbs','Stat Icons']];
 function frSampleCard(){
   var c=null;
   try{ c=(typeof curCard==='function')?curCard():null; }catch(_){}
@@ -1296,6 +1440,14 @@ function tppOpt(attr,key,on,inner,name){
 function tppHead(id,title,n){
   return "<h3 class='kwp-head' id='tppsec-"+id+"'>"+title+"<span class='kwp-count'>"+n+"</span></h3>";
 }
+/* the Outline row (session 92, from the Adjustments window): On or Off, edSetEdge (ed2_face.js), the lit one the state in force */
+function tppEdgeRow(){
+  var off=frOutlineOff();
+  return "<div class='tpp-row tpp-edge'><span class='tpp-lbl'>Outline</span>"
+    +"<button type='button' class='nb nb-gold nb-s"+(off?'':' on')+"' data-tpp-edge='gradient' aria-pressed='"+(off?'false':'true')+"'>On</button>"
+    +"<button type='button' class='nb nb-gold nb-s"+(off?' on':'')+"' data-tpp-edge='none' aria-pressed='"+(off?'true':'false')+"'>Off</button>"
+    +"<i class='tpp-hint'>The card’s outer border. Off, the frame’s field reaches the card’s edge; every box keeps its own.</i></div>";
+}
 function tppFramesHTML(){
   var c=frSampleCard();
   return tppHead('frame','Card Frame',FR_KEYS.length)+"<div class='tpp-grid tpp-frames'>"
@@ -1304,7 +1456,7 @@ function tppFramesHTML(){
       if(c){ try{ face=frWithLook({frame:k},function(){ return buildFaceHTML(c,{}); }); }catch(_){ face=''; } }
       var inner="<span class='tpp-card'>"+(face?"<div class='mcard-fit'><div class='mcard-scale'>"+face+"</div></div>":"")+"</span>";
       return tppOpt('frame',k,FR_LOOK.frame===k,inner,FR_NAMES[k]);
-    }).join('')+"</div>";
+    }).join('')+"</div>"+tppEdgeRow();
 }
 function tppOrbRow(mode){
   var vals=[['attack','3'],['health','4'],['arcane','2']];
@@ -1316,7 +1468,8 @@ function tppOrbRow(mode){
 function tppOrbsHTML(){
   var own=FR_ORB_OF[frFrameKey()]||'app';
   var list=[['','Frame’s own ('+FR_ORB_NAMES[own]+')',own]].concat(FR_ORB_SETS.map(function(k){ return [k,FR_ORB_NAMES[k],k]; }));
-  return tppHead('orbs','Stat Icons',FR_ORB_SETS.length)+"<div class='tpp-grid tpp-orbsets'>"
+  /* two rows of tiles, whatever their number (session 92): the columns are half the tiles, rounded up, the odd one's place left empty */
+  return tppHead('orbs','Stat Icons',FR_ORB_SETS.length)+"<div class='tpp-grid tpp-orbsets' style='grid-template-columns:repeat("+Math.ceil(list.length/2)+",minmax(0,1fr))'>"
     +list.map(function(e){ return tppOpt('orbs',e[0],FR_LOOK.orbs===e[0],tppOrbRow(e[2]),e[1]); }).join('')+"</div>";
 }
 function tppBackHTML(){
@@ -1331,33 +1484,24 @@ function tppFitFaces(root){
   root.querySelectorAll('.tpp-card .mcard-fit').forEach(function(w){ try{ scaleFaceIn(w); }catch(_){} });
 }
 window.edRenderTplPage=function(){
-  var bar=document.getElementById('tplPageBar'), body=document.getElementById('tplPageBody');
+  var body=document.getElementById('tplPageBody');
   if(!body) return;
-  if(bar){
-    bar.innerHTML="<div class='kwp-jump'>"+TPP_SECS.map(function(s){
-      return "<button class='ed2-btn tiny' data-tppjump='"+s[0]+"'>"+s[1]+"</button>"; }).join('')+"</div>";
-  }
+  /* the foot stays in view (frames.css: sticky at the page's bottom), so Adjustments is always to hand */
   body.innerHTML="<div class='tpp-sec' data-tpp-sec='frame'>"+tppFramesHTML()+"</div>"
-    +"<div class='tpp-sec' data-tpp-sec='orbs'>"+tppOrbsHTML()+"</div>"
     +"<div class='tpp-sec' data-tpp-sec='back'>"+tppBackHTML()+"</div>"
+    +"<div class='tpp-sec' data-tpp-sec='orbs'>"+tppOrbsHTML()+"</div>"
     +"<div class='tpp-foot'><button type='button' class='nb nb-gold nb-l' onclick='edOpenTemplates()'>Adjustments</button></div>";
-  tppBind(bar,body);
+  tppBind(body);
   tppFitFaces(body);
 };
 function tppPick(el){
-  var t=el.closest('[data-tpp-frame],[data-tpp-orbs],[data-tpp-back]'); if(!t) return;
-  if(t.hasAttribute('data-tpp-frame')) window.edSetFrame(t.getAttribute('data-tpp-frame'));
+  var t=el.closest('[data-tpp-frame],[data-tpp-orbs],[data-tpp-back],[data-tpp-edge]'); if(!t) return;
+  if(t.hasAttribute('data-tpp-frame')) window.edSetFrameLook(t.getAttribute('data-tpp-frame'));
   else if(t.hasAttribute('data-tpp-orbs')) window.edSetOrbs(t.getAttribute('data-tpp-orbs'));
+  else if(t.hasAttribute('data-tpp-edge')){ if(typeof window.edSetEdge==='function') window.edSetEdge(t.getAttribute('data-tpp-edge')); }
   else window.edSetBack(t.getAttribute('data-tpp-back'));
 }
-function tppBind(bar,body){
-  if(bar&&!bar.__tpp){ bar.__tpp=1;
-    bar.addEventListener('click',function(e){
-      var b=e.target.closest('[data-tppjump]'); if(!b) return;
-      var h=document.getElementById('tppsec-'+b.getAttribute('data-tppjump'));
-      if(h) h.scrollIntoView({behavior:'smooth',block:'start'});
-    });
-  }
+function tppBind(body){
   if(body.__tpp) return; body.__tpp=1;
   body.addEventListener('click',function(e){ tppPick(e.target); });
   body.addEventListener('keydown',function(e){
@@ -1379,8 +1523,10 @@ function tppSync(what){
   var secs={};
   body.querySelectorAll('.tpp-sec').forEach(function(s){ secs[s.getAttribute('data-tpp-sec')]=s; });
   if(!secs.frame||!secs.orbs||!secs.back) return;
+  var faces=function(){ secs.frame.innerHTML=tppFramesHTML(); tppFitFaces(secs.frame); };
   if(what==='back'){ tppMark(secs.back,'back',FR_LOOK.back||frBackDefault()); return; }
   if(what==='frame'){ tppMark(secs.frame,'frame',FR_LOOK.frame); secs.orbs.innerHTML=tppOrbsHTML(); return; }
-  if(what==='orbs'){ tppMark(secs.orbs,'orbs',FR_LOOK.orbs); secs.frame.innerHTML=tppFramesHTML(); tppFitFaces(secs.frame); return; }
+  /* the Outline changed: the mini faces are drawn again, their fills shaped to it, and the row's lit button follows */
+  if(what==='edge'||what==='orbs'){ faces(); return; }
   window.edRenderTplPage();
 }

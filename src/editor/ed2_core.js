@@ -1518,7 +1518,7 @@ function effectiveArtXf(c){
   if(t.z===1&&t.x===0&&t.y===0&&t.r===0&&t.f===1)return null;
   return t;
 }
-/* A variant owns only visual fields {id, label, art, imageUrl, artXf, fit, holo, frameColor}; the rest stays on the card, so a rules edit reaches every look.
+/* A variant owns only visual fields {id, label, art, imageUrl, artXf, fit, fullArt, holo, frameColor}; the rest stays on the card, so a rules edit reaches every look.
    variantOf() is the one place the face reads visual fields from (HANDOFF §4). */
 function cardVariants(c){
   return (c && Array.isArray(c.variants) && c.variants.length) ? c.variants : null;
@@ -1571,6 +1571,8 @@ function variantOf(c){
           artXf:(v.artXf!==undefined?v.artXf:c.artXf),
           holo:(bl&&bl.holo!==undefined)?bl.holo:(v.holo!==undefined?v.holo:c.holo),
           fit:(v.fit!==undefined?v.fit:c.fit),
+          /* Full art (session 92): the picture over the whole card, a look of the variant like the fit */
+          fullArt:(v.fullArt!==undefined?v.fullArt:c.fullArt),
           /* frameColor alone has no card fallback: Clear deletes it from the visual target, and a fallback would hand back the copy edAddVariant left on the card. */
           /* no mark: the watermark is per saga version (markIdOf, which still reads one an older model left on a variant) */
           frameColor:(bl&&bl.frameColor!==undefined)?bl.frameColor:v.frameColor};
@@ -1601,7 +1603,7 @@ window.edAddVariant=function(){
   if(!vs){
     /* every visual field variantOf lists, or this is not a promotion of the look */
     vs=[{id:'v1',label:'Default',art:c.art||'',imageUrl:c.imageUrl||'',
-         artXf:c.artXf,holo:c.holo,fit:c.fit,frameColor:c.frameColor,
+         artXf:c.artXf,holo:c.holo,fit:c.fit,fullArt:c.fullArt,frameColor:c.frameColor,
          mark:c.mark}];
     c.variants=vs;
   }

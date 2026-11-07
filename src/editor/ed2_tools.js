@@ -209,15 +209,7 @@ window.edResetToOfficial=edResetToOfficial;
 
 window.edTplPanelRefresh=function(){
   var host=document.getElementById('edTplBody'); if(!host)return;
-  var edge=edEdgeMode(), pin=edPinMode();
   var bleed=document.body.classList.contains('bleed-on');
-  function modeRow(label,cur,fn,hint,modes){
-    return "<div class='tpl-opts'><span class='tpl-lbl'>"+label+"</span>"
-      +(modes||EDGE_MODES).map(function(m){
-         return "<button class='ed2-btn tiny"+(cur===m?' on':'')+"' onclick=\""+fn+"('"+m+"')\">"
-           +m.charAt(0).toUpperCase()+m.slice(1)+"</button>";}).join('')
-      +"<i class='tpl-hint'>"+hint+"</i></div>";
-  }
   /* Defaults only, one set per frame orientation: a card that set its own fit or framing is untouched, which effectiveFit and effectiveArtXf enforce. */
   function xfCtrl(orient,k){
     var L=TPL_XF_LIMITS[k], v=tplDefaults(orient).xf[k];
@@ -249,8 +241,7 @@ window.edTplPanelRefresh=function(){
   }
   var h='';
   h+="<div class='tpl-sec'><h4>Display</h4>"
-    +modeRow('Outline',edge,'edSetEdge','The card’s outermost border only.')
-    +modeRow('Pinlines',pin,'edSetPin','The name, type and rules box borders.')
+    /* the Outline row (On or Off, edSetEdge) sits on the Templates page since session 92 (tppEdgeRow, ed2_frames.js) */
     +"<div class='tpl-opts'>"
     +"<span class='tpl-lbl'>Print bleed</span>"
     +"<button class='ed2-btn tiny"+(bleed?' on':'')+"' onclick='edSetBleed("+(!bleed)+")'>"

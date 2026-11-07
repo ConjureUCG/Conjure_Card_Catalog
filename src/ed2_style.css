@@ -245,15 +245,9 @@ body.light .ci-qedit{background:var(--s2);border-color:var(--gr);color:var(--gr)
 .mcard .m-flavor .m-sym,.mcard .m-flavor .mico{
   width:.95em!important;height:.95em!important;vertical-align:-.14em}
 
-/* !important: buildFaceHTML writes the background inline. .edge-* sets only the outer ring (.mcard's background), .pin-* only --pin, so the two stay independent.
-   'none' is transparent, not zero width: Classic is a flex column, and a zeroed border would move every box. */
-body.edge-black .mcard{background:#000!important}
-body.edge-white .mcard{background:#fff!important}
+/* !important: buildFaceHTML writes the background inline. Outline Off (session 91) is transparent, not zero width: Classic is a flex
+   column, and a zeroed border would move every box. The black and white edges and the pinline modes went in session 91. */
 body.edge-none  .mcard{background:transparent!important}
-
-body.pin-black .mcard{--pin:linear-gradient(#000,#000)!important}
-body.pin-white .mcard{--pin:linear-gradient(#fff,#fff)!important}
-body.pin-none  .mcard{--pin:linear-gradient(transparent,transparent)!important}
 
 .ed2-overlay{position:fixed;inset:0;background:color-mix(in srgb,var(--black) 62%,transparent);z-index:9000;
   display:flex;align-items:center;justify-content:center;padding:24px}

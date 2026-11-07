@@ -257,8 +257,8 @@ function boot(){ if(_inited)return; _inited=true;
           if(png&&!TPL[t.key]){ TPL[t.key]=png; try{ scheduleFace(); }catch(_){} }
         });
       });
-      /* r[14] is null in stores from before pinlines; edApplyEdge then mirrors the outline. */
-      edApplyEdge(r[8]||'gradient', r[14]);
+      /* r[14], the pinline mode of before session 91, is no longer read: the pinlines are each frame's own (ed2_frames.js) */
+      edApplyEdge(r[8]||'gradient');
       /* Older stores have only r[17] (one fitMode, for both) or neither, which takes contain on purpose: cover cropped 23% off a card. */
       if(r[19])edApplyTplDefaults(r[19]);
       else edApplyTplDefaults({h:{fit:r[17]||'contain'},v:{fit:r[17]||'contain'}});

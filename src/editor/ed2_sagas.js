@@ -1812,7 +1812,7 @@ function ownNameCollisions(){
   }).filter(Boolean);
 }
 function mergeSameNameInto(keep,c){
-  var vis=['artXf','fit','holo','frameColor','mark'];
+  var vis=['artXf','fit','fullArt','holo','frameColor','mark'];
   var have={};
   artBearers(keep).forEach(function(b){ var k=(b&&(b.imageUrl||b.art))||''; if(k)have[k]=1; });
   var vs;

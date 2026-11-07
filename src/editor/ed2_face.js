@@ -164,7 +164,7 @@ function buildFaceHTML(c, opts){
   /* An uploaded frame covers the outer ring too, placed as .m-tpl is. */
   var ringTpl=tplFrame?(e(cssUrl(tplFrame))+" var(--tpl-x) var(--tpl-y)/var(--tpl-w) var(--tpl-h) no-repeat,"):'';
   /* The frame in use (ed2_frames.js): its classes, its own background and the variables the face stylesheet reads; a face with an uploaded frame image takes none of its layers. */
-  var fs=frFaceStyle(fcols,frame,frameDark,inkDark,!!tplFrame);
+  var fs=frFaceStyle(fcols,frame,frameDark,inkDark,!!tplFrame,fullArtOf(c),!art);
   return "<div class='mcard"+(isEssence?' mcard-essence':'')+frameCls+fitCls+tplCls+holoClasses(c)+fs.cls+"' style='background:"+ringTpl+fs.bg+fs.vars+holoStyleVars(c)+"'"+fs.attrs+">"
     +"<div class='mcard-inner'><div class='m-canvas'>"
       /* DOM order is the visual order (a flex column); the orbs sit inside .m-art so they anchor to the art box. */
@@ -181,8 +181,9 @@ function buildFaceHTML(c, opts){
       +"<div class='m-art "+(art?'':'empty')+"'>"
         /* .m-art-clip clips, not .m-art: clipping .m-art would clip the orbs inside it. */
         /* No inline background-size: the .fit-* class on .mcard sets it, so the letterbox rule and the image agree. */
+        /* no picture: the placeholder art (frPhHTML, ed2_frames.js, session 92), the card's mana symbols on painted clouds in its colours */
         +(art?"<div class='m-art-clip'><div class='m-art-img' style='background-image:"+e(cssUrl(art))+artXfCss(c)+"'></div>"
-             +((holoOf(c)||{}).image?"<div class='m-art-holo'></div>":'')+"</div>":'')
+             +((holoOf(c)||{}).image?"<div class='m-art-holo'></div>":'')+"</div>":frPhHTML(fcols))
         +(orbHtml?"<div class='m-orbs'>"+orbHtml+"</div>":"")
         +((isEssence&&wantsRules)?rulesAreaHTML(c,rulesAlign,rules,flavor)+frRimHTML():'')
         +manaBar
@@ -202,7 +203,7 @@ function buildFaceHTML(c, opts){
       +"</div>"
     +"</div></div>"
     /* under the face: the inner frame's fill, the border's shade and lift, and the frame's own extras (ed2_frames.js) */
-    +frExtrasHTML(fcols)
+    +frExtrasHTML(fcols,art,holoOf(c))
     +(c.testing?"<div class='mcard-test' title='Test card - left out of the published catalogue'>Test</div>":"")
     +"</div>";
 }
@@ -827,6 +828,24 @@ window.edSetFrame=function(mode){
   renderPreview(c); try{ scheduleFace(); }catch(_){}
   try{ window.edRenderArtPanel(); }catch(_){}
 };
+/* Full art (session 92): the picture over the whole card behind the boxes (fr-fa, ed2_frames.js), a visual field of the variant like
+   the fit, since a picture has to be made for the full card's size; the toggle sits last in the art row, right of the layout and fit lists,
+   alone on a second line where the column is narrow (the two lists keep their row, which an old check reads). */
+function fullArtOf(c){ var v=variantOf(c||{}); return !!(v&&v.fullArt); }
+function fullArtPickerHTML(c){
+  var on=fullArtOf(c);
+  return "<button type='button' class='ed2-btn tiny ed2-art-full"+(on?' on':'')+"' aria-pressed='"+(on?'true':'false')
+    +"' title='The picture over the whole card, behind the boxes - for art made at the full card’s size' onclick='edSetCardFullArt("+(on?'false':'true')+")'>Full Art</button>";
+}
+window.edSetCardFullArt=function(on){
+  var c=curCard(); if(!c)return;
+  var vt=visualTarget(c);
+  if(on)vt.fullArt=true; else delete vt.fullArt;
+  markDirty(c); persistCard(c);
+  renderPreview(c); try{ scheduleFace(); }catch(_){}
+  try{ window.edRenderArtPanel(); }catch(_){}
+};
+window.edCardFullArt=function(c){ return fullArtOf(c||curCard()||{}); };
 
 /* While a card is split, ruleText is kept as the joined section text, so every reader of ruleText works unchanged;
    search and the filters read cardRuleText (cat_core.js), which adds the sections and the Choice text. */
@@ -942,7 +961,7 @@ window.edRenderArtPanel=function(){
   var host=document.getElementById('edArtPanel'); if(!host)return;
   var c=curCard();
   if(!c){ host.innerHTML="<div class='ed2-art-empty'>No card selected.</div>"; return; }
-  var frameRow="<div class='ed2-var-row ed2-artsel-row'>"+framePickerHTML(c)+fitPickerHTML(c)+"</div>";
+  var frameRow="<div class='ed2-var-row ed2-artsel-row'>"+framePickerHTML(c)+fitPickerHTML(c)+fullArtPickerHTML(c)+"</div>";
   var _vv=variantOf(c);
   var art=(typeof artSrcOf==='function')?artSrcOf(_vv)
          :(_vv.imageUrl||(_vv.art&&ART[_vv.art])||_vv.art||'');
@@ -2153,33 +2172,24 @@ function tplFrameFor(c){
   return tplGet('frame:all');
 }
 
-/* --frame is set inline on .mcard, so the black and white edges in the CSS need !important to win. */
-var EDGE_MODES=['gradient','black','white','none'];
-/* pin null or undefined follows the outline, which is how a pack or backup from before pinlines is read. */
-function edApplyEdge(mode,pin){
+/* Outline On (gradient) or Off (none, body.edge-none) since session 91: Off hides the frame's border lines and lift and lets its
+   field reach the card's edge (ed2_frames.js, frames.css). The black and white edges and the pinline modes went with it; a
+   stored or packed value of theirs is read as On. */
+var EDGE_MODES=['gradient','none'];
+function edApplyEdge(mode){
   if(EDGE_MODES.indexOf(mode)<0)mode='gradient';
-  if(pin==null)pin=mode;
-  if(EDGE_MODES.indexOf(pin)<0)pin='gradient';
   var cl=document.body.classList;
-  EDGE_MODES.forEach(function(m){ cl.remove('edge-'+m); cl.remove('pin-'+m); });
-  if(mode!=='gradient')cl.add('edge-'+mode);
-  if(pin!=='gradient')cl.add('pin-'+pin);
+  ['gradient','black','white','none'].forEach(function(m){ cl.remove('edge-'+m); cl.remove('pin-'+m); });
+  if(mode==='none')cl.add('edge-none');
 }
 function edEdgeMode(){
-  for(var i=0;i<EDGE_MODES.length;i++){
-    if(document.body.classList.contains('edge-'+EDGE_MODES[i]))return EDGE_MODES[i];
-  }
-  return 'gradient';
-}
-function edPinMode(){
-  for(var i=0;i<EDGE_MODES.length;i++){
-    if(document.body.classList.contains('pin-'+EDGE_MODES[i]))return EDGE_MODES[i];
-  }
-  return 'gradient';
+  return document.body.classList.contains('edge-none')?'none':'gradient';
 }
 window.edSetEdge=function(mode){
-  edApplyEdge(mode,edPinMode());
-  setMetaSafe('edgeMode',mode);
+  edApplyEdge(mode);
+  setMetaSafe('edgeMode',edEdgeMode());
+  /* every face is drawn again, with or without its border lines (ed2_frames.js) */
+  try{ window.edFrameOutlineChanged(); }catch(_){}
   try{ scheduleFace(); }catch(_){}
   var c=curCard(); if(c)renderPreview(c);
   edTplPanelRefresh();
@@ -2237,14 +2247,6 @@ window.edSetCardFit=function(mode){
   try{ window.edRenderArtPanel(); }catch(_){}
 };
 window.edCardFit=function(c){ var v=variantOf(c||curCard()||{}); return (v&&v.fit)||''; };
-window.edSetPin=function(mode){
-  edApplyEdge(edEdgeMode(),mode);
-  setMetaSafe('pinMode',mode);
-  try{ scheduleFace(); }catch(_){}
-  var c=curCard(); if(c)renderPreview(c);
-  edTplPanelRefresh();
-};
-
 function fileToDataUrl(file){
   return new Promise(function(res,rej){
     var fr=new FileReader();
@@ -2311,7 +2313,6 @@ window.edTplExport=function(){
     zip.file(fn,m[2],{base64:true}); man.slots[k]=fn; n++;
   });
   man.edgeMode=edEdgeMode();
-  man.pinMode=edPinMode();
   man.tplDefaults=JSON.parse(JSON.stringify(TPL_DEFAULTS));
   zip.file('manifest.json',JSON.stringify(man,null,2));
   zip.generateAsync({type:'blob'}).then(function(b){
@@ -2365,7 +2366,7 @@ window.edPacks=function(){return PACKS.map(function(p){
 
 function currentPackBody(){
   return {slots:Object.assign({},TPL),
-    edgeMode:edEdgeMode(), pinMode:edPinMode(),
+    edgeMode:edEdgeMode(),
     tplDefaults:JSON.parse(JSON.stringify(TPL_DEFAULTS)),
     bleed:document.body.classList.contains('bleed-on'),
     /* The whole list and the base, not just the four built-in keys, or a pack drops every row its sender added. */
@@ -2400,9 +2401,8 @@ function applyPackBody(pk){
   var nDefaults=tplNormDefaults(pk.tplDefaults?pk.tplDefaults
     :{h:{fit:pk.fitMode||'contain'},v:{fit:pk.fitMode||'contain'}});
   var nKw=(pk.kwStyles&&typeof pk.kwStyles==='object')?kwStylesClean(pk.kwStyles):null;
-  /* No pinMode in a pack from before pinlines: the pinlines follow the outline, as they did. */
+  /* a pack's black or white edge, and its pinMode, from before session 91 are read as the outline on */
   var edge=(EDGE_MODES.indexOf(pk.edgeMode)>=0)?pk.edgeMode:'gradient';
-  var pin=(pk.pinMode==null)?edge:((EDGE_MODES.indexOf(pk.pinMode)>=0)?pk.pinMode:'gradient');
   /* Entries the pack lacks are deleted from the store too, as boot reads the store, which is never cleared whole. ghApplyDefaultLook
      runs this after a sync and hands in the player's own entries beside the official ones (ghLookKwBody), so only official ones leave. */
   var nCustom=Array.isArray(pk.kwCustom)
@@ -2429,7 +2429,7 @@ function applyPackBody(pk){
       if(nKw)meta('kwStyles',nKw);
       if(pk.pillsOn!=null)meta('pillsOn',!!pk.pillsOn);
       if(pk.kwHover!=null)meta('kwHover',!!pk.kwHover);
-      meta('edgeMode',edge); meta('pinMode',pin);
+      meta('edgeMode',edge);
       meta('customTemplate',Object.keys(slots).length>0);
       if(pk.cardLook&&typeof pk.cardLook==='object')meta('cardLook',frLookClean(pk.cardLook));
       if(nCustom){
@@ -2449,7 +2449,7 @@ function applyPackBody(pk){
     if(nKw)KWSTYLE=nKw;
     if(pk.pillsOn!=null)PILLS_ON=!!pk.pillsOn;
     if(pk.kwHover!=null)KW_HOVER=!!pk.kwHover;
-    edApplyEdge(edge,pin);
+    edApplyEdge(edge);
     if(nCustom){ KWCUSTOM=nCustom; edApplyCustomEntries(); }
     if(pk.cardLook&&typeof pk.cardLook==='object'){ window.edApplyLook(pk.cardLook,false); window.edLookSaved(true); }
     try{ scheduleFace(); }catch(_){}

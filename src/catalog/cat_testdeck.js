@@ -3464,7 +3464,7 @@ function tdTokensOn(uid, board){
   });
 }
 
-var TD_BACK_STORE = 'conjure_card_back';
+var TD_BACK_STORE = 'conjure_card_back' + (window.REBIRTH ? '_rebirth' : '');   /* each game its own (session 92): their default backs differ */
 var _tdBackKind = null;
 function tdBackKnown(k){
   return CB_LIST.some(function(b){ return b.key === k; });
@@ -3473,7 +3473,8 @@ function tdBackKind(){
   if(_tdBackKind) return _tdBackKind;
   var k = null;
   try{ k = localStorage.getItem(TD_BACK_STORE); }catch(_){}
-  _tdBackKind = tdBackKnown(k) ? k : CB_LIST[0].key;
+  /* Rebirth's default back is Omnibus, the main game's the list's first, Epitaph (session 92) */
+  _tdBackKind = tdBackKnown(k) ? k : (window.REBIRTH && tdBackKnown('omnibus') ? 'omnibus' : CB_LIST[0].key);
   return _tdBackKind;
 }
 /* One still picture per face-down card; Alt over it draws the whole moving card (tdAltShowBack). */

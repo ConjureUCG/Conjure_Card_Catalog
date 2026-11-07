@@ -918,23 +918,24 @@ function _initGridTilt(gridEl){
     if(ci !== _activeCard){
       if(_activeCard) _gridTiltReset(_activeCard);
       _activeCard = ci;
-      if(!ci._tiltReady){
-        var imgEl = ci.querySelector('.ci-img');
-        if(imgEl){
-          imgEl.style.perspective = '500px';
-          imgEl.style.overflow = 'visible';
-          var inner = document.createElement('div');
-          inner.className = 'ci-tilt-inner';
-          inner.style.cssText = 'transform-style:preserve-3d;transition:transform .1s linear;width:100%;height:100%;position:relative;border-radius:inherit';
-          while(imgEl.firstChild) inner.appendChild(imgEl.firstChild);
-          var shine = document.createElement('div');
-          shine.className = 'ci-tilt-shine';
-          shine.style.cssText = 'position:absolute;inset:0;pointer-events:none;border-radius:inherit;z-index:10';
-          inner.appendChild(shine);
-          imgEl.appendChild(inner);
-        }
-        ci._tiltReady = true;
+    }
+    /* the wrapper, built once; built again when the tile was drawn anew without it (faceGridTiles, on a look change), under the pointer or not */
+    if(!ci._tiltReady || !ci.querySelector('.ci-tilt-inner')){
+      var imgEl = ci.querySelector('.ci-img');
+      if(imgEl){
+        imgEl.style.perspective = '500px';
+        imgEl.style.overflow = 'visible';
+        var inner = document.createElement('div');
+        inner.className = 'ci-tilt-inner';
+        inner.style.cssText = 'transform-style:preserve-3d;transition:transform .1s linear;width:100%;height:100%;position:relative;border-radius:inherit';
+        while(imgEl.firstChild) inner.appendChild(imgEl.firstChild);
+        var shine = document.createElement('div');
+        shine.className = 'ci-tilt-shine';
+        shine.style.cssText = 'position:absolute;inset:0;pointer-events:none;border-radius:inherit;z-index:10';
+        inner.appendChild(shine);
+        imgEl.appendChild(inner);
       }
+      ci._tiltReady = true;
     }
     var imgEl = ci.querySelector('.ci-img');
     if(!imgEl) return;
