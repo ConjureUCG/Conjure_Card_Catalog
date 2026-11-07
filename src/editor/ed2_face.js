@@ -34,7 +34,7 @@ function rulesAreaHTML(c,rulesAlign,rules,flavor){
       var cols=colorsInCostOrder(s.manaCost);
       if(cols.length){
         vars="--frame:"+frameOf(cols)+";--frame-dark:"+frameDarkOf(cols)
-            +";--pin:"+frameOf(cols)+";--ink-dark:"+outlineSolid(cols);
+            +";--pin:"+frameOf(cols)+";--ink-dark:"+outlineSolid(cols)+frSecVars(cols);
       }
     }
     var head='';
@@ -46,7 +46,8 @@ function rulesAreaHTML(c,rulesAlign,rules,flavor){
           +"<span class='m-rsec-nm'>"+e(s.name)+"</span></div>";
       if(tl)head+="<div class='m-rsec-type'>"+e(tl)+"</div>";
     }
-    return "<div class='m-rsec"+(mine?' ident':'')+"'"+(vars?" style='"+vars+"'":'')+">"
+    return "<div class='m-rsec"+(mine?' ident':'')+"'"+(mine&&cols&&cols.length?" data-fcol='"+e(cols[0])+"'":'')+(vars?" style='"+vars+"'":'')+">"
+      +(mine?frBoxHTML('sec',cols):'')
       +head
       +"<div class='m-rules-body'>"+symbolizeRules(s.text||'')+"</div>"
       +"</div>";
@@ -58,6 +59,7 @@ function rulesAreaHTML(c,rulesAlign,rules,flavor){
   return "<div class='m-rules m-rules-split split-"+secs.length
     +(anyIdent?' has-ident':'')+(choice?' has-choice':'')
     +(flavor?' has-flavor':'')+" "+rulesAlign+"'>"
+    +frBoxHTML('rules')
     +markLayerHTML(c)
     +(choice?("<div class='m-choice'"+(cRows?" data-rows='"+cRows+"'":"")+">"
       +(choiceHTML||'&nbsp;')+"</div>"):'')
@@ -151,7 +153,7 @@ function buildFaceHTML(c, opts){
   var orbHtml='';
   if(!isEssence){
     var list=cardOrbs(c);
-    orbHtml=list.map(function(o){ return "<div class='m-orb-slot'>"+orbShapeByType(o.type,o.value)+"</div>"; }).join('');
+    orbHtml=list.map(function(o){ return "<div class='m-orb-slot'>"+faceOrbHTML(o.type,o.value)+"</div>"; }).join('');
   }
   var rulesAlign='align-'+al.v+' just-'+al.h;
   /* Classes on .mcard, not <body>: see the note on TPL_DEFAULTS in ed2_core.js. */
@@ -161,16 +163,18 @@ function buildFaceHTML(c, opts){
   var fitCls=' fit-'+effectiveFit(c);
   /* An uploaded frame covers the outer ring too, placed as .m-tpl is. */
   var ringTpl=tplFrame?(e(cssUrl(tplFrame))+" var(--tpl-x) var(--tpl-y)/var(--tpl-w) var(--tpl-h) no-repeat,"):'';
-  return "<div class='mcard"+(isEssence?' mcard-essence':'')+frameCls+fitCls+tplCls+holoClasses(c)+"' style='background:"+ringTpl+frame+";--frame:"+frame+";--frame-dark:"+frameDark+";--ink-dark:"+inkDark+holoStyleVars(c)+"'>"
+  /* The frame in use (ed2_frames.js): its classes, its own background and the variables the face stylesheet reads; a face with an uploaded frame image takes none of its layers. */
+  var fs=frFaceStyle(fcols,frame,frameDark,inkDark,!!tplFrame);
+  return "<div class='mcard"+(isEssence?' mcard-essence':'')+frameCls+fitCls+tplCls+holoClasses(c)+fs.cls+"' style='background:"+ringTpl+fs.bg+fs.vars+holoStyleVars(c)+"'"+fs.attrs+">"
     +"<div class='mcard-inner'><div class='m-canvas'>"
       /* DOM order is the visual order (a flex column); the orbs sit inside .m-art so they anchor to the art box. */
       +"<div class='m-namebox'></div><div class='m-pinline m-pin-name'></div>"
       /* With no cost, .nocost: the name is right-aligned only to meet the pips. */
-      +"<div class='m-nameline"+(pips?'':' nocost')+"'><div class='m-pips'>"+pips+"</div>"
+      +"<div class='m-nameline"+(pips?'':' nocost')+"'>"+frBoxHTML('name')+"<div class='m-pips'>"+pips+"</div>"
         +"<div class='m-name'>"+(e(c.name)||'&nbsp;')+"</div></div>"
       +"<div class='m-typebox'></div><div class='m-pinline m-pin-type'></div>"
       /* .m-tl-panel: the type line needs four paint layers, one more than an element and its two pseudos give. */
-      +"<div class='m-typeline'><i class='m-tl-panel'></i>"+(e(typeLine(c))||'&nbsp;')+"</div>"
+      +"<div class='m-typeline'"+frTypelineStyle(fcols)+">"+frBoxHTML('type')+"<i class='m-tl-panel'></i>"+(e(typeLine(c))||'&nbsp;')+"</div>"
       /* The transform goes on .m-art-img, not .m-art: .m-orbs is inside .m-art and would turn with the art. */
       /* .m-mid is display:contents on a horizontal card and the row on a vertical one. */
       +"<div class='m-mid'>"
@@ -180,11 +184,11 @@ function buildFaceHTML(c, opts){
         +(art?"<div class='m-art-clip'><div class='m-art-img' style='background-image:"+e(cssUrl(art))+artXfCss(c)+"'></div>"
              +((holoOf(c)||{}).image?"<div class='m-art-holo'></div>":'')+"</div>":'')
         +(orbHtml?"<div class='m-orbs'>"+orbHtml+"</div>":"")
-        +((isEssence&&wantsRules)?rulesAreaHTML(c,rulesAlign,rules,flavor):'')
+        +((isEssence&&wantsRules)?rulesAreaHTML(c,rulesAlign,rules,flavor)+frRimHTML():'')
         +manaBar
       +"</div>"
       +(isEssence?'':"<div class='m-pinline m-pin-rules'></div>")
-      +((!isEssence&&wantsRules)?rulesAreaHTML(c,rulesAlign,rules,flavor):'')
+      +((!isEssence&&wantsRules)?rulesAreaHTML(c,rulesAlign,rules,flavor)+frRimHTML():'')
       +"</div>"
       /* A sibling of .m-mid so it covers the whole card; the layer order is in mcard_classic.css. */
       +(tplFrame?"<div class='m-tpl' style='background-image:"+e(cssUrl(tplFrame))+"'></div>":"")
@@ -197,6 +201,8 @@ function buildFaceHTML(c, opts){
         +rarityHTML(c)
       +"</div>"
     +"</div></div>"
+    /* under the face: the inner frame's fill, the border's shade and lift, and the frame's own extras (ed2_frames.js) */
+    +frExtrasHTML(fcols)
     +(c.testing?"<div class='mcard-test' title='Test card - left out of the published catalogue'>Test</div>":"")
     +"</div>";
 }
@@ -1417,12 +1423,15 @@ function fitFace(root){
   });
   // After the fitting: shrinking type changes box heights, and so the offsets.
   try{ alignFrameGradients(root); }catch(_){}
+  /* Then the frame's own layers, drawn from the boxes where the fitting left them (ed2_frames.js). */
+  try{ frameDecorate(root); }catch(_){}
 }
 
 (function(){ if(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches)return;
   var cur=null;
   function reset(card){if(!card)return;['--rx','--ry','--holo-ang','--ico-sx','--ico-sy'].forEach(function(p){card.style.removeProperty(p);});
-    card.querySelectorAll('linearGradient[data-rot]').forEach(function(g){ g.setAttribute('gradientTransform',ORB_ANG); });}
+    card.querySelectorAll('linearGradient[data-rot]').forEach(function(g){ g.setAttribute('gradientTransform',ORB_ANG); });
+    try{ frameTiltReset(card); }catch(_){}}
   document.addEventListener('pointermove',function(ev){
     if(!ev.target||!ev.target.closest)return;
     // Only the full-size faces, never the scaled grid tiles.
@@ -1440,6 +1449,8 @@ function fitFace(root){
     card.querySelectorAll('linearGradient[data-rot]').forEach(function(g){
       g.setAttribute('gradientTransform','rotate('+ang+' .5 .5)');
     });
+    /* the frame's own lines and the Nebula sky follow the same light (ed2_frames.js) */
+    try{ frameTilt(card,px,py,ang); }catch(_){}
   },{passive:true});
   document.addEventListener('pointerleave',function(){reset(cur);cur=null;},true);
 })();
@@ -1682,7 +1693,7 @@ function renderFields(){
         +" title='A Test card is left out of the published catalogue - people using the app never see it. It goes to testing.json, which only your copy reads.'"
         +" onclick='edToggleTesting()'>Test</button>"
       /* No card look toggles: Classic and Dark are the only look (edLockCardLook). */
-      +"<button class='ed2-btn info ed2-bg-tpl' onclick='edOpenTemplates()'>▣ Templates</button>"
+      +"<button class='ed2-btn info ed2-bg-tpl' onclick='edOpenTplPage()'>▣ Templates</button>"
       /* edDeleteCard writes a tombstone: a card only taken out of CARDS comes back with the next boot merge. */
       +"<button class='ed2-btn warn ed2-bg-del' onclick='edDeleteCard(curIdNow())'>✕ Delete card</button>"
     +"</div>"
@@ -2361,7 +2372,9 @@ function currentPackBody(){
     align:ALIGN_RULES.map(alignClone),
     alignBase:{h:ALIGN_BASE.h,v:ALIGN_BASE.v},
     kwStyles:JSON.parse(JSON.stringify(KWSTYLE)), pillsOn:PILLS_ON,
-    kwCustom:JSON.parse(JSON.stringify(KWCUSTOM))};
+    kwCustom:JSON.parse(JSON.stringify(KWCUSTOM)),
+    /* the frame, stat icon set and card back (ed2_frames.js): published with the look, so a fresh visitor starts with them */
+    cardLook:frLookBody()};
 }
 /* A pack plus the display settings that are no part of a pack but must survive a backup (kwHover). */
 function currentSettingsBody(){
@@ -2418,6 +2431,7 @@ function applyPackBody(pk){
       if(pk.kwHover!=null)meta('kwHover',!!pk.kwHover);
       meta('edgeMode',edge); meta('pinMode',pin);
       meta('customTemplate',Object.keys(slots).length>0);
+      if(pk.cardLook&&typeof pk.cardLook==='object')meta('cardLook',frLookClean(pk.cardLook));
       if(nCustom){
         gone.forEach(function(x){ K.delete(x.id); });
         nCustom.forEach(function(x){ K.put(x); });
@@ -2437,6 +2451,7 @@ function applyPackBody(pk){
     if(pk.kwHover!=null)KW_HOVER=!!pk.kwHover;
     edApplyEdge(edge,pin);
     if(nCustom){ KWCUSTOM=nCustom; edApplyCustomEntries(); }
+    if(pk.cardLook&&typeof pk.cardLook==='object'){ window.edApplyLook(pk.cardLook,false); window.edLookSaved(true); }
     try{ scheduleFace(); }catch(_){}
     var c=curCard(); if(c)renderPreview(c);
     edTplPanelRefresh();

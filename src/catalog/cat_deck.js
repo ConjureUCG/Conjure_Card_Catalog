@@ -1363,6 +1363,8 @@ function showTab(tab){
   if(kwPane) kwPane.style.display = tab==='keywords' ? 'block' : 'none';
   var tdPane=document.getElementById('pane-testdeck');
   if(tdPane) tdPane.style.display = tab==='testdeck' ? 'block' : 'none';
+  var tpPane=document.getElementById('pane-templates');
+  if(tpPane) tpPane.style.display = tab==='templates' ? 'block' : 'none';
   document.body.classList.toggle('editor-active', tab==='editor');
   document.body.classList.toggle('no-panels', tab!=='browse' && tab!=='deck');
   document.body.classList.toggle('testdeck-active', tab==='testdeck');
@@ -1385,13 +1387,16 @@ function showTab(tab){
   if(kwTab) kwTab.classList.toggle('on', tab==='keywords');
   var tdTab=document.getElementById('tab-testdeck');
   if(tdTab) tdTab.classList.toggle('on', tab==='testdeck');
-  ['browse','deck','testdeck','decklists','keywords','sagas','editor'].forEach(function(t){
+  var tpTab=document.getElementById('tab-templates');
+  if(tpTab) tpTab.classList.toggle('on', tab==='templates');
+  ['browse','deck','testdeck','decklists','keywords','sagas','editor','templates'].forEach(function(t){
     var b = document.getElementById('tab-' + t);
     if(!b) return;
     if(t === tab) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
   });
   if(tab==='sagas' && typeof window.edRenderSagaPage==='function') window.edRenderSagaPage();
   if(tab==='keywords' && typeof window.edRenderKwPage==='function') window.edRenderKwPage();
+  if(tab==='templates' && typeof window.edRenderTplPage==='function') window.edRenderTplPage();
   if(tab==='editor' && typeof edInit==='function') edInit();
   /* Redraws the board, never deals: leaving to look a card up and coming back must not reset the game. */
   if(tab==='testdeck' && typeof tdRender==='function') setTimeout(tdRender, 30);

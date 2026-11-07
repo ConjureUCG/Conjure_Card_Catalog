@@ -487,6 +487,7 @@ body.testdeck-active .tabs{display:none}
 .tabs.fit-4 #tab-deck::before{content:'\268C'}
 .tabs.fit-4 #tab-testdeck::before{content:'\25B6'}
 .tabs.fit-4 #tab-decklists::before{content:'\268F'}
+.tabs.fit-4 #tab-templates::before{content:'\25A3'}
 .tabs.fit-4 #tab-keywords::before{content:'\25AE'}
 .tabs.fit-4 #tab-sagas::before{content:'\1F4DA'}
 .tabs.fit-4 #tab-editor::before{content:'\270D'}

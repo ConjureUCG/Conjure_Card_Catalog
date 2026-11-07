@@ -16,7 +16,7 @@ function _mobBody(cls){ return document.body.classList.contains(cls); }
 var MOB_TABS = ['filters', 'browse', 'deck', 'decklists', 'keywords', 'more'];
 
 function mobSyncBar(){
-  var lit = _mobBody('mob-more-open') || _mobPage === 'sagas' || _mobPage === 'editor' ? 'more' : _mobPage;
+  var lit = _mobBody('mob-more-open') || _mobPage === 'sagas' || _mobPage === 'editor' || _mobPage === 'templates' ? 'more' : _mobPage;
   MOB_TABS.forEach(function(t){
     var b = _mobEl('mobTab-' + t);
     if(!b) return;
@@ -775,7 +775,7 @@ function mobInit(){
     if(dt) dt.textContent = 'Rebirth Design';
   }
 
-  ['browse', 'deck', 'decklists', 'keywords', 'sagas', 'editor', 'testdeck'].forEach(function(t){
+  ['browse', 'deck', 'decklists', 'keywords', 'sagas', 'editor', 'testdeck', 'templates'].forEach(function(t){
     var p = _mobEl('pane-' + t);
     if(p && p.style.display !== 'none' && getComputedStyle(p).display !== 'none') _mobPage = t;
   });

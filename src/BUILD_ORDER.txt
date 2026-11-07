@@ -11,12 +11,14 @@ src/mcard_classic.css
 src/testdeck.css
 src/boardfx.css
 src/card_backs.css
+src/frames.css
 src/mobile.css
 src/style_close.html
 data/json_islands.txt
 src/markup_head.html
 src/ed2_pane.html
 src/kw_pane.html
+src/tpl_pane.html
 src/testdeck_pane.html
 src/markup_tail_a.html
 src/markup_tail_b.html
@@ -48,6 +50,7 @@ src/jszip.html
 src/editor/ed2_core.js
 src/editor/ed2_sagas.js
 src/editor/ed2_face.js
+src/editor/ed2_frames.js
 src/editor/ed2_tools.js
 src/editor/ed2_stats.js
 src/editor/ed2_publish.js

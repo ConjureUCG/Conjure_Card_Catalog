@@ -1721,17 +1721,20 @@ function ghApplyDefaultLook(pkg,force){
   if(!force&&fp===GH_LOOK_APPLIED){
     return ghAddOfficialMarks(pkg,false).then(function(){ return false; },function(){ return false; });
   }
-  var kwIds=null;
+  var kwIds=null, look2=null;
   return ghKeepLookCopy().then(function(){
     return getMeta('ghLookKwIds');
   }).then(function(prevIds){
     var body=Object.assign({},pkg.look);
+    /* the official frame, icon set and back are a default, applied below only where this browser never picked its own */
+    look2=body.cardLook; delete body.cardLook;
     if(Array.isArray(pkg.look.kwCustom)){
       var k=ghLookKwBody(pkg.look.kwCustom,prevIds);
       body.kwCustom=k.list; kwIds=k.ids;
     }
     return applyPackBody(body);
   }).then(function(){
+    if(look2&&typeof look2==='object'&&!window.edLookSaved()){ window.edApplyLook(look2,false); window.edLookRefresh(); }
     return ghAddOfficialMarks(pkg,true);
   }).then(function(){
     GH_LOOK_APPLIED=fp; setMetaSafe('ghLookApplied',fp);

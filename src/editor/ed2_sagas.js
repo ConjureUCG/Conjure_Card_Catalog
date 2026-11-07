@@ -2434,7 +2434,7 @@ window.edClearEssenceText=function(){
 };
 /* One function for both placements, the flex flow and inside an Essence's art, so they stay identical. */
 function rulesBoxHTML(c,rulesAlign,rules,flavor){
-  return "<div class='m-rules "+rulesAlign+"'>"+markLayerHTML(c)
+  return "<div class='m-rules "+rulesAlign+"'>"+frBoxHTML('rules')+markLayerHTML(c)
     +"<div class='m-rules-body'>"+rules+"</div>"+flavor+"</div>";
 }
 

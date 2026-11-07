@@ -1,4 +1,4 @@
-<script>/* Opens the editor's script element and IIFE, which ed2_boot.js closes: the seven ed2_*.js files are one scope, and what the markup calls must be put on window (HANDOFF §4). */
+<script>/* Opens the editor's script element and IIFE, which ed2_boot.js closes: the eight ed2_*.js files are one scope, and what the markup calls must be put on window (HANDOFF §4). */
 (function(){
 'use strict';
 
@@ -690,11 +690,11 @@ window.edOrbsHTMLShifted=function(c,delta){
     var raw=String(o.value==null?'':o.value).trim();
     var n=(raw!==''&&/^-?\d+$/.test(raw))?parseInt(raw,10):null;
     if(d===0||n===null)
-      return "<div class='m-orb-slot'>"+orbShapeByType(o.type,o.value)+"</div>";
+      return "<div class='m-orb-slot'>"+faceOrbHTML(o.type,o.value)+"</div>";
     var badge="<span class='m-orb-delta"+(d<0?' neg':'')+"'>"
       +(d>0?'+':'−')+Math.abs(d)+"</span>";
     return "<div class='m-orb-slot m-orb-mod'>"
-      +orbShapeByType(o.type,String(n+d))+badge+"</div>";
+      +faceOrbHTML(o.type,String(n+d))+badge+"</div>";
   }).join('');
 };
 function orbs(c){ return cardOrbs(c).map(function(o){ return orbShapeByType(o.type,o.value); }).join(''); }

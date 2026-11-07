@@ -242,7 +242,7 @@ function boot(){ if(_inited)return; _inited=true;
   dbOpen().then(function(){
     try{ edWatchOtherTabs(); }catch(_){}
     try{ edAskPersist(); }catch(_){}
-    return Promise.all([getAll('cards'),getAll('art'),getMeta('setInfo'),getMeta('cardsLight'),getMeta('customTemplate'),getMeta('layoutMode'),getMeta('bleedOn'),tplAll(),getMeta('edgeMode'),getMeta('alignRules'),getMeta('kwStyles'),getMeta('pillsOn'),getMeta('kwHover'),kwCustomAll(),getMeta('pinMode'),marksAll(),sagasAll(),getMeta('fitMode'),getMeta('sagaGroups'),getMeta('tplDefaults'),getMeta('alignBase'),getMeta('kwFromSources')]).then(function(r){
+    return Promise.all([getAll('cards'),getAll('art'),getMeta('setInfo'),getMeta('cardsLight'),getMeta('customTemplate'),getMeta('layoutMode'),getMeta('bleedOn'),tplAll(),getMeta('edgeMode'),getMeta('alignRules'),getMeta('kwStyles'),getMeta('pillsOn'),getMeta('kwHover'),kwCustomAll(),getMeta('pinMode'),marksAll(),sagasAll(),getMeta('fitMode'),getMeta('sagaGroups'),getMeta('tplDefaults'),getMeta('alignBase'),getMeta('kwFromSources'),getMeta('cardLook')]).then(function(r){
       var cards=r[0],art=r[1],si=r[2],tpl=r[4],bleed=r[6];
       artHydrate(art);
       try{ window.edLoadAutosave(); }catch(_){}
@@ -263,6 +263,9 @@ function boot(){ if(_inited)return; _inited=true;
       if(r[19])edApplyTplDefaults(r[19]);
       else edApplyTplDefaults({h:{fit:r[17]||'contain'},v:{fit:r[17]||'contain'}});
       MARKS=r[15]||[];
+      /* The look's frame, stat icon set and card back (ed2_frames.js): the saved row, else the published default, else the back the old Play Test list kept. */
+      try{ window.edBootLook(r[22],LOOK_BAKED&&LOOK_BAKED.cardLook); }catch(_){}
+      try{ window.edFrameBoot(); }catch(_){}
       /* The baked look seeds only what was never set: stored kwStyles win outright. */
       if((r[10]==null || !Object.keys(r[10]||{}).length) && LOOK_BAKED
          && LOOK_BAKED.kwStyles && typeof LOOK_BAKED.kwStyles==='object'){

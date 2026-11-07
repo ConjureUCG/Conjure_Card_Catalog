@@ -1561,14 +1561,14 @@ window.edOpenTemplates=function(){
   if(!ov){
     ov=document.createElement('div'); ov.id='edTplOverlay'; ov.className='ed2-overlay';
     ov.innerHTML="<div class='ed2-modal'><div class='ed2-modal-head wh'>"
-      +"<b class='wh-t'>Templates &amp; assets</b>"
+      +"<b class='wh-t'>Adjustments</b>"
       +"<button class='ed2-btn close-x nb nb-red nb-m wh-x' onclick='edCloseTemplates()'>Close &#10005;</button></div>"
       +"<div id='edTplBody' class='ed2-modal-body'></div></div>";
     document.body.appendChild(ov);
     ov.addEventListener('click',function(ev){ if(ev.target===ov)window.edCloseTemplates(); });
   }
   ov.style.display='flex';
-  edDialogOpen(ov,'Templates and assets',function(){ window.edCloseTemplates(); });
+  edDialogOpen(ov,'Adjustments',function(){ window.edCloseTemplates(); });
   edTplPanelRefresh();
   packsRefresh().then(edTplPanelRefresh);
 };
@@ -2804,7 +2804,7 @@ function faceGridTiles(){
     var card=edCardByName(nm);
     if(!card)return;
     /* the card and its generation: a face drawn before an edit is stale */
-    var faced=card.__id+'#'+cardGenOf(card);
+    var faced=card.__id+'#'+cardGenOf(card)+'#'+FACE_LOOK_GEN;
     if(slot.getAttribute('data-faced')===faced)return;
     // neutralize any pending image error handlers so they don't fire on detached nodes
     slot.querySelectorAll('img').forEach(function(im){ im.onerror=null; im.removeAttribute('onerror'); });

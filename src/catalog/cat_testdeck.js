@@ -3481,64 +3481,7 @@ function tdBackHTML(title){
   return "<div class='td-back cbk-tok cbk-tok-" + tdBackKind() + "'"
     + (title ? " title='" + e(title) + "'" : '') + "></div>";
 }
-/* #tdTblBack is written only here, never by the table's heartbeat, so the list stays open under the pointer. */
-function tdBackPickHTML(){
-  var cur = tdBackKind();
-  return "<span class='td-cbk-pick'>"
-    + "<button class='ed2-btn tiny tbl-tool td-more-b' id='tdBackBtn' aria-label='Card Back'"
-      + " aria-haspopup='true' aria-expanded='false' onclick='tdToggleBackPick(event)'"
-      + " title='Choose the back that face-down cards show'>"
-      + tdTopSvg('back') + "<span class='tbl-tw'>Card Back</span> <span class='td-caret' aria-hidden='true'>&#9662;</span></button>"
-    + "<div class='td-moredrop' id='tdBackDrop' role='menu' aria-label='Card Back' hidden>"
-      + CB_LIST.map(function(b){
-          var on = (b.key === cur);
-          return "<button class='td-moreitem td-cbk-item" + (on ? ' on' : '') + "' role='menuitemradio'"
-            + " aria-checked='" + on + "' data-back='" + e(b.key) + "' onclick='tdBackPick(this)'>"
-            + "<span class='td-cbk-thumb cbk-tok cbk-tok-" + e(b.key) + "' aria-hidden='true'></span>"
-            + e(b.name) + "</button>";
-        }).join('')
-    + "</div></span>";
-}
-function tdRenderBackPick(){
-  var host = document.getElementById('tdTblBack');
-  if(host && !host.firstChild) host.innerHTML = tdBackPickHTML();
-}
-function tdToggleBackPick(ev){
-  if(ev){ try{ ev.stopPropagation(); }catch(_){} }
-  var d = document.getElementById('tdBackDrop'), b = document.getElementById('tdBackBtn');
-  if(!d) return;
-  var open = d.hidden;
-  d.hidden = !open;
-  if(b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
-  tdMoreLift(d, open);
-}
-function tdCloseBackPick(){
-  var d = document.getElementById('tdBackDrop'), b = document.getElementById('tdBackBtn');
-  if(!d || d.hidden) return;
-  d.hidden = true;
-  if(b) b.setAttribute('aria-expanded', 'false');
-  tdMoreLift(d, false);
-}
-function tdBackPick(btn){
-  var k = btn && btn.getAttribute('data-back');
-  tdCloseBackPick();
-  if(!tdBackKnown(k) || k === tdBackKind()) return;
-  _tdBackKind = k;
-  try{ localStorage.setItem(TD_BACK_STORE, k); }catch(_){}
-  var host = document.getElementById('tdTblBack');
-  if(host) host.innerHTML = tdBackPickHTML();
-  tdRender();
-}
-(function(){
-  if(document._tdBackPickBound) return;
-  document._tdBackPickBound = true;
-  document.addEventListener('pointerdown', function(ev){
-    var d = document.getElementById('tdBackDrop');
-    if(!d || d.hidden) return;
-    if(ev.target.closest && ev.target.closest('.td-cbk-pick')) return;
-    tdCloseBackPick();
-  }, true);
-})();
+/* The back is picked on the Templates page (edSetBack, ed2_frames.js), which writes the store and _tdBackKind, then redraws the board. */
 
 function tdCardHTML(item, zone, opts){
   opts = opts || {};
@@ -4196,8 +4139,7 @@ var TD_TOP_ICONS = {
   resume:"<path d='M9 14L4 9l5-5'/><path d='M20 20v-7a4 4 0 0 0-4-4H4'/>",
   save:"<path d='M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z'/><path d='M17 21v-8H7v8M7 3v5h8'/>",
   del:"<path d='M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6'/>",
-  log:"<path d='M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01'/>",
-  back:"<rect x='5' y='2' width='14' height='20' rx='2'/><circle cx='12' cy='12' r='3.5'/>"
+  log:"<path d='M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01'/>"
 };
 function tdTopSvg(icon){
   return "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'"
@@ -4224,7 +4166,6 @@ function tdRenderBar(){
   _tdInBar = true;
   if(typeof tblRenderPanel === 'function'){ try{ tblRenderPanel(); }catch(_){} }
   _tdInBar = false;
-  tdRenderBackPick();
   var bar = document.getElementById('tdBar');
   if(!bar) return;
   if(tdIsPool()){
@@ -6839,6 +6780,8 @@ function tdAltShow(cardEl){
   tdAltStats(cardEl, z);
   tdAltCounters(cardEl, z);
   tdAltPlace();
+  /* the frame's layers, drawn again at the zoom's size and depth (ed2_frames.js) */
+  if(typeof window.edFrameZoom === 'function') window.edFrameZoom(z);
 }
 /* Every face-down card looks the same, so moving from one to the next keeps the one zoom. */
 function tdAltShowBack(){
@@ -6951,6 +6894,7 @@ function tdAltHolo(face, nx, ny){
   var gs = z.querySelectorAll('linearGradient[data-rot]');
   for(var i = 0; i < gs.length; i++)
     gs[i].setAttribute('gradientTransform', 'rotate(' + ang + ' .5 .5)');
+  if(typeof window.edFrameHolo === 'function') window.edFrameHolo(z, px, py, ang);
 }
 /* A back's light, as the card backs' 3D viewer moves it (ConjureBack.holo): px and py run 0..1 across the card.
    With neither, the back is at rest, as it is drawn before the pointer moves: no glare. */
