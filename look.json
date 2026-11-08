@@ -3,7 +3,6 @@
  "look": {
   "slots": {},
   "edgeMode": "gradient",
-  "pinMode": "gradient",
   "tplDefaults": {
    "h": {
     "fit": "cover",
@@ -678,6 +677,11 @@
     "reminderBare": ""
    }
   ],
+  "cardLook": {
+   "frame": "classic",
+   "orbs": "",
+   "back": "epitaph"
+  },
   "format": 1
  },
  "marks": [
