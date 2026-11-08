@@ -418,6 +418,10 @@ function tdRbFoeMenu(ev){
     var flr = tdGfFoeLabelRow(it, uid, seat);
     if(flr) rows.push(flr);
   }
+  if(typeof tdDmgRows === 'function'){
+    var dmr = tdDmgRows(it, 'field', uid, seat);
+    if(dmr) rows.push.apply(rows, dmr);
+  }
   rows.push({sep:true});
   rows.push({label:it.dm ? "Send to the DM's Grave" : ('Send to ' + whose + ' Grave'),
              act:ask({op:'grave', uid:uid})});
@@ -508,6 +512,9 @@ function tdRbChipStatsHTML(b){
   if(tdRbDmOnly(b)) return "<span class='tbl-cs rb-cdm'>DM</span>";
   var dmTag = (b.role === 'dmp') ? "<span class='tbl-cs rb-cdm'>DM</span>" : '';
   var c = b.counters || {}, words = {atk:'ATK', hp:'HP', mp:'MP'};
+  /* a damaged Character card's HP left, in place of the HP counter (Q27, cat_rbplay.js) */
+  var chp = (typeof tdDmgCharHp === 'function') ? tdDmgCharHp(b) : null;
+  if(chp != null){ c = Object.assign({}, c); c.hp = chp; }
   var orbs = (typeof window.edOrbSvg === 'function') ? ['atk', 'hp', 'mp'].filter(function(k){
     return c[k] != null;
   }).map(function(k){

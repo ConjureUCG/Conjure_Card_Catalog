@@ -104,7 +104,11 @@ function tdAdoptSide(s, from){
     t.uid = re(t.uid);
     if(t.on) t.on = re(t.on);
   });
-  (TD.board.gtoks || []).forEach(function(t){ t.uid = re(t.uid); });
+  (TD.board.gtoks || []).forEach(function(t){ t.uid = re(t.uid); if(t.cd) t.cd = re(t.cd); });
+  /* your own lines and areas on the map go with you; anybody else's on it keep their seat (cat_rbmap.js) */
+  (TD.board.glines || []).concat(TD.board.gareas || []).forEach(function(m){
+    if(m.s === old){ m.s = side; m.id = re(m.id); }
+  });
   if(from == null && typeof TBL !== 'undefined' && TBL.arrows)
     TBL.arrows.forEach(function(a){ a.from = re(a.from); a.to = re(a.to); });
   tdLogReset();
@@ -116,7 +120,7 @@ function tdAdoptSide(s, from){
    Absent fields stay absent, so a board round-trips identical: checktable.js compares hashes. */
 
 /* Only these item fields are saved, sent and replayed: a new piece of board state goes here. */
-var TD_ITEM_KEYS  = ['uid','locked','x','y','auto','connectedTo','lord','anon','down','decl','blocks','shown','dm','dk','lab','gid'];
+var TD_ITEM_KEYS  = ['uid','locked','x','y','auto','connectedTo','lord','anon','down','decl','blocks','shown','dm','dk','lab','gid','dmg'];
 var TD_TOKEN_KEYS = ['uid','kind','name','value','x','y','on'];
 
 function tdPackOne(src, keys){

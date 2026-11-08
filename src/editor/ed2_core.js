@@ -697,6 +697,29 @@ window.edOrbsHTMLShifted=function(c,delta){
       +faceOrbHTML(o.type,String(n+d))+badge+"</div>";
   }).join('');
 };
+/* A Rebirth card's Health as a number, from the stats cardOrbs gives (Health, or Health and Arcane); null for a card with none. */
+function orbHealth(c){
+  var list=cardOrbs(c||{})||[];
+  for(var i=0;i<list.length;i++){
+    var o=list[i];
+    if(o.type!=='health'&&o.type!=='health and arcane') continue;
+    var raw=String(o.value==null?'':o.value).trim();
+    return /^-?\d+$/.test(raw)?parseInt(raw,10):null;
+  }
+  return null;
+}
+window.edCardHealth=function(c){ return orbHealth(c); };
+/* The face's stats with the damage taken off the Health, rebuilt as edOrbsHTMLShifted does; the lowered one is marked (m-orb-hurt). */
+window.edOrbsHTMLHurt=function(c,dmg){
+  var d=Math.max(0,Math.floor(Number(dmg)||0));
+  return (cardOrbs(c)||[]).map(function(o){
+    var raw=String(o.value==null?'':o.value).trim();
+    var n=/^-?\d+$/.test(raw)?parseInt(raw,10):null;
+    if(!d||n===null||(o.type!=='health'&&o.type!=='health and arcane'))
+      return "<div class='m-orb-slot'>"+faceOrbHTML(o.type,o.value)+"</div>";
+    return "<div class='m-orb-slot m-orb-hurt'>"+faceOrbHTML(o.type,String(Math.max(0,n-d)))+"</div>";
+  }).join('');
+};
 function orbs(c){ return cardOrbs(c).map(function(o){ return orbShapeByType(o.type,o.value); }).join(''); }
 function symToken(tok,size){
   var c=tplGet('sym:'+tok), px=numAttr(size,16,1,400);

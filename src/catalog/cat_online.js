@@ -26,6 +26,11 @@ var TBO = {
   prefill:'',
   discord:'',
   discordLast:'',
+  /* the chat window's To picker at a Rebirth table: a seat's id, '' for everyone (tboSayToHTML) */
+  sayTo:'',
+  sayToName:'',
+  /* a player handed the DM's role takes it as DM and player (tdRbHandFrom, cat_rbplay.js) */
+  dmTook:'',
   tick:null
 };
 var TBO_HOST_KEY = 'conjure_host_opts';
@@ -922,7 +927,7 @@ function tboToggleReady(){
 function tboIsHost(){ return !!TBL.you && TBL.hostId === TBL.you && !TBL.watch; }
 
 function tboHostDm(){ return TBO.host.dm === 'dmp' ? 'dmp' : 'dm'; }
-function tboDmRole(){ return (REBIRTH && tboIsHost()) ? tboHostDm() : ''; }
+function tboDmRole(){ return (REBIRTH && tboIsHost()) ? (TBO.dmTook || tboHostDm()) : ''; }
 function tboDmFoundHTML(){
   if(typeof tdDmMatch !== 'function') return '';
   var m = tdDmMatch(TBO.host.dmList || '');
@@ -1368,12 +1373,13 @@ function tboOnPeer(m){
   if(m.watch){
     tboChatSys(m.name + (m.join ? ' is spectating' : ' stopped spectating'), true);
   } else {
-    tboChatSys(m.name + (m.join ? ' sat down' : ' left the table'));
+    tboChatSys(m.name + (m.join ? ' sat down' : (m.kicked ? ' was removed from the table' : ' left the table')));
     if(!m.join) delete TBO.seatInfo[m.side];
     if(m.join) tboSendSeat();
     if(typeof drOnPeer === 'function') drOnPeer(m);
   }
   if(tboDialogOpen() && TBO.view === 'room') tboRoomRender();
+  tboSayToSync();
 }
 function tboOnStarted(){
   tboChatSys('The game has started');
@@ -1405,9 +1411,10 @@ function tboDeal(){
     try{ if(typeof tdSyncStatRow === 'function') tdSyncStatRow(); }catch(_){}
   }
   try{ updCnt(); _hashSaveDeck(); refreshDeckView(); }catch(_){}
-  TBL.turn = ''; TBL.turnBy = '';
+  TBL.turn = ''; TBL.turnBy = ''; TBL.rbt = null;
   TBL.grants = {};
   TBL.arrows = [];
+  if(typeof tdTsForget === 'function') tdTsForget();
   TD._dmDeal = tboDmRole() ? {role:tboDmRole(), fresh:true,
                               decks:(typeof tdDmMatch === 'function' ? tdDmMatch(TBO.host.dmList || '').found : [])}
                            : null;
@@ -1427,6 +1434,8 @@ function tboReset(){
   TBO.chat = [];
   TBO.unread = 0;
   TBO.chatOpen = false;
+  TBO.sayTo = ''; TBO.sayToName = '';
+  TBO.dmTook = '';
   var c = document.getElementById('tblChat');
   if(c) c.remove();
   if(typeof TD !== 'undefined'){ TD._dmDeal = null; TD._dmOpen = null; TD.dmCur = ''; }
@@ -1444,18 +1453,19 @@ function tboChatPush(en){
   tboChatLogRender();
 }
 function tboChatSys(text, spect){ tboChatPush({sys:true, spect:!!spect, text:String(text || '')}); }
-function tboChatMine(text){
+/* wh: a whisper's mark, 'to Ruth' on yours and 'to you' on theirs (tblSay). */
+function tboChatMine(text, wh){
   tboChatPush({me:true, name:TBL.name || 'You', side:TBL.watch ? '' : TD.side,
-               spect:!!TBL.watch, text:text});
+               spect:!!TBL.watch, text:text, wh:wh || ''});
 }
-function tboChatSay(text, fromId){
+function tboChatSay(text, fromId, wh){
   var side = tblSideOf(fromId);
   var name = side ? tblSeatName(side) : '';
   if(!side){
     (TBL.watchList || []).forEach(function(w){ if(w.id === fromId) name = w.name; });
   }
   tboChatPush({name:name || 'Spectator', side:side, spect:!side,
-               text:String(text || '').slice(0, 300)});
+               text:String(text || '').slice(0, 300), wh:wh || ''});
 }
 function tboChatVisible(){
   return !!document.getElementById('tblChat')
@@ -1466,7 +1476,7 @@ function tboChatHTML(){
     /* Anything about spectating, and anybody spectating, is purple (HANDOFF §12.1 D). */
     if(c.sys) return "<div class='tbl-csys" + (c.spect ? ' spect-ink' : '') + "'>" + e(c.text) + "</div>";
     return "<div class='tbl-cm'><b class='" + (c.spect ? 'spect-ink' : (c.side ? 'tbl-ink-' + c.side : '')) + "'>"
-      + e(c.name) + "</b>" + e(c.text) + "</div>";
+      + e(c.name) + "</b>" + (c.wh ? "<i class='tbl-cwh'>" + e(c.wh) + "</i>" : '') + e(c.text) + "</div>";
   }).join('');
 }
 /* Only when it changed, and it follows new lines only when you were already at the bottom: the room redraws on every change. */
@@ -1508,7 +1518,7 @@ function tboChatPanel(){
     return;
   }
   var mode = 'pop';
-  if(old && old.getAttribute('data-mode') === mode) return;
+  if(old && old.getAttribute('data-mode') === mode){ tboSayToSync(); return; }
   if(old) old.remove();
   var el = document.createElement('div');
   el.id = 'tblChat';
@@ -1522,11 +1532,61 @@ function tboChatPanel(){
     + "<button class='ed2-btn tiny close-x' onclick='tboChatToggle(false)'>Close &#10005;</button></div>"
     + "<div class='tbl-chatwho spect-ink' id='tblChatWho' hidden></div>"
     + "<div class='tbl-chatlog' id='tblChatLog'></div>"
-    + "<div class='tbl-chatin'><input id='tblSayIn' maxlength='300' aria-label='Table chat'"
+    + "<div class='tbl-chatin'>" + tboSayToHTML() + "<input id='tblSayIn' maxlength='300' aria-label='Table chat'"
     + " placeholder='Say something &mdash; Enter to send' onkeydown='tblSayKey(event)'></div>";
   pane.appendChild(el);
+  tboSayToSync();
   tboChatLogRender();
   if(typeof tdFloatWin === 'function') tdFloatWin(el, 'chat');
+}
+/* The To picker at a Rebirth table: Everyone, or one person seated there. A spectator says everything to everyone. */
+function tboSayToList(){
+  if(!REBIRTH || TBL.watch) return [];
+  var seats = TBL.seats || {};
+  return TD_SEATS.filter(function(k){ return seats[k] && k !== TD.side && seats[k].id; })
+    .map(function(k){ return {id:seats[k].id, name:seats[k].name || 'Player'}; });
+}
+/* Somebody picked who has gone stays picked, so nothing meant for them goes to everyone (tblSayKey). */
+function tboSayToOptions(list){
+  var cur = TBO.sayTo, have = false;
+  var opts = list.map(function(p){
+    if(p.id === cur) have = true;
+    return "<option value='" + e(p.id) + "'" + (p.id === cur ? ' selected' : '') + ">" + e(p.name) + "</option>";
+  });
+  if(cur && !have) opts.push("<option value='" + e(cur) + "' selected>" + e(TBO.sayToName || 'Player') + "</option>");
+  return "<option value=''" + (cur ? '' : ' selected') + ">Everyone</option>" + opts.join('');
+}
+function tboSayToHTML(){
+  var list = tboSayToList();
+  if(!list.length && !TBO.sayTo) return '';
+  return "<select id='tblSayTo' class='tbl-select tbl-sayto' aria-label='To' title='To'"
+    + " onchange='tboSayToPick(this.value)'>" + tboSayToOptions(list) + "</select>";
+}
+function tboSayToPick(v){
+  var p = tboSayToList().filter(function(x){ return x.id === v; })[0];
+  if(p || !v){ TBO.sayTo = p ? p.id : ''; TBO.sayToName = p ? p.name : ''; }
+  tboSayToSync();
+  var i = document.getElementById('tblSayIn');
+  if(i) try{ i.focus(); }catch(_){}
+}
+/* Redrawn only when the seats changed, so a list held open is not shut by a render. */
+function tboSayToSync(){
+  var row = document.querySelector('#tblChat .tbl-chatin');
+  if(!row) return;
+  var sel = document.getElementById('tblSayTo'), list = tboSayToList();
+  if(!list.length && !TBO.sayTo){ if(sel) sel.remove(); return; }
+  var opts = tboSayToOptions(list);
+  if(!sel){
+    row.insertAdjacentHTML('afterbegin', tboSayToHTML());
+    sel = document.getElementById('tblSayTo');
+  } else if(sel._tboOpts !== opts) sel.innerHTML = opts;
+  if(sel) sel._tboOpts = opts;
+}
+/* Whom the chat window's line goes to: null for everyone, or {id, name}, with gone while they are not seated. */
+function tboSayToNow(){
+  if(!TBO.sayTo) return null;
+  var p = tboSayToList().filter(function(x){ return x.id === TBO.sayTo; })[0];
+  return p || {id:TBO.sayTo, name:TBO.sayToName || 'Player', gone:true};
 }
 
 /* A spectator may send only `say`, `want` and `bye` (relay/PROTOCOL.md), so its ask is a `want` carrying `cards` (HANDOFF §77.11). */

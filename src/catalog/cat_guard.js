@@ -85,9 +85,12 @@ function tgItem(o){
   if(lb) it.lab = lb;
   var gi = tgUid(o.gid);
   if(gi) it.gid = gi;
+  var dg = tgInt(o.dmg, 1, TG_DMG_MOST);
+  if(dg) it.dmg = dg;
   if(!it.anon && !it.n) return null;
   return it;
 }
+var TG_DMG_MOST = 99999;
 var TG_TOKEN_KINDS = {plus:1, minus:1, emblem:1, kw:1, color:1};
 function tgToken(t){
   if(!tgObj(t)) return null;
@@ -181,11 +184,71 @@ function tgGTok(t, noUid){
   var col = tgGCol(t.col);
   if(col) o.col = col;
   if(t.me === true) o.me = true;
-  if(!noUid && typeof t.m === 'string'){
-    var m = tgStr(t.m, 60).trim().toLowerCase();
-    if(m) o.m = m;
+  if(t.hid === true) o.hid = true;
+  if(!noUid){
+    if(typeof t.m === 'string'){
+      var m = tgStr(t.m, 60).trim().toLowerCase();
+      if(m) o.m = m;
+    }
+    if(typeof t.cd === 'string' && TG_UID.test(t.cd)) o.cd = t.cd;
+  } else {
+    /* in a saved map a connection is to the map's card by its place in the list, as the cards get new ids when it comes down */
+    var ci = tgInt(t.cdi, 0, 299);
+    if(ci != null) o.cdi = ci;
   }
   return o;
+}
+/* The map's own layers (cat_rbmap.js): runs of squares along a row, [c, r, n] or [c, r, n, kind]; edges [c, r, d, v]. */
+var TG_RUNS_MOST = 10000, TG_EDGES_MOST = 20000, TG_LINES_MOST = 300, TG_AREAS_MOST = 120, TG_LINE_PTS = 600;
+function tgRun(x, kinds){
+  if(!Array.isArray(x) || x.length < 3) return null;
+  var c = tgInt(x[0], 0, TG_GRID_MOST - 1), r = tgInt(x[1], 0, TG_GRID_MOST - 1), n = tgInt(x[2], 1, TG_GRID_MOST);
+  if(c == null || r == null || n == null || c !== x[0] || r !== x[1] || n !== x[2] || c + n > TG_GRID_MOST) return null;
+  if(!kinds) return [c, r, n];
+  var k = tgInt(x[3], 1, kinds);
+  return k == null ? null : [c, r, n, k];
+}
+function tgRuns(v, kinds, most){
+  if(!Array.isArray(v)) return null;
+  return v.slice(0, most || TG_RUNS_MOST).map(function(x){ return tgRun(x, kinds); }).filter(Boolean);
+}
+function tgEdge(x, withV){
+  if(!Array.isArray(x) || x.length < 3) return null;
+  var c = tgInt(x[0], -1, TG_GRID_MOST - 1), r = tgInt(x[1], -1, TG_GRID_MOST - 1), d = tgInt(x[2], 0, 2);
+  if(c == null || r == null || d == null || c !== x[0] || r !== x[1]) return null;
+  if(!withV) return [c, r, d];
+  var v = tgInt(x[3], 1, 3);
+  return v == null ? null : [c, r, d, v];
+}
+function tgEdges(v, withV, most){
+  if(!Array.isArray(v)) return null;
+  return v.slice(0, most || TG_EDGES_MOST).map(function(x){ return tgEdge(x, withV); }).filter(Boolean);
+}
+/* A point on the map in grid units, to two places. */
+function tgPt(p){
+  if(!Array.isArray(p) || p.length < 2) return null;
+  var x = tgNum(p[0], -2, 2 * TG_GRID_MOST + 2), y = tgNum(p[1], -2, 2 * TG_GRID_MOST + 2);
+  return (x == null || y == null) ? null : [Math.round(x * 100) / 100, Math.round(y * 100) / 100];
+}
+function tgGLine(l){
+  if(!tgObj(l) || typeof l.id !== 'string' || !TG_UID.test(l.id) || !Array.isArray(l.p)) return null;
+  var p = l.p.slice(0, TG_LINE_PTS).map(tgPt).filter(Boolean);
+  if(p.length < 2) return null;
+  var o = {id:l.id, s:tgSeat(l.s) || 'a', p:p};
+  if(l.perm === true) o.perm = true;
+  return o;
+}
+var TG_AREA_KINDS = {circle:1, cone:1, line:1, square:1};
+function tgGArea(a){
+  if(!tgObj(a) || typeof a.id !== 'string' || !TG_UID.test(a.id) || TG_AREA_KINDS[a.k] !== 1) return null;
+  var A = tgPt(a.a), B = tgPt(a.b);
+  if(!A || !B) return null;
+  var o = {id:a.id, s:tgSeat(a.s) || 'a', k:a.k, a:A, b:B};
+  if(a.perm === true) o.perm = true;
+  return o;
+}
+function tgIds(v){
+  return Array.isArray(v) ? v.slice(0, 1000).filter(function(x){ return typeof x === 'string' && TG_UID.test(x); }) : null;
 }
 function tgIcon(ic){
   if(!tgObj(ic)) return null;
@@ -246,6 +309,20 @@ function tgBoard(d){
   if(gseen != null) out.gtseen = gseen;
   var ic = tgIcon(d.icon);
   if(ic) out.icon = ic;
+  var ter = tgRuns(d.gter, 4);
+  if(ter && ter.length) out.gter = ter;
+  var ged = tgEdges(d.gedge, true);
+  if(ged && ged.length) out.gedge = ged;
+  var gfo = tgRuns(d.gfog);
+  if(gfo && gfo.length) out.gfog = gfo;
+  if(Array.isArray(d.glines)){
+    var gls = d.glines.slice(0, TG_LINES_MOST).map(tgGLine).filter(Boolean);
+    if(gls.length) out.glines = gls;
+  }
+  if(Array.isArray(d.gareas)){
+    var gas = d.gareas.slice(0, TG_AREAS_MOST).map(tgGArea).filter(Boolean);
+    if(gas.length) out.gareas = gas;
+  }
   Object.keys(d.zones).forEach(function(z){
     if(!tgZone(z) || !Array.isArray(d.zones[z])) return;
     out.zones[z] = d.zones[z].slice(0, z === 'dmdeck' ? 6000 : 1000).map(tgItem).filter(Boolean);
@@ -270,6 +347,8 @@ function tgFeed(list){
     var o = {who:(TG_FEED_WHO[f.who] === 1 ? f.who : ''), line:tgStr(f.line, 300),
              n:tgIntOr(f.n, 0, 1e9, 0), drew:tgIntOr(f.drew, 0, 10000, 0)};
     if(typeof f.name === 'string') o.name = tgName(f.name);
+    /* a whisper's mark (tblFeedSay) */
+    if(typeof f.wh === 'string'){ var wh = tgStr(f.wh, 60).trim(); if(wh) o.wh = wh; }
     return o;
   }).filter(Boolean);
 }
@@ -297,7 +376,7 @@ var TG_ACTS = {
   ctrReset: {counters:'CTRS'},
   count:    {zone:'Z', n:'COUNT', $:['zone', 'n']},
   appear:   {zone:'Z', uid:'U', n:'NAME', anon:'B', down:'B', locked:'B', dm:'B', x:'X', y:'X', at:'I',
-             fx:'FX', color:'C', from:'U', lab:'LAB', $:['zone', 'uid']},
+             fx:'FX', color:'C', from:'U', lab:'LAB', dmg:'DMG', $:['zone', 'uid']},
   reveal:   {uid:'U', on:'B', $:['uid']},
   zshow:    {zone:'Z', mode:'ZMODE', $:['zone']},
   vanish:   {uid:'U', $:['uid']},
@@ -305,11 +384,21 @@ var TG_ACTS = {
   gpers:    {on:'B'},
   gtok:     {tok:'GTOK', $:['tok']},
   gmove:    {uid:'U', c:'GC', r:'GC', $:['uid', 'c', 'r']},
-  gset:     {uid:'U', lab:'LAB', w:'GW', h:'GW', rot:'GROT', col:'GCOL', c:'GC', r:'GC', $:['uid']},
-  gdel:     {uid:'U', uids:'UIDS', lab:'LAB', grave:'B'},
+  gset:     {uid:'U', lab:'LAB', w:'GW', h:'GW', rot:'GROT', col:'GCOL', c:'GC', r:'GC', cd:'CD', hid:'B', grave:'B', $:['uid']},
+  gdel:     {uid:'U', uids:'UIDS', lab:'LAB', grave:'B', mix:'B'},
   gtag:     {was:'GMAP', now:'GMAP', n:'GN', gone:'B', $:['was', 'now']},
   label:    {uid:'U', lab:'LAB', $:['uid']},
-  gicon:    {icon:'GICON', $:['icon']}
+  gicon:    {icon:'GICON', $:['icon']},
+  dmg:      {uid:'U', v:'DMG', d:'DMGD', clr:'B', $:['uid', 'v']},
+  gpaint:   {k:'GTK', cells:'GRUNS', $:['k', 'cells']},
+  gedge:    {v:'GEV', edges:'GEDGES', $:['v', 'edges']},
+  gdoor:    {c:'GE', r:'GE', d:'GED', open:'B', $:['c', 'r', 'd']},
+  gfog:     {on:'B', cells:'GRUNS', all:'B', $:['on']},
+  gline:    {line:'GLINE', $:['line']},
+  glinedel: {ids:'GIDS', all:'B', s:'SEATQ'},
+  garea:    {area:'GAREA', $:['area']},
+  gareadel: {ids:'GIDS', $:['ids']},
+  dmrole:   {role:'ROLEQ', strip:'B', mk:'GMAP', who:'S80', pers:'B', $:['role']}
 };
 function tgField(kind, v, seat){
   switch(kind){
@@ -346,6 +435,20 @@ function tgField(kind, v, seat){
     case 'GMAP':  return (typeof v === 'string') ? tgStr(v, 60).trim().toLowerCase() : null;
     case 'GN':    return tgInt(v, 1, 1e15);
     case 'GICON': return tgIcon(v);
+    case 'DMG':   return tgInt(v, 0, TG_DMG_MOST);
+    case 'DMGD':  return tgInt(v, -TG_DMG_MOST, TG_DMG_MOST);
+    case 'CD':    return (v === '' || (typeof v === 'string' && TG_UID.test(v))) ? v : null;
+    case 'GTK':   return tgInt(v, 0, 4);
+    case 'GRUNS': return tgRuns(v);
+    case 'GEV':   return tgInt(v, 0, 2);
+    case 'GEDGES':return tgEdges(v, false, 5000);
+    case 'GE':    return tgInt(v, -1, TG_GRID_MOST - 1);
+    case 'GED':   return tgInt(v, 0, 2);
+    case 'GLINE': return tgGLine(v);
+    case 'GIDS':  return tgIds(v);
+    case 'GAREA': return tgGArea(v);
+    case 'SEATQ': return tgSeat(v) || null;
+    case 'ROLEQ': return (v === '' || v === 'dm' || v === 'dmp') ? v : null;
   }
   return null;
 }
@@ -526,7 +629,10 @@ var TG_IN = {
               var u = tgUid(m.uid);
               if(u){ o.uid = u; o.ux = tgNum(m.ux, -0.5, 1.5) || 0; o.uy = tgNum(m.uy, -0.5, 1.5) || 0; }
               var rx = tgNum(m.rx, -0.5, 1.5), ry = tgNum(m.ry, -0.5, 1.5);
-              if(rx != null && ry != null && o.zone === 'field' && !o.seat){ o.rx = rx; o.ry = ry; }
+              if(rx != null && ry != null && o.zone === 'field' && !o.seat){
+                o.rx = rx; o.ry = ry;
+                if(m.rm === true) o.rm = true;
+              }
               return o;
             }},
   ping:     {who:'seat', f:function(m){ var u = tgUid(m.uid); return u ? {uid:u} : null; }},
@@ -563,8 +669,62 @@ var TG_IN = {
                 case 'gdel': return tok ? {op:op, tok:tok} : null;
                 case 'label':
                   return (uid && typeof m.lab === 'string') ? {op:op, uid:uid, lab:tgLab(m.lab)} : null;
+                case 'dmg':
+                  var dv = tgInt(m.v, 0, TG_DMG_MOST), dd = tgInt(m.d, -TG_DMG_MOST, TG_DMG_MOST);
+                  return (uid && dv != null && dv === m.v) ? {op:op, uid:uid, v:dv, d:(dd == null ? 0 : dd), clr:m.clr === true} : null;
+                case 'gconn':
+                  if(!tok || typeof m.cd !== 'string' || (m.cd !== '' && !TG_UID.test(m.cd))) return null;
+                  return {op:op, tok:tok, cd:m.cd};
+                case 'gcol':
+                  return (tok && (m.col === '' || TG_GCOLS[m.col] === 1)) ? {op:op, tok:tok, col:m.col} : null;
+                case 'gline':
+                  var ln = tgGLine(m.line);
+                  return ln ? {op:op, line:ln} : null;
+                case 'garea':
+                  var ar = tgGArea(m.area);
+                  return ar ? {op:op, area:ar} : null;
+                case 'glinedel': case 'gareadel':
+                  var ids = tgIds(m.ids);
+                  return (ids && ids.length) ? {op:op, ids:ids} : null;
               }
               return null;
+            }},
+  /* A spot on the map pinged, in grid units as a line's points are (cat_rbmap.js). */
+  mping:    {who:'seat', f:function(m){
+              var p = tgPt([m.x, m.y]);
+              return p ? {x:p[0], y:p[1]} : null;
+            }},
+  /* The two turns of a table with a DM (cat_rbplay.js): the DM says whose, a player says they are done; whether the sender is the DM is the receiver's to ask. */
+  rbturn:   {who:'seat', f:function(m){
+              if(m.who !== 'pl' && m.who !== 'dm') return null;
+              var n = tgInt(m.n, 1, 1e9);
+              if(n == null) return null;
+              var done = {};
+              if(tgObj(m.done)) Object.keys(m.done).forEach(function(k){ if(tgSeat(k) && m.done[k] === 1) done[k] = 1; });
+              var o = {who:m.who, n:n, done:done};
+              if(m.early === true) o.early = true;
+              return o;
+            }},
+  rbdone:   {who:'seat', f:function(m){ var n = tgInt(m.n, 1, 1e9); return n == null ? null : {n:n}; }},
+  /* The whole table saved (cat_rbplay.js): the DM asks, each player keeps their own and answers with it, and a table loaded sends each player theirs. */
+  tsave:    {who:'seat', f:function(m){
+              var id = (typeof m.id === 'string' && /^ts\d{1,15}$/.test(m.id)) ? m.id : '';
+              return id ? {id:id, name:tgStr(m.name, 60).trim()} : null;
+            }},
+  tsbd:     {who:'seat', f:function(m){
+              var id = (typeof m.id === 'string' && /^ts\d{1,15}$/.test(m.id)) ? m.id : '';
+              var b = id ? tgBoard(m.board) : null;
+              return b ? {id:id, board:b} : null;
+            }},
+  tload:    {who:'seat', f:function(m){
+              var id = (typeof m.id === 'string' && /^ts\d{1,15}$/.test(m.id)) ? m.id : '';
+              var b = id ? tgBoard(m.board) : null;
+              return (id && (b || m.board === null)) ? {id:id, board:b, name:tgStr(m.name, 60).trim(), at:tgNum(m.at, 0, 1e15) || 0} : null;
+            }},
+  /* The DM handing the role over: the map on the Field, as a saved map is (tdMapClean, cat_rbdm.js, rebuilds it). */
+  dmhand:   {who:'seat', f:function(m){
+              if(!tgObj(m.map)) return null;
+              return {map:m.map, pers:m.pers === true};
             }},
   /* The receiver's app makes the card, and only if the sender is the DM (tdDmGiftFrom). */
   gift:     {who:'seat', f:function(m){
@@ -716,12 +876,19 @@ function tgRelay(m){
     case 'meta':     return {t:'meta', table:tgMeta(m.table)};
     case 'host':
       var hid = tgId(m.id);
-      return hid ? {t:'host', id:hid, name:tgName(m.name) || 'Player'} : tgDrop('host without an id');
+      if(!hid) return tgDrop('host without an id');
+      var ho = {t:'host', id:hid, name:tgName(m.name) || 'Player'}, hb = tgId(m.by);
+      if(hb) ho.by = hb;
+      return ho;
     case 'peer':
       var pid = tgId(m.id), pw = m.watch === true, ps = tgSeat(m.side);
       if(!pid || (!pw && !ps)) return tgDrop('peer without a seat');
-      return {t:'peer', join:m.join === true, watch:pw, id:pid,
-              name:tgName(m.name) || (pw ? 'Spectator' : 'Player'), side:(pw ? '' : ps)};
+      var po = {t:'peer', join:m.join === true, watch:pw, id:pid,
+                name:tgName(m.name) || (pw ? 'Spectator' : 'Player'), side:(pw ? '' : ps)};
+      if(m.kicked === true && !po.join) po.kicked = true;
+      return po;
+    case 'kicked':   return {t:'kicked'};
+    case 'banned':   return {t:'banned'};
     case 'from':
       var fid = tgId(m.id);
       if(!fid || !tgObj(m.msg)) return tgDrop('from without a sender');
@@ -750,4 +917,5 @@ function tgTables(m){
 if(typeof module !== 'undefined' && module.exports)
   module.exports = {TG:TG, tgInbound:tgInbound, tgRelay:tgRelay, tgTables:tgTables, tgBoard:tgBoard,
     tgFeed:tgFeed, tgAct:tgAct, tgTray:tgTray, tgDraftView:tgDraftView, tgDraftMove:tgDraftMove,
-    tgUid:tgUid, tgLab:tgLab, tgGrid:tgGrid, tgGTok:tgGTok, tgIcon:tgIcon};
+    tgUid:tgUid, tgLab:tgLab, tgGrid:tgGrid, tgGTok:tgGTok, tgIcon:tgIcon,
+    tgRuns:tgRuns, tgEdges:tgEdges, tgGLine:tgGLine, tgGArea:tgGArea};

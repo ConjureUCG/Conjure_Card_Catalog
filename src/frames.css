@@ -10,6 +10,7 @@ body .mcard.fr.fr .m-art{overflow:visible}
 body .mcard.fr.fr .m-art-clip{overflow:hidden;border-radius:6px}
 /* black under the art wherever the image leaves a gap, whatever the frame */
 body .mcard.fr.fr.fit-contain .m-art:not(.empty){background-color:#000}
+body .mcard.fr.fr:not(.fr-fa) .m-art:not(.empty) .m-art-clip{background-color:#000}
 /* keyterm text in the text box reads in the panel's own ink, its underline too */
 body .mcard.fr.fr .m-rules-body .kw-link{color:inherit;border-bottom-color:color-mix(in srgb,currentColor 55%,transparent)}
 body .mcard.fr.fr .inner-fill{position:absolute;left:8.1px;top:8.1px;width:323.8px;height:459.8px;border-radius:10px;z-index:-2;pointer-events:none;background:var(--frame-dark,var(--frame));box-shadow:0 0 0 1.5px var(--ink-dark,#141418)}

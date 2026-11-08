@@ -225,13 +225,19 @@ function tdUndo(soon){
       toast((TD.undoWhy || 'The turn has been handed on') + ' - Undo stops there');
     return false;
   }
-  /* Tokens that went with a card to its Grave (tdGfAfterAct) come back with it: one press of Undo. */
-  var n = 1, L = TD.log.length, last = TD.log[L - 1], prev = TD.log[L - 2];
-  if(last && last.t === 'gdel' && last.grave && prev && prev.t === 'move'
-     && L - 2 >= (TD.undoFloor || 1)) n = 2;
+  /* Lines and areas on the map (cat_rbmap.js) are passed over and kept: Esc and the map's menu take them off, and at a
+     table most of them are somebody else's. */
+  var L = TD.log.length, j = L - 1, floor = TD.undoFloor || 1;
+  var marks = (typeof TD_MAP_MARKS !== 'undefined') ? TD_MAP_MARKS : {};
+  while(j > 0 && TD.log[j] && marks[TD.log[j].t]) j--;
+  if(j < floor) return false;
+  /* Tokens a card's move took off the map or off the card (grave, tdGfCardLeft) come back with it: one press of Undo. */
+  var last = TD.log[j], k = j, start = j;
+  while(k > 0 && TD.log[k] && TD.log[k].grave && (TD.log[k].t === 'gdel' || TD.log[k].t === 'gset')) k--;
+  if(k < j && TD.log[k] && TD.log[k].t === 'move' && k >= floor) start = k;
   /* A Rewards card the DM gave is asked back first, and not undone when it cannot be (cat_rbdm.js). */
   if(typeof tdDmUndoGive === 'function' && !tdDmUndoGive(last)) return false;
-  var keep = TD.log.slice(0, L - n);
+  var keep = TD.log.slice(0, start).concat(TD.log.slice(j + 1));
   var was = TD.logOn; TD.logOn = false;
   /* How far this board has heard the DM's map changes stays, so none is heard twice (cat_rbgrid.js). */
   var gts = TD.board ? TD.board.gtseen : null;
@@ -534,6 +540,10 @@ function tdActionWords(a, board, before, beforeName){
     case 'grid': case 'gpers': case 'gtok': case 'gmove': case 'gset': case 'gdel':
     case 'gtag': case 'label': case 'gicon':
                     return (typeof tdGfActionWords === 'function') ? tdGfActionWords(a, board, before, beforeName) : '';
+    case 'dmg': case 'dmrole':
+                    return (typeof tdPlayActionWords === 'function') ? tdPlayActionWords(a, board, before, beforeName) : '';
+    case 'gpaint': case 'gedge': case 'gdoor': case 'gfog': case 'gline': case 'glinedel': case 'garea': case 'gareadel':
+                    return (typeof tdMapActionWords === 'function') ? tdMapActionWords(a, board, before, beforeName) : '';
     case 'tokAdd':  return 'put down a ' + (a.kind === 'kw' ? a.name
                              : a.kind === 'emblem' ? 'Emblem Copy'
                              : (a.value > 0 ? '+1' : '−1')) + ' counter';
@@ -602,6 +612,8 @@ function tdWinDefault(el, name){
   /* On a Rebirth Field the record and the DM Tools go under the map's bar, clear of its tools (cat_rbgrid.js). */
   var gy = (name !== 'chat' && typeof tdGfBarBottom === 'function') ? tdGfBarBottom(vh) : 0;
   if(name === 'chat') return {x:vw - w - 18, y:Math.max(top + 10, vh - h - 24)};
+  /* The DM's notes (cat_rbplay.js) on the left, clear of the record and the DM Tools. */
+  if(name === 'notes') return {x:18, y:Math.max(8, top + 10, gy)};
   /* The DM Tools, left of the record and down on the Field, where a Reward is dragged to. */
   if(name === 'dm'){
     var fld = document.querySelector('#tdBoard .rb-field');
@@ -649,7 +661,7 @@ window.tdFloatWin = tdFloatWin;
   if(window._tdWinBound) return;
   window._tdWinBound = true;
   window.addEventListener('resize', function(){
-    ['tdFeed', 'tblChat', 'tdDmWin'].forEach(function(id){
+    ['tdFeed', 'tblChat', 'tdDmWin', 'tdNotesWin'].forEach(function(id){
       var el = document.getElementById(id);
       if(!el || el.hidden || !el._tdWin) return;
       var r = el.getBoundingClientRect();
@@ -669,6 +681,8 @@ function tdRenderFeed(){
     return "<div class='td-fl" + (f.who === 'them' ? ' them' : '')
       + (f.who === 'say' ? ' say' : '') + "'>"
       + (f.name ? "<b>" + e(f.name) + "</b> " : '')
+      /* a whisper, in the record of the two it is between (tblFeedSay) */
+      + (f.wh ? "<i class='td-fwh'>" + e(f.wh) + "</i> " : '')
       + e(f.line) + "</div>";
   }).join('');
   /* The bar is built once and only the list redrawn, so a line landing mid-drag keeps the bar under the pointer. */
@@ -707,6 +721,9 @@ TD_ACT.move = function(b, a){
   /* And its label, unless it goes where a card lies open (tdGfKeepsLab, cat_rbgrid.js). */
   if(at.zone !== a.to && at.item.lab && typeof tdGfKeepsLab === 'function' && !tdGfKeepsLab(a.to))
     delete at.item.lab;
+  /* Its damage stays only on the Field and in an Armament (TD_DMG_ZONES, cat_rbplay.js). */
+  if(at.zone !== a.to && at.item.dmg && !(typeof TD_DMG_ZONES !== 'undefined' && TD_DMG_ZONES[a.to]))
+    delete at.item.dmg;
   /* A connection survives a move within its zone and is released by leaving it; the card itself always detaches from
      its own parent, which is how a connection is undone by hand. */
   var leaving = (at.zone !== a.to);
@@ -926,6 +943,7 @@ TD_ACT.appear = function(b, a){
   if(a.dm) it.dm = true;          /* the DM's, out of the DM's own zones */
   if(a.x != null){ it.x = a.x; it.y = a.y; it.auto = false; }
   if(a.lab && !a.anon) it.lab = a.lab;     /* its label, as it is seen */
+  if(a.dmg && !a.anon) it.dmg = a.dmg;     /* and its damage (cat_rbplay.js) */
   z.splice(Math.max(0, Math.min(z.length, a.at == null ? z.length : a.at)), 0, it);
 };
 /* A reveal is board state, not table state: logged, undone, saved and kept through a reconnect, while TBL.grants is
@@ -1905,6 +1923,8 @@ function tdStepVars(id){
 function tdTurnBoard(){
   if(TD.watching || typeof tblOn !== 'function' || !tblOn() || typeof TBL === 'undefined')
     return TD.board;
+  /* a Rebirth table: the players' turn, all of them together, then the DM's (cat_rbplay.js) */
+  if(typeof tdRbTurnOn === 'function' && tdRbTurnOn()) return tdRbTurnBoard();
   if(!TBL.turn || TBL.turn === TD.side) return TD.board;
   if(typeof tblTurnFree === 'function' && tblTurnFree()) return TD.board;
   /* their half before it has arrived: their turn all the same, at its start */
@@ -1916,6 +1936,8 @@ window.tdTurnMine = tdTurnMine;
 
 /* Alone that is just you, so a pass advances at once. */
 function tdSeats(){
+  /* in a Rebirth table's turn each plays their own part, so a pass is theirs alone, as alone */
+  if(typeof tdRbTurnOn === 'function' && tdRbTurnOn()) return [TD.side || 'a'];
   if(typeof tblOn === 'function' && tblOn() && typeof tblSeated === 'function'){
     var s = tblSeated();
     if(s && s.length) return s;
@@ -2008,17 +2030,10 @@ function tdAdvance(){
 
 /* The automatics fire on the way into Main, by a pass only (not on a deal), each its own undoable action. */
 function tdNewTurn(){
+  if(typeof tdRbTurnOn === 'function' && tdRbTurnOn() && tdRbNewTurn()) return;
   /* At a table the end of your turn only hands it on: the unlock and the draw wait for tdTurnArrived (HANDOFF §76.7). */
   if(typeof tblOn === 'function' && tblOn() && typeof TBL !== 'undefined'
      && TBL.turn === TD.side){
-    if(typeof tdDmPicksTurn === 'function' && tdDmPicksTurn()){
-      tdDmPickTurn(function(s){
-        if(TBL.turn !== TD.side) return;
-        tblHandOn(false, s);
-        tdUndoFloorHere();
-      });
-      return;
-    }
     if(typeof tblHandOn === 'function'){ try{ tblHandOn(false); }catch(_){} }
     tdUndoFloorHere();             /* handed on: Undo stops here (tdCanUndo) */
     return;
@@ -2151,7 +2166,10 @@ function tdTurnHTML(){
   if(!tdTurnOn()) return '';
   var tb = tdTurnBoard(), ro = (tb !== TD.board);
   var t = tdTurnOf(tb);
-  var whose = ro ? "<div class='td-turn-whose'><span class='tbl-s tbl-seat-" + e(TBL.turn) + "'></span>"
+  var rw = (ro && typeof tdRbTurnOn === 'function' && tdRbTurnOn()) ? tdRbTurnWhose() : null;
+  var whose = rw ? "<div class='td-turn-whose'>" + (rw.seat ? "<span class='tbl-s tbl-seat-" + e(rw.seat) + "'></span>" : '')
+      + e(rw.words) + "</div>"
+    : ro ? "<div class='td-turn-whose'><span class='tbl-s tbl-seat-" + e(TBL.turn) + "'></span>"
       + e(((typeof tblSeatName === 'function') ? tblSeatName(TBL.turn) : 'Their') + "'s turn")
       + "</div>" : '';
   return "<div class='td-turn" + (ro ? ' td-turn-ro' : '') + "' aria-label='Turn tracker'>" + whose
@@ -3809,11 +3827,14 @@ function tdFitTable(){
   var room = tdFitRoom(b);
   var mode = function(two){ if(mine) mine.classList.toggle('td-play2', !!two); };
   var fld = mine ? mine.querySelector(".td-zone[data-zone='field']") : null;
+  /* Rebirth's Essence area shares its row with Deck, Grave and the Hand (testdeck.css): two cards side by side at least */
+  var ess = (REBIRTH && mine) ? mine.querySelector(".td-zone[data-zone='essarea'] > .td-zbody") : null;
   var fits = function(cw){
     b.style.setProperty('--td-cw', cw + 'px');
     tdSideLayout(b);
     /* Your Field must stay at least three cards wide: the side halves take their width from the middle. */
     if(fld && fld.offsetWidth < 3 * cw + 40) return false;
+    if(ess && ess.clientWidth < 2 * cw + 8) return false;
     return b.scrollHeight <= room && b.scrollWidth <= b.clientWidth + 2;
   };
   /* The last answer is tried first, and kept if it fits and one pixel more would not. */
@@ -3915,7 +3936,9 @@ function tdMoreMenuHTML(mapsOnly){
       + (mapsOnly ? '' : "<button class='td-moreitem' role='menuitem' onclick='tdCloseMore();tdExportBoard()'>"
         + "Save this position&hellip;<small>the board, as a file</small></button>"
       + "<button class='td-moreitem' role='menuitem' onclick='tdCloseMore();tdImportBoard()'>"
-        + "Load a position&hellip;<small>replaces the board</small></button>")
+        + "Load a position&hellip;<small>replaces the board</small></button>"
+      /* the whole table, for its DM (cat_rbplay.js) */
+      + (typeof tdTsMenuPart === 'function' ? tdTsMenuPart() : ''))
       + maps
     + "</div></span>";
 }
@@ -3927,6 +3950,7 @@ function tdToggleMore(ev){
   d.hidden = !open;
   if(b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
   tdMoreLift(d, open);
+  if(open && typeof tdMapThumbsDraw === 'function') tdMapThumbsDraw(d);
 }
 function tdCloseMore(){
   var d = document.getElementById('tdMoreDrop'), b = document.getElementById('tdMoreBtn');
@@ -4004,8 +4028,11 @@ function tdStopFocus(){
 function tdOpenChipMenu(seat, x, y){
   tdCloseMenu();
   if(!seat) return;
-  /* A Rebirth table has one shared Field and no board to focus on. */
-  if(typeof tdRbOn === 'function' && tdRbOn()) return;
+  /* A Rebirth table has one shared Field and no board to focus on; the DM's controls are there instead (cat_rbplay.js). */
+  if(typeof tdRbOn === 'function' && tdRbOn()){
+    if(typeof tdRbChipMenu === 'function') tdRbChipMenu(seat, x, y);
+    return;
+  }
   var s = (typeof TBL !== 'undefined' && TBL.seats && TBL.seats[seat]) || null;
   var name = (s && s.name) || 'Player';
   var on = (TD.focus === seat);
@@ -4170,17 +4197,17 @@ function tdRenderBar(){
   var bar = document.getElementById('tdBar');
   if(!bar) return;
   if(tdIsPool()){
-    bar.innerHTML = tdTopBtn('reset', 'tdRewClear()', 'Start Over', 'Start the specification over')
+    tdBarPut(bar, tdTopBtn('reset', 'tdRewClear()', 'Start Over', 'Start the specification over')
       + "<span class='td-stat'>" + tdPoolNoun() + " deck <b>"
       + tdRewPool().length + "</b></span>"
       + (tdIsEncounter() ? tdMoreMenuHTML(true)
           + ((TD.board && TD.board.map) ? "<span class='td-stat'>Map <b>" + e(TD.board.map) + "</b></span>" : '')
-        : '');
+        : ''));
     tdTopRowFit();
     return;
   }
   /* Spectating: only taking the position away. */
-  if(TD.watching){ bar.innerHTML = tdMoreMenuHTML(); tdTopRowFit(); return; }
+  if(TD.watching){ tdBarPut(bar, tdMoreMenuHTML()); tdTopRowFit(); return; }
   var canUndo = tdCanUndo();
   /* No Draw button: D and 1 to 9 draw from the keys, and the Deck's right-click has Draw and Draw X. Shuffle wears
      the Copy counter's purple. */
@@ -4199,15 +4226,33 @@ function tdRenderBar(){
   /* The counter row that carries this host may not be built yet. */
   var _pb = document.getElementById('tdPlayBar');
   if(_pb) _pb.innerHTML = colHTML;
-  bar.innerHTML = (tdSoloGame()
+  tdBarPut(bar, (tdSoloGame()
         ? tdTopBtn('newgame', 'tdNewGame()', 'New Game', 'Shuffle the deck and deal a new opening hand')
         : '')
     + tdTopBtn('keys', 'tdToggleKeySheet()', 'Shortcuts', 'The keys this page answers to')
     + tdTopBtn('reset', 'tdResetCounters()', 'Reset Counters', 'Clears counters and values')
     + tdResumeBtnHTML()
     + tdMoreMenuHTML()
-    + tdForgetBtnHTML();
+    + tdForgetBtnHTML());
   tdTopRowFit();
+}
+/* At a table anybody's move draws the board again, and with it this row: it is put in only when it changed, and a
+   Save / Load list held open then is opened again where it was scrolled to, the button focused in it focused again. */
+function tdBarPut(bar, html){
+  if(bar._tdHtml === html && bar.firstChild) return;
+  var d = document.getElementById('tdMoreDrop'), held = !!d && !d.hidden && bar.contains(d);
+  var top = held ? d.scrollTop : 0, l = held ? d.querySelector('.td-maplist') : null, ltop = l ? l.scrollTop : 0;
+  var f = (held && d.contains(document.activeElement)) ? [].indexOf.call(d.querySelectorAll('button'), document.activeElement) : -1;
+  bar.innerHTML = html;
+  bar._tdHtml = html;
+  var n = held ? document.getElementById('tdMoreDrop') : null;
+  if(!n || !n.hidden) return;
+  tdToggleMore();
+  n.scrollTop = top;
+  var nl = n.querySelector('.td-maplist');
+  if(nl) nl.scrollTop = ltop;
+  var bs = n.querySelectorAll('button');
+  if(f >= 0 && bs[f]) try{ bs[f].focus(); }catch(_){}
 }
 /* No table, not even one being joined or rejoined, and not spectating. */
 function tdSoloGame(){
@@ -5026,7 +5071,7 @@ function tdTranscript(){
   head.push(me + (others.length ? ' vs ' + others.join(', ') : ''), '');
   var body = (TD.feed || []).map(function(f){
     var who = f.name || (f.who === 'me' ? me : f.who === 'them' ? them : '');
-    return (who ? who + ': ' : '') + f.line;
+    return (who ? who + (f.wh ? ' (' + f.wh + ')' : '') + ': ' : '') + f.line;
   });
   return head.concat(body).join('\r\n') + '\r\n';
 }
@@ -5039,8 +5084,8 @@ function tdExportBoard(){
            'conjure_board_' + tdStamp() + '.json', 'application/json');
   return true;
 }
-/* Also takes a bare board, as pasted out of the save slot. */
-function tdImportBoardText(text){
+/* Also takes a bare board, as pasted out of the save slot. line: what the record says at a table, false for nothing. */
+function tdImportBoardText(text, line){
   /* a spectator has no half to put it on */
   if(TD.watching) return 'You are spectating — leave the table to load a position';
   var o = null;
@@ -5071,7 +5116,7 @@ function tdImportBoardText(text){
   /* The others are looking at a board that no longer exists. */
   if(typeof tblSendState === 'function' && typeof tblOn === 'function' && tblOn()){
     tblSendState();
-    tdFeedPush('me', 'loaded a saved position');
+    if(line !== false) tdFeedPush('me', line || 'loaded a saved position');
   }
   if(board.missing.length && typeof toast === 'function')
     toast(board.missing.length + ' card name(s) in that file are not in this catalog');
@@ -5666,6 +5711,10 @@ function tdMenuItems(item, zoneId){
     var glr = tdGfLabelRow(item, zoneId);
     if(glr) rows.push.apply(rows, glr);
   }
+  if(typeof tdDmgRows === 'function'){
+    var dmr = tdDmgRows(item, zoneId, uid, TD.side);
+    if(dmr) rows.push.apply(rows, dmr);
+  }
   /* A new piece with its own uid, not a second reference, or moving one would move both. */
   rows.push({label:'Duplicate', act:function(){ tdDuplicate(uid); }});
   /* Only where face down means anything: a card in hand is unreadable to them already, and a pile is not shown. */
@@ -6034,15 +6083,23 @@ function tdShufflePile(zoneId){
    (HANDOFF §24.2). A string act is only for static zone ids (cat_table.js's reveal menus). */
 function tdShowMenu(title, rows, subs, x, y){
   var subRows = Array.isArray(subs) ? subs : null;
-  /* r.name is what a screen reader says for a row labelled with a bare number ("+10"). */
+  /* r.name is what a screen reader says for a row labelled with a bare number ("+10"). r.on (true or false) makes the
+     row one of a choice, or with r.box a tick of its own; r.chip is a colour shown before the label. */
   function rowHTML(r, attr, i){
     var act = (typeof r.act === 'string') ? " onclick=\"" + e(r.act) + "\"" : '';
-    return "<button type='button' class='td-mi' role='menuitem' " + attr + "='" + i + "'" + act
-      + (r.name ? " aria-label='" + e(r.name) + "'" : '') + ">" + e(r.label)
+    var pick = (r.on != null);
+    return "<button type='button' class='td-mi" + (pick ? ' td-mpick' : '') + "' role='"
+      + (pick ? (r.box ? 'menuitemcheckbox' : 'menuitemradio') : 'menuitem') + "' " + attr + "='" + i + "'" + act
+      + (pick ? " aria-checked='" + (r.on ? 'true' : 'false') + "'" : '')
+      + (r.name ? " aria-label='" + e(r.name) + "'" : '') + ">"
+      + (pick ? "<span class='td-mtick' aria-hidden='true'>" + (r.on ? '&#10003;' : '') + "</span>" : '')
+      + (r.chip ? "<span class='td-mchip" + (r.chipLine ? ' td-mchip-ln' : '') + "' aria-hidden='true' style='--mc:" + r.chip + "'></span>" : '')
+      + e(r.label)
       + (r.hint ? "<span class='td-mhint'>" + e(r.hint) + "</span>" : '') + "</button>";
   }
   var html = rows.map(function(r, i){
     if(r.sep) return "<div class='td-msep' role='separator'></div>";
+    if(r.head) return "<div class='td-mhead' role='presentation'>" + e(r.head) + "</div>";
     if(r.sub) return "<div class='td-msub'><button type='button' class='td-mi' role='menuitem' aria-haspopup='true'>" + e(r.label)
       + " <span class='td-marrow' aria-hidden='true'>&#9656;</span></button>"
       + "<div class='td-mflyout' role='group' aria-label='" + e(r.label) + "'>"
@@ -6060,7 +6117,8 @@ function tdShowMenu(title, rows, subs, x, y){
       + "<input type='number' class='td-mpeek-in' id='tdDrawN' min='1' step='1'"
         + " value='2' aria-label='How many cards to draw' data-mi='" + i + "'>"
       + "</div>";
-    /* r.form: [{label, type 'number' or 'text', value, min, max, ph}]; r.act gets the values in order (tdMenuFormVals). */
+    /* r.form: [{label, type 'number' or 'text', value, min, max, ph}]; r.act gets the values in order (tdMenuFormVals), or with
+       r.btns [{label, act}] each button's act does, Enter taking the first. */
     if(r.form) return "<div class='td-mfield td-mform'>"
       + r.form.map(function(f, j){
           var num = (f.type === 'number');
@@ -6074,7 +6132,17 @@ function tdShowMenu(title, rows, subs, x, y){
             + " value='" + e(String(f.value == null ? '' : f.value)) + "'"
             + " aria-label='" + e(f.label) + "'></label>";
         }).join('')
-      + "<button type='button' class='td-mfield-b' data-mi='" + i + "'>" + e(r.btn || 'Set') + "</button></div>";
+      + (r.btns ? r.btns.map(function(bt, k){
+            return "<button type='button' class='td-mfield-b' data-mi='" + i + "' data-mb='" + k + "'>" + e(bt.label) + "</button>";
+          }).join('')
+        : "<button type='button' class='td-mfield-b' data-mi='" + i + "'>" + e(r.btn || 'Set') + "</button>") + "</div>";
+    /* r.swatches: [{css, name, on}], one round button each; r.act gets the one pressed. */
+    if(r.swatches) return "<div class='td-gip-cols td-mcols' role='group' aria-label='" + e(r.label || 'Colour') + "'>"
+      + r.swatches.map(function(s, j){
+          return "<button type='button' class='td-gip-col' data-mi='" + i + "' data-mj='" + j + "'"
+            + " style='--gt:" + s.css + "' title='" + e(s.name) + "' aria-label='" + e(s.name) + "'"
+            + " aria-pressed='" + (s.on ? 'true' : 'false') + "'></button>";
+        }).join('') + "</div>";
     if(r.field) return "<div class='td-mfield'>"
       + "<input type='number' class='td-mfield-in' id='tdMField'"
       + " value='" + e(String(r.value)) + "' step='1' data-mi='" + i + "'"
@@ -6101,7 +6169,13 @@ function tdShowMenu(title, rows, subs, x, y){
     if(r.peek){ tdPeekTop(r.zone, (m.querySelector('#tdPeekN') || {}).value); return; }
     if(r.drawn){ tdMenuDraw((m.querySelector('#tdDrawN') || {}).value); return; }
     if(r.field){ tdTokenSet(r.uid, (m.querySelector('#tdMField') || {}).value); return; }
-    if(r.form){ r.act(tdMenuFormVals(m, b.getAttribute('data-mi'))); return; }
+    if(r.form){
+      var fv = tdMenuFormVals(m, b.getAttribute('data-mi')), mb = b.getAttribute('data-mb');
+      if(r.btns){ if(mb != null && r.btns[+mb]) r.btns[+mb].act(fv); }
+      else r.act(fv);
+      return;
+    }
+    if(r.swatches){ r.act(r.swatches[+b.getAttribute('data-mj') || 0]); return; }
     if(typeof r.act === 'function') r.act(ev);
   });
   m.addEventListener('keydown', function(ev){
@@ -6112,7 +6186,11 @@ function tdShowMenu(title, rows, subs, x, y){
     if(r.peek) tdPeekKey(ev, r.zone);
     else if(r.field) tdTokenSetKey(ev, r.uid);
     else if(r.drawn && ev.key === 'Enter'){ ev.preventDefault(); tdMenuDraw(t.value); }
-    else if(r.form && ev.key === 'Enter'){ ev.preventDefault(); r.act(tdMenuFormVals(m, t.getAttribute('data-mi'))); }
+    else if(r.form && ev.key === 'Enter'){
+      ev.preventDefault();
+      var ev2 = tdMenuFormVals(m, t.getAttribute('data-mi'));
+      if(r.btns) r.btns[0].act(ev2); else r.act(ev2);
+    }
   });
   document.body.appendChild(m);
   var r = m.getBoundingClientRect();
@@ -6432,7 +6510,8 @@ function tdBindMenu(){
     if(typeof tdGfMenu === 'function' && tdGfMenu(ev)) return;
     /* No menu on another player's half: every row acts. */
     if(tdSideOfEl(ev.target) === 'foe'){
-      /* Except a card on a Rebirth table's shared Field (cat_rbtable.js). */
+      /* Except a card on a Rebirth table's shared Field (cat_rbtable.js), and the damage on another's Armament (cat_rbplay.js). */
+      if(typeof tdDmgFoeMenu === 'function' && tdDmgFoeMenu(ev)) return;
       if(typeof tdRbFoeMenu === 'function' && tdRbFoeMenu(ev)) return;
       tdCloseMenu(); return;
     }
@@ -6672,7 +6751,7 @@ function tdBindMenu(){
 var _tdAlt = {on:false, uid:null, x:0, y:0};
 /* Every face this page draws, in one place so the listeners agree. .td-token is a counter, not a card: it is listed
    because an attached counter sits inside its card's token, and Alt over it shows the keyword. */
-var TD_ALT_SEL = '.td-token, .td-card, .td-scard, .td-rew-mini, .td-rew-card, .td-lord';
+var TD_ALT_SEL = '.td-token, .td-card, .td-scard, .td-rew-mini, .td-rew-card, .td-lord, .td-gtok';
 /* Not the uid alone: a Rewards tile and a drawn card have none, and undefined === undefined would keep the first zoom. */
 function tdAltKey(el){
   if(!el) return null;
@@ -6759,6 +6838,9 @@ function tdAltShowCounter(tokEl){
 }
 function tdAltShow(cardEl){
   if(!cardEl) return tdAltHide();
+  /* a map token: its card's zoom, or the token itself (cat_rbgrid.js) */
+  if(cardEl.classList && cardEl.classList.contains('td-gtok'))
+    return (typeof tdGfAltShow === 'function') ? tdGfAltShow(cardEl) : tdAltHide();
   if(cardEl.classList && cardEl.classList.contains('td-token')){
     if(tdAltShowCounter(cardEl)) return;
     var host = cardEl.closest && cardEl.closest('.td-card');
@@ -6783,6 +6865,29 @@ function tdAltShow(cardEl){
   tdAltPlace();
   /* the frame's layers, drawn again at the zoom's size and depth (ed2_frames.js) */
   if(typeof window.edFrameZoom === 'function') window.edFrameZoom(z);
+  tdZoomOwnIds(z);
+}
+/* The zoom is a copy of the board's face, ids and all, and url(#id) finds the first element with the id: the board's, whose
+   gradients do not turn. Each id in the zoom takes a suffix, and every reference to it in the zoom follows (session 93). */
+function tdZoomOwnIds(z){
+  var els = z.querySelectorAll('[id]'), map = {}, n = 0, i, j;
+  for(i = 0; i < els.length; i++){
+    var was = els[i].id;
+    if(!was || map[was]) continue;
+    map[was] = was + '-tdz';
+    els[i].id = map[was];
+    n++;
+  }
+  if(!n) return;
+  var all = z.querySelectorAll('*');
+  for(i = 0; i < all.length; i++){
+    for(j = 0; j < all[i].attributes.length; j++){
+      var at = all[i].attributes[j], v = at.value;
+      if(v.indexOf('#') < 0) continue;
+      var nv = v.replace(/#([A-Za-z_][-A-Za-z0-9_.:]*)/g, function(m, id){ return map[id] ? '#' + map[id] : m; });
+      if(nv !== v) at.value = nv;
+    }
+  }
 }
 /* Every face-down card looks the same, so moving from one to the next keeps the one zoom. */
 function tdAltShowBack(){

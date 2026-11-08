@@ -361,9 +361,10 @@ function frNoiseDefs(){
   document.body.appendChild(host);
 }
 function frStar4(cx,cy,r,inner){ return frStar(cx,cy,r,'#fff',4,inner==null?.32:inner); }
-/* one stat shape in one style: {defs, base (the fill layer), top (the raised layer), ink (the numeral's outline), mids, halo} */
-function frOrbParts(k,uid,mode,tint){
-  var d=FR_ORB_PATH[k], fill=frOrbFill(k), ink=ORB_OUTLINE[k], mids=[], halo='', base='', top='';
+/* one stat shape in one style: {defs, base (the fill layer), top (the raised layer), ink (the numeral's outline), mids, halo};
+   col, a colour of its own in place of the stat's (frOrbTinted) */
+function frOrbParts(k,uid,mode,tint,col){
+  var d=FR_ORB_PATH[k], fill=col||frOrbFill(k), ink=col?frMix(col,'#000',.6):ORB_OUTLINE[k], mids=[], halo='', base='', top='';
   var sc=function(f){ return 'transform="translate(19 19) scale('+f+') translate(-19 -19)"'; };
   var defs=frOrbGradDefs(uid,fill), c, cl, cb;
   if(mode==='app'){
@@ -381,7 +382,7 @@ function frOrbParts(k,uid,mode,tint){
       +'<path d="'+d+'" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.2" stroke-linejoin="round" transform="translate(2.4 2.4)"/></g>'
       +'<path d="'+d+'" fill="none" stroke="#000" stroke-opacity=".4" stroke-width=".6" stroke-linejoin="round"/>';
   } else if(mode==='stone'){
-    var crystal={atk:'#d23a3a',hp:'#e0b43c',arc:'#3a8fe0',rng:'#55b06a'}[k];
+    var crystal=col||{atk:'#d23a3a',hp:'#e0b43c',arc:'#3a8fe0',rng:'#55b06a'}[k];
     defs+=frOrbGemDefs(uid,fill);
     defs+='<linearGradient id="'+uid+'cry" data-rot="1" gradientTransform="rotate(120 .5 .5)"><stop offset="0" stop-color="'+frMix(crystal,'#000',.45)+'"/><stop offset=".40" stop-color="'+crystal+'"/><stop offset=".46" stop-color="'+frMix(crystal,'#fff',.6)+'"/><stop offset=".52" stop-color="'+crystal+'"/><stop offset="1" stop-color="'+frMix(crystal,'#000',.45)+'"/></linearGradient>';
     base='<path d="'+d+'" fill="url(#'+uid+'gem)"/><path d="'+d+'" fill="url(#'+uid+'gemlo)"/>';
@@ -429,7 +430,8 @@ function frOrbParts(k,uid,mode,tint){
       +'<path d="'+d+'" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width=".45" stroke-linejoin="round" transform="translate(-.5 -.5)"/>'
       +frOrbBrackets(k,uid);
   } else if(mode==='wax'){
-    var wax={atk:['#d9494f','#a51d27','#5e0b12'],hp:['#f1c866','#c7922c','#6e4a0f'],arc:['#5aa0e0','#2a6fb0','#123a66'],rng:['#7cc48a','#3f8a52','#1e4a2a']}[k];
+    var wax=col?[frMix(col,'#fff',.15),frMix(col,'#000',.2),frMix(col,'#000',.62)]
+      :{atk:['#d9494f','#a51d27','#5e0b12'],hp:['#f1c866','#c7922c','#6e4a0f'],arc:['#5aa0e0','#2a6fb0','#123a66'],rng:['#7cc48a','#3f8a52','#1e4a2a']}[k];
     defs+='<radialGradient id="'+uid+'wax" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="'+frMix(wax[0],'#fff',.25)+'"/><stop offset=".6" stop-color="'+wax[1]+'"/><stop offset="1" stop-color="'+frMix(wax[2],'#000',.25)+'"/></radialGradient>';
     base='<path d="'+d+'" fill="url(#'+uid+'wax)"/>';
     top='<path d="'+d+'" fill="none" stroke="url(#'+uid+'wax)" stroke-width="3" stroke-linejoin="round"/>'
@@ -439,7 +441,12 @@ function frOrbParts(k,uid,mode,tint){
       +'<path d="'+d+'" fill="none" stroke="#fff" stroke-opacity=".25" stroke-width="1.2" stroke-linejoin="round" transform="translate(18.2 18.2) scale(.78) translate(-18.2 -18.2)"/>';
     ink=wax[2];
   } else if(mode==='glass'){
-    base='<use href="#orbnoise-glass-'+k+'"/>';
+    /* the baked pane is in the stat's colour: in another, its light alone, laid over that colour */
+    if(col){
+      var rgb=frRgb(col).map(function(v){ return (v/255*1.5).toFixed(3); }), row=function(c){ return (c*.2126).toFixed(3)+' '+(c*.7152).toFixed(3)+' '+(c*.0722).toFixed(3)+' 0 0 '; };
+      defs+='<filter id="'+uid+'tint" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="'+row(rgb[0])+row(rgb[1])+row(rgb[2])+'0 0 0 1 0"/></filter>';
+      base='<use href="#orbnoise-glass-'+k+'" filter="url(#'+uid+'tint)"/>';
+    } else base='<use href="#orbnoise-glass-'+k+'"/>';
     top='<path d="'+d+'" fill="none" stroke="#000" stroke-opacity=".55" stroke-width="4.6" stroke-linejoin="round"/><path d="'+d+'" fill="none" stroke="#2a2c31" stroke-width="3.4" stroke-linejoin="round"/>'
       +'<path d="'+d+'" fill="none" stroke="#868a92" stroke-width=".9" stroke-linejoin="round" transform="translate(-.7 -.7)"/>';
   } else if(mode==='stars'){
@@ -479,8 +486,10 @@ function frIdSuffix(markup,uid,sfx){
   return markup.split('id="'+uid).join('id="'+uid+sfx).split('url(#'+uid).join('url(#'+uid+sfx);
 }
 function frIsTuple(m){ return Array.isArray(m); }
-/* one stat in one style, as the layers of a .m-orb-slot */
-function frOrbSvg(type,value,uid,mode){
+/* one stat in one style, as the layers of a .m-orb-slot; opt (frOrbTinted): col its own colour, apart the numeral on a layer
+   of its own, stretch every other layer to the slot's shape */
+function frOrbSvg(type,value,uid,mode,opt){
+  opt=opt||{};
   var s=String(value==null?'':value), isStar=s.trim()==='*', n=s.length;
   var fs=(isStar?26*0.75:(n>2?11:n>1?13:15))*1.5625, textY=isStar?26:19;
   var defs,base,top,ink,mids,halo,i;
@@ -507,7 +516,7 @@ function frOrbSvg(type,value,uid,mode){
     }
     ink='url(#'+uid+'grad)';
   } else {
-    var P=frOrbParts(FR_ORB_KIND[type]||'arc',uid,mode,null);
+    var P=frOrbParts(FR_ORB_KIND[type]||'arc',uid,mode,null,opt.col);
     defs=P.defs; base=P.base; top=P.top; ink=P.ink; mids=P.mids; halo=P.halo;
   }
   var glow='';
@@ -516,21 +525,32 @@ function frOrbSvg(type,value,uid,mode){
     if(FR_FUSED[type]){ var c1=frOrbFill(FR_FUSED[type]), c2=frOrbFill('arc');
       defs+='<linearGradient id="'+uid+'nglowc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+c1+'"/><stop offset=".3" stop-color="'+c1+'"/><stop offset=".7" stop-color="'+c2+'"/><stop offset="1" stop-color="'+c2+'"/></linearGradient>';
       gc='url(#'+uid+'nglowc)'; }
-    else gc=frOrbFill(FR_ORB_KIND[type]||'arc');
+    else gc=opt.col||frOrbFill(FR_ORB_KIND[type]||'arc');
     var gtext=function(sw,a){ return '<text x="19" y="'+textY+'" text-anchor="middle" dominant-baseline="'+(isStar?'middle':'central')+'" font-family="Book Antiqua,Georgia,serif" font-weight="700" font-size="'+fs+'" fill="'+gc+'" stroke="'+gc+'" stroke-width="'+f2(sw)+'" stroke-linejoin="round" opacity="'+a.toFixed(3)+'">'+e(s)+'</text>'; };
     glow=frSoftHalo(gtext,2.4,.85,6,4,true);
   }
   var numeral=glow+'<text x="19" y="'+textY+'" text-anchor="middle" dominant-baseline="'+(isStar?'middle':'central')+'" font-family="Book Antiqua,Georgia,serif" font-weight="700" font-size="'+fs+'" fill="#fff" style="paint-order:stroke;stroke:'+ink+';stroke-width:2.75px;stroke-linejoin:round">'+e(s)+'</text>';
-  top=top+numeral;
+  if(!opt.apart) top=top+numeral;
+  var par=opt.stretch?' preserveAspectRatio="none"':'';
   var orbn=1; mids.forEach(function(m){ if(!(frIsTuple(m)&&(m[0]==='ring'||m[0]==='sheen'))) orbn++; });
   var midHtml=mids.map(function(m,i){
     if(frIsTuple(m)&&m[0]==='ring') return '<div class="o-mid o-ring" style="--orbN:'+orbn+'">'+m[1]+'</div>';
     if(frIsTuple(m)&&m[0]==='sheen') return '<div class="o-mid o-sheen" style="--orbN:'+orbn+'">'+m[1]+'</div>';
     if(frIsTuple(m)) return '<div class="o-mid o-mid'+(i+1)+' o-gal">'+m[1]+'</div>';
-    return '<svg class="o-mid o-mid'+(i+1)+'" width="38" height="38" viewBox="0 0 38 38"><defs>'+frIdSuffix(defs,uid,'m'+i)+'</defs>'+frIdSuffix(m,uid,'m'+i)+'</svg>';
+    return '<svg class="o-mid o-mid'+(i+1)+'" width="38" height="38" viewBox="0 0 38 38"'+par+'><defs>'+frIdSuffix(defs,uid,'m'+i)+'</defs>'+frIdSuffix(m,uid,'m'+i)+'</svg>';
   }).join('');
-  return frHaloHtml(halo)+'<svg class="o-base" width="38" height="38" viewBox="0 0 38 38"><defs>'+defs+'</defs>'+base+'</svg>'+midHtml
-    +'<svg class="o-top" width="38" height="38" viewBox="0 0 38 38" style="overflow:visible;--orbN:'+orbn+'"><defs>'+frIdSuffix(defs,uid,'t')+'</defs>'+frIdSuffix(top,uid,'t')+'</svg>';
+  return frHaloHtml(halo)+'<svg class="o-base" width="38" height="38" viewBox="0 0 38 38"'+par+'><defs>'+defs+'</defs>'+base+'</svg>'+midHtml
+    +'<svg class="o-top" width="38" height="38" viewBox="0 0 38 38"'+par+' style="overflow:visible;--orbN:'+orbn+'"><defs>'+frIdSuffix(defs,uid,'t')+'</defs>'+frIdSuffix(top,uid,'t')+'</svg>'
+    +(opt.apart?'<svg class="o-top o-num" width="38" height="38" viewBox="0 0 38 38" style="overflow:visible;--orbN:'+orbn+'"><defs>'+frIdSuffix(defs,uid,'n')+'</defs>'+frIdSuffix(numeral,uid,'n')+'</svg>':'');
+}
+/* A token on a Rebirth map, or the damage on a card with no Health (cat_rbgrid.js, cat_rbplay.js): the Arcane or the Health
+   shape of the set in use, every layer of it, in a colour of its own, the text where the numeral goes. Never an uploaded
+   icon (session 95). stretch: a token longer than it is wide is the shape drawn out to an oval. */
+function frOrbTinted(kind,text,col,stretch){
+  var mode=frOrbMode();
+  if(mode==='stone'||mode==='glass'){ try{ frNoiseDefs(); }catch(_){} }
+  if(mode==='stars'){ try{ frGalLoad(); }catch(_){} }
+  return frOrbSvg(kind==='hp'?'health':'arcane',text,frUid(),mode,{col:/^#[0-9a-f]{6}$/i.test(String(col||''))?col:'',apart:true,stretch:!!stretch});
 }
 /* ---------------------------------------------------------------- the measured face: the geometry a frame draws round
    G: inner, name, type, art, info, rules (or null), rsecs [{r, col}], manas [[cx,cy,r]], orient (h|v), essence ('', boxed,
@@ -1146,6 +1166,8 @@ function frameTiltReset(card){
 /* the board's zoom (cat_testdeck.js) moves its own light from the board token, and draws its copy of a face afresh */
 window.edFrameHolo=function(root,px,py,ang){ if(!root) return; root.querySelectorAll('.mcard').forEach(function(card){ try{ frameTilt(card,px,py,ang); }catch(_){} }); };
 window.edFrameZoom=function(root){ frameDecorate(root); };
+window.edOrbTinted=function(kind,text,col,opts){ return frOrbTinted(kind,text,col,!!(opts&&opts.stretch)); };
+window.edOrbMode=function(){ return frOrbMode(); };
 /* ---------------------------------------------------------------- Nebula's sky
    Every layer of the Cosmos back's sky, composited into one picture with the blend modes the back's stack of layers used,
    its colour wheel run through the card's colours. A card at rest shows a still sky, drawn once per colour and shared

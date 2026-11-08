@@ -37,6 +37,26 @@ function tblSeatKeyGet(room){
 function tblSeatKeySet(room, key){
   try{ localStorage.setItem(TBL_SEATKEY + String(room || ''), String(key || '')); }catch(_){}
 }
+/* A table that removed you (cat_rbplay.js) is not joined again from this browser, whatever name you give, for a few days;
+   the relay turns the seat and the name away too. */
+var TBL_GONE = 'conjure_tbl_removed', TBL_GONE_MS = 3 * 864e5;
+function tblGoneList(){
+  var l = null;
+  try{ l = JSON.parse(localStorage.getItem(TBL_GONE) || 'null'); }catch(_){}
+  var now = Date.now();
+  return Array.isArray(l) ? l.filter(function(x){ return x && typeof x.r === 'string' && now - (+x.at || 0) < TBL_GONE_MS; }) : [];
+}
+function tblGoneFrom(room){
+  var r = String(room || '');
+  return !!r && tblGoneList().some(function(x){ return x.r === r; });
+}
+function tblGoneRemember(room){
+  var r = String(room || '');
+  if(!r) return;
+  var l = tblGoneList().filter(function(x){ return x.r !== r; });
+  l.push({r:r, at:Date.now()});
+  try{ localStorage.setItem(TBL_GONE, JSON.stringify(l.slice(-20))); }catch(_){}
+}
 function tblSeatForget(room){
   try{ localStorage.removeItem(TBL_SEAT + String(room || ''));
        localStorage.removeItem(TBL_SEATKEY + String(room || '')); }catch(_){}
@@ -149,6 +169,7 @@ function tblJoin(room, name){
   if(bad){ tblStatus('error', bad); return false; }
   room = String(room || '').toUpperCase().replace(/[^A-Z2-9]/g, '').slice(0, 6);
   if(room.length !== 6){ tblStatus('error', 'A room code is six characters'); return false; }
+  if(tblGoneFrom(room)){ tblStatus('error', 'You were removed from that table'); return false; }
   TBL.room = room;
   TBL.name = String(name || TBL.name || 'Player').slice(0, 40);
   tblOpen();
@@ -225,7 +246,7 @@ function tblClose(quiet){
     TBL.wasBoard = null; TBL.wasSide = '';
     TBL.replaced = false;
     TBL.rematch = null;
-    TBL.turn = ''; TBL.turnBy = '';
+    TBL.turn = ''; TBL.turnBy = ''; TBL.rbt = null;
     TBL.watch = false; TD.watching = false; TBL.watchers = 0; TBL.seats = {};
     TBL.rtt = 0; TBL.rttAt = 0; TBL.seenAt = 0; TBL.beatSent = 0;
     TBL.peer = null; TBL.tries = 0; TBL.back = false;
@@ -266,7 +287,7 @@ function tblHandle(m){
     _tblWasOn = false;
     TBL.replaced = false;
     /* A seat given back keeps the turn it knew, as every state says where it went since (tblStateFrom); a new seat has none. */
-    if(!m.back){ TBL.turn = ''; TBL.turnBy = ''; }
+    if(!m.back){ TBL.turn = ''; TBL.turnBy = ''; TBL.rbt = null; }
     if(m.key && !m.watch) tblSeatKeySet(TBL.room, m.key);
     /* Before tblStatus('on') below, which redraws from the phase: read early, a waiting room would draw as a game. */
     var wasPhase = TBL.phase;
@@ -331,6 +352,13 @@ function tblHandle(m){
     tblTurnedAway('That table does not allow spectators');
     return;
   }
+  /* The host removed you (cat_rbplay.js), now or before: the relay closes the socket after saying so. */
+  if(m.t === 'kicked' || m.t === 'banned'){
+    var gone = TBL.room;
+    tblTurnedAway(m.t === 'kicked' ? 'You were removed from the table' : 'You were removed from that table');
+    tblGoneRemember(gone);
+    return;
+  }
   /* The game starts when the relay says so, for everyone at once, the host included. */
   if(m.t === 'started'){
     TBL.phase = 'playing';
@@ -346,7 +374,9 @@ function tblHandle(m){
   if(m.t === 'host'){
     TBL.hostId = m.id || '';
     if(typeof drOnHost === 'function') drOnHost(m);
-    if(typeof toast === 'function')
+    /* a Rebirth DM handing the role over moves the host first, and says so itself (cat_rbplay.js) */
+    var handed = REBIRTH && typeof tdRbHostMoved === 'function' && tdRbHostMoved(m);
+    if(!handed && typeof toast === 'function')
       toast(m.id === TBL.you ? 'You are the host now' : (m.name + ' is the host now'));
     tblRenderPanel();
     return;
@@ -366,12 +396,16 @@ function tblHandle(m){
     if(m.join){
       tblSeatLearn(m.side, m.id, m.name);
       if(typeof toast === 'function') toast(m.name + ' joined the table');
+      /* a table the DM loaded gives them their board (cat_rbplay.js) */
+      if(typeof tdTsSeated === 'function') tdTsSeated(m.side);
     } else {
       if(TBL.seats) delete TBL.seats[m.side];
       if(typeof TD !== 'undefined' && TD.focus === m.side) TD.focus = '';
       try{ tdFoeClear(m.side); }catch(_){}
       if(TBL.turn === m.side) tblTurnTake('', '');
-      if(typeof toast === 'function') toast(m.name + ' left the table');
+      if(typeof tdRbTurnSeatGone === 'function') tdRbTurnSeatGone(m.side);
+      if(m.kicked && typeof tdRbKicked === 'function') tdRbKicked(m.id);
+      if(typeof toast === 'function') toast(m.name + (m.kicked ? ' was removed from the table' : ' left the table'));
       tblRematchLeft(m.side);
     }
     var others = Object.keys(TBL.seats || {}).filter(function(s){
@@ -535,7 +569,8 @@ function tblTopParts(){
           + " title='How long a move takes to reach the others'>&#9679; " + e(link) + "</span>" : ''),
     tools: waiting
       ? "<button class='ed2-btn tiny tbl-tool primary' onclick='tblOpenSetup()'>Open room</button>"
-      : ((typeof tbsToolHTML === 'function' ? tbsToolHTML() : '')
+      : ((typeof tdRbDealInToolHTML === 'function' ? tdRbDealInToolHTML() : '')
+        + (typeof tbsToolHTML === 'function' ? tbsToolHTML() : '')
         + (TBL.watch ? '' : tblToolHTML('arrows', "tblArrowsClear()", 'Clear arrows'))
         + tblToolHTML('chat', "tboChatToggle()", 'Chat',
             (typeof TBO !== 'undefined' && TBO.unread) ? TBO.unread : 0,
@@ -549,6 +584,7 @@ function tblTopParts(){
 function tblChipsHTML(){
   var seats = TBL.seats || {};
   var rb = (typeof tdRbOn === 'function' && tdRbOn());
+  var rbt = (typeof tdRbTurnOn === 'function' && tdRbTurnOn());
   return TD_SEATS.filter(function(k){ return !!seats[k]; }).map(function(k){
     var me = (!TBL.watch && k === TD.side);
     var foe = me ? null : tdFoeOf(k);
@@ -556,12 +592,13 @@ function tblChipsHTML(){
     var life = (ctr.life != null) ? ctr.life : (ctr.hp != null ? ctr.hp : null);
     var lifeWord = (ctr.life != null) ? 'Life' : 'HP';
     var hand = (foe && foe.zones && foe.zones.hand) ? foe.zones.hand.length : null;
-    return "<span class='tbl-chip" + (TBL.turn === k ? ' turn' : '') + (me ? ' me' : '')
+    return "<span class='tbl-chip" + (rbt ? tdRbChipCls(k) : (TBL.turn === k ? ' turn' : '')) + (me ? ' me' : '')
       + ((typeof TD !== 'undefined' && TD.focus === k) ? ' focus' : '')
       + "' data-seat='" + k + "'" + (rb ? '' : " title='" + e('Right-click to Focus on this board') + "'") + ">"
       + ((rb && typeof tdGfChipIconHTML === 'function') ? tdGfChipIconHTML(k, me)
          : "<span class='tbl-s tbl-seat-" + k + "'></span>")
       + "<b>" + e(seats[k].name || 'Player') + "</b>"
+      + (rbt ? tdRbChipTick(k) : '')
       + (me ? "<span class='tbl-you'>(you)</span>" : '')
       + (rb ? (foe ? tdRbChipStatsHTML(foe) : (me && typeof tdDmChipMine === 'function' ? tdDmChipMine() : ''))
          : ((life != null ? "<span class='tbl-cs'>" + lifeWord + " <b>" + e(String(life)) + "</b></span>" : '')
@@ -713,8 +750,8 @@ function tblCount(zone){
 function tblRedact(a, before){
   if(!a) return [];
   var out = [];
-  /* a DM's decks and maps travel in the DM's next state, never as actions (cat_rbdm.js) */
-  if(a.t === 'dmdeck' || a.t === 'map') return [];
+  /* a DM's decks, maps and role travel in the DM's next state, never as actions (cat_rbdm.js, cat_rbplay.js) */
+  if(a.t === 'dmdeck' || a.t === 'map' || a.t === 'dmrole') return [];
   if(a.t === 'give') return before === 'field' ? [{t:'vanish', uid:a.uid}] : [];
   if(a.t === 'ungift') return tblHiddenZone(before) ? [tblCount(before)] : [{t:'vanish', uid:a.uid}];
 
@@ -753,6 +790,7 @@ function tblRedact(a, before){
         else {
           ap.n = at.item.card ? at.item.card.name : '';
           if(at.item.lab) ap.lab = at.item.lab;
+          if(at.item.dmg) ap.dmg = at.item.dmg;
         }
         out.push(ap);
       }
@@ -797,6 +835,10 @@ function tblRedact(a, before){
     var lw = tdFind(a.uid);
     return (lw && !tblHiddenZone(lw.zone) && !lw.item.down) ? [a] : [];
   }
+  if(a.t === 'dmg'){
+    var dw = tdFind(a.uid);
+    return (dw && !tblHiddenZone(dw.zone)) ? [a] : [];
+  }
   /* A reveal is not forwarded: on their side it would find only placeholders; tblPushShown sends the contents. */
   if(a.t === 'reveal' || a.t === 'zshow') return [];
 
@@ -806,7 +848,10 @@ function tblRedact(a, before){
 function tblOnAction(a, before){
   /* Not in the waiting room: every board is dealt fresh when the game begins. */
   if(!tblOn() || TBL.phase === 'waiting') return;
-  var msgs = tblRedact(a, before).filter(function(m){
+  /* What lies under the DM's fog, and a token the DM hid, never leaves: an action about one is kept back, and one that
+     brings something out or puts it under goes as the whole half (cat_rbmap.js). */
+  var fog = (typeof tdFogFilter === 'function') ? tdFogFilter(a, before) : '';
+  var msgs = fog ? [] : tblRedact(a, before).filter(function(m){
     return !(m && m.t === 'count' && typeof TD_DM_ZONES !== 'undefined' && TD_DM_ZONES[m.zone]);
   });
   for(var i = 0; i < msgs.length; i++)
@@ -820,7 +865,7 @@ function tblOnAction(a, before){
   }
   TBL.since = (TBL.since || 0) + 1;
   /* a full snapshot every 25 actions, for a reconnect or a late spectator to start from */
-  if(TBL.since >= 25) tblSendState();
+  if(TBL.since >= 25 || fog === 'state') tblSendState();
   else if(a.t === 'zshow') tblGearFollow(a.zone);
   if(a.t === 'phase') tblRenderPanel();
 }
@@ -849,6 +894,7 @@ function tblRedactedState(){
     d.zones[z].forEach(function(o){ delete o.dk; });
   });
   delete d.dmDecks;
+  if(typeof tdFogRedact === 'function') tdFogRedact(d);
   d.name = TBL.name;
   return d;
 }
@@ -859,6 +905,8 @@ function tblSendState(){
   var sent = tblSend({t:'state', board:tblRedactedState(), turn:TBL.turn || ''});
   /* Then whatever you are showing, again: the snapshot replaces your half on their side whole, shown zones included. */
   if(sent) tblLiveZones().forEach(tblPushShown);
+  /* and a Rebirth DM whose turn it is (cat_rbplay.js) */
+  if(sent && typeof tdRbTurnResend === 'function') tdRbTurnResend();
   return sent;
 }
 
@@ -900,6 +948,7 @@ function tblStateFrom(msg, fromId){
   var _was = tdFoeOf(side);
   tdFoeSet(msg.board, name || tblSeatName(side), side);
   if(typeof tdMapHeard === 'function') tdMapHeard(side, _was);
+  if(typeof tdGfMapLeft === 'function') tdGfMapLeft(side, _was);
   if(typeof tdGfCatchUp === 'function') tdGfCatchUp(side);
   tdRender();
   tblRenderPanel();
@@ -977,7 +1026,7 @@ function tblActFrom(a, fromId, by){
   /* Life and hand size are on their chip in the strip. */
   if(a.t === 'count' || a.t === 'ctr' || a.t === 'ctrReset' || a.zone === 'hand'
      || a.to === 'hand' || a.t === 'vanish' || a.t === 'appear'
-     || a.t === 'phase' || a.t === 'pass' || a.t === 'gicon') tblRenderPanel();
+     || a.t === 'phase' || a.t === 'pass' || a.t === 'gicon' || a.t === 'dmg') tblRenderPanel();
   if(typeof tdGfHeard === 'function') tdGfHeard(side, a);
 }
 
@@ -1007,7 +1056,8 @@ TBL.onMsg = function(msg, fromId){
     if(typeof tboDiscordFrom === 'function') tboDiscordFrom(msg, fromId);
     return;
   }
-  if(msg.t === 'say' && typeof tboChatSay === 'function') tboChatSay(msg.text, fromId);
+  /* a say with `to` reached you alone: a whisper (tblSay) */
+  if(msg.t === 'say' && typeof tboChatSay === 'function') tboChatSay(msg.text, fromId, msg.to ? 'to you' : '');
   /* A watcher is a player with no half: every branch routes by seat, and a watcher's is ''; what it may send is the relay's rule. */
   if(TBL.watch){
     if(msg.t === 'state'){ tblStateFrom(msg, fromId); return; }
@@ -1018,6 +1068,7 @@ TBL.onMsg = function(msg, fromId){
       if(tblTurnAccept(msg.side, tblSideOf(fromId))) tblRenderPanel();
       return;
     }
+    if(msg.t === 'rbturn' || msg.t === 'rbdone'){ if(typeof tdRbTurnMsg === 'function') tdRbTurnMsg(msg, fromId); return; }
     return;
   }
   if(msg.t === 'state'){
@@ -1028,6 +1079,9 @@ TBL.onMsg = function(msg, fromId){
   if(msg.t === 'fld'){ if(typeof tdRbFieldReq === 'function') tdRbFieldReq(msg, fromId); return; }
   if(msg.t === 'gift'){ if(typeof tdDmGiftFrom === 'function') tdDmGiftFrom(msg, fromId); return; }
   if(msg.t === 'ungift'){ if(typeof tdDmUngiftFrom === 'function') tdDmUngiftFrom(msg, fromId); return; }
+  /* the whole table saved and loaded, and the DM's role handed over (cat_rbplay.js) */
+  if(msg.t === 'tsave' || msg.t === 'tsbd' || msg.t === 'tload'){ if(typeof tdTsMsg === 'function') tdTsMsg(msg, fromId); return; }
+  if(msg.t === 'dmhand'){ if(typeof tdRbHandFrom === 'function') tdRbHandFrom(msg, fromId); return; }
   if(msg.t === 'arrow'){ tblArrowAdd(msg.a.from, msg.a.to, msg.a.by, msg.a.id); return; }
   if(msg.t === 'arrows'){
     TBL.arrows = (msg.clear === 'all') ? []
@@ -1040,11 +1094,12 @@ TBL.onMsg = function(msg, fromId){
     if(!_ps) return;
     if(!TBL.ptrs) TBL.ptrs = {};
     TBL.ptrs[_ps] = {seat:msg.seat, zone:msg.zone, fx:msg.fx, fy:msg.fy,
-                     uid:msg.uid, ux:msg.ux, uy:msg.uy, rx:msg.rx, ry:msg.ry,
+                     uid:msg.uid, ux:msg.ux, uy:msg.uy, rx:msg.rx, ry:msg.ry, rm:!!msg.rm,
                      off:!!msg.off, at:Date.now()};
     tdRenderPointer();
     return;
   }
+  if(msg.t === 'rbturn' || msg.t === 'rbdone'){ if(typeof tdRbTurnMsg === 'function') tdRbTurnMsg(msg, fromId); return; }
   if(msg.t === 'ping'){
     tblFlash(msg.uid);
     tblFeedAs('them', 'pointed at '
@@ -1064,7 +1119,7 @@ TBL.onMsg = function(msg, fromId){
     if(msg.side === TD.side && _was !== TD.side && typeof tdTurnArrived === 'function') tdTurnArrived();
     else if(typeof tdRenderTurn === 'function') tdRenderTurn();
     return; }
-  if(msg.t === 'say'){ tblFeedAs('say', msg.text, tblFromName(fromId)); return; }
+  if(msg.t === 'say'){ tblFeedSay(msg.text, tblFromName(fromId), msg.to ? 'to you' : ''); return; }
   if(msg.t === 'rematch'){
     var _rs = tblSideOf(fromId);
     if(!_rs) return;
@@ -1597,43 +1652,51 @@ function tblNextSide(from){
 function tblPass(){
   /* The button is not offered otherwise, but the Space key and other callers reach here too. */
   if(TBL.watch) return;
+  if(typeof tdRbTurnOn === 'function' && tdRbTurnOn()){ tdRbEndTurn(); return; }
   var free = tblTurnFree();
   if(!free && TBL.turn !== TD.side) return;
-  if(!free && typeof tdDmPicksTurn === 'function' && tdDmPicksTurn()){
-    tdDmPickTurn(function(s){
-      if(TBL.turn !== TD.side) return;
-      if(typeof tdEndTurnHere === 'function'){ try{ tdEndTurnHere(); }catch(_){} }
-      tblHandOn(false, s);
-    });
-    return;
-  }
   if(!free && typeof tdEndTurnHere === 'function'){ try{ tdEndTurnHere(); }catch(_){} }
   tblHandOn(free);
 }
 /* tdNewTurn calls this directly, after the tracker has started the next turn. */
-/* to: the seat a Rebirth DM picked (tdDmPickTurn) */
-function tblHandOn(free, to){
+function tblHandOn(free){
   if(TBL.watch) return;
   if(free == null) free = tblTurnFree();
-  tblTurnTake(free ? TD.side : ((to && (TBL.seats || {})[to]) ? to : tblNextSide(TBL.turn)), TD.side);
+  tblTurnTake(free ? TD.side : tblNextSide(TBL.turn), TD.side);
   tblSend({t:'turn', side:TBL.turn});
   tdFeedPush('me', TBL.turn === TD.side ? 'took the turn'
     : ('passed the turn to ' + tblSeatName(TBL.turn)));
   tblRenderPanel();
   if(typeof tdRenderTurn === 'function') tdRenderTurn();
 }
-function tblSay(text){
+/* to: {id, name} for a whisper, to that seat alone (the relay's `to`); it shows only in the two people's chat and record. */
+function tblSay(text, to){
   text = String(text || '').trim().slice(0, 300);
   if(!text) return;
-  tblSend({t:'say', text:text});
-  tblFeedAs('say', text, TBL.name || 'You');
-  if(typeof tboChatMine === 'function') tboChatMine(text);
+  var wh = to ? 'to ' + to.name : '';
+  tblSend(to ? {t:'say', text:text, to:to.id} : {t:'say', text:text});
+  tblFeedSay(text, TBL.name || 'You', wh);
+  if(typeof tboChatMine === 'function') tboChatMine(text, wh);
 }
 function tblSayKey(ev){
   if(!ev || ev.key !== 'Enter') return;
   ev.preventDefault();
-  tblSay(ev.target.value);
+  /* the To picker is on the chat window's line alone (cat_online.js) */
+  var to = (ev.target.id === 'tblSayIn' && typeof tboSayToNow === 'function') ? tboSayToNow() : null;
+  if(to && to.gone){
+    if(typeof toast === 'function') toast(to.name + ' is not at the table');
+    return;
+  }
+  tblSay(ev.target.value, to);
   ev.target.value = '';
+}
+function tblFeedSay(text, name, wh){
+  var put = tblFeedAs('say', text, name);
+  if(put && wh){
+    TD.feed[TD.feed.length - 1].wh = wh;
+    tdRenderFeed();
+  }
+  return put;
 }
 
 function tblFromName(fromId){
@@ -1661,6 +1724,8 @@ function tblPhaseHTML(){
 }
 /* Hiding the button is not what stops anyone: tblPass refuses them too. */
 function tblTurnHTML(){
+  /* a Rebirth table's turn is the players' together, then the DM's (cat_rbplay.js) */
+  if(typeof tdRbTurnOn === 'function' && tdRbTurnOn()) return tdRbTurnHTML();
   if(TBL.watch){
     var s = TBL.seats || {};
     var n = TBL.turn && s[TBL.turn] ? s[TBL.turn].name : '';
@@ -1674,10 +1739,9 @@ function tblTurnHTML(){
   var next = tblNextSide(TBL.turn || TD.side);
   var many = tblSeated().length > 2;
   /* Take Turn only while the turn is free: taking it mid-turn was passing somebody's turn for them (HANDOFF §76.7). */
-  var dmPick = mine && typeof tdDmPicksTurn === 'function' && tdDmPicksTurn();
   var btn = mine
-    ? tblToolHTML('turn', 'tblPass()', dmPick ? 'Pass to…' : (many ? ('Pass to ' + tblSeatName(next)) : 'Pass'),
-                  0, false, 'tbl-green tbl-keep', dmPick ? 'Choose who gets the turn' : ('Hand the turn to ' + tblSeatName(next)))
+    ? tblToolHTML('turn', 'tblPass()', many ? ('Pass to ' + tblSeatName(next)) : 'Pass',
+                  0, false, 'tbl-green tbl-keep', 'Hand the turn to ' + tblSeatName(next))
     : (tblTurnFree()
         ? tblToolHTML('turn', 'tblPass()', 'Take turn', 0, false, 'tbl-green tbl-keep', 'Take the turn')
         : '');

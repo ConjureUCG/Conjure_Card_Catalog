@@ -2151,13 +2151,37 @@ function scrubSecrets(o){
 }
 /* What a backup holds is listed in HANDOFF §7.5: settings carries the template assets and custom keywords, packs every named look, and game is what the wrong-game refusal reads. */
 function backupPayload(){
-  return scrubSecrets({version:5, game:backupGameHere(), exported:new Date().toISOString(),
+  var p={version:5, game:backupGameHere(), exported:new Date().toISOString(),
           setInfo:SETINFO, settings:currentSettingsBody(),
           sagas:(typeof SAGAS!=='undefined')?SAGAS:[],
           marks:(typeof MARKS!=='undefined')?MARKS:[],
           packs:(typeof PACKS!=='undefined')?PACKS:[],
           cards:(window.CARDS||[]).map(function(c){
-            var o=Object.assign({},c); delete o.__id; return o; })});
+            var o=Object.assign({},c); delete o.__id; return o; })};
+  /* Rebirth: the DM's saved maps and Master notes; a zip carries the maps' pictures beside them, in mappics/ */
+  var rb=(window.REBIRTH&&typeof window.tdMapsForBackup==='function')?window.tdMapsForBackup():null;
+  if(rb) p.rbmaps=rb;
+  return scrubSecrets(p);
+}
+/* Each picture under a saved map, as the text it is kept as (tdGfPicsOf, cat_rbgrid.js), under its own name. */
+function _backupMapPics(zip){
+  if(!window.REBIRTH||typeof window.tdMapsLoad!=='function'||typeof window.tdGfPicsOf!=='function') return Promise.resolve(0);
+  var maps=window.tdMapsLoad();
+  if(!maps.length) return Promise.resolve(0);
+  return new Promise(function(res){ window.tdGfPicsOf(maps,res); }).then(function(pics){
+    var ids=Object.keys(pics||{}), n=0;
+    return ids.reduce(function(pr,id){
+      return pr.then(function(){ return zip.add('mappics/'+id,pics[id]).then(function(){ n++; }); });
+    },Promise.resolve()).then(function(){ return n; });
+  });
+}
+/* Adds, as packs do: a map of the backup's replaces the one of its name here, and every other map stays. */
+function _restoreMaps(rb,z){
+  if(!rb||typeof window.tdMapsRestore!=='function') return null;
+  var ents=z.entries.filter(function(e){ return /^mappics\/p[0-9a-f]{8,24}$/.test(e.name); }), pics={};
+  return ents.reduce(function(pr,ent){
+    return pr.then(function(){ return z.text(ent).then(function(t){ pics[ent.name.slice(8)]=t; }); });
+  },Promise.resolve()).then(function(){ return window.tdMapsRestore(rb,pics); });
 }
 /* By name, adding: a pack replaces one of its name only, and a backup before version 5 has none and must not wipe them. */
 function _restorePacks(packs){
@@ -2491,7 +2515,7 @@ window.edExportBackupZip=function(opts){
   } else pick=Promise.resolve(null);
 
   var zip=new ZipOut({force64:!!opts.force64}), handle=null, cancelled=false;
-  var items=[], unreadable=[], total=0, read=0, embedded=0, lastPaint=0, finalBlob=null;
+  var items=[], unreadable=[], total=0, read=0, embedded=0, mapPics=0, lastPaint=0, finalBlob=null;
   function stop(){ cancelled=true; }
   function paint(msg,force){
     var now=Date.now();
@@ -2526,6 +2550,9 @@ window.edExportBackupZip=function(opts){
     }
     return next();
   }).then(function(){
+    paint('Adding the maps\u2019 pictures\u2026',true);
+    return _backupMapPics(zip).then(function(n){ mapPics=n; });
+  }).then(function(){
     var p=backupPayload();
     p.embeddedArt=embedded;
     if(unreadable.length) p.unreadableArt=unreadable.slice();
@@ -2541,16 +2568,17 @@ window.edExportBackupZip=function(opts){
       'cards: '+p.cards.length,
       'pictures from the app\'s art store: '+embedded,
       '',
-      'backup.json  - every card, saga, watermark, saved look and setting',
+      'backup.json  - every card, saga, watermark, saved look and setting'+(p.rbmaps?', and the saved maps':''),
       'cards.csv    - the same cards, readable in Excel',
       'art/         - every picture stored inside the app, under its own key',
+      (p.rbmaps?'mappics/     - the pictures under the saved maps ('+mapPics+'), each as text':null),
       '',
       'Restore it with Import > Full backup > Restore a backup. A restore',
       'REPLACES the catalogue it is restored into.',
       '',
       'The art/ FOLDER beside card_catalog.html is not in this zip - those',
       'pictures are already files on your disk. Keep a copy of that folder',
-      'with this file and the two together are everything.'];
+      'with this file and the two together are everything.'].filter(function(l){ return l!==null; });
     if(unreadable.length){
       readme.push('','THESE '+unreadable.length+' PICTURE(S) COULD NOT BE READ BACK FROM THE',
         'BROWSER AND ARE NOT IN THIS FILE:');
@@ -2712,6 +2740,7 @@ function _restoreBackupZip(f){
     return data.settings?applyPackBody(data.settings):null;
   })
     .then(function(){ return _restorePacks(data.packs); })
+    .then(function(){ return _restoreMaps(data.rbmaps,z); })
     .then(function(){ return ensureSagaRecords(); })
     .then(function(){
       busyDone();
@@ -2722,7 +2751,7 @@ function _restoreBackupZip(f){
     })
     .catch(function(err){ busyDone(); alert('Restore failed: '+(err&&err.message||err)
       +String.fromCharCode(10,10)+(stored
-        ?'The cards, sagas and watermarks were restored; the rest of it (the look, saved packs) was not.'
+        ?'The cards, sagas and watermarks were restored; the rest of it (the look, saved packs, maps) was not.'
         :'The cards, sagas and watermarks stored here are as they were.')); return null; });
 }
 

@@ -303,18 +303,15 @@ body.rebirth .td-half{
     "essdeck susp    play    field   field"
     "wish    banish  play    essarea hand";
 }
-/* The pile column is exactly one card wide, with no 1fr: the room it gives back is where the panel stands. */
-/* The third track puts the line between Essence and Hand at the middle: half the row, less the two fixed tracks and the gaps. */
+/* Deck and Grave on the Essence row, to its left, as the author asked; the panel stands over them, beside
+   the Field. Each pile track is one card wide, or half the panel when that is wider; Essence and Hand halve the rest. */
 body.rebirth #tdBoard > .td-half-mine{
-  grid-template-columns:calc(var(--td-cw) + 22px + var(--td-rail))
-                        var(--td-play-w,212px)
-                        max(0px, calc(50% - 5px - (var(--td-cw) + 22px + var(--td-rail))
-                                      - var(--td-play-w,212px) - 20px))
-                        1fr;
+  grid-template-columns:repeat(2, max(calc(var(--td-cw) + 22px + var(--td-rail)),
+                                      calc((var(--td-play-w,212px) - 10px) / 2)))
+                        minmax(0,1fr) minmax(0,1fr);
   grid-template-areas:
-    "deck    play    field   field"
-    "grave   play    field   field"
-    "essarea essarea essarea hand";
+    "play    play    field   field"
+    "deck    grave   essarea hand";
 }
 .td-play{grid-area:play}
 .td-zone[data-zone=deck]{grid-area:deck}
@@ -763,6 +760,8 @@ body.rebirth .td-zone[data-zone=field]{--td-fill:var(--grey-field)}
 .td-menu{position:fixed;z-index:9600;min-width:186px;padding:5px;
   background:var(--pan);border:1px solid var(--bd);border-radius:9px;
   box-shadow:0 10px 30px color-mix(in srgb,var(--black) 60%,transparent)}
+/* a long list with no flyouts, as the saved decks to deal in from are (cat_rbplay.js) */
+.td-menu.td-mscroll{max-height:min(70vh,560px);overflow-y:auto}
 .td-mtitle{font-family:Cinzel,serif;font-size:.78rem;color:var(--tx);
   padding:4px 9px 6px;border-bottom:1px solid var(--bd);margin-bottom:4px;
   max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -773,6 +772,12 @@ body.rebirth .td-zone[data-zone=field]{--td-fill:var(--grey-field)}
 .td-mhint{margin-left:auto;font-size:.74rem;color:var(--tm)}
 .td-marrow{margin-left:auto;color:var(--tm)}
 .td-msep{height:1px;background:var(--bd);margin:4px 6px}
+.td-mhead{padding:5px 9px 2px;font-family:Cinzel,serif;font-size:.7rem;letter-spacing:.04em;color:var(--tx)}
+.td-mtick{flex:0 0 auto;width:1em;text-align:center;color:var(--go)}
+.td-mi.td-mpick[aria-checked=true]{background:color-mix(in srgb,var(--go) 16%,transparent)}
+.td-mchip{flex:0 0 auto;width:14px;height:14px;border-radius:3px;background:var(--mc);
+  border:1px solid color-mix(in srgb,var(--black) 40%,var(--mc))}
+.td-mchip.td-mchip-ln{height:4px;border-radius:2px}
 /* Inside #tdMenu, which the close-on-outside test leaves alone, so it keeps the focus while you type. */
 .td-mfield{display:flex;align-items:center;gap:6px;padding:4px 8px}
 .td-mfield-in{flex:1 1 0;min-width:64px;width:64px;box-sizing:border-box;
@@ -785,6 +790,9 @@ body.rebirth .td-zone[data-zone=field]{--td-fill:var(--grey-field)}
   font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);font-size:.72rem;letter-spacing:.02em;
   }
 .td-mfield-b:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+
+.td-mcols{padding:4px 8px 6px;gap:6px;justify-items:center}
+.td-mcols .td-gip-col{width:22px;height:22px}
 
 .td-msub{position:relative}
 .td-mflyout{display:none;position:absolute;left:100%;top:-5px;min-width:150px;
@@ -981,7 +989,7 @@ body.light .tbl-link{color:var(--gr)}
 .td-moresep{height:1px;margin:5px 4px;background:var(--bd)}
 .td-morehead{font-family:Cinzel,serif;font-size:.66rem;font-weight:700;letter-spacing:.12em;
   color:var(--td);padding:5px 9px 3px}
-.td-maplist{max-height:240px;overflow-y:auto}
+.td-maplist{max-height:300px;overflow-y:auto;min-width:340px}
 .td-mapitem{display:flex;align-items:stretch;gap:2px}
 .td-mapitem > .td-moreitem{flex:1 1 auto;min-width:0}
 .td-mapitem.on > .td-moreitem{border-color:var(--gd);background:color-mix(in srgb,var(--g2) 10%,transparent)}
@@ -989,6 +997,14 @@ body.light .tbl-link{color:var(--gr)}
   color:var(--re-ink);cursor:pointer;font-size:.8rem}
 .td-mapdel:hover{border-color:var(--re);background:color-mix(in srgb,var(--re) 12%,transparent)}
 .td-morenone{padding:4px 9px 6px;color:var(--tm);font-style:italic;font-size:.82rem}
+/* A saved map's small picture (tdMapThumb, cat_rbmap.js) reads its colours as the map's own canvas does (.td-gcan). */
+.td-mapitem > .td-mapopen{display:flex;align-items:center;gap:8px}
+.td-mapname{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.td-mapthumb{flex:0 0 auto;width:72px;height:48px;border-radius:4px;background:var(--b2);
+  color:var(--gf-line);border-top:0 solid var(--gf-fill)}
+.td-mapact{flex:0 0 auto;width:28px;background:none;border:1px solid transparent;border-radius:9px;
+  color:var(--tx);cursor:pointer;font-size:.8rem}
+.td-mapact:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
 
 .td-caret{font-size:.7rem;opacity:.75;line-height:1}
 /* Fixed, not absolute: the panel and the strip's row scroll, and a scroll container clips; tdPlaceDrop places it by hand. */
@@ -1449,6 +1465,11 @@ body.rebirth .tbl-lhead,body.rebirth .tbl-trow{grid-template-columns:minmax(0,1f
 .tbl-cm b.tbl-ink-f{color:var(--seat-f)}
 .tbl-csys{font-size:.86rem;color:var(--td);font-style:italic}
 .tbl-chatin{border-top:1px solid var(--b1);padding:9px 10px}
+/* The To picker at a Rebirth table (cat_online.js), and a whisper's mark in the chat and the record. */
+.tbl-chatin:has(.tbl-sayto){display:flex;align-items:center;gap:6px}
+.tbl-chatin .tbl-sayto{flex:0 1 auto;max-width:42%;padding:5px 8px;font-size:.9rem}
+.tbl-cwh{color:var(--td);margin-right:6px}
+.td-fwh{color:var(--td)}
 .tbl-chat{background:var(--s1);border:1px solid var(--b1);border-radius:10px;
   display:flex;flex-direction:column;font-family:'Crimson Pro',serif;color:var(--tx)}
 /* Low, clear of Leave at the top row's end; tdFloatWin places it, so these hold only until it runs. */
@@ -1463,6 +1484,9 @@ body.rebirth .tbl-lhead,body.rebirth .tbl-trow{grid-template-columns:minmax(0,1f
   border-radius:999px;background:var(--s1);font-size:.9rem;color:var(--tx);white-space:nowrap}
 .tbl-chip b{font-weight:600}
 .tbl-chip.turn{border-color:var(--g2);box-shadow:0 0 0 3px color-mix(in srgb,var(--g2) 10%,transparent)}
+/* a Rebirth player who has ended their part of the players' turn (cat_rbplay.js) */
+.tbl-chip.done{border-color:color-mix(in srgb,var(--g2) 45%,transparent)}
+.tbl-done{color:var(--g2);font-weight:700;margin-left:2px}
 .tbl-chip.focus{outline:2px solid var(--ac);outline-offset:2px}
 .tbl-chip[data-seat]{cursor:context-menu}
 .tbl-s{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
@@ -1546,6 +1570,18 @@ body.light .ed2-btn.tbl-tool.tbl-purple{color:var(--spect-ink);background:rgba(1
   box-shadow:0 18px 40px color-mix(in srgb,var(--black) 55%,transparent);
   font-family:'Crimson Pro',serif;font-size:.9rem;line-height:1.4}
 .td-dmwin[hidden]{display:none}
+/* The DM's notes (cat_rbplay.js): a window as the DM Tools are, its page filling it. */
+.td-noteswin{position:fixed;top:170px;left:18px;z-index:86;width:min(380px,calc(100vw - 32px));
+  height:min(56vh,520px);display:flex;flex-direction:column;
+  box-shadow:0 18px 40px color-mix(in srgb,var(--black) 55%,transparent);
+  font-family:'Crimson Pro',serif;font-size:.9rem;line-height:1.4}
+.td-noteswin > .td-fw-head{flex-wrap:wrap}
+.td-notes-seg{min-width:0}
+.td-notes-seg > .td-gb[data-notes='map']{max-width:150px;overflow:hidden;text-overflow:ellipsis}
+.td-notes-in{flex:1 1 auto;min-height:0;margin:8px 10px 10px;padding:7px 9px;resize:none;
+  border:1px solid var(--b1);border-radius:7px;background:var(--s2);color:var(--tx);
+  font-family:'Crimson Pro',serif;font-size:.95rem;line-height:1.45}
+.td-notes-in:focus{outline:none;border-color:var(--g2)}
 .td-dmbody{flex:1 1 auto;min-height:0;overflow-y:auto;padding:10px 12px;
   display:flex;flex-direction:column;gap:10px}
 .td-dm-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -1594,6 +1630,11 @@ body.light .ed2-btn.tbl-tool.tbl-purple{color:var(--spect-ink);background:rgba(1
 .td-arrow.mine{stroke:var(--g2);color:var(--g2)}
 .td-arrow.theirs{stroke:var(--ac);color:var(--ac)}
 .td-board.td-arrowing .td-card{cursor:crosshair}
+/* Ctrl+drag from a map token (tdGfConnStart): the cards it can be connected to, and its line. */
+.td-board.td-gconnecting .td-card:is([data-zone=field],[data-zone=essarea],[data-zone=hand],[data-zone=gear]):not(.td-down):has(> .td-face){
+  outline:2px dashed var(--go);outline-offset:2px}
+.td-gconn-live{stroke:var(--go);stroke-width:3;fill:none;stroke-linecap:round;stroke-dasharray:6 6;
+  filter:drop-shadow(0 1px 3px color-mix(in srgb,var(--black) 70%,transparent))}
 .td-board.td-arrowing .td-card:hover{outline:2px solid var(--go);outline-offset:2px}
 
 /* Pulses on the 2.6s beat every declared card shares (TD_PULSE_MS): the delay set at draw time keeps one clock. */
@@ -1639,7 +1680,7 @@ body.light .ed2-btn.tbl-tool.tbl-purple{color:var(--spect-ink);background:rgba(1
   --td-gold:linear-gradient(135deg,#4a3818 0%,#7a6030 15%,#f5ecd0 40%,
     #e8c96a 50%,#c9a84c 60%,#7a6030 85%,#4a3818 100%);
 }
-.td-zone,.td-ctr,.td-rew-spec,.td-rew-res,.td-rew-cat,.tbl-box,.td-feed,.td-dmwin{
+.td-zone,.td-ctr,.td-rew-spec,.td-rew-res,.td-rew-cat,.tbl-box,.td-feed,.td-dmwin,.td-noteswin{
   border:4px solid transparent;border-radius:10px;
   background:linear-gradient(var(--td-fill,var(--pan)),var(--td-fill,var(--pan))) padding-box,
              var(--td-gold) border-box;
@@ -2248,7 +2289,12 @@ body.light .td-dice-q:not(.td-dice-coin) .td-dice-qn{color:var(--dq-ink);text-sh
   --gi-red:#e5534b;--gi-teal:#2ec4b6;--gi-white:#f4f1ea;--gi-silver:#b9c2cf;
   --gi-brown:#9a6a3a;--gi-lime:#a6e22e;
   /* --gf-pic-bg: a large picture made into a JPEG loses its transparency and is laid on white. */
-  --gf-fill:#3d414a;--gf-line:rgba(240,234,216,.22);--gf-pic-bg:#fff}
+  --gf-fill:#3d414a;--gf-line:rgba(240,234,216,.22);--gf-pic-bg:#fff;
+  /* the DM's paint (cat_rbmap.js): Difficult Terrain, Deep Water, Climbing, a Wall square; a wall and a door along a
+     line; fog as the players see it; a Movement that cannot get through */
+  --gf-dt:#c8963c;--gf-dw:#2f78c4;--gf-cl:#8e96a3;--gf-wl:#24272d;
+  --gf-wall:#1b1d22;--gf-wall-rim:rgba(240,234,216,.7);--gf-door:#a0703c;
+  --gf-fog:#07080a;--gf-blocked:var(--gi-red)}
 body.light{--gf-fill:#e8e9ec;--gf-line:rgba(26,20,16,.28)}
 /* A grid, so the bar is a row of the section and nothing that measures the body measures it; a wrapped row would share out its height. */
 .td-zone.td-gfz{display:grid;grid-template-columns:auto minmax(0,1fr);
@@ -2271,6 +2317,11 @@ body.light{--gf-fill:#e8e9ec;--gf-line:rgba(26,20,16,.28)}
 .td-gseg{display:inline-flex;flex:0 0 auto}
 .td-gseg > .td-gb:first-child{border-radius:7px 0 0 7px}
 .td-gseg > .td-gb:last-child{border-radius:0 7px 7px 0;margin-left:-1px}
+.td-gsplit > .td-gb:first-child{display:inline-flex;align-items:center;gap:5px}
+.td-gsplit > .td-gdrop{padding:3px 6px}
+.td-gchip{flex:0 0 auto;width:11px;height:11px;border-radius:3px;background:var(--gc);
+  border:1px solid color-mix(in srgb,var(--black) 40%,var(--gc))}
+.td-gchip.td-gchip-ln{height:4px;border-radius:2px}
 .td-gsp{flex:1 1 auto}
 /* touch-action:none, so a finger pans the map, not the page. */
 .td-gview{position:relative;touch-action:none}
@@ -2300,6 +2351,38 @@ body.light{--gf-fill:#e8e9ec;--gf-line:rgba(26,20,16,.28)}
   border:1px solid var(--b1);background:var(--s2);color:var(--tx);
   font-size:12px;line-height:1;cursor:pointer}
 .td-gtok:hover .td-gtrot{display:flex}
+/* The viewer's Arcane stat icon in the token's colour (tdGfOrbHTML): its layers stacked as on a face (frames.css). */
+.td-gtok.td-gtorb{background:none;border:0;border-radius:0;box-shadow:none}
+.td-gtok.td-ghid{opacity:.45}
+.td-gorb{position:absolute;inset:0;pointer-events:none;--orbS:3px}
+.td-gorb svg,.td-gorb .o-gal,.td-gorb .o-gc,.td-gorb .o-halo,.td-gorb .o-sheen,.td-gorb .o-ring{
+  position:absolute;left:0;top:0;width:100%;height:100%}
+.td-gorb .o-gal,.td-gorb .o-halo,.td-gorb .o-ring{pointer-events:none}
+.td-gorb .o-sheen{opacity:.8}
+.td-gorb .o-hw{position:absolute;overflow:hidden}
+.td-gorb .o-hf{position:absolute}
+.td-gorb .o-galimg{position:absolute;left:-76.32%;top:-76.32%;width:252.63%;height:252.63%;
+  background:center/100% 100% no-repeat}
+.td-gorb .o-galimg.o-haloimg{left:-82.89%;top:-82.89%;width:265.79%;height:265.79%;opacity:.5}
+/* Alt over a token with no card: the icon large, turning with the pointer, its layers apart; whose it is under it. */
+/* On a card's art (tdGfDecorate): its connected tokens side by side and, on a card with no Health, its damage; under its stat icons. */
+.td-artdeco{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;gap:3%;
+  pointer-events:none}
+.td-adtok,.td-addmg{position:relative;flex:0 0 auto;width:var(--adw,33%);aspect-ratio:var(--ada,1)}
+.td-adtok.td-ghid{opacity:.45}
+#tdZoom .td-artdeco{transform:translateZ(8px)}
+/* A card's Health with its damage taken off (edOrbsHTMLHurt): the numeral reddened. */
+.td-card .m-orb-hurt svg.o-top > text:last-of-type,.td-zoom .m-orb-hurt svg.o-top > text:last-of-type{fill:#ffaaa3}
+.td-zoom-gtok .td-gzface{position:relative;margin:0 auto}
+.td-zoom-gtok .td-gzface .td-gorb{transform-style:preserve-3d;--orbS:9px}
+.td-zoom-gtok .td-gorb svg.o-top{transform:translateZ(calc(var(--orbS) * var(--orbN,1)))}
+.td-zoom-gtok .td-gorb svg.o-mid1,.td-zoom-gtok .td-gorb .o-gal{transform:translateZ(var(--orbS))}
+.td-zoom-gtok .td-gorb svg.o-mid2{transform:translateZ(calc(var(--orbS) * 2))}
+.td-zoom-gtok .td-gorb .o-sheen{transform:translateZ(calc(var(--orbS) * var(--orbN,1) - .1px))}
+.td-zoom-gtok .td-gorb .o-ring{transform:translateZ(calc(var(--orbS) * var(--orbN,1) + .1px))}
+.td-gzname{margin-top:10px;text-align:center;font-family:Cinzel,serif;font-weight:700;font-size:1.05rem;
+  letter-spacing:.04em;color:var(--tx);
+  text-shadow:0 1px 3px color-mix(in srgb,var(--black) 80%,transparent)}
 #tdBoard .td-card.td-glink,#tdBoard .td-gtok.td-glink{
   box-shadow:0 0 0 2px var(--gl,var(--go)),0 0 16px 5px var(--gl,var(--go))}
 .td-card > .td-glab{position:absolute;left:3px;top:3px;z-index:5;min-width:18px;height:18px;

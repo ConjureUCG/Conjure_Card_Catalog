@@ -37,6 +37,8 @@ src/catalog/cat_online.js
 src/catalog/cat_rbtable.js
 src/catalog/cat_rbdm.js
 src/catalog/cat_rbgrid.js
+src/catalog/cat_rbmap.js
+src/catalog/cat_rbplay.js
 src/catalog/cat_draft.js
 src/catalog/cat_draftui.js
 src/catalog/cat_io.js

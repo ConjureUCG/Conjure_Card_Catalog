@@ -114,6 +114,8 @@ function tdDmAddTo(board, name, saved){
 function tdDmBuild(board, was){
   if(!board || !board.zones || !REBIRTH || _gameMode !== 'character') return;
   var deal = TD._dmDeal || null, role = '', decks = null;
+  /* an old DM dealing themselves in keeps their decks, drawn cards and DM Grave (tdRbDealIn, cat_rbplay.js) */
+  if(deal && deal.keep){ if(typeof tdRbKeepOn === 'function') tdRbKeepOn(board, deal.keep); return; }
   var host = (typeof tblOn === 'function' && tblOn() && typeof tboIsHost === 'function' && tboIsHost());
   if(deal && deal.fresh){ role = deal.role; decks = deal.decks; deal.fresh = false; }
   else if(host && tdRbIsDm(was)){
@@ -190,6 +192,8 @@ TD_ACT.map = function(b, a){
   });
   field = b.zones.field = field.filter(function(it){ return !gone[it.uid]; });
   if(b.tokens) b.tokens = b.tokens.filter(function(t){ return !(t.on && gone[t.on]); });
+  /* tokens kept through the change (Persistent tokens) let go of the cards that went */
+  if(typeof tdGfToks === 'function') tdGfToks(b).forEach(function(t){ if(t.cd && gone[t.cd]) delete t.cd; });
   var added = Object.create(null);
   (a.cards || []).forEach(function(c){
     var card = tdCardByName(c.n);
@@ -197,6 +201,7 @@ TD_ACT.map = function(b, a){
     var it = {uid:c.uid, card:card, locked:!!c.locked};
     if(!a.all) it.dm = true;
     if(c.down) it.down = true;
+    if(c.dmg) it.dmg = c.dmg;
     if(c.on) it.connectedTo = c.on;
     else { it.x = tdNum(c.x); it.y = tdNum(c.y); it.auto = false; }
     field.push(it);
@@ -228,6 +233,7 @@ function tdDmActionWords(a, board, before, beforeName){
       return a.op === 'add' ? 'brought in the ' + (a.name || 'new') + ' deck'
            : a.op === 'del' ? 'put away the ' + (a.name || 'old') + ' deck' : '';
     case 'map':
+      if(a.took) return '';
       if(a.keep) return a.name ? 'named the map ' + a.name : 'cleared the map name';
       return 'switched the map to ' + (a.name || 'an unnamed map');
   }
@@ -509,23 +515,6 @@ function tdDmUngiftFrom(m, fromId){
   if(typeof toast === 'function') toast(tblSeatName(side) + ' took back ' + name);
 }
 window.tdDmUngiftFrom = tdDmUngiftFrom;
-
-function tdDmPicksTurn(){
-  return tdDmMine() && typeof tblOn === 'function' && tblOn() && !TBL.watch
-    && TBL.turn === TD.side && tblSeated().length > 2;
-}
-function tdDmPickTurn(then){
-  var order = tblSeated(), i = order.indexOf(TD.side);
-  var rest = (i < 0 ? order : order.slice(i + 1).concat(order.slice(0, i)))
-    .filter(function(s){ return s !== TD.side; });
-  if(rest.length < 2){ then(rest[0] || tblNextSide(TD.side)); return; }
-  var btn = document.querySelector("#tdTblLeft button[onclick='tblPass()']") || document.getElementById('tdTable');
-  var r = btn ? btn.getBoundingClientRect() : {left:20, bottom:80};
-  tdCloseMenu();
-  tdShowMenu('Pass the turn to', rest.map(function(s){
-    return {label:tblSeatName(s), act:function(){ tdCloseMenu(); then(s); }};
-  }), '', r.left, r.bottom + 4);
-}
 
 function tdDmBackTo(item, dk){
   var live = function(id){ var d = id ? tdDmDeckOf(TD.board, id) : null; return (d && !d.gone) ? d.id : ''; };
@@ -957,6 +946,8 @@ function tdDmDropped(src, gx, gy, w, h, ev){
 
 /* A map is the DM's cards, not the free counters: those belong to whoever put them down (HANDOFF §84). */
 var TD_MAPS_KEY = 'conjure_rb_maps';
+/* A map's page of the DM's notes travels in it (cat_rbplay.js), never on the board, which goes to the players. */
+var TD_MAP_NOTES_MOST = 50000;
 function tdMapName(s){
   return String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60);
 }
@@ -977,6 +968,8 @@ function tdMapClean(m){
     var o = {n:n, x:tdMapPct(c.x), y:tdMapPct(c.y)};
     if(c.down === true) o.down = true;
     if(c.locked === true) o.locked = true;
+    var dg = tgInt(c.dmg, 1, TG_DMG_MOST);
+    if(dg) o.dmg = dg;
     at[i] = cards.length;
     cards.push({o:o, on:c.on});
   });
@@ -1003,13 +996,13 @@ function tdMapClean(m){
   }).filter(Boolean);
   var out = {name:name, cards:cards, toks:toks};
   if(typeof tdGfMapClean === 'function') tdGfMapClean(m, out);
+  if(typeof m.notes === 'string' && m.notes) out.notes = m.notes.slice(0, TD_MAP_NOTES_MOST);
   return out;
 }
-function tdMapsLoad(){
-  var d = null;
-  try{ d = JSON.parse(localStorage.getItem(TD_MAPS_KEY) || 'null'); }catch(_){}
+/* Each read field by field, the first of a name kept. */
+function tdMapsTidy(list){
   var seen = Object.create(null), out = [];
-  ((d && Array.isArray(d.maps)) ? d.maps : []).forEach(function(m){
+  (Array.isArray(list) ? list : []).forEach(function(m){
     var c = tdMapClean(m);
     if(!c || seen[c.name.toLowerCase()]) return;
     seen[c.name.toLowerCase()] = 1;
@@ -1017,12 +1010,89 @@ function tdMapsLoad(){
   });
   return out;
 }
+function tdMapsLoadLs(){
+  var d = null;
+  try{ d = JSON.parse(localStorage.getItem(TD_MAPS_KEY) || 'null'); }catch(_){}
+  return tdMapsTidy(d && d.maps);
+}
+/* The maps are kept in IndexedDB beside their pictures (conjure_rbgrid's 'maps', a record a map under its name in lower
+   case) and read once into MAPS.list. What localStorage held is copied over the first time and left as it was, and
+   is still where the maps go in a browser that will not open the database. */
+var TD_MAPS_MOVED = 'conjure_rb_maps_idb', TD_MAPS_STORE = 'maps';
+var MAPS = {list:null, q:null, kept:(typeof WeakSet === 'function') ? new WeakSet() : null};
+function tdMapsBoot(){
+  if(MAPS.q) return MAPS.q;
+  var db0 = (typeof tdGfDb === 'function') ? tdGfDb() : Promise.resolve(null);
+  MAPS.q = db0.then(function(db){
+    if(!db || !db.objectStoreNames.contains(TD_MAPS_STORE)) return null;
+    return tdMapsReadDb(db).then(function(recs){
+      if(recs == null) return null;
+      var moved = false;
+      try{ moved = localStorage.getItem(TD_MAPS_MOVED) === '1'; }catch(_){}
+      var list = tdMapsTidy(recs);
+      if(!list.length && !moved) list = tdMapsLoadLs();
+      MAPS.list = list;
+      if(moved){ if(MAPS.kept) list.forEach(function(m){ MAPS.kept.add(m); }); return null; }
+      return tdMapsSave(list).then(function(ok){
+        if(ok){ try{ localStorage.setItem(TD_MAPS_MOVED, '1'); }catch(_){} }
+      });
+    });
+  }).catch(function(){ return null; }).then(function(){
+    if(MAPS.list && TD.board && typeof tdRenderBar === 'function') tdRenderBar();
+  });
+  return MAPS.q;
+}
+window.tdMapsBoot = tdMapsBoot;
+function tdMapsReadDb(db){
+  return new Promise(function(res){
+    try{
+      var rq = db.transaction(TD_MAPS_STORE, 'readonly').objectStore(TD_MAPS_STORE).getAll();
+      rq.onsuccess = function(){ res((rq.result || []).map(function(r){ return r && r.m; })); };
+      rq.onerror = function(){ res(null); };
+    }catch(_){ res(null); }
+  });
+}
+/* The whole list in one transaction: a record no longer in it is taken out, and only a changed one written. */
+function tdMapsSave(list){
+  var db0 = (typeof tdGfDb === 'function') ? tdGfDb() : Promise.resolve(null);
+  return db0.then(function(db){
+    if(!db || !db.objectStoreNames.contains(TD_MAPS_STORE)) return false;
+    return new Promise(function(res){
+      try{
+        var tx = db.transaction(TD_MAPS_STORE, 'readwrite'), st = tx.objectStore(TD_MAPS_STORE), want = Object.create(null);
+        list.forEach(function(m){
+          var k = m.name.toLowerCase();
+          want[k] = 1;
+          if(MAPS.kept && MAPS.kept.has(m)) return;
+          st.put({k:k, m:m});
+        });
+        var keys = st.getAllKeys();
+        keys.onsuccess = function(){ (keys.result || []).forEach(function(k){ if(!want[k]) st.delete(k); }); };
+        tx.oncomplete = function(){ if(MAPS.kept) list.forEach(function(m){ MAPS.kept.add(m); }); res(true); };
+        tx.onerror = function(){ res(false); };
+        tx.onabort = function(){ res(false); };
+      }catch(_){ res(false); }
+    });
+  }, function(){ return false; });
+}
+function tdMapsLoad(){
+  if(MAPS.list) return MAPS.list.slice();
+  tdMapsBoot();
+  return tdMapsLoadLs();
+}
+window.tdMapsLoad = tdMapsLoad;
 function tdMapsWrite(list){
-  try{ localStorage.setItem(TD_MAPS_KEY, JSON.stringify({v:1, maps:list})); return true; }
-  catch(_){
+  var no = function(){
     if(typeof toast === 'function') toast('This browser would not save the maps (its storage is full or blocked)');
     return false;
+  };
+  if(!MAPS.list){
+    try{ localStorage.setItem(TD_MAPS_KEY, JSON.stringify({v:1, maps:list})); return true; }
+    catch(_){ return no(); }
   }
+  MAPS.list = list.slice();
+  tdMapsSave(MAPS.list).then(function(ok){ if(!ok) no(); });
+  return true;
 }
 function tdMapFind(name){
   var k = tdMapName(name).toLowerCase();
@@ -1057,6 +1127,7 @@ function tdMapNow(){
     var c = {n:it.card.name};
     if(it.down) c.down = true;
     if(it.locked) c.locked = true;
+    if(it.dmg) c.dmg = it.dmg;
     if(it.connectedTo && idx[it.connectedTo] != null){ c.on = idx[it.connectedTo]; return c; }
     var p = spot(it);
     c.x = tdMapPct(p.x); c.y = tdMapPct(p.y);
@@ -1069,7 +1140,8 @@ function tdMapNow(){
     return o;
   });
   var out = {cards:cards, toks:toks};
-  if(typeof tdGfMapNow === 'function') tdGfMapNow(out);
+  if(typeof tdGfMapNow === 'function') tdGfMapNow(out, idx);
+  if(typeof tdNotesPage === 'function'){ var nt = tdNotesPage(); if(nt) out.notes = nt; }
   return out;
 }
 function tdMapFreeName(base){
@@ -1084,11 +1156,12 @@ function tdMapFreeName(base){
 function tdMapPut(name, now){
   var k = name.toLowerCase();
   var list = tdMapsLoad().filter(function(m){ return m.name.toLowerCase() !== k; });
-  var rec = {name:name, cards:now.cards, toks:now.toks};
-  if(now.grid) rec.grid = now.grid;
-  if(now.gtoks && now.gtoks.length) rec.gtoks = now.gtoks;
+  var rec = {name:name};
+  Object.keys(now).forEach(function(f){ if(f !== 'name' && f !== 'held') rec[f] = now[f]; });
   list.push(rec);
-  return tdMapsWrite(list);
+  if(!tdMapsWrite(list)) return false;
+  if(typeof tdNotesKept === 'function') tdNotesKept(k);
+  return true;
 }
 /* Switching away saves the map that was down, so nothing laid out is lost (HANDOFF §84). */
 function tdMapKeep(){
@@ -1096,7 +1169,9 @@ function tdMapKeep(){
   if(!b) return '';
   var now = tdMapNow(), name = b.map || '';
   if(!name){
-    if(!now.cards.length && !now.grid && !(now.gtoks && now.gtoks.length) && !now.held) return '';
+    var any = now.cards.length || now.grid || now.held || now.notes
+      || ['gtoks', 'gter', 'gedge', 'gfog', 'glines', 'gareas'].some(function(f){ return now[f] && now[f].length; });
+    if(!any) return '';
     name = tdMapFreeName('Unsaved map');
   }
   return tdMapPut(name, now) ? name : '';
@@ -1107,6 +1182,7 @@ function tdMapAct(m){
     var o = {uid:uids[i], n:c.n};
     if(c.down) o.down = true;
     if(c.locked) o.locked = true;
+    if(c.dmg) o.dmg = c.dmg;
     if(c.on != null && uids[c.on]) o.on = uids[c.on];
     else { o.x = tdMapPct(c.x); o.y = tdMapPct(c.y); }
     return o;
@@ -1241,31 +1317,111 @@ function tdMapImportText(text){
 window.tdMapImportText = tdMapImportText;
 function tdMapsMenuPart(alone){
   if(!tdMapsHere()) return '';
-  var maps = tdMapsLoad(), cur = (TD.board.map || '').toLowerCase();
-  var what = tdRbOn() ? "the DM's cards on the Field" : 'the cards on the Field';
+  var cur = (TD.board.map || '').toLowerCase();
+  var maps = tdMapsLoad().sort(function(a, b){ return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1; });
+  var item = function(label, act){
+    return "<button class='td-moreitem' role='menuitem' onclick='tdCloseMore();" + act + "()'>" + label + "</button>";
+  };
   return (alone ? '' : "<div class='td-moresep' role='separator'></div>")
     + "<div class='td-morehead'>Maps</div>"
     + (maps.length ? "<div class='td-maplist'>" + maps.map(function(m){
-        var on = m.name.toLowerCase() === cur;
+        var on = m.name.toLowerCase() === cur, nm = e(m.name);
         return "<div class='td-mapitem" + (on ? ' on' : '') + "'>"
-          + "<button class='td-moreitem' role='menuitem' data-map='" + e(m.name) + "'"
-          + (on ? " aria-current='true'" : '') + ">" + e(m.name)
+          + "<button class='td-moreitem td-mapopen' role='menuitem' data-map='" + nm + "'"
+          + (on ? " aria-current='true'" : '') + ">"
+          + "<canvas class='td-mapthumb' data-mapthumb='" + nm + "' aria-hidden='true'></canvas>"
+          + "<span class='td-mapname'>" + nm
           + "<small>" + m.cards.length + (m.cards.length === 1 ? ' card' : ' cards')
-          + (on ? ' &middot; on the Field now' : '') + "</small></button>"
-          + "<button class='td-mapdel' data-mapdel='" + e(m.name) + "'"
+          + (on ? ' &middot; on the Field now' : '') + "</small></span></button>"
+          + "<button class='td-mapact' data-mapren='" + nm + "' title='Rename'"
+          + " aria-label='" + e('Rename the map ' + m.name) + "'>" + uiIco('pen') + "</button>"
+          + "<button class='td-mapact' data-mapdup='" + nm + "' title='Duplicate'"
+          + " aria-label='" + e('Duplicate the map ' + m.name) + "'>" + uiIco('copy') + "</button>"
+          + "<button class='td-mapdel' data-mapdel='" + nm + "'"
           + " title='" + e('Delete the map ' + m.name) + "' aria-label='" + e('Delete the map ' + m.name) + "'>&#10005;</button>"
           + "</div>";
       }).join('') + "</div>"
       : "<div class='td-morenone'>No maps saved yet</div>")
-    + "<button class='td-moreitem' role='menuitem' onclick='tdCloseMore();tdMapSaveNew()'>"
-      + "Save as new map&hellip;<small>" + what + ", by name</small></button>"
-    + (TD.board.map ? "<button class='td-moreitem' role='menuitem' onclick='tdCloseMore();tdMapSaveCur()'>"
-        + "Save changes to " + e(TD.board.map) + "</button>" : '')
-    + "<button class='td-moreitem' role='menuitem' onclick='tdCloseMore();tdMapExport()'>"
-      + "Save maps to file&hellip;<small>every map, as one file</small></button>"
-    + "<button class='td-moreitem' role='menuitem' onclick='tdCloseMore();tdMapImport()'>"
-      + "Load maps from file&hellip;<small>adds them to this list</small></button>";
+    + item('Save as new map&hellip;', 'tdMapSaveNew')
+    + (TD.board.map ? item('Save changes to ' + e(TD.board.map), 'tdMapSaveCur') : '')
+    + item('Save maps to file&hellip;', 'tdMapExport')
+    + item('Load maps from file&hellip;', 'tdMapImport');
 }
+/* A new name for a saved map: the one on the Field takes it too, and so do the players' tokens left on it. */
+function tdMapRename(name){
+  tdCloseMore();
+  if(!tdMapsHere()) return false;
+  var m = tdMapFind(name), say = function(w){ if(typeof toast === 'function') toast(w); };
+  if(!m) return false;
+  var raw = prompt('Rename the map', m.name);
+  if(raw == null) return false;
+  var nn = tdMapName(raw), k = m.name.toLowerCase();
+  if(!nn){ say('A map needs a name'); return false; }
+  if(nn === m.name) return false;
+  var was = tdMapFind(nn);
+  if(was && was.name.toLowerCase() !== k){ say('There is already a map called ' + was.name); return false; }
+  var rec = {};
+  Object.keys(m).forEach(function(f){ rec[f] = m[f]; });
+  rec.name = nn;
+  if(!tdMapsWrite(tdMapsLoad().map(function(x){ return x.name.toLowerCase() === k ? rec : x; }))) return false;
+  if(typeof tdNotesRenamed === 'function') tdNotesRenamed(m.name, nn);
+  if(typeof tdGfRetag === 'function') tdGfRetag(m.name, nn);
+  if((TD.board.map || '').toLowerCase() === k){
+    tdDo({t:'map', name:nn, keep:true});
+    tdMapShow();
+  } else tdRenderBar();
+  say('Renamed the map to ' + nn);
+  return true;
+}
+window.tdMapRename = tdMapRename;
+function tdMapCopyName(base){
+  var have = Object.create(null), b = base.slice(0, 46);
+  tdMapsLoad().forEach(function(m){ have[m.name.toLowerCase()] = 1; });
+  var n = b + ' (copy)';
+  for(var i = 2; have[n.toLowerCase()] && i < 1000; i++) n = b + ' (copy ' + i + ')';
+  return n;
+}
+/* The whole map under a new name, its page of notes too; nothing on the Field changes. */
+function tdMapDuplicate(name){
+  tdCloseMore();
+  if(!tdMapsHere()) return false;
+  var m = tdMapFind(name), say = function(w){ if(typeof toast === 'function') toast(w); };
+  if(!m) return false;
+  var raw = prompt('Name the copy', tdMapCopyName(m.name));
+  if(raw == null) return false;
+  var nn = tdMapName(raw);
+  if(!nn){ say('A map needs a name'); return false; }
+  var was = tdMapFind(nn);
+  if(was){ say('There is already a map called ' + was.name); return false; }
+  var rec = JSON.parse(JSON.stringify(m));
+  rec.name = nn;
+  if(!tdMapsWrite(tdMapsLoad().concat([rec]))) return false;
+  tdRenderBar();
+  say('Copied ' + m.name + ' as ' + nn);
+  return true;
+}
+window.tdMapDuplicate = tdMapDuplicate;
+/* Backup (ed2_tools.js): every saved map, with the DM's Master notes; the pictures go beside them in the zip. */
+function tdMapsForBackup(){
+  var out = {v:1, maps:tdMapsLoad()};
+  if(typeof tdNotesForBackup === 'function') tdNotesForBackup(out);
+  return (out.maps.length || out.master) ? out : null;
+}
+window.tdMapsForBackup = tdMapsForBackup;
+/* A restore adds, as it does a saved look: a map of the backup's replaces the one of its name here, and the rest stay. */
+function tdMapsRestore(rb, pics){
+  if(!rb || typeof rb !== 'object') return Promise.resolve(0);
+  return tdMapsBoot().then(function(){
+    var maps = tdMapsTidy(rb.maps), names = Object.create(null);
+    maps.forEach(function(m){ names[m.name.toLowerCase()] = 1; });
+    if(maps.length) tdMapsWrite(tdMapsLoad().filter(function(x){ return !names[x.name.toLowerCase()]; }).concat(maps));
+    if(pics && typeof tdGfPicsIn === 'function') tdGfPicsIn(pics);
+    if(typeof tdNotesRestore === 'function') tdNotesRestore(rb);
+    if(TD.board && typeof tdRenderBar === 'function') tdRenderBar();
+    return maps.length;
+  });
+}
+window.tdMapsRestore = tdMapsRestore;
 function tdMapChipHTML(){
   if(typeof tdRbOn !== 'function' || !tdRbOn()) return '';
   var b = tdDmBoard(), m = b && b.map;
@@ -1274,7 +1430,8 @@ function tdMapChipHTML(){
 }
 function tdMapHeard(side, prev){
   var now = tdFoeOf(side);
-  if(!prev || !tdRbIsDm(now)) return;
+  /* a player taking over as the DM brings the map with them: that is said once, as the hand-over (cat_rbplay.js) */
+  if(!prev || !tdRbIsDm(now) || !tdRbIsDm(prev)) return;
   var was = prev.map || '', is = now.map || '';
   if(was === is) return;
   var ids = function(bd){
@@ -1296,6 +1453,10 @@ function tdMapHeard(side, prev){
     if(!t) return;
     var del = t.closest('[data-mapdel]');
     if(del){ ev.stopPropagation(); tdMapDelete(del.getAttribute('data-mapdel') || ''); return; }
+    var ren = t.closest('[data-mapren]');
+    if(ren){ ev.stopPropagation(); tdMapRename(ren.getAttribute('data-mapren') || ''); return; }
+    var dup = t.closest('[data-mapdup]');
+    if(dup){ ev.stopPropagation(); tdMapDuplicate(dup.getAttribute('data-mapdup') || ''); return; }
     var mp = t.closest('[data-map]');
     if(mp){ tdMapSwitch(mp.getAttribute('data-map') || ''); return; }
     var pile = t.closest('#tdBoard .rb-dmpile');
@@ -1308,4 +1469,6 @@ function tdMapHeard(side, prev){
     ev.preventDefault();
     tdDmDrag(ev, {name:m.getAttribute('data-name') || '', put:true}, null);
   }, true);
+  /* the saved maps read in as the page opens, so the list is whole the first time the DM looks */
+  if(typeof REBIRTH !== 'undefined' && REBIRTH) setTimeout(function(){ try{ tdMapsBoot(); }catch(_){} }, 0);
 })();

@@ -92,6 +92,11 @@ function tdGfMid(g, c, r){
   return {x:c + 0.5, y:r + 0.5};
 }
 function tdGfCellAt(g, ux, uy){
+  var p = tdGfCellRaw(g, ux, uy);
+  return {c:Math.max(0, Math.min(g.c - 1, p.c)), r:Math.max(0, Math.min(g.r - 1, p.r))};
+}
+/* The cell a point falls in, on the grid or off it. */
+function tdGfCellRaw(g, ux, uy){
   var c, r;
   if(g.sh === 'hex'){
     /* to axial, rounded through cube co-ordinates, then back to columns */
@@ -106,7 +111,7 @@ function tdGfCellAt(g, ux, uy){
   } else {
     c = Math.floor(ux); r = Math.floor(uy);
   }
-  return {c:Math.max(0, Math.min(g.c - 1, c)), r:Math.max(0, Math.min(g.r - 1, r))};
+  return {c:c, r:r};
 }
 /* A diagonal step on squares counts as one (HANDOFF §85.2). */
 function tdGfSteps(g, a, b){
@@ -167,6 +172,9 @@ TD_ACT.gset = function(b, a){
   if(a.col != null){ var c = tgGCol(a.col); if(c) t.col = c; else delete t.col; }
   if(a.c != null) t.c = tgIntOr(a.c, 0, 99, t.c);
   if(a.r != null) t.r = tgIntOr(a.r, 0, 99, t.r);
+  /* cd: the card it is connected to, by uid, on any board; '' disconnects it */
+  if(a.cd != null){ if(typeof a.cd === 'string' && TG_UID.test(a.cd)) t.cd = a.cd; else delete t.cd; }
+  if(a.hid != null){ if(a.hid === true) t.hid = true; else delete t.hid; }
 };
 TD_ACT.gdel = function(b, a){
   var gone = {};
@@ -223,6 +231,14 @@ function tdGfActionWords(a, board, before, beforeName){
     case 'gpers': return 'turned persistent tokens ' + (a.on ? 'on' : 'off');
     case 'gtok':  return 'put down the token ' + ((a.tok && tgLab(a.tok.lab)) || '');
     case 'gset':
+      if(a.cd != null){
+        var ct = tdGfTokIn(board, a.uid), cl = ct ? ct.lab : '';
+        return a.cd ? 'connected the token ' + cl + ' to ' + tdGfCardName(a.cd) : 'disconnected the token ' + cl;
+      }
+      if(a.hid != null){
+        var ht = tdGfTokIn(board, a.uid);
+        return (a.hid ? 'hid the token ' : 'showed the token ') + (ht ? ht.lab : '') + (a.hid ? ' from the players' : ' to the players');
+      }
       /* a "My token" following its owner's new icon says nothing of its own */
       if(a.col != null) return '';
       if(a.lab != null) return 'renamed a token ' + tgLab(a.lab);
@@ -230,6 +246,7 @@ function tdGfActionWords(a, board, before, beforeName){
       return '';
     case 'gdel':
       var n = Array.isArray(a.uids) ? a.uids.length : 0;
+      if(a.mix) return 'removed ' + n + ' tokens';
       return (n > 1 ? 'removed the ' + n + ' tokens ' : 'removed the token ') + tgLab(a.lab || '');
     case 'label':
       var nm = beforeName || tdCardWords(a.uid, board);
@@ -254,6 +271,7 @@ function tdGfPack(b, out){
   var gl = tdGfTagList(b);
   if(gl.length) out.gtl = gl.slice(-TD_GF_TAGS);
   if(typeof b.gtseen === 'number') out.gtseen = b.gtseen;
+  if(typeof tdMapPack === 'function') tdMapPack(b, out);
 }
 window.tdGfPack = tdGfPack;
 function tdGfUnpack(data, board){
@@ -275,6 +293,7 @@ function tdGfUnpack(data, board){
   }
   var gs = tgInt(data.gtseen, 0, 1e15);
   if(gs != null) board.gtseen = gs;
+  if(typeof tdMapUnpack === 'function') tdMapUnpack(data, board);
 }
 window.tdGfUnpack = tdGfUnpack;
 
@@ -295,15 +314,18 @@ function tdGfBarHTML(){
       + (GF.adj ? btn('pic', 'Moving the picture', true, 'Done moving the picture (Esc)')
                 : btn('pic', 'Picture&hellip;', null, 'A picture under the map'))
       + btn('ln', 'Grid lines', g.ln !== false, 'Show or hide the grid lines');
+    if(typeof tdMapDmBarHTML === 'function') h += tdMapDmBarHTML();
     if(typeof tdMapsHere === 'function' && tdMapsHere())
       h += btn('pers', 'Persistent tokens', !!TD.board.gpers,
-               'On: every token stays where it is when the map changes. Off: every token stays with the map it was on');
+               'On: every token stays where it is when the map changes. Off: every token stays with the map it was on')
+        + btn('notes', 'Notes', typeof tdNotesOpen === 'function' && tdNotesOpen(), 'DM Notes');
   }
   h += "<span class='td-gsp'></span>";
   if(own) h += tdGfIconBtnHTML()
     + btn('me', 'My token', null, 'Put your icon on the map as a token')
     + btn('tok', '+ Token', null, 'Put a token on the map, with a label of up to three characters');
-  h += btn('rul', 'Ruler', !!GF.ruler, 'Measure: drag from one square to another (Esc stops)')
+  h += ((typeof tdMapRulerBarHTML === 'function') ? tdMapRulerBarHTML()
+         : btn('rul', 'Ruler', !!GF.ruler, 'Measure: drag from one square to another (Esc stops)'))
     + btn('fit', 'Fit', null, 'The whole map in view');
   return h + "</div>";
 }
@@ -318,6 +340,7 @@ window.tdGfViewHTML = tdGfViewHTML;
 /* In percent of the grid's box (.td-gbox), so the pan's zoom carries them. */
 function tdGfTokensHTML(){
   var g = tdGfGrid(), u = tdGfUnits(g), dm = tdGfIsDm(), all = tdGfVisible(), cells = {};
+  GF.hex = {};
   all.forEach(function(v){
     var k = tdGfKeepOn(g, v.t, v.t.c, v.t.r), sp = tdGfSpan(g, v.t);
     v.c = k.c; v.r = k.r;
@@ -352,20 +375,57 @@ function tdGfTokRect(g, v, q, n){
 function tdGfColVar(col, seat){
   return col ? 'var(--gi-' + col + ')' : 'var(--seat-' + tdRbSeat(seat) + ', var(--go))';
 }
+/* The stat icon's gradients are mixed from a #rrggbb (edOrbTinted), so the colour is read off its token in testdeck.css. */
+function tdGfHexOf(v){
+  v = String(v || '').trim().toLowerCase();
+  var m = /^#([0-9a-f])([0-9a-f])([0-9a-f])$/.exec(v);
+  if(m) return '#' + m[1] + m[1] + m[2] + m[2] + m[3] + m[3];
+  if(/^#[0-9a-f]{6}$/.test(v)) return v;
+  m = /^rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)/.exec(v);
+  if(!m) return '';
+  return '#' + [m[1], m[2], m[3]].map(function(n){ return ('0' + Math.min(255, +n).toString(16)).slice(-2); }).join('');
+}
+function tdGfHex(col, seat){
+  var name = col ? '--gi-' + col : '--seat-' + tdRbSeat(seat);
+  var memo = GF.hex || (GF.hex = {});
+  if(memo[name]) return memo[name];
+  var v = '';
+  try{ v = getComputedStyle(document.body).getPropertyValue(name); }catch(_){}
+  return (memo[name] = tdGfHexOf(v) || '#e8c96a');
+}
+function tdGfOrbMode(){
+  try{ return (typeof window.edOrbMode === 'function') ? String(window.edOrbMode() || '') : ''; }catch(_){ return ''; }
+}
+/* The Arcane stat icon of the set the viewer uses, in the token's colour, its label for the numeral; '' where the editor's half is not loaded. Kept per token and place (slot: the copy on its card), so its ids stay its own. */
+function tdGfOrbHTML(t, seat, stretch, slot){
+  if(typeof window.edOrbTinted !== 'function') return '';
+  var hex = tdGfHex(t.col, seat), key = tdGfOrbMode() + '|' + hex + '|' + t.lab + '|' + (stretch ? 1 : 0);
+  var c = GF.orbs || (GF.orbs = {}), ck = t.uid + (slot || ''), was = c[ck];
+  if(was && was.k === key) return was.h;
+  var h = '';
+  try{ h = window.edOrbTinted('arc', t.lab, hex, {stretch:!!stretch}) || ''; }catch(_){ h = ''; }
+  if(Object.keys(c).length > 400) c = GF.orbs = {};
+  c[ck] = {k:key, h:h};
+  return h;
+}
 function tdGfTokHTML(g, u, v, rc, dm){
   var t = v.t, pc = function(n){ return (n * 100).toFixed(4) + '%'; };
   var long = (t.w || 1) !== (t.h || 1);
   var rot = (g.sh === 'hex' && t.rot) ? t.rot * 60 : 0;
   var nch = tgChars(t.lab).length, fit = nch <= 1 ? 0.5 : (nch === 2 ? 0.42 : 0.34);
-  return "<div class='td-gtok" + (long ? ' td-gtlong' : '') + "' data-gtok='" + e(t.uid) + "'"
+  var orb = tdGfOrbHTML(t, v.seat, long);
+  return "<div class='td-gtok" + (long ? ' td-gtlong' : '') + (orb ? ' td-gtorb' : '') + (t.hid ? ' td-ghid' : '') + "'"
+    + " data-gtok='" + e(t.uid) + "'"
     + " data-gseat='" + tdRbSeat(v.seat) + "' data-glab='" + e(t.lab) + "'"
+    + (t.cd ? " data-gcd='" + e(t.cd) + "'" : '')
     + (TD_GF_LIGHT_INK[t.col] ? " data-ink='lt'" : '')
     + " title='" + e(t.lab + ' — ' + tdGfOwnerName(v)) + "'"
     + " style='left:" + pc(rc.x / u.w) + ";top:" + pc(rc.y / u.h)
     + ";width:" + pc(rc.w / u.w) + ";height:" + pc(rc.h / u.h)
     + ";--gt:" + tdGfColVar(t.col, v.seat) + ";--gts:" + (Math.min(rc.w, rc.h) * fit).toFixed(3)
     + (rot ? ';--gr:' + rot + 'deg' : '') + "'>"
-    + "<span class='td-gtlab'>" + e(t.lab) + "</span>"
+    + (orb ? "<span class='td-gorb' aria-hidden='true'>" + orb + "</span>"
+           : "<span class='td-gtlab'>" + e(t.lab) + "</span>")
     + ((dm && long) ? "<button type='button' class='td-gtrot' data-gtrot='" + e(t.uid) + "'"
         + " title='Turn it' aria-label='" + e('Turn the token ' + t.lab) + "'>&#10227;</button>" : '')
     + "</div>";
@@ -373,9 +433,58 @@ function tdGfTokHTML(g, u, v, rc, dm){
 
 /* After the cards and counters are laid out, which a fresh pan measures unzoomed, and before the effects, arrows and cursors, which measure the zoom too. */
 function tdGfAfterRender(host){
+  tdGfDecorate(host);
   var vs = (host || document).querySelectorAll('.td-gview');
   for(var i = 0; i < vs.length; i++) tdGfFrame(vs[i]);
+  if(typeof tdNotesSync === 'function') tdNotesSync();
   if(vs.length) tdGfWinsOffBar();
+}
+/* What a card carries on its art wherever its face is drawn: a copy of each token connected to it, side by side, and the damage on a card with no Health as a red Health icon to their right (Q5 B); a card with Health shows what is left in its own HP icon. */
+function tdGfDecorate(host){
+  if(!REBIRTH || !TD) return;
+  var root = host || document, conn = {}, hurt = {};
+  if(tdGfOn()) tdGfVisible().forEach(function(v){ if(v.t.cd) (conn[v.t.cd] = conn[v.t.cd] || []).push(v); });
+  tdGfBoards().forEach(function(b){
+    ['field', 'gear'].forEach(function(z){
+      ((b.zones && b.zones[z]) || []).forEach(function(it){ if(it.dmg > 0 && !it.anon && it.card) hurt[it.uid] = it; });
+    });
+  });
+  var uids = Object.keys(conn).concat(Object.keys(hurt).filter(function(u){ return !conn[u]; }));
+  uids.forEach(function(uid){
+    var els = root.querySelectorAll('.td-card' + tdSel(uid));
+    for(var i = 0; i < els.length; i++) tdGfDecorateOne(els[i], conn[uid] || [], hurt[uid] || null);
+  });
+}
+function tdGfDecorateOne(el, toks, item){
+  if(el.classList.contains('td-down')) return;
+  var face = el.querySelector(':scope > .td-face'), art = face && face._tdPainted ? face.querySelector('.m-art') : null;
+  if(!art) return;
+  var old = art.querySelector(':scope > .td-artdeco');
+  if(old) old.remove();
+  var dmg = item ? (item.dmg || 0) : 0;
+  var hp = (dmg && typeof window.edCardHealth === 'function') ? window.edCardHealth(item.card) : null;
+  if(dmg && hp != null && typeof window.edOrbsHTMLHurt === 'function'){
+    var orbs = face.querySelector('.m-orbs'), oh = window.edOrbsHTMLHurt(item.card, dmg);
+    if(orbs && oh) orbs.innerHTML = oh;
+  }
+  var badge = '';
+  if(dmg && hp == null && typeof window.edOrbTinted === 'function'){
+    try{ badge = window.edOrbTinted('hp', '−' + dmg, tdGfHex('red'), {}) || ''; }catch(_){ badge = ''; }
+  }
+  if(!toks.length && !badge) return;
+  var n = toks.length + (badge ? 1 : 0);
+  var html = toks.map(function(v){
+    var w = v.t.w || 1, h = v.t.h || 1, orb = tdGfOrbHTML(v.t, v.seat, w !== h, '|c');
+    return orb ? "<span class='td-adtok" + (v.t.hid ? ' td-ghid' : '') + "' style='--ada:" + (w / h).toFixed(3) + "'>"
+      + "<span class='td-gorb'>" + orb + "</span></span>" : '';
+  }).join('') + (badge ? "<span class='td-addmg'><span class='td-gorb'>" + badge + "</span></span>" : '');
+  if(!html) return;
+  var d = document.createElement('div');
+  d.className = 'td-artdeco';
+  d.setAttribute('aria-hidden', 'true');
+  d.style.setProperty('--adw', Math.min(33, 92 / n - 3).toFixed(2) + '%');
+  d.innerHTML = html;
+  art.insertBefore(d, art.querySelector(':scope > .m-orbs'));
 }
 window.tdGfAfterRender = tdGfAfterRender;
 /* Unmoved, the Record Log and the DM Tools go under the bar, not over everybody's tools at its right-hand end (HANDOFF §85.5). */
@@ -393,7 +502,7 @@ window.tdGfBarBottom = tdGfBarBottom;
 function tdGfWinsOffBar(){
   var b = tdGfBarRect();
   if(!b || typeof tdFloatWin !== 'function' || typeof tdWinSaved !== 'function') return;
-  ['tdFeed', 'tdDmWin'].forEach(function(id){
+  ['tdFeed', 'tdDmWin', 'tdNotesWin'].forEach(function(id){
     var w = document.getElementById(id);
     if(!w || w.hidden || !w._tdWin || tdWinSaved(w._tdWin)) return;
     var r = w.getBoundingClientRect();
@@ -417,7 +526,7 @@ function tdGfFrame(view){
   var key = tdGfViewKey();
   if(key !== GF.vkey){ GF.vkey = key; GF.view = {z:1, cx:0.5, cy:0.5}; }
   tdGfClamp(view);
-  view.classList.toggle('td-gruling', !!GF.ruler);
+  view.classList.toggle('td-gruling', !!GF.ruler || (typeof tdMapToolOn === 'function' && tdMapToolOn()));
   view.classList.toggle('td-gadj', !!GF.adj && tdGfIsDm());
   tdGfPicNeed();
   tdGfApply(view);
@@ -575,11 +684,14 @@ function tdGfDraw(view, W, H, f){
     }
     x.restore();
   }
+  /* the painted squares under the grid lines; the walls, the doors and the fog over them (cat_rbmap.js) */
+  if(typeof tdMapDrawUnder === 'function') tdMapDrawUnder(x, g, bx, f, cs);
   if(g.ln !== false){
     x.strokeStyle = cs.color;
     x.lineWidth = 1 / f.z;
     tdGfLines(x, g, bx, f, W, H);
   }
+  if(typeof tdMapDrawAbove === 'function') tdMapDrawAbove(x, g, bx, f, cs);
   x.restore();
 }
 function tdGfLines(x, g, bx, f, W, H){
@@ -661,14 +773,16 @@ function tdGfDrawOver(view, W, H, f){
     [[a.x, a.y], [b.x, a.y], [a.x, b.y], [b.x, b.y]].forEach(function(c){ x.fillRect(c[0] - 6, c[1] - 6, 12, 12); });
     x.restore();
   }
+  if(typeof tdMapDrawOver === 'function') tdMapDrawOver(x, g, bx, P, W, H, cs, view);
   var rulers = [], next = 0;
-  if(GF.rul && GF.rul.held && GF.rul.view === view) rulers.push({a:GF.rul.a, b:GF.rul.b, seat:tdRbSeat(TD.side)});
+  if(GF.rul && GF.rul.held && GF.rul.view === view)
+    rulers.push({a:GF.rul.a, b:GF.rul.b, seat:tdRbSeat(TD.side), mv:!!GF.rul.mv});
   if(tdGfTable() && typeof TBL !== 'undefined' && TBL.ptrs){
     var now = Date.now();
     Object.keys(TBL.ptrs).forEach(function(s){
       var q = TBL.ptrs[s];
       if(!q || q.off || q.rx == null || q.ry == null || q.zone !== 'field' || now - q.at > TD_PTR_MS) return;
-      rulers.push({a:{fx:q.rx, fy:q.ry}, b:{fx:q.fx, fy:q.fy}, seat:tdRbSeat(s)});
+      rulers.push({a:{fx:q.rx, fy:q.ry}, b:{fx:q.fx, fy:q.fy}, seat:tdRbSeat(s), mv:!!q.rm});
       var left = TD_PTR_MS - (now - q.at);
       if(!next || left < next) next = left;
     });
@@ -677,14 +791,22 @@ function tdGfDrawOver(view, W, H, f){
   clearTimeout(GF.rulX);
   if(next) GF.rulX = setTimeout(tdGfOverSoon, next + 50);
   rulers.forEach(function(R){ tdGfRulerDraw(x, g, bx, P, W, H, R, cs); });
+  if(typeof tdMapDrawPings === 'function') tdMapDrawPings(x, g, bx, P, cs);
 }
 function tdGfRulerDraw(x, g, bx, P, W, H, R, cs){
   var cellOf = function(q){ return tdGfCellAt(g, ((+q.fx || 0) * W - bx.x) / bx.s, ((+q.fy || 0) * H - bx.y) / bx.s); };
   var A = cellOf(R.a), B = cellOf(R.b), n = tdGfSteps(g, A, B);
-  var ink = tdGfCss(cs, '--seat-' + R.seat) || tdGfCss(cs, '--go') || 'gold';
+  /* Movement counts the painted squares, and goes red where a wall or a closed door is in the way (cat_rbmap.js) */
+  var mv = (R.mv && typeof tdMapMoveOf === 'function') ? tdMapMoveOf(g, A, B) : null;
+  var ink = (mv && mv.cost < 0) ? (tdGfCss(cs, '--gf-blocked') || 'red')
+    : (tdGfCss(cs, '--seat-' + R.seat) || tdGfCss(cs, '--go') || 'gold');
   var ma = tdGfMid(g, A.c, A.r), mb = tdGfMid(g, B.c, B.r), pa = P(ma.x, ma.y), pb = P(mb.x, mb.y);
   x.save();
   x.fillStyle = ink; x.strokeStyle = ink;
+  if(mv){
+    x.globalAlpha = 0.12;
+    mv.path.forEach(function(p, i){ if(i && (mv.cost >= 0 || i < mv.at)){ tdGfCellsPath(x, g, null, p, P); x.fill(); } });
+  }
   x.globalAlpha = 0.24;
   tdGfCellsPath(x, g, null, A, P); x.fill();
   tdGfCellsPath(x, g, null, B, P); x.fill();
@@ -694,7 +816,8 @@ function tdGfRulerDraw(x, g, bx, P, W, H, R, cs){
   x.beginPath(); x.moveTo(pa.x, pa.y); x.lineTo(pb.x, pb.y); x.stroke();
   x.setLineDash([]);
   x.beginPath(); x.arc(pa.x, pa.y, 4.5, 0, Math.PI * 2); x.fill();
-  var words = n + (g.sh === 'hex' ? ' hex' : ' sq') + ' · ' + (n * TD_GF_FT) + ' ft';
+  if(mv) n = mv.cost;
+  var words = (n < 0) ? 'Blocked' : n + (g.sh === 'hex' ? ' hex' : ' sq') + ' · ' + (n * TD_GF_FT) + ' ft';
   x.font = '600 13px Cinzel, serif';
   var bw = x.measureText(words).width + 16, bh = 22;
   var lx = Math.max(2, Math.min(W - bw - 2, pb.x + 12)), ly = Math.max(2, Math.min(H - bh - 2, pb.y - bh - 10));
@@ -844,11 +967,109 @@ function tdGfMoveTok(hit, c, r){
   tdRender();
 }
 
+/* Ctrl+drag from a token onto a card: a line from the token follows the pointer, every card it can go on is outlined, and the card let go over is the one (tdGfConnect). */
+function tdGfConnStart(ev, el){
+  if(!TD.board || TD.watching) return;
+  var uid = el.getAttribute('data-gtok');
+  if(!tdGfFind(uid)) return;
+  GF.conn = {uid:uid, el:el, x:ev.clientX, y:ev.clientY, moved:false};
+  var host = document.getElementById('tdBoard');
+  if(host) host.classList.add('td-gconnecting');
+}
+function tdGfConnMove(ev){
+  var c = GF.conn;
+  if(!c.moved){
+    if(Math.abs(ev.clientX - c.x) + Math.abs(ev.clientY - c.y) < 4) return;
+    c.moved = true;
+  }
+  tdGfConnLine(ev);
+}
+function tdGfConnLine(ev){
+  var lay = (typeof tdArrowLayer === 'function') ? tdArrowLayer() : null, host = document.getElementById('tdBoard');
+  if(!lay || !host) return;
+  var live = lay.querySelector('.td-gconn-live'), c = GF.conn;
+  if(!ev || !c){ if(live) live.remove(); return; }
+  if(!c.el || !c.el.isConnected) c.el = document.querySelector('#tdBoard .td-gtok' + tdSel(c.uid, 'data-gtok'));
+  if(!c.el) return;
+  var br = host.getBoundingClientRect(), r = c.el.getBoundingClientRect();
+  if(!live){
+    live = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    live.setAttribute('class', 'td-gconn-live');
+    lay.appendChild(live);
+  }
+  live.setAttribute('x1', (r.left + r.width / 2 - br.left).toFixed(1));
+  live.setAttribute('y1', (r.top + r.height / 2 - br.top).toFixed(1));
+  live.setAttribute('x2', (ev.clientX - br.left).toFixed(1));
+  live.setAttribute('y2', (ev.clientY - br.top).toFixed(1));
+}
+function tdGfConnEnd(ev, cancel){
+  var c = GF.conn;
+  GF.conn = null;
+  var host = document.getElementById('tdBoard');
+  if(host) host.classList.remove('td-gconnecting');
+  tdGfConnLine(null);
+  if(cancel || !c || !c.moved || !ev) return;
+  var over = document.elementFromPoint(ev.clientX, ev.clientY);
+  var card = (over && over.closest) ? over.closest('#tdBoard .td-card[data-uid]') : null;
+  if(card) tdGfConnect(c.uid, card.getAttribute('data-uid'));
+}
+/* Where a token can be connected: a card face up on the Field, in an Essence area, a Hand or an Armament, as this screen sees it. */
+var TD_GF_OPEN = {field:1, essarea:1, hand:1, gear:1};
+function tdGfOpenCard(uid){
+  var bs = tdGfBoards();
+  for(var i = 0; i < bs.length; i++){
+    var at = tdFindIn(bs[i], uid);
+    if(at) return (TD_GF_OPEN[at.zone] && at.item.card && !at.item.anon && !at.item.down) ? {b:bs[i], at:at} : null;
+  }
+  return null;
+}
+function tdGfCardName(uid){
+  var bs = tdGfBoards();
+  for(var i = 0; i < bs.length; i++){
+    var at = tdFindIn(bs[i], uid);
+    if(at) return (at.item.card && !at.item.anon) ? at.item.card.name : 'a card';
+  }
+  return 'a card';
+}
+/* Anybody connects any token to any card, '' disconnects it; the token's owner's app does it, asked as a move is. */
+function tdGfConnect(tokUid, cardUid){
+  var hit = tdGfFind(tokUid);
+  cardUid = cardUid || '';
+  if(!hit || !TD.board || TD.watching || (hit.t.cd || '') === cardUid) return false;
+  if(cardUid && !tdGfOpenCard(cardUid)) return false;
+  var a = {t:'gset', uid:tokUid, cd:cardUid};
+  if(hit.b === TD.board){ tdDo(a); tdRender(); return true; }
+  if(!tdRbAsk(hit.seat, {op:'gconn', tok:tokUid, cd:cardUid})) return false;
+  tdApplyTo(hit.b, a);
+  tdRender();
+  return true;
+}
+window.tdGfConnect = tdGfConnect;
+/* A card gone to a Grave takes the tokens connected to it; one gone anywhere else a token cannot go drops them. Each owner sees to their own: after their own move (tdGfAfterAct) or on hearing another's (tdGfHeard). */
+/* extra: the tokens the label rule takes too (tdGfAfterAct), so it is one removal; grave on each marks it as the move's, for Undo (tdUndo). */
+function tdGfCardLeft(a, extra){
+  if(!a || a.t !== 'move' || !a.uid || !TD.board || TD.watching) return;
+  var grave = (a.to === 'grave' || a.to === 'dmgrave');
+  var conn = (grave || !TD_GF_OPEN[a.to]) ? tdGfToks(TD.board).filter(function(t){ return t.cd === a.uid; }) : [];
+  if(!grave){
+    conn.forEach(function(t){ tdDo({t:'gset', uid:t.uid, cd:'', grave:true}); });
+    return;
+  }
+  var gone = conn.concat((extra || []).filter(function(t){ return conn.indexOf(t) < 0; }));
+  if(!gone.length) return;
+  var labs = {};
+  gone.forEach(function(t){ labs[t.lab] = 1; });
+  var g = {t:'gdel', lab:gone[0].lab, grave:true};
+  if(gone.length === 1) g.uid = gone[0].uid; else g.uids = gone.map(function(t){ return t.uid; });
+  if(Object.keys(labs).length > 1) g.mix = true;
+  tdDo(g);
+}
+
 /* Its start rides on your cursor (tdGfPtrExtra), sent again every second while held, so a ruler held still does not run out (TD_PTR_MS). */
-function tdGfRulStart(ev, view){
+function tdGfRulStart(ev, view, mv){
   var u = tdGfUnitAt(view, ev.clientX, ev.clientY);
   if(!u) return;
-  GF.rul = {view:view, a:{fx:u.fx, fy:u.fy}, b:{fx:u.fx, fy:u.fy}, held:true};
+  GF.rul = {view:view, a:{fx:u.fx, fy:u.fy}, b:{fx:u.fx, fy:u.fy}, held:true, mv:!!mv};
   tdGfRulSend();
   tdGfOverSoon();
 }
@@ -882,19 +1103,23 @@ function tdGfPtrExtra(at){
   var r4 = function(n){ return Math.round(Math.max(0, Math.min(1, n)) * 1e4) / 1e4; };
   at.rx = r4(R.a.fx);
   at.ry = r4(R.a.fy);
+  if(R.mv) at.rm = true;
 }
 window.tdGfPtrExtra = tdGfPtrExtra;
 
 function tdGfDown(ev){
-  if(GF.drag || GF.pan || GF.adjDrag || (GF.rul && GF.rul.held)) return;
+  if(GF.drag || GF.pan || GF.adjDrag || GF.conn || (GF.rul && GF.rul.held) || (typeof MAP !== 'undefined' && MAP.drag)) return;
   var view = tdGfViewOf(ev.target);
   if(!view) return;
   var mid = (ev.button === 1);
   if(ev.button !== 0 && !mid) return;
   if(!mid && GF.adj && tdGfIsDm() && tdGfAdjStart(ev, view)){ tdGfTake(ev); return; }
+  /* the Ruler's dropdown, the DM's Paint and Fog: each takes a press on a card or a token too (cat_rbmap.js) */
+  if(!mid && typeof tdMapDown === 'function' && tdMapDown(ev, view)) return;
   if(!mid && GF.ruler){ tdGfTake(ev); tdGfRulStart(ev, view); return; }
   var t = ev.target;
   var tok = t.closest('.td-gtok');
+  if(!mid && tok && !t.closest('.td-gtrot') && (ev.ctrlKey || ev.metaKey) && !ev.shiftKey){ tdGfTake(ev); tdGfConnStart(ev, tok); return; }
   if(!mid && tok && !t.closest('.td-gtrot')){ tdGfTokStart(ev, view, tok); return; }
   if(mid || !t.closest('.td-card, .td-group, .td-token, .td-gtok, button, a, input, select, textarea, label, .td-resolve, .td-zacts')){
     if(mid) ev.preventDefault();
@@ -904,16 +1129,20 @@ function tdGfDown(ev){
 function tdGfMove(ev){
   GF.px = ev.clientX; GF.py = ev.clientY;
   if(GF.drag) tdGfTokMove(ev);
+  else if(GF.conn) tdGfConnMove(ev);
   else if(GF.pan) tdGfPanMove(ev);
   else if(GF.rul && GF.rul.held) tdGfRulMove(ev);
   else if(GF.adjDrag) tdGfAdjMove(ev);
+  else if(typeof MAP !== 'undefined' && MAP.drag) tdMapMove(ev);
   tdGfGhost(ev);
 }
 function tdGfUp(ev, cancel){
   if(GF.drag) tdGfTokEnd(cancel);
+  if(GF.conn) tdGfConnEnd(ev, cancel);
   if(GF.pan) tdGfPanEnd();
   if(GF.rul && GF.rul.held) tdGfRulEnd();
   if(GF.adjDrag) tdGfAdjEnd(cancel);
+  if(typeof MAP !== 'undefined' && MAP.drag) tdMapUp(ev, cancel);
 }
 /* Esc lets go of one thing at a time (HANDOFF §85.5). */
 function tdGfKey(ev){
@@ -921,7 +1150,10 @@ function tdGfKey(ev){
   /* and nothing else: in the waiting room the window under the picker would close on the same Escape (modalOpen) */
   if(document.getElementById('tdGfIconPick')){ ev.stopImmediatePropagation(); tdGfPickClose(); return; }
   if(GF.drag){ tdGfTokEnd(true); return; }
+  if(GF.conn){ tdGfConnEnd(null, true); return; }
   if(GF.adjDrag){ tdGfAdjEnd(true); return; }
+  /* a stroke or a drag under way, then your last area or line that is not Permanent, then Paint or Fog (cat_rbmap.js) */
+  if(typeof tdMapEsc === 'function' && tdMapEsc(ev)) return;
   if(GF.ruler){
     GF.ruler = false;
     if(GF.rul) tdGfRulEnd();
@@ -961,12 +1193,15 @@ function tdGfBar(gf, btn){
     case 'me': tdGfMyToken(); return;
     case 'tok': tdGfNewTokenMenu(x, y); return;
     case 'rul':
+      if(typeof tdMapBar === 'function'){ tdMapBar(gf, x, y); return; }
       GF.ruler = !GF.ruler;
       if(GF.ruler) GF.adj = false;
       else if(GF.rul) tdGfRulEnd();
       tdRender();
       return;
     case 'fit': tdGfFit(); return;
+    default:
+      if(typeof tdMapBar === 'function') tdMapBar(gf, x, y);
   }
 }
 function tdGfSetGrid(patch, say){
@@ -1063,7 +1298,8 @@ function tdGfFreeCell(from){
 /* Its owner renames and removes it, the DM anybody's by asking them; only the DM sizes and turns one (HANDOFF §85.3). */
 function tdGfMenu(ev){
   var el = (ev.target && ev.target.closest) ? ev.target.closest('.td-gtok') : null;
-  if(!el || !tdGfViewOf(el)) return false;
+  /* off a token: a door, an area or a line under the pointer (cat_rbmap.js) */
+  if(!el || !tdGfViewOf(el)) return (typeof tdMapMenu === 'function') && tdMapMenu(ev);
   ev.preventDefault();
   tdCloseMenu();
   var hit = tdGfFind(el.getAttribute('data-gtok'));
@@ -1085,6 +1321,19 @@ function tdGfMenu(ev){
       if(w !== (t.w || 1) || h !== (t.h || 1)) tdGfTokSet(uid, {w:w, h:h}, 'gsize');
     }});
   if(dm && (t.w || 1) !== (t.h || 1)) rows.push({label:'Turn it', act:function(){ tdCloseMenu(); tdGfTurn(uid); }});
+  if(mine || dm) rows.push({label:'Colour', swatches:[''].concat(TD_GF_COLS).map(function(c){
+      return {col:c, css:tdGfColVar(c, hit.seat), on:(t.col || '') === c,
+              name:c ? tdGfColName(c) : (mine ? 'Your seat colour' : 'Their seat colour')};
+    }), act:function(s){
+      tdCloseMenu();
+      if((t.col || '') !== s.col) tdGfTokSet(uid, {col:s.col}, 'gcol');
+    }});
+  if(t.cd) rows.push({label:'Disconnect', act:function(){ tdCloseMenu(); tdGfConnect(uid, ''); }});
+  /* the DM's own: never sent while hidden (tdFogRedact, cat_rbmap.js) */
+  if(mine && dm) rows.push({label:t.hid ? 'Show to players' : 'Hide from players', act:function(){
+    tdCloseMenu();
+    tdGfTokSet(uid, {hid:!t.hid});
+  }});
   if(mine || dm){
     if(rows.length) rows.push({sep:true});
     rows.push({label:'Remove', act:function(){ tdCloseMenu(); tdGfTokDel(uid); }});
@@ -1106,6 +1355,7 @@ function tdGfTokSet(uid, patch, op){
   if(op === 'glab') req.lab = a.lab;
   else if(op === 'gsize'){ req.w = a.w; req.h = a.h; }
   else if(op === 'grot') req.rot = a.rot;
+  else if(op === 'gcol') req.col = a.col;
   if(!tdRbAsk(hit.seat, req)) return false;
   tdApplyTo(hit.b, a);
   tdRender();
@@ -1126,6 +1376,8 @@ function tdGfTokDel(uid){
 }
 /* Carried out by its owner: a move from anybody, the rest from the DM only. */
 function tdGfReq(m, by){
+  if(m.op === 'dmg') return (typeof tdDmgReq === 'function') && tdDmgReq(m);
+  if(TD_MAP_MARKS[m.op]) return (typeof tdMapReq === 'function') && tdMapReq(m, by);
   var dmBy = (typeof tdRbIsDm === 'function') && tdRbIsDm(tdFoeOf(by));
   if(m.op === 'label'){
     var at = tdFind(m.uid);
@@ -1141,6 +1393,10 @@ function tdGfReq(m, by){
     case 'glab':  return dmBy && !!tdDo({t:'gset', uid:t.uid, lab:m.lab});
     case 'gsize': return dmBy && !!tdDo({t:'gset', uid:t.uid, w:m.w, h:m.h});
     case 'grot':  return dmBy && !!tdDo({t:'gset', uid:t.uid, rot:m.rot});
+    case 'gcol':  return dmBy && (t.col || '') !== m.col && !!tdDo({t:'gset', uid:t.uid, col:m.col});
+    case 'gconn':
+      if((t.cd || '') === m.cd || (m.cd && !tdGfOpenCard(m.cd))) return false;
+      return !!tdDo({t:'gset', uid:t.uid, cd:m.cd});
     case 'gdel':  return dmBy && !!tdDo({t:'gdel', uid:t.uid, lab:t.lab});
   }
   return false;
@@ -1189,35 +1445,32 @@ function tdGfFoeLabelRow(it, uid, seat){
 window.tdGfFoeLabelRow = tdGfFoeLabelRow;
 /* A card gone to its Grave takes its owner's tokens with its label, unless another of their cards still carries it: done after the card's move (tdDo). */
 function tdGfAfterAct(a, before, beforeLab){
-  if(!beforeLab || !a || a.t !== 'move' || !TD.board || before === a.to) return;
-  if(a.to !== 'grave' && a.to !== 'dmgrave') return;
-  var still = false;
-  Object.keys(TD.board.zones).forEach(function(z){
-    (TD.board.zones[z] || []).forEach(function(it){ if(it.lab === beforeLab) still = true; });
-  });
-  if(still) return;
-  var uids = tdGfToks(TD.board).filter(function(t){
-    return t.lab === beforeLab && tdGfShows(TD.board, t);
-  }).map(function(t){ return t.uid; });
-  if(!uids.length) return;
-  /* grave: Undo takes it back together with the card's move (tdUndo) */
-  tdDo(uids.length === 1 ? {t:'gdel', uid:uids[0], lab:beforeLab, grave:true}
-                         : {t:'gdel', uids:uids, lab:beforeLab, grave:true});
+  if(!a || a.t !== 'move' || !TD.board || before === a.to) return;
+  var byLab = [];
+  if(beforeLab && (a.to === 'grave' || a.to === 'dmgrave')){
+    var still = false;
+    Object.keys(TD.board.zones).forEach(function(z){
+      (TD.board.zones[z] || []).forEach(function(it){ if(it.lab === beforeLab) still = true; });
+    });
+    if(!still) byLab = tdGfToks(TD.board).filter(function(t){ return t.lab === beforeLab && tdGfShows(TD.board, t); });
+  }
+  tdGfCardLeft(a, byLab);
 }
 window.tdGfAfterAct = tdGfAfterAct;
 
 function tdGfOver(ev){
   var t = (ev.target && ev.target.closest) ? ev.target : null, hov = null;
   if(t && t.closest('#tdBoard')){
-    var tok = t.closest('.td-gtok[data-glab]');
-    if(tok) hov = {lab:tok.getAttribute('data-glab'), seat:tok.getAttribute('data-gseat') || 'a', on:'card'};
+    var tok = t.closest('.td-gtok[data-gtok]');
+    if(tok) hov = {lab:tok.getAttribute('data-glab') || '', seat:tok.getAttribute('data-gseat') || 'a', on:'card',
+                   cd:tok.getAttribute('data-gcd') || ''};
     else {
-      var card = t.closest('.td-card');
+      var card = t.closest('.td-card[data-uid]');
       var b = card ? card.querySelector(':scope > .td-glab[data-glab]') : null;
-      if(b) hov = {lab:b.getAttribute('data-glab'), seat:tdGfCardSeat(card), on:'tok'};
+      if(card) hov = {lab:b ? b.getAttribute('data-glab') : '', seat:tdGfCardSeat(card), on:'tok', uid:card.getAttribute('data-uid')};
     }
   }
-  var key = hov ? hov.on + '|' + hov.seat + '|' + hov.lab : '';
+  var key = hov ? [hov.on, hov.seat, hov.lab, hov.cd || '', hov.uid || ''].join('|') : '';
   if(key === GF.hovKey) return;
   GF.hovKey = key;
   GF.hov = hov;
@@ -1228,16 +1481,59 @@ function tdGfGlowApply(){
   for(var i = 0; i < was.length; i++){ was[i].classList.remove('td-glink'); was[i].style.removeProperty('--gl'); }
   var h = GF.hov;
   if(!h) return;
-  var col = 'var(--seat-' + tdRbSeat(h.seat) + ', var(--go))', sel = tdSel(h.lab, 'data-glab');
-  var els = (h.on === 'card')
-    ? [].map.call(document.querySelectorAll('#tdBoard .td-card > .td-glab' + sel), function(x){ return x.parentNode; })
-    : [].slice.call(document.querySelectorAll('#tdBoard .td-gtok' + sel));
+  var col = 'var(--seat-' + tdRbSeat(h.seat) + ', var(--go))', sel = tdSel(h.lab, 'data-glab'), els;
+  if(h.on === 'card'){
+    els = h.lab ? [].map.call(document.querySelectorAll('#tdBoard .td-card > .td-glab' + sel), function(x){ return x.parentNode; }) : [];
+    var cd = h.cd ? tdGfCardEl(h.cd) : null;
+    if(cd && els.indexOf(cd) < 0) els.push(cd);
+  } else {
+    els = h.lab ? [].slice.call(document.querySelectorAll('#tdBoard .td-gtok' + sel)) : [];
+    [].forEach.call(document.querySelectorAll('#tdBoard .td-gtok' + tdSel(h.uid, 'data-gcd')), function(x){
+      if(els.indexOf(x) < 0) els.push(x);
+    });
+  }
   els.forEach(function(el){ el.classList.add('td-glink'); el.style.setProperty('--gl', col); });
 }
 function tdGfCardSeat(card){
   var s = card.closest('[data-seat]');
   return (s && s.getAttribute('data-seat')) || TD.side || 'a';
 }
+/* The card a connected token stands for, where this screen draws it: another's face-down or hidden card is drawn as a back, so its zoom is the back. */
+function tdGfCardEl(uid){
+  return uid ? document.querySelector('#tdBoard .td-card' + tdSel(uid)) : null;
+}
+function tdGfPersonOf(hit){
+  if(hit.b === TD.board) return tdGfMyName();
+  return hit.b.name || ((typeof tblSeatName === 'function') ? tblSeatName(hit.seat) : '') || '';
+}
+/* Alt over a token: the zoom of the card it is connected to, or the icon itself, large, with its owner's name under it. */
+function tdGfAltShow(el){
+  var hit = tdGfFind(el.getAttribute('data-gtok'));
+  if(!hit) return tdAltHide();
+  var t = hit.t;
+  if(t.cd){
+    var card = tdGfCardEl(t.cd);
+    if(card) return tdAltShow(card);
+  }
+  var sp = tdGfSpan(tdGfGrid(), t), long = sp.w !== sp.h, hex = tdGfHex(t.col, hit.seat);
+  var key = 'gtok|' + t.uid + '|' + hex + '|' + t.lab + '|' + sp.w + 'x' + sp.h + '|' + tdGfOrbMode();
+  if(_tdAlt.uid === key && document.getElementById('tdZoom')) return;
+  var orb = '';
+  try{ orb = (typeof window.edOrbTinted === 'function') ? window.edOrbTinted('arc', t.lab, hex, {stretch:long}) || '' : ''; }catch(_){ orb = ''; }
+  if(!orb) return tdAltHide();
+  tdAltHide();
+  _tdAlt.uid = key;
+  var w = 220, h = 220, ra = sp.w / sp.h;
+  if(ra > 1) h = Math.max(96, Math.round(w / ra)); else if(ra < 1) w = Math.max(96, Math.round(h * ra));
+  var z = document.createElement('div');
+  z.id = 'tdZoom'; z.className = 'td-zoom td-zoom-gtok';
+  z.innerHTML = "<div class='td-zoom-face td-gzface' style='width:" + w + "px;height:" + h + "px'>"
+    + "<span class='td-gorb' aria-hidden='true'>" + orb + "</span></div>"
+    + "<div class='td-gzname'>" + e(tdGfPersonOf(hit)) + "</div>";
+  document.body.appendChild(z);
+  tdAltPlace();
+}
+window.tdGfAltShow = tdGfAltShow;
 
 /* On your board once the game is dealt, a change being a gicon move; in the waiting room it goes with your seat (tboSendSeat). */
 function tdGfMyName(){
@@ -1372,7 +1668,8 @@ function tdGfIconSet(ic){
   tdRender();
 }
 
-/* A map carries its picture's name (tdGfHash), not the picture: that is kept once, by name, in this browser and asked of the DM by whoever lacks it (HANDOFF §85.4). */
+/* A map carries its picture's name (tdGfHash), not the picture: that is kept once, by name, in this browser and asked of the DM by whoever lacks it (HANDOFF §85.4).
+   Version 2 adds the saved maps' own store beside it (tdMapsBoot, cat_rbdm.js). */
 var TD_GF_DB = 'conjure_rbgrid', TD_GF_STORE = 'pics';
 var TD_GF_PIC_PX = 2048;
 var TD_GF_PIC_MOST = 1400000;
@@ -1398,10 +1695,11 @@ function tdGfDb(){
   if(GF.dbq) return GF.dbq;
   GF.dbq = new Promise(function(res){
     try{
-      var rq = indexedDB.open(TD_GF_DB, 1);
+      var rq = indexedDB.open(TD_GF_DB, 2);
       rq.onupgradeneeded = function(){
         var db = rq.result;
         if(!db.objectStoreNames.contains(TD_GF_STORE)) db.createObjectStore(TD_GF_STORE, {keyPath:'id'});
+        if(!db.objectStoreNames.contains('maps')) db.createObjectStore('maps', {keyPath:'k'});
       };
       rq.onsuccess = function(){
         var db = rq.result;
@@ -1508,6 +1806,10 @@ function tdGfOnMsg(msg, fromId){
   }
   if(msg.t === 'gpic'){
     if(msg.to && msg.to === TBL.you) tdGfPicPart(msg, fromId);
+    return true;
+  }
+  if(msg.t === 'mping'){
+    if(typeof tdMapPingFrom === 'function') tdMapPingFrom(msg, fromId);
     return true;
   }
   return false;
@@ -1645,9 +1947,9 @@ function tdGfAdjToggle(){
   if(!tdGfIsDm() || !tdGfGrid().pic) return;
   GF.adj = true;
   GF.ruler = false;
+  if(typeof MAP !== 'undefined'){ MAP.paint = false; MAP.fog = false; }
   if(GF.rul) tdGfRulEnd();
   tdRender();
-  if(typeof toast === 'function') toast('Drag the picture to move it, or one of its corners to size it. Esc when it is right');
 }
 function tdGfAdjStart(ev, view){
   var p = tdGfGrid().pic, u = p ? tdGfUnitAt(view, ev.clientX, ev.clientY) : null;
@@ -1735,13 +2037,19 @@ function tdGfPicsIn(pics){
 window.tdGfPicsIn = tdGfPicsIn;
 
 /* A player's tokens are never in a map: they stay on the player's board, tagged with the map they were put down on (HANDOFF §85.4). */
-function tdGfMapNow(out){
+function tdGfMapNow(out, idx){
   var b = TD.board;
   if(!b) return out;
   var g = b.grid ? tgGrid(b.grid) : null;
   if(g) out.grid = g;
-  var ts = tdGfToks(b).map(function(t){ return tgGTok(t, true); }).filter(Boolean);
+  /* a token on one of the map's cards keeps it by the card's place in the list (cdi), as a counter does */
+  var ts = tdGfToks(b).map(function(t){
+    var o = tgGTok(t, true);
+    if(o && t.cd && idx && idx[t.cd] != null) o.cdi = idx[t.cd];
+    return o;
+  }).filter(Boolean);
   if(ts.length) out.gtoks = ts;
+  if(typeof tdMapLayersOf === 'function') tdMapLayersOf(b, out);
   /* A map never named, with players' tokens on it, is kept when the DM switches away, so they have a map to come back with. */
   if(tdGfTable() && !b.gpers && !b.map && tdGfPlayersOn('')) out.held = true;
   return out;
@@ -1756,9 +2064,15 @@ function tdGfMapClean(m, out){
   var g = tgGrid(m && m.grid);
   if(g) out.grid = g;
   if(m && Array.isArray(m.gtoks)){
-    var ts = m.gtoks.slice(0, 500).map(function(t){ return tgGTok(t, true); }).filter(Boolean);
+    var n = (out.cards || []).length;
+    var ts = m.gtoks.slice(0, 500).map(function(t){
+      var o = tgGTok(t, true);
+      if(o && o.cdi != null && o.cdi >= n) delete o.cdi;
+      return o;
+    }).filter(Boolean);
     if(ts.length) out.gtoks = ts;
   }
+  if(m && typeof tdMapLayersClean === 'function') tdMapLayersClean(m, out);
   return out;
 }
 window.tdGfMapClean = tdGfMapClean;
@@ -1767,9 +2081,14 @@ function tdGfMapActOf(m, act){
   if(TD.board && TD.board.gpers) act.gkeep = true;
   else act.gtoks = ((m && m.gtoks) || []).map(function(t){
     var o = tgGTok(t, true);
-    if(o) o.uid = tdUid('tk');
+    if(!o) return null;
+    o.uid = tdUid('tk');
+    var c = (o.cdi != null) ? (act.cards || [])[o.cdi] : null;
+    delete o.cdi;
+    if(c) o.cd = c.uid;
     return o;
   }).filter(Boolean);
+  if(typeof tdMapLayersAct === 'function') tdMapLayersAct(m, act);
   return act;
 }
 window.tdGfMapActOf = tdGfMapActOf;
@@ -1778,11 +2097,23 @@ function tdGfMapDown(b, a){
   b.gn = (b.gn || 0) + 1;
   var g = a.grid ? tgGrid(a.grid) : null;
   if(g) b.grid = g; else delete b.grid;
+  if(typeof tdMapLayersDown === 'function') tdMapLayersDown(b, a);
   if(a.gkeep) return;
   var ts = (Array.isArray(a.gtoks) ? a.gtoks.slice(0, 500) : []).map(function(t){ return tgGTok(t); }).filter(Boolean);
   if(ts.length) b.gtoks = ts; else delete b.gtoks;
 }
 window.tdGfMapDown = tdGfMapDown;
+/* The DM changed the map, or handed it over with the role (cat_rbplay.js): a token of yours connected to one of the
+   cards that went with it lets go (tblStateFrom). */
+function tdGfMapLeft(side, prev){
+  var now = tdFoeOf(side);
+  if(!prev || !now || !TD.board || TD.watching || !(tdRbIsDm(now) || tdRbIsDm(prev))
+     || (prev.gn || 0) === (now.gn || 0)) return;
+  var lost = tdGfToks(TD.board).filter(function(t){ return t.cd && tdUidSide(t.cd) === side && !tdFindIn(now, t.cd); });
+  lost.forEach(function(t){ tdDo({t:'gset', uid:t.uid, cd:''}); });
+  if(lost.length) tdRender();
+}
+window.tdGfMapLeft = tdGfMapLeft;
 /* Numbered by the time and always after the last, so a number the DM's Undo took back is never handed out again. */
 function tdGfTag(was, now, gone){
   var l = tdGfTagList(TD.board), last = l.length ? l[l.length - 1].n : 0;
@@ -1813,6 +2144,13 @@ function tdGfMapGone(name){
 }
 window.tdGfMapGone = tdGfMapGone;
 function tdGfHeard(side, a){
+  /* a card gone into another's hidden zone arrives as vanish (tblRedact): wherever it went, a token cannot be on it there */
+  var mv = (a && a.t === 'vanish' && a.uid) ? {t:'move', uid:a.uid, to:'deck'} : a;
+  if(mv && mv.t === 'move' && TD.board && tdGfToks(TD.board).some(function(t){ return t.cd === mv.uid; })){
+    tdGfCardLeft(mv);
+    tdRender();
+    return;
+  }
   if(!a || a.t !== 'gtag' || !TD.board || TD.watching || tdRbIsDm(TD.board)) return;
   var o = tdFoeOf(side);
   if(!o || !tdRbIsDm(o)) return;
@@ -1861,5 +2199,6 @@ window.tdGfCatchUp = tdGfCatchUp;
   document.addEventListener('click', tdGfClick);
   document.addEventListener('pointerover', tdGfOver);
   document.addEventListener('keydown', tdGfKey, true);
+  document.addEventListener('dblclick', function(ev){ if(typeof tdMapDblClick === 'function') tdMapDblClick(ev); });
   window.addEventListener('resize', tdGfApplySoon);
 })();
