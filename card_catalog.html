@@ -955,7 +955,7 @@ body.light{--ed-info:#235b8c;--ed-info-edge:#7ea3c6;--ed-info-hi:#4f7fae;
 .ed2-inl>.ed2-input,.ed2-inl>.ed2-combo{flex:1 1 0;min-width:0}
 .ed2-inl>.ed2-rev-date{flex:0 0 auto;white-space:nowrap;margin-left:0}
 .ed2-field.ed2-flavor-row{display:flex;align-items:flex-start;gap:8px}
-.ed2-field.ed2-flavor-row>.ed2-stack-lbl{margin:0;flex:0 0 auto;line-height:1.3;padding-top:3px}
+.ed2-field.ed2-flavor-row>.ed2-stack-lbl{margin:0;flex:0 0 auto;align-self:center;line-height:1.3;text-align:center}
 .ed2-input,.ed2-textarea{width:100%;background:var(--s2);border:1px solid var(--b1);
   border-radius:0;color:var(--tx);font-family:'Crimson Pro',serif;font-size:.98rem;padding:6px 8px;box-sizing:border-box}
 .ed2-input:focus,.ed2-textarea:focus{outline:none;border-color:var(--go)}
@@ -1420,6 +1420,7 @@ body.light .ed2-group,body.arcane .ed2-group{--grp-face:var(--s1)}
 .ed2-orb-pv{flex:0 0 38px;width:38px;height:38px;display:block}
 .ed2-orb-pv svg{display:block;overflow:visible}
 .ed2-orb-pv-none{border:1px dashed var(--b1);border-radius:6px;opacity:.5}
+.ed2-orb-pv-set{position:relative;--si-fs:13px}
 .ed2-group-stats .ed2-orb-type{max-width:none;width:100%;min-width:0;padding:1px 2px;font-size:.7rem}
 .ed2-group-stats .ed2-orb-val{flex:1 1 0;width:auto;min-width:0;text-align:center;padding:2px 3px;font-size:.82rem}
 .ed2-group-stats .ed2-orb-star{flex:0 0 auto;font-size:.72rem;gap:1px}
@@ -1834,15 +1835,6 @@ span.ed2-sagachip{cursor:default}
 .ed2-input.stat-cl-sel{width:auto;height:26px;box-sizing:border-box}
 .fx-words{display:inline-flex;flex-wrap:wrap;gap:4px 8px;min-width:0}
 
-.ed2-rate-t{margin:0 0 6px;color:var(--tx);font-family:'Cinzel',serif;font-size:12px;font-weight:700}
-.ed2-rate-row{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 12px}
-.ed2-rate-f{display:flex;flex-direction:column;gap:3px;color:var(--tx);font-size:12px}
-.ed2-rate-f .ed2-input{width:84px;box-sizing:border-box}
-.ed2-rate-f #edRateLink{width:170px}
-.ed2-rate-out{margin-top:8px;color:var(--tx);font-size:13px;line-height:1.45}
-.ed2-rate-big{font-size:14px;font-weight:700}
-@media (min-width:900px){ #edFields > .ed2-g-rate{grid-column:1 / -1;grid-row:7} }
-
 .mo{z-index:9500}
 
 .mo{--m-ctlw:104px;--m-ctlgap:7px;--m-ctlright:11px;--m-ctlh:34px}
@@ -2028,10 +2020,9 @@ body.light .ed2-hl-ovr,body.arcane .ed2-hl-ovr{--ovr-face:var(--s1)}
 
 .ed2-caret{font-size:.85em;opacity:.8}
 .ed2-sym-pop{position:fixed;z-index:9000;display:flex;flex-direction:column;gap:8px;width:max-content;
-  max-width:calc(100vw - 16px);padding:6px 8px 8px;border:1px solid var(--b2);border-radius:4px;background:var(--s2);
+  max-width:calc(100vw - 16px);padding:8px;border:1px solid var(--b2);border-radius:4px;background:var(--s2);
   box-shadow:0 8px 28px color-mix(in srgb,var(--black) 55%,transparent)}
-.ed2-sym-top{display:flex;justify-content:flex-end}
-.ed2-sym-grid{display:grid;grid-template-columns:repeat(11,28px);gap:3px}
+.ed2-sym-grid{display:grid;grid-template-columns:repeat(10,28px);gap:3px}
 .ed2-sym-btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;padding:0;
   border:1px solid var(--b1);border-radius:3px;background:var(--s1);color:var(--tx);cursor:pointer}
 .ed2-sym-btn:hover:not(:disabled){background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
@@ -2149,7 +2140,7 @@ body.light .ed2-hl-ovr,body.arcane .ed2-hl-ovr{--ovr-face:var(--s1)}
   #edFields > .ed2-group{width:auto}
   #edFields > .ed2-btnbox{grid-column:1;grid-row:1}
   #edFields .ed2-g-id{grid-column:1;grid-row:2}
-  #edFields .ed2-g-rules{grid-column:1;grid-row:3 / span 2}
+  #edFields .ed2-rulesrow{grid-column:1;grid-row:3 / span 2}
   #edFields > .ed2-g-meta{grid-column:1;grid-row:5}
   #edFields .ed2-artcol > .ed2-art{grid-column:2;grid-row:1 / span 3;align-self:stretch;contain:size;
     margin:0 0 6px}
@@ -2159,13 +2150,31 @@ body.light .ed2-hl-ovr,body.arcane .ed2-hl-ovr{--ovr-face:var(--s1)}
   .ed2-row2 .ed2-inl > .ed2-combo{min-width:56px}
   .ed2-row2 .ed2-inl > .ed2-combo:focus-within{min-width:150px}
 
-  .ed2-group .ed2-meta{display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr);
-    gap:10px 10px;align-items:center}
-  .ed2-group .ed2-meta > .ed2-field.ed2-inl{display:contents}
+  .ed2-group .ed2-meta{align-items:center;gap:14px}
+  .ed2-group .ed2-meta>.f-rev-wrap{flex:0 0 auto}
+  .ed2-group .ed2-meta>.f-rev-wrap>.ed2-input{flex:0 0 60px;width:60px}
+
+  .ed2-rulesrow{display:flex;gap:12px;align-items:stretch;min-width:0}
+  .ed2-topsplit-main .ed2-rulesrow>.ed2-group{width:auto}
+  .ed2-rulesrow>.ed2-g-rules{flex:1 1 0;min-width:0}
+  .ed2-rulesrow>.ed2-g-stats{flex:0 0 auto;display:flex;flex-direction:column;padding:10px}
+  .ed2-g-stats>.ed2-group-stats{flex:1 1 auto;display:flex;flex-direction:column}
+  .ed2-g-stats .ed2-stats{flex:1 1 auto;flex-direction:column;justify-content:space-between;gap:6px}
+  .ed2-g-stats .ed2-orb{flex:0 0 auto;gap:4px;padding:4px}
+  .ed2-g-stats .ed2-orb-pv{margin:3px}
+  .ed2-g-stats .ed2-orb-fields{width:auto}
+  .ed2-g-stats .ed2-orb-type{width:24px;height:20px;padding:0;cursor:pointer;-webkit-appearance:none;appearance:none;color:transparent;
+    background:linear-gradient(45deg,transparent 50%,var(--td) 50%) calc(50% - 2.5px) 55% / 5px 5px no-repeat,
+      linear-gradient(135deg,var(--td) 50%,transparent 50%) calc(50% + 2.5px) 55% / 5px 5px no-repeat,var(--s2)}
+  .ed2-g-stats .ed2-orb-type option{color:var(--tx);background:var(--s2)}
+  .ed2-g-stats .ed2-orb-val{flex:0 0 22px;width:22px;padding:2px 1px}
 
   .ed2-sagabox{display:flex;align-items:center;gap:10px}
   .ed2-sagabox > label{flex:0 0 auto;margin:0}
   .ed2-sagabox > .ed2-sagachips{flex:1 1 auto;min-width:0}
+  .ed2-meta2{display:flex;align-items:center;gap:14px;margin-top:12px}
+  .ed2-meta2 > .ed2-sagabox{flex:1 1 auto;min-width:0;margin-top:0}
+  .ed2-meta2 > .ed2-field-rar{flex:0 0 190px}
 }
 
 @media (min-width:900px){
@@ -6075,13 +6084,13 @@ body .kwp-body.tpp-body{display:block}
   .ed2-fields{padding:0;overflow:visible}
   .ed2-empty{height:auto;padding:48px 0}
 
-  .ed2-group,.ed2-topsplit-main>.ed2-group:first-child>*,#pane-editor .ed2-rules-col>.ed2-field,#pane-editor .ed2-kwbar{
+  .ed2-group,.ed2-topsplit-main>.ed2-group:first-child>*,.ed2-rulesrow>.ed2-g-stats>*,#pane-editor .ed2-rules-col>.ed2-field,#pane-editor .ed2-kwbar{
     width:auto;box-sizing:border-box;margin:14px 0 0;padding:12px;border:3px solid transparent;border-radius:10px;
     background:linear-gradient(var(--mob-grp),var(--mob-grp)) padding-box,
       var(--td-gold) border-box;
     box-shadow:none}
-  .ed2-topsplit-main>.ed2-group{margin:0;padding:0;border:0;border-radius:0;background:none}
-  .ed2-topsplit,.ed2-topsplit-main,.ed2-artcol,#pane-editor .ed2-row3,#pane-editor .ed2-rules-col,.ed2-art{display:block}
+  .ed2-topsplit-main>.ed2-group,.ed2-rulesrow>.ed2-group{margin:0;padding:0;border:0;border-radius:0;background:none}
+  .ed2-topsplit,.ed2-topsplit-main,.ed2-rulesrow,.ed2-artcol,#pane-editor .ed2-row3,#pane-editor .ed2-rules-col,.ed2-art{display:block}
   .ed2-art{overflow:visible}
   .ed2-mn-row::before,.ed2-row2::before,.ed2-group-stats::before,.ed2-art::before,.ed2-hlbox::before,
   #pane-editor .ed2-kwbar::before,#edFields>.ed2-g-meta::before,#pane-editor .ed2-flavor-row>.ed2-stack-lbl::before{
@@ -6165,7 +6174,6 @@ body .kwp-body.tpp-body{display:block}
   .ed2-sym-hyb{flex-wrap:wrap;gap:5px}
   .ed2-sym-hyb-lbl{flex:0 0 100%;margin:0 0 2px;font-size:15px}
   .ed2-sym-hadd{padding:0 14px;font-size:15px}
-  .ed2-sym-x.nb.nb{height:44px;padding:0 14px;font-size:13px;letter-spacing:.05em}
 
   #pane-editor .ed2-field.ed2-flavor-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 10px}
   #pane-editor .ed2-flavor-row>.ed2-stack-lbl{margin:0;padding:0;font-size:0;line-height:0}
@@ -6231,6 +6239,7 @@ body .kwp-body.tpp-body{display:block}
   #pane-editor .ed2-meta>.ed2-field:nth-child(-n+2){grid-column:1/-1}
   #pane-editor .ed2-field-rar select{height:44px;padding:0 8px;font-size:16px}
   #pane-editor .ed2-sagabox{margin-top:14px}
+  #pane-editor .ed2-meta2>.ed2-field-rar{display:block;margin-top:14px}
   #pane-editor .ed2-sagabox>label{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-size:12px;color:var(--td)}
   #pane-editor .ed2-sagacount{min-width:20px;height:20px;margin:0;padding:0 6px;box-sizing:border-box;border-radius:10px;
     background:var(--s3);font-family:'Crimson Pro',serif;font-size:13px;line-height:20px;text-align:center}
@@ -6499,8 +6508,6 @@ body .kwp-body.tpp-body{display:block}
   #edStatsOverlay .stat-cl-e{min-height:32px;font-size:13px}
   #edStatsOverlay .ed2-input.stat-cl-in,#edStatsOverlay .ed2-input.stat-cl-sel{height:44px;font-size:16px}
   #edStatsOverlay .stat-cl-in{flex:1 1 160px}
-  .ed2-rate-f{font-size:14px}
-  .ed2-rate-f .ed2-input{min-height:44px;font-size:16px}
   #edStatsOverlay .stat-title{margin:14px 0 4px;font-size:13px}
   #edStatsOverlay .stat-sum{font-size:13px}
   #edStatsOverlay .stat-chart{max-height:none;overflow:visible;padding-right:0}
@@ -35718,14 +35725,14 @@ var _SC_EDITOR = [
   {title:'Mana Cost and Name', desc:'Type the Mana Cost in braces, such as {2}{R}{R}; it is put in order when you leave the field. The \u25BE at the right end of the box picks a color, X, a number from 0 to 20 or a hybrid from a menu. The date at the end of the Name row is when the card was last saved.'},
   {title:'Super-Type and Sub-Type', desc:'Type in the box to search, then press Enter or pick one from the list. Each type is added as a chip to the right of its box, and the box narrows to make room. Press × on a chip to take it off, or drag a chip to change the order: the type line reads in that order, and Templates match a card on its first Sub-Type.'},
   {title:'Stats', desc:'Four slots, each a stat (Attack, Health, Arcane, Range, Attack + Arcane, Health + Arcane, Blank or Hidden) and its value. Tick * to print a centered * in place of a number.'},
-  {title:'Rule Text', desc:'"No split" is one rules box; "Split 2", "Split 3" and "Split 4" divide it into sections, each with its own text. "All Individual" gives every section its own name, type line and mana cost (or tick a section by itself), and "Choice" adds one line across the top.\nB, I and U make the selected text bold, italic or underlined, "Add —" puts an em dash at the cursor, and "Insert Card Name" links another card: it prints bold and underlined, shows that card when hovered, and the Play Test board can create a copy of it.\n"Symbols \u25BE" types a symbol at the cursor: the seven colors, Lock, X, 0 to 20, every symbol uploaded on Templates, and the stat and dice marks (ATK, HP, MP, Rg, D4 to D20), which type their word. For a hybrid, tick two or three colors in the Hybrid row and press "Add". Hover over a symbol for its name. The menu stays open, so you can add several in a row, until you click elsewhere or press "Close \u2715".'},
+  {title:'Rule Text', desc:'"No split" is one rules box; "Split 2", "Split 3" and "Split 4" divide it into sections, each with its own text. "All Individual" gives every section its own name, type line and mana cost (or tick a section by itself), and "Choice" adds one line across the top.\nB, I and U make the selected text bold, italic or underlined, "Add —" puts an em dash at the cursor, and "Insert Card Name" links another card: it prints bold and underlined, shows that card when hovered, and the Play Test board can create a copy of it.\n"Symbols \u25BE" types a symbol at the cursor: the seven colors, Lock, X, 0 to 20, every symbol uploaded on Templates, the stat marks (Attack, Health and Arcane; in Rebirth ATK, HP, MP and Rg) and the dice (D4 to D20), which type their word. For a hybrid, tick two or three colors in the Hybrid row and press "Add". Hover over a symbol for its name. The menu stays open, so you can add several in a row, until you click elsewhere.'},
   {title:'Flavor Text', desc:'The italic text under the rules. "lines" sets how many lines it may use on the card; blank is automatic. The rules text always fills what is left.'},
   {title:'Art', desc:'"Variant" is the card’s looks: "+" adds one, ✎ renames it and "Delete" removes it. The art, its fill and its framing belong to the look.\nThe first menu places the art: "Horizontal Art" (above the rules box), "Left Vertical Art" or "Right Vertical Art" (beside it). The second sets how it fills its window: "Auto" (Templates’ Art Defaults), "Contain" (all of it, letterboxed), "Cover" (fills the window, cropping) or "Fill" (stretched).\nDrag the picture on the stage to move it and scroll to zoom; the bright window is what lands on the card. X, Y, Zoom and Rotate do the same by number. "Upload" adds or replaces the picture, "Reset" puts its framing back, "Flip" mirrors it and "Remove" takes it off. Everything here can be set before there is art, and applies as soon as there is.'},
   {title:'Look', desc:'Highlight gradients for the card’s Image, Background, Pinlines and Border: each takes a preset (the same set the keyword pills use), a blend mode and a strength. "Watermark" opens the watermark editor, and the menu beside it picks this card’s watermark.'},
   {title:'Colour', desc:'Prints this card in other colors: pick as many as you like. What the card is does not change, only how it is drawn. Click a color again to take it out, or "Clear" to go back to the card’s own.'},
   {title:'Keyword Reminders', desc:'Every keyword, key term and counter in the rules text is listed under the colors. Click one to print its reminder text on the card, and again to take it off; hover over one to read it.'},
-  {title:'Credits', desc:'"Owner" is who the card belongs to, printed at its bottom left; "Revision #" is its revision and "Artist" who made the art. Type a saga’s name in "Saga" and press Enter to add the card to that saga. In Rebirth, "Rarity" sets its rarity.'},
-  {title:'Sagas', desc:'Every saga the card is in sits beside "Sagas" and its count. Click one to edit the card as that saga prints it; × takes the card out of that saga (a card has to stay in at least one).\nAll copies of this card share Name, Type-Line, Mana Cost, Rules Text, Stats and Revision #. Different versions of this card can have its Flavor Text, Art and Artist, and Owner individually changed.'}
+  {title:'Credits', desc:'"Owner" is who the card belongs to, printed at its bottom left; "Rev #" is its revision and "Artist" who made the art. Type a saga’s name in "Saga" and press Enter to add the card to that saga. In Rebirth, "Rarity" sets its rarity.'},
+  {title:'Sagas', desc:'Every saga the card is in sits beside "Sagas" and its count. Click one to edit the card as that saga prints it; × takes the card out of that saga (a card has to stay in at least one).\nAll copies of this card share Name, Type-Line, Mana Cost, Rules Text, Stats and Rev #. Different versions of this card can have its Flavor Text, Art and Artist, and Owner individually changed.'}
 ];
 var _scMode = 'keys';
 function switchScTab(mode){
@@ -37258,6 +37265,10 @@ function markStats(seg,ph){
   });
   return seg;
 }
+function markLead(m){
+  var d=/^\d*D(\d+)(?![\w-])/.exec(m);
+  return (d&&DICE_SIDES.indexOf(+d[1])>=0)?diceMarkSVG(+d[1]):'';
+}
 var _noPills=false;
 var CNT_LEAD='(?:(?:\\d+|X)\\s+)?';
 function rxEsc(s){ return String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
@@ -37313,10 +37324,11 @@ function pillifyRules(html){
         return;
       }
       seg=seg.replace(ent.re,function(m){
+        var lead=markLead(m);
         if(k.mode==='keyword'||k.mode==='damage')
-          return (PILLS_ON&&!_noPills)?ph(kwPill(k.name,m,k.reminder,k.mode))
-          :ph("<span class='kw-link'"+kwLinkAttrs(k.mode,k.name)+">"+m+"</span>");
-        return ph("<span class='kw-link'"+kwLinkAttrs(k.mode,k.name)+">"+m+"</span>");
+          return ph(lead+((PILLS_ON&&!_noPills)?kwPill(k.name,m,k.reminder,k.mode)
+            :"<span class='kw-link'"+kwLinkAttrs(k.mode,k.name)+">"+m+"</span>"));
+        return ph(lead+"<span class='kw-link'"+kwLinkAttrs(k.mode,k.name)+">"+m+"</span>");
       });
     });
     parts[pi]=markDice(markStats(seg,ph),ph);
@@ -40936,16 +40948,19 @@ window.edOpenCardLink = function(btn){
 };
 
 var ED_SYM_COLOURS=[['R','Red'],['O','Orange'],['Y','Yellow'],['G','Green'],['B','Blue'],['I','Indigo'],['V','Violet']];
-var ED_SYM_STATS=[['ATK','Attack'],['HP','Health'],['MP','Arcane'],['Rg','Range']];
+function edSymStats(){
+  return window.REBIRTH ? [['ATK','Attack'],['HP','Health'],['MP','Arcane'],['Rg','Range']]
+    : [['Attack','Attack'],['Health','Health'],['Arcane','Arcane']];
+}
 var _edSym=null;
 function edSymPhone(){ return typeof catIsPhone==='function'&&catIsPhone(); }
 window.edSymHold=function(ev){ if(ev&&!edSymPhone())ev.preventDefault(); };
 function edSymGroups(cost){
   var mana=ED_SYM_COLOURS.map(function(c){ return {code:c[0],name:c[1]}; });
   if(!cost)mana.push({code:'L',name:'Lock'});
-  mana.push({code:'X',name:'X'});
+  mana.push({code:'X',name:'X'},{code:'0',name:'Number 0'});
   var nums=[];
-  for(var n=0;n<=20;n++)nums.push({code:String(n),name:'Number '+n});
+  for(var n=1;n<=20;n++)nums.push({code:String(n),name:'Number '+n});
   var out=[mana,nums];
   if(cost)return out;
   var have={};
@@ -40955,7 +40970,7 @@ function edSymGroups(cost){
     .filter(function(t){ return /^[A-Za-z0-9\/]+$/.test(t)&&!have[t]; }).sort()
     .map(function(t){ return {code:t,name:'Uploaded symbol'}; });
   if(up.length)out.push(up);
-  out.push(ED_SYM_STATS.map(function(s){ return {word:s[0],name:s[1],mark:STAT_MARKS[s[0]]}; })
+  out.push(edSymStats().map(function(s){ return {word:s[0],name:s[1],mark:STAT_MARKS[s[0]]}; })
     .concat(DICE_SIDES.map(function(d){ return {word:'D'+d,name:'Die',die:d}; })));
   return out;
 }
@@ -41014,15 +41029,10 @@ window.edOpenSymbols=function(btn,cost,ev){
     b.title=name; b.setAttribute('aria-label',name); b.innerHTML=html;
     return b;
   };
-  var top=document.createElement('div'); top.className='ed2-sym-top';
-  var x=document.createElement('button'); x.type='button';
-  x.className='ed2-btn nb nb-red nb-s close-x ed2-sym-x'; x.textContent='Close \u2715';
-  x.addEventListener('click',function(){ window.edCloseSymbols(true); });
-  top.appendChild(x); pop.appendChild(top);
   edSymGroups(cost).forEach(function(g){
     var grid=document.createElement('div'); grid.className='ed2-sym-grid';
     g.forEach(function(it){
-      var b=mk('ed2-sym-btn',it.name+' ('+(it.word||(cost?it.code:'{'+it.code+'}'))+')',
+      var b=mk('ed2-sym-btn',it.word===it.name?it.name:it.name+' ('+(it.word||(cost?it.code:'{'+it.code+'}'))+')',
         it.mark?statMarkSVG(it.mark):it.die?diceMarkSVG(it.die):symToken(it.code,px));
       b.addEventListener('click',function(e2){ edSymPut(it,e2); });
       grid.appendChild(b);
@@ -41849,10 +41859,13 @@ function orbBoxClass(type){
   return 'ed2-nf-blank';
 }
 function orbPreviewHTML(o){
-  var t=o.type,v=o.value;
+  var t=o.type,v=o.value==null?'':o.value;
   if(t==='blank'||t==='hidden')return "<span class='ed2-orb-pv ed2-orb-pv-none'></span>";
+  var set='';
+  try{ set=window.edOrbSetHTML(t,v)||''; }catch(_){}
+  if(set)return "<span class='ed2-orb-pv ed2-orb-pv-set'><span class='td-gorb td-sicon'>"+set+"</span></span>";
   return "<span class='ed2-orb-pv'><svg viewBox='0 0 38 38' width='38' height='38'>"
-    +orbShapeByType(t,v==null?'':v)+"</svg></span>";
+    +orbShapeByType(t,v)+"</svg></span>";
 }
 function orbEditorRows(c){
   var orbs=ensureOrbs(c);
@@ -41865,7 +41878,8 @@ function orbEditorRows(c){
     html+="<div class='ed2-nf ed2-orb "+orbBoxClass(o.type)+"' id='f-orb-box-"+i+"'>"
       +orbPreviewHTML(o)
       +"<div class='ed2-orb-fields'>"
-      +"<select class='ed2-orb-type' id='f-orb-type-"+i+"' aria-label='Orb "+(i+1)+" type' onchange='edOrbType("+i+",this.value)'>"+opts+"</select>"
+      +"<select class='ed2-orb-type' id='f-orb-type-"+i+"' aria-label='Orb "+(i+1)+" type' title='"+ORB_TYPE_LABEL[o.type]+"'"
+        +" onchange='edOrbType("+i+",this.value)'>"+opts+"</select>"
       +"<div class='ed2-orb-valrow'>"
         +"<input class='ed2-orb-val' id='f-orb-val-"+i+"' aria-label='Orb "+(i+1)+" value' value='"+e(o.value)+"' placeholder='\u2013'"+(isBlank||isStar?' disabled':'')+" oninput='edOrbVal("+i+",this.value)'>"
         +"<label class='ed2-orb-star' title='Set stat to * (centered)'><input type='checkbox' id='f-orb-star-"+i+"' aria-label='Orb "+(i+1)+": star (*) instead of a number'"+(isStar?' checked':'')+(isBlank?' disabled':'')+" onchange='edOrbStar("+i+",this.checked)'>*</label>"
@@ -41890,6 +41904,7 @@ window.edOrbType=function(i,val){ var c=curCard(); if(!c)return; ensureOrbs(c);
 };
 window.edOrbVal=function(i,val){ var c=curCard(); if(!c)return; ensureOrbs(c);
   c.orbs[i].value=val.trim(); syncLegacyStats(c); markDirty(c); renderPreview(c);
+  orbPvSwap(i,c.orbs[i]);
 };
 function syncLegacyStats(c){
   var o=c.orbs||[];
@@ -41992,7 +42007,7 @@ function sagaBoxHTML(c){
   }).join('');
   var note = (ids.length>1)
     ? " title='All copies of this card share Name, Type-Line, Mana Cost, Rules Text, Stats and "
-      +"Revision #. Different versions of this card can have its Flavor Text, Art and Artist, and "
+      +"Rev #. Different versions of this card can have its Flavor Text, Art and Artist, and "
       +"Owner individually changed.'"
     : "";
   return "<div class='ed2-sagabox'>"
@@ -42071,9 +42086,10 @@ function renderFields(){
             +"<div class='ed2-combo-list hidden' id='f-sub-list'></div></div>"
           +"<div class='ed2-tokrow' id='f-sub-toks'></div></div></div>"
       +"</div>"
-      +"<div class='ed2-group-stats'><div class='ed2-stats' id='f-orbs'>"
-        +orbEditorRows(c)+"</div></div>"
     +"</div>"
+    +"<div class='ed2-rulesrow'>"
+    +"<div class='ed2-group ed2-g-stats'><div class='ed2-group-stats'><div class='ed2-stats' id='f-orbs'>"
+      +orbEditorRows(c)+"</div></div></div>"
     +"<div class='ed2-group ed2-g-rules'><div class='ed2-row3'>"
       +"<div class='ed2-rules-col'>"
         +rulesEditorHTML(c)
@@ -42086,6 +42102,7 @@ function renderFields(){
           +"</div></div>"
       +"</div>"
     +"</div></div>"
+    +"</div>"
     +"</div><div class='ed2-artcol'>"
       +"<div class='ed2-group ed2-art' id='edArtPanel'></div>"
       +"<div class='ed2-artrest'>"
@@ -42100,16 +42117,15 @@ function renderFields(){
         +" title='Type a saga and press Enter to add this card to it. The chips below are every saga it is in.'"
         +" onkeydown='if(event.key===\"Enter\"){event.preventDefault();edSagaFieldAdd();}'"
         +" onchange='edSagaFieldAdd()'>"+sagaDatalistHTML()+"</div>"
-      +"<div class='ed2-field ed2-inl f-rev-wrap'><label for='f-rev'>Revision #</label><input class='ed2-input' id='f-rev' value='"+e(m.revision||'')+"' oninput='edLive()'></div>"
+      +"<div class='ed2-field ed2-inl f-rev-wrap'><label for='f-rev'>Rev #</label><input class='ed2-input' id='f-rev' value='"+e(m.revision||'')+"' oninput='edLive()'></div>"
       +"<div class='ed2-field ed2-inl f-artist-wrap'><label for='f-artist'>Artist</label><input class='ed2-input' id='f-artist' value='"+e(m.artist||'')+"' oninput='edLive()'></div>"
-      +(window.REBIRTH ? rarityFieldHTML(c) : '')
-    +"</div>"+sagaBoxHTML(c)+"</div>"
-    +edRateCardHTML(c);
+    +"</div>"
+    +(window.REBIRTH ? "<div class='ed2-meta2'>"+sagaBoxHTML(c)+rarityFieldHTML(c)+"</div>" : sagaBoxHTML(c))
+    +"</div>";
   renderTypeToks();
   setupCombo('super'); setupCombo('sub');
   try{ window.edRenderArtPanel(); }catch(_){}
   try{ refreshMarkPicker(); }catch(_){}
-  try{ window.edRateCalc(); }catch(_){}
   try{ edFitBtnRows(); edWatchBtnBox(); }catch(_){}
   try{ window.edSyncSaveBtns(); }catch(_){}
   if(typeof window.edLiveQuiet==='function') window.edLiveQuiet(edLive);
@@ -42361,7 +42377,7 @@ function renderKwBar(){
   if(!c){ bar.innerHTML=''; return; }
   var kws=detectKeywords(c.ruleText||'');
   if(!kws.length){ bar.innerHTML="<div class='ed2-kwbar-title'>Keyword Reminders</div><div class='ed2-kwbar-empty'>No keywords detected in the rule text.</div>"; return; }
-  bar.innerHTML="<div class='ed2-kwbar-title'>Toggle reminder text for these terms.</div>"
+  bar.innerHTML="<div class='ed2-kwbar-title'>Toggle Reminder Text</div>"
     +"<div class='ed2-kwbtns'>"+kws.map(function(k){
       var on=(kwRemindersOf(edFieldSource(c)).indexOf(k.name)>=0)?' on':'';
       var label=(k.mode==='keyword'&&PILLS_ON)?kwPill(k.name,e(k.name)):e(k.name);
@@ -42382,16 +42398,16 @@ window.edSetFlavorRows=function(v){
   markDirty(c);
   renderPreview(c);
 };
+function orbPvSwap(i,o){
+  var box=document.getElementById('f-orb-box-'+i), pv=box&&box.querySelector('.ed2-orb-pv'); if(!pv)return;
+  var tmp=document.createElement('div');
+  tmp.innerHTML=orbPreviewHTML(o||{type:'hidden',value:''});
+  box.replaceChild(tmp.firstChild,pv);
+}
 window.edRefreshOrbPreviews=function(){
   var c=curCard(); if(!c)return;
   var orbs=ensureOrbs(c);
-  for(var i=0;i<4;i++){
-    var box=document.getElementById('f-orb-box-'+i); if(!box)continue;
-    var pv=box.querySelector('.ed2-orb-pv');
-    var tmp=document.createElement('div');
-    tmp.innerHTML=orbPreviewHTML(orbs[i]||{type:'hidden',value:''});
-    if(pv)box.replaceChild(tmp.firstChild,pv);
-  }
+  for(var i=0;i<4;i++)orbPvSwap(i,orbs[i]);
 };
 window.edToggleKw=function(name){
   var c=curCard(); if(!c)return;
@@ -42553,7 +42569,7 @@ window.edTplUpload=function(key,input){
       TPL[key]=r.dataUrl;
       setMetaSafe('customTemplate',tplHasAny());
       try{ scheduleFace(); }catch(_){}
-      var c=curCard(); if(c)renderPreview(c);
+      var c=curCard(); if(c){ renderPreview(c); window.edRefreshOrbPreviews(); }
       edTplPanelRefresh();
     });
   }).catch(function(e){ alert('Could not read that image: '+e); });
@@ -42563,7 +42579,7 @@ window.edTplRemove=function(key){
   tplDel(key).then(function(){
     setMetaSafe('customTemplate',tplHasAny());
     try{ scheduleFace(); }catch(_){}
-    var c=curCard(); if(c)renderPreview(c);
+    var c=curCard(); if(c){ renderPreview(c); window.edRefreshOrbPreviews(); }
     edTplPanelRefresh();
   });
 };
@@ -42575,7 +42591,7 @@ window.edTplClearAll=function(){
     TPL={};
     setMetaSafe('customTemplate',false);
     try{ scheduleFace(); }catch(_){}
-    var c=curCard(); if(c)renderPreview(c);
+    var c=curCard(); if(c){ renderPreview(c); window.edRefreshOrbPreviews(); }
     edTplPanelRefresh();
   });
 };
@@ -42627,7 +42643,7 @@ window.edTplImport=function(input){
         }
         setMetaSafe('customTemplate',tplHasAny());
         try{ scheduleFace(); }catch(_){}
-        var c=curCard(); if(c)renderPreview(c);
+        var c=curCard(); if(c){ renderPreview(c); window.edRefreshOrbPreviews(); }
         edTplPanelRefresh();
         alert('Imported '+Object.keys(man.slots||{}).length+' template asset(s).');
       });
@@ -42722,7 +42738,7 @@ function applyPackBody(pk){
     if(nCustom){ KWCUSTOM=nCustom; edApplyCustomEntries(); }
     if(pk.cardLook&&typeof pk.cardLook==='object'){ window.edApplyLook(pk.cardLook,false); window.edLookSaved(true); }
     try{ scheduleFace(); }catch(_){}
-    var c=curCard(); if(c)renderPreview(c);
+    var c=curCard(); if(c){ renderPreview(c); window.edRefreshOrbPreviews(); }
     edTplPanelRefresh();
   });
 }
@@ -44105,6 +44121,7 @@ function frLookChanged(what){
   if(what!=='back'){
     try{ if(typeof scheduleFace==='function') scheduleFace(); }catch(_){}
     try{ if(typeof curCard==='function'&&typeof renderPreview==='function'){ var c=curCard(); if(c) renderPreview(c); } }catch(_){}
+    try{ if(typeof window.edRefreshOrbPreviews==='function') window.edRefreshOrbPreviews(); }catch(_){}
   }
   try{ if(document.body.classList.contains('testdeck-active')&&typeof tdRender==='function') tdRender(); }catch(_){}
   tppSync(what);
@@ -48238,61 +48255,6 @@ window.edStatNotInKeywords=function(){ return statNotInKeywords().map(function(r
 window.edStatTypos=function(all){ return statTypos(!!all).map(function(r){
   return {word:r.word,likely:r.likely,cards:r.cards.map(function(c){ return c.name; })}; }); };
 
-var _rateCard={mv:3,a:2,h:2,r:0,link:''};
-function edRateNum(id,v,lbl){
-  return "<label class='ed2-rate-f'><span>"+lbl+"</span><input type='number' class='ed2-input' id='"+id+"' step='"
-    +(id==='edRateB'||id==='edRateW'?'0.1':'1')+"' min='0' value='"+e(String(v))+"' oninput='edRateCalc()'></label>";
-}
-function edRateCardHTML(c){
-  if(window.REBIRTH)return '';
-  if(c&&statIsChar(c)){
-    var n=function(k){ var v=statRead(c,k); return typeof v==='number'?v:0; };
-    _rateCard={mv:statNum(c.cmc)||0,a:n('attack'),h:n('health'),r:n('arcane'),link:statLinked(c)};
-  }
-  var v=_rateCard;
-  return "<div class='ed2-group ed2-g-rate' id='edRateBox'><div class='ed2-rate-t'>Rate a card</div>"
-    +"<div class='ed2-rate-row'>"
-      +edRateNum('edRateMv',v.mv,'Mana value')+edRateNum('edRateA',v.a,'Attack')+edRateNum('edRateH',v.h,'Health')
-      +edRateNum('edRateR',v.r,'Arcane')
-      +"<label class='ed2-rate-f'><span>Linked orb</span><select class='ed2-input' id='edRateLink' onchange='edRateCalc()'>"
-        +[['','None'],['A','Attack and Arcane'],['H','Health and Arcane']].map(function(o){
-          return "<option value='"+o[0]+"'"+(o[0]===v.link?' selected':'')+">"+o[1]+"</option>"; }).join('')
-      +"</select></label>"
-      +edRateNum('edRateB',_statRate.b,'Budget')+edRateNum('edRateW',_statRate.w,'Arcane ÷')
-    +"</div><div class='ed2-rate-out' id='edRateOut' aria-live='polite'></div></div>";
-}
-function statsSagaCards(){
-  var keep=_statBrowse; _statBrowse=false;
-  try{ return statsCards(); } finally { _statBrowse=keep; }
-}
-window.edRateCalc=function(){
-  var out=document.getElementById('edRateOut'); if(!out)return null;
-  var g=function(id){ var el=document.getElementById(id); var n=el?parseFloat(el.value):NaN; return isFinite(n)?n:0; };
-  var link=(document.getElementById('edRateLink')||{}).value||'';
-  var mv=Math.round(g('edRateMv')), a=g('edRateA'), hp=g('edRateH'), r=g('edRateR');
-  var b=g('edRateB')>0?g('edRateB'):2.5, w=g('edRateW')>0?g('edRateW'):1.5;
-  var ar=document.getElementById('edRateR');
-  if(link){ r=(link==='A')?a:hp; if(ar){ ar.value=String(r); ar.disabled=true; } }
-  else if(ar)ar.disabled=false;
-  _rateCard={mv:mv,a:a,h:hp,r:r,link:link};
-  if(!(mv>=1)){ out.textContent='A mana value of 1 or more is needed.'; return null; }
-  var pts=a+hp+r/w, bud=b*mv, rate=pts/bud;
-  statMemoReset();
-  var key=statMvKey(mv), pop=statRateChars(statsSagaCards(),{b:b,w:w}).filter(function(x){ return statMvKey(x.mv)===key; });
-  var s=pop.map(function(x){ return x.rate; }).sort(function(x,y){ return x-y; });
-  var line1=statPctTxt(rate)+' of budget · '+pts.toFixed(1)+' points against '+bud.toFixed(1);
-  var what=key==='8+'?'Printed Characters of 8 or more mana':'Printed '+key+'-mana Characters', line2;
-  if(!s.length)line2=what+': none to compare with.';
-  else {
-    var eps=1e-9, below=s.filter(function(x){ return x<rate-eps; }).length,
-        ties=s.filter(function(x){ return Math.abs(x-rate)<=eps; }).length;
-    var pr=Math.round((below+ties/2)/s.length*100);
-    line2=what+' ('+s.length+'): middle 80% from '+statPctTxt(statQuant(s,0.1))+' to '+statPctTxt(statQuant(s,0.9))
-      +', median '+statPctTxt(statQuant(s,0.5))+'. This card is above '+pr+'% of them.';
-  }
-  out.innerHTML="<div class='ed2-rate-big'>"+e(line1)+"</div><div>"+e(line2)+"</div>";
-  return {rate:rate,points:pts,budget:bud,line1:line1,line2:line2};
-};
 
 
 var GH_SOURCES={
