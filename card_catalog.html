@@ -273,7 +273,7 @@ body.light .rb-lbl{background:#f4f1ea}
 .sb{width:268px;min-width:268px;background:var(--s1);border-right:4px solid var(--go);border-image:var(--metal-gold) 1;height:calc(100vh - var(--chrome));overflow-y:auto;overflow-x:hidden;position:sticky;top:var(--chrome);padding:10px 0 40px;scrollbar-width:thin;scrollbar-color:var(--b2) transparent;transition:background .2s}
 .sb::-webkit-scrollbar{width:4px}
 .sb::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
-.sbh{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:8px 13px;border-bottom:1px solid var(--b1);margin-bottom:3px}
+.sbh{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 13px;border-bottom:1px solid var(--b1);margin-bottom:3px}
 .sb.minimized{width:0;min-width:0;overflow:hidden;border-right:none;padding:0}
 body.no-panels .tab-views{visibility:hidden}
 .sb-show{display:none;position:fixed;left:0;top:calc(var(--chrome) + 8px);z-index:85}
@@ -549,6 +549,10 @@ body.light .ci-qbtn{background:var(--s2)}
 .dp-sec-cnt{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;background:var(--b2);color:var(--td);font-size:.75rem;font-weight:700;padding:0 5px}
 .dph{padding:10px 11px 7px;border-bottom:1px solid color-mix(in srgb,var(--th-fill) 20%,var(--b1));flex-shrink:0}
 .dph-top{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:6px}
+@media (min-width:900px){
+  .dph>.sb-min.nb{display:flex;width:100%;--nb-h:26px;margin:0 0 7px}
+  .dph-top{justify-content:center}
+}
 .dph-title{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;letter-spacing:.04em;color:var(--tx);white-space:nowrap}
 
 .dpb{display:flex;gap:4px}
@@ -566,6 +570,17 @@ body.light .ci-qbtn{background:var(--s2)}
 .dcnt{padding:4px 11px;border-top:1px solid var(--b1);font-size:.8rem;color:var(--tm);flex-shrink:0}
 .mo{display:none;position:fixed;inset:0;background:color-mix(in srgb,var(--black) 80%,transparent);z-index:1000;align-items:center;justify-content:center;padding:12px;backdrop-filter:blur(4px)}
 .mo.on{display:flex}
+.md-shell{position:relative;width:100%;max-width:1100px}
+.mnav-out{position:absolute;top:25%;height:50%;width:28px;padding:0;display:flex;align-items:center;justify-content:center;
+  background:var(--s1);border:1px solid var(--b2);border-radius:0;color:var(--tx);font-size:1.1rem;cursor:pointer;
+  transition:background .15s,box-shadow .15s}
+.mnav-out:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+.mnav-out-l{right:calc(100% + 10px)}
+.mnav-out-r{left:calc(100% + 10px)}
+@media (min-width:900px){
+  .mo{padding:12px 50px}
+  .md>.mnav{display:none}
+}
 .md{background:var(--s1);border:4px solid;border-image:var(--metal-gold) 1;border-radius:0;box-shadow:0 0 20px color-mix(in srgb,var(--go) 35%,transparent),0 0 40px color-mix(in srgb,var(--go) 12%,transparent),0 32px 100px color-mix(in srgb,var(--black) 70%,transparent);max-width:1100px;width:100%;max-height:94vh;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;position:relative;animation:mi .18s ease}
 @keyframes mi{from{transform:scale(.96) translateY(8px);opacity:0}to{transform:none;opacity:1}}
 .md-top{display:flex;flex-direction:row;flex:0 0 auto}
@@ -761,6 +776,22 @@ body.light tr.hl-match{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--black)
 .stat-pill-lbl{font-family:'Cinzel',serif;font-size:.6rem;font-weight:600;letter-spacing:.1em;color:var(--tx);margin-top:3px}
 .stat-cmc-horiz{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .stat-cmc-h-item{background:var(--s2);border:1px solid var(--b1);border-radius:0;padding:8px 12px;display:flex;flex-direction:column;align-items:center;flex:1;min-width:60px}
+.dv-chart-pie{flex:0 0 80px;width:80px;height:80px}
+.dv-chart-bar{flex:1;min-width:0}
+@media (min-width:900px){
+  .chart-box.dv-chart-row{display:flex;align-items:center;gap:14px}
+  .dv-chart-row>h4{flex:0 0 auto;min-width:9.4em;margin:0}
+  .dv-curve-row{display:flex;align-items:flex-start;gap:14px}
+  .dv-curve-chart{flex:1 1 auto;min-width:0}
+  #statCmcBox{flex:0 0 auto;flex-direction:column;flex-wrap:nowrap;gap:6px;margin:0}
+  #statCmcBox>.stat-cmc-h-item{flex:0 0 auto;flex-direction:row;align-items:baseline;justify-content:space-between;gap:18px;padding:4px 12px}
+  #statCmcBox .stat-pill-lbl{margin:0}
+  #statCmcBox .stat-pill-val{font-size:1.5rem}
+  #statCmcBox>#dv-inf-wrap{flex-direction:column;align-items:center;gap:2px;padding:6px 12px}
+  #dv-inf-wrap .dv-inf-line{white-space:normal;text-align:center;font-size:1.05rem}
+  #dv-inf-wrap .dv-inf-p{display:block}
+  #dv-inf-wrap .dv-inf-sep{display:none}
+}
 
 .cg .ci.hide-info .ci-inf{display:none!important}
 .cg .ci.hide-info .ci-date{display:none!important}
@@ -776,8 +807,17 @@ body.light tr.hl-match{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--black)
 .deck-warn-row.pool b{color:var(--txt-accent)}
 .deck-warn-row.pool .dr-poolgo{margin-left:auto}
 .deck-warn-icon{font-size:1rem;flex-shrink:0}
-.saved-hdr{font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;letter-spacing:.1em;color:var(--txt-accent);padding:6px 11px 4px;display:flex;align-items:center;justify-content:space-between}
+.saved-sec{border-top:1px solid var(--b1);flex-shrink:0}
+.saved-hdr{font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;letter-spacing:.1em;color:var(--txt-accent);padding:6px 11px 4px;display:flex;align-items:center;gap:7px}
 .saved-list{overflow-y:auto;max-height:140px;scrollbar-width:thin}
+.saved-tog{flex:0 0 auto;width:20px;height:20px;padding:0;display:inline-flex;align-items:center;justify-content:center;
+  background:transparent;border:1px solid var(--b2);border-radius:0;color:var(--tx);cursor:pointer;transition:background .15s,box-shadow .15s}
+.saved-tog:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
+.saved-tog .ico{width:14px;height:14px}
+.dp.saved-open>.dp-scroll,.dp.saved-open>.dcnt{display:none}
+.dp.saved-open>.saved-sec{flex:1 1 0;min-height:0;display:flex;flex-direction:column}
+.dp.saved-open .saved-list{flex:1 1 auto;min-height:0;max-height:none}
+.saved-row>.nb.nb{width:26px;padding:0}
 .saved-row{display:flex;align-items:center;gap:4px;padding:3px 8px;border-top:1px solid var(--b1)}
 .saved-row:first-child{border-top:none}
 .saved-name{flex:1;font-family:'Crimson Pro',serif;font-size:.9rem;color:var(--tx);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 4px;border-radius:0}
@@ -1009,6 +1049,9 @@ body.light{--ed-info:#235b8c;--ed-info-edge:#7ea3c6;--ed-info-hi:#4f7fae;
 .ed2-nf-atk input{background:color-mix(in srgb,var(--re) 12%,transparent);border:1px solid color-mix(in srgb,var(--re) 30%,transparent)}
 .ed2-nf-hp input{background:color-mix(in srgb,var(--go) 10%,transparent);border:1px solid color-mix(in srgb,var(--go) 30%,transparent)}
 .ed2-nf-arc input{background:color-mix(in srgb,var(--ac) 12%,transparent);border:1px solid color-mix(in srgb,var(--ac) 30%,transparent)}
+.ed2-nf-rng{border:2px solid #5c9e6e;border-image:linear-gradient(180deg,#1f3325 0%,#416f4e 15%,#c4e4cd 40%,#5c9e6e 50%,#558b64 60%,#416f4e 85%,#1f3325 100%) 1}
+.ed2-nf-rng input{background:rgba(92,158,110,.12);border:1px solid rgba(92,158,110,.3)}
+body.light .ed2-nf-rng input{background:rgba(92,158,110,.07)}
 
 .ed2-orb{grid-template-columns:1fr 50px 26px !important;gap:5px}
 .ed2-orb-type{background:var(--s2);border:1px solid var(--b1);color:var(--tx);font-family:'Crimson Pro',serif;
@@ -1412,19 +1455,18 @@ body.light .ed2-group,body.arcane .ed2-group{--grp-face:var(--s1)}
 .ed2-group .ed2-mn-row .f-mana-wrap .ed2-input{flex:0 0 136px;width:136px}
 
 .ed2-group-stats .ed2-stats{display:flex;flex-direction:row;flex-wrap:nowrap;gap:5px;align-items:stretch}
-.ed2-group-stats .ed2-orb{display:flex;flex-direction:row;align-items:center;gap:6px;
+.ed2-group-stats .ed2-orb{display:flex;flex-direction:column;align-items:stretch;gap:4px;
   flex:1 1 0;min-width:0;padding:5px}
 .ed2-group-stats .ed2-orb-pv{flex:0 0 30px;width:30px;height:30px;margin:6px}
-.ed2-orb-fields{display:flex;flex-direction:column;gap:4px;width:100%;min-width:0}
-.ed2-orb-valrow{display:flex;align-items:center;gap:4px;min-width:0}
+.ed2-orb-body{display:flex;align-items:center;gap:6px;min-width:0}
+.ed2-orb-fields{display:flex;flex-direction:column;gap:4px;flex:1 1 0;min-width:0}
 .ed2-orb-pv{flex:0 0 38px;width:38px;height:38px;display:block}
 .ed2-orb-pv svg{display:block;overflow:visible}
 .ed2-orb-pv-none{border:1px dashed var(--b1);border-radius:6px;opacity:.5}
 .ed2-orb-pv-set{position:relative;--si-fs:13px}
 .ed2-group-stats .ed2-orb-type{max-width:none;width:100%;min-width:0;padding:1px 2px;font-size:.7rem}
-.ed2-group-stats .ed2-orb-val{flex:1 1 0;width:auto;min-width:0;text-align:center;padding:2px 3px;font-size:.82rem}
+.ed2-group-stats .ed2-orb-val{flex:0 0 auto;width:100%;min-width:0;text-align:center;padding:2px 3px;font-size:.82rem}
 .ed2-group-stats .ed2-orb-star{flex:0 0 auto;font-size:.72rem;gap:1px}
-.ed2-group-stats .ed2-orb-valrow{gap:3px}
 .ed2-group-stats .ed2-orb-fields{gap:3px}
 
 
@@ -1863,6 +1905,14 @@ span.ed2-sagachip{cursor:default}
   border-image:linear-gradient(180deg,#2a1a44 0%,#4a3080 15%,#e0d0ff 40%,#9b7bda 50%,#7a5ab8 60%,#4a3080 85%,#2a1a44 100%) 1;
   box-shadow:0 0 8px color-mix(in srgb,var(--spect-ink) 35%,transparent)}
 body.light .mo .mdup{color:var(--spect-ink);background:rgba(155,123,218,.2)}
+@media (min-width:900px){
+  .mo .mlink-row>#mlinkBtn{position:absolute;top:calc(11px + (var(--m-ctlh) + var(--m-ctlgap)) * 3);right:var(--m-ctlright);
+    width:var(--m-ctlw);height:var(--m-ctlh);padding:0;box-sizing:border-box;border-width:2.5px;z-index:10;
+    display:flex;align-items:center;justify-content:center;gap:5px;
+    font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);font-size:.8rem;font-weight:600;letter-spacing:.02em;white-space:nowrap}
+  .mo.no-edit .mlink-row>#mlinkBtn,.mo.no-dn .mlink-row>#mlinkBtn{top:calc(11px + (var(--m-ctlh) + var(--m-ctlgap)) * 2)}
+  .mo.no-edit.no-dn .mlink-row>#mlinkBtn{top:calc(11px + var(--m-ctlh) + var(--m-ctlgap))}
+}
 .m-upd{font-family:'Crimson Pro',serif;font-size:.86rem;color:var(--td);
   white-space:nowrap;margin-left:2px}
 .gh-page{display:flex;flex-direction:column;gap:18px;padding:4px 2px 10px}
@@ -2151,30 +2201,31 @@ body.light .ed2-hl-ovr,body.arcane .ed2-hl-ovr{--ovr-face:var(--s1)}
   .ed2-row2 .ed2-inl > .ed2-combo:focus-within{min-width:150px}
 
   .ed2-group .ed2-meta{align-items:center;gap:14px}
-  .ed2-group .ed2-meta>.f-rev-wrap{flex:0 0 auto}
+  .ed2-group .ed2-meta>.f-rev-wrap{flex:0 0 auto;width:auto}
   .ed2-group .ed2-meta>.f-rev-wrap>.ed2-input{flex:0 0 60px;width:60px}
+  .ed2-group .ed2-meta>.ed2-field-rar{flex:0 0 auto;width:auto}
+  .ed2-group .ed2-meta>.ed2-field-rar>select{flex:0 0 auto;width:auto}
 
   .ed2-rulesrow{display:flex;gap:12px;align-items:stretch;min-width:0}
   .ed2-topsplit-main .ed2-rulesrow>.ed2-group{width:auto}
-  .ed2-rulesrow>.ed2-g-rules{flex:1 1 0;min-width:0}
+  .ed2-rulesrow>.ed2-g-rules{flex:1 1 0;min-width:0;display:flex;flex-direction:column}
+  .ed2-rulesrow>.ed2-g-rules>.ed2-row3{flex:1 1 auto}
   .ed2-rulesrow>.ed2-g-stats{flex:0 0 auto;display:flex;flex-direction:column;padding:10px}
   .ed2-g-stats>.ed2-group-stats{flex:1 1 auto;display:flex;flex-direction:column}
   .ed2-g-stats .ed2-stats{flex:1 1 auto;flex-direction:column;justify-content:space-between;gap:6px}
-  .ed2-g-stats .ed2-orb{flex:0 0 auto;gap:4px;padding:4px}
+  .ed2-g-stats .ed2-orb{flex:0 0 auto;gap:3px;padding:4px}
+  .ed2-g-stats .ed2-orb-body{gap:4px}
   .ed2-g-stats .ed2-orb-pv{margin:3px}
-  .ed2-g-stats .ed2-orb-fields{width:auto}
-  .ed2-g-stats .ed2-orb-type{width:24px;height:20px;padding:0;cursor:pointer;-webkit-appearance:none;appearance:none;color:transparent;
-    background:linear-gradient(45deg,transparent 50%,var(--td) 50%) calc(50% - 2.5px) 55% / 5px 5px no-repeat,
-      linear-gradient(135deg,var(--td) 50%,transparent 50%) calc(50% + 2.5px) 55% / 5px 5px no-repeat,var(--s2)}
+  .ed2-g-stats .ed2-orb-fields{width:0;gap:2px}
+  .ed2-g-stats .ed2-orb-type{height:20px;padding:0 13px 0 3px;cursor:pointer;-webkit-appearance:none;appearance:none;
+    background:linear-gradient(45deg,transparent 50%,var(--td) 50%) calc(100% - 7px) 55% / 5px 5px no-repeat,
+      linear-gradient(135deg,var(--td) 50%,transparent 50%) calc(100% - 2px) 55% / 5px 5px no-repeat,var(--s2)}
   .ed2-g-stats .ed2-orb-type option{color:var(--tx);background:var(--s2)}
-  .ed2-g-stats .ed2-orb-val{flex:0 0 22px;width:22px;padding:2px 1px}
+  .ed2-g-stats .ed2-orb-val{padding:2px 1px}
 
   .ed2-sagabox{display:flex;align-items:center;gap:10px}
   .ed2-sagabox > label{flex:0 0 auto;margin:0}
   .ed2-sagabox > .ed2-sagachips{flex:1 1 auto;min-width:0}
-  .ed2-meta2{display:flex;align-items:center;gap:14px;margin-top:12px}
-  .ed2-meta2 > .ed2-sagabox{flex:1 1 auto;min-width:0;margin-top:0}
-  .ed2-meta2 > .ed2-field-rar{flex:0 0 190px}
 }
 
 @media (min-width:900px){
@@ -5893,6 +5944,8 @@ body .kwp-body.tpp-body{display:block}
   .stat-cmc-h-item{min-width:0!important;padding:6px 4px}
   .stat-pill-val{font-size:22px}
   #dv-inf-wrap{grid-column:1 / -1}
+  .dv-curve-row{display:flex;flex-direction:column}
+  .dv-curve-row>#statCmcBox{order:1;margin:10px 0 0}
   .chart-box{min-width:0}
   .chart-box h4{font-size:18px}
   .chart-box div:has(>#chart-pips),.chart-box div:has(>#chart-esspie){display:none}
@@ -5951,6 +6004,7 @@ body .kwp-body.tpp-body{display:block}
     border:1px solid color-mix(in srgb,var(--white) 30%,transparent);border-radius:50%;background:color-mix(in srgb,var(--bg) 55%,transparent);color:var(--tx);font-size:20px}
   .mnav-l{left:22px}
   .mnav-r{right:22px}
+  .mnav-out{display:none}
 
   .mdb{display:block;margin-top:18px;padding:0;overflow:visible}
   .mnm{margin:0 0 6px;padding:0;font-size:24px}
@@ -6133,11 +6187,11 @@ body .kwp-body.tpp-body{display:block}
   #pane-editor .ed2-combo-opt{display:flex;align-items:center;min-height:44px;padding:0 12px;border-bottom:1px solid var(--b1);font-size:16px}
 
   .ed2-group-stats .ed2-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-  .ed2-group-stats .ed2-orb{align-items:flex-start;gap:8px;padding:8px}
-  .ed2-group-stats .ed2-orb-pv{flex:0 0 38px;width:38px;height:38px;margin:3px 0 0}
+  .ed2-group-stats .ed2-orb{gap:8px;padding:8px}
+  .ed2-group-stats .ed2-orb-body{gap:8px}
+  .ed2-group-stats .ed2-orb-pv{flex:0 0 38px;width:38px;height:38px;margin:0}
   .ed2-group-stats .ed2-orb-fields{gap:6px}
   .ed2-group-stats .ed2-orb-type{height:44px;padding:0 4px;font-size:16px}
-  .ed2-group-stats .ed2-orb-valrow{gap:6px}
   .ed2-group-stats .ed2-orb-val{height:44px;font-size:16px}
   .ed2-group-stats .ed2-orb-star{gap:3px;font-size:16px}
   .ed2-group-stats .ed2-orb-star input{width:20px;height:20px}
@@ -6239,7 +6293,7 @@ body .kwp-body.tpp-body{display:block}
   #pane-editor .ed2-meta>.ed2-field:nth-child(-n+2){grid-column:1/-1}
   #pane-editor .ed2-field-rar select{height:44px;padding:0 8px;font-size:16px}
   #pane-editor .ed2-sagabox{margin-top:14px}
-  #pane-editor .ed2-meta2>.ed2-field-rar{display:block;margin-top:14px}
+  #pane-editor .ed2-meta>.ed2-field-rar{grid-column:1/-1}
   #pane-editor .ed2-sagabox>label{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-size:12px;color:var(--td)}
   #pane-editor .ed2-sagacount{min-width:20px;height:20px;margin:0;padding:0 6px;box-sizing:border-box;border-radius:10px;
     background:var(--s3);font-family:'Crimson Pro',serif;font-size:13px;line-height:20px;text-align:center}
@@ -6747,6 +6801,8 @@ body .kwp-body.tpp-body{display:block}
 <symbol id='i-download' viewBox='0 0 24 24'><path d='M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14'/></symbol>
 <symbol id='i-image' viewBox='0 0 24 24'><rect x='3.5' y='5' width='17' height='14' rx='1.5'/><circle cx='9' cy='10' r='1.6'/><path d='M20.5 16l-5-5-8.5 8'/></symbol>
 <symbol id='i-print' viewBox='0 0 24 24'><path d='M7 9V3.5h10V9'/><rect x='3.5' y='9' width='17' height='8' rx='1.5'/><path d='M7 14h10v6.5H7z'/></symbol>
+<symbol id='i-link' viewBox='0 0 24 24'><path d='M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.2 1.2'/><path d='M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2'/></symbol>
+<symbol id='i-save' viewBox='0 0 24 24'><path d='M5.5 4h11L20 7.5v11a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13A1.5 1.5 0 0 1 5.5 4z'/><path d='M8 4v4.5h7V4M7.5 20v-6h9v6'/></symbol>
 <symbol id='i-copy' viewBox='0 0 24 24'><rect x='8' y='8' width='12' height='12' rx='1.5'/><path d='M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8'/></symbol>
 <symbol id='i-shuffle' viewBox='0 0 24 24'><path d='M4 7h3c5 0 5 10 10 10h3M4 17h3c1.6 0 2.7-1 3.6-2.4M13.4 9.4C14.3 8 15.4 7 17 7h3M17 4l3 3-3 3M17 14l3 3-3 3'/></symbol>
 <symbol id='i-dice' viewBox='0 0 24 24'><rect x='4' y='4' width='16' height='16' rx='2.5'/><circle cx='9' cy='9' r='1.2'/><circle cx='15' cy='15' r='1.2'/></symbol>
@@ -6804,14 +6860,14 @@ body .kwp-body.tpp-body{display:block}
   <a class='tab-link-btn' href='https://steamcommunity.com/sharedfiles/filedetails/?id=3222664327' target='_blank' title='Tabletop Simulator Workshop'>
     <svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='currentColor'><path d='M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.606 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.252 0-2.265-1.014-2.265-2.265z'/></svg>
     TTS</a>
-  <a class='tab-link-btn' href='https://drive.google.com/drive/folders/115Tvw24LfAHCpe04Zkj6bMBMZ1Z8kTuW?usp=drive_link' target='_blank' rel='noopener noreferrer' title='Set Editor on Google Drive'><svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='currentColor'><path d='M11.42 2.6 4.03 15.4l-2.6-.02L8.83 2.6z'/><path d='M12.58 2.6h3.4l7.4 12.82-3.42-.02L12.6 2.6z'/><path d='M4.6 16.6h14.8l2.4 3.6H2.2z'/></svg>Set Editor</a>
+  <a class='tab-link-btn' href='https://github.com/ConjureUCG/Conjure_Card_Catalog' target='_blank' rel='noopener noreferrer' title='GitHub'><svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/></svg>GitHub</a>
   <button class='tab-link-btn' onclick="openDoc(window.REBIRTH?'rbdesign':'design')" title='Design Document'><svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z'/></svg> Design</button>
   </div>
 </header>
 <div class='tabs'>
   <div style='display:flex;gap:4px;align-items:center;padding:4px'>
     <button class='tab-btn kw-btn on' id='tab-browse' title='Browse' aria-current='page' onclick="showTab('browse')"><svg class='ico' aria-hidden='true'><use href='#i-search'/></svg> Browse<span class='hk-circle'>B</span></button>
-    <button class='tab-btn kw-btn' id='tab-deck' title='Build Deck' onclick="showTab('deck')"><svg class='ico' aria-hidden='true'><use href='#i-deck'/></svg> Build Deck<span class='hk-circle'>D</span></button>
+    <button class='tab-btn kw-btn' id='tab-deck' title='Build' onclick="showTab('deck')"><svg class='ico' aria-hidden='true'><use href='#i-deck'/></svg> Build<span class='hk-circle'>D</span></button>
     <button class='tab-btn kw-btn' id='tab-testdeck' title='Play Test' onclick="showTab('testdeck')"><svg class='ico' aria-hidden='true'><use href='#i-play'/></svg> Play Test</button>
       <span id='dlCount' class='dl-count' title='Saved decks'></span>
       <button class='tab-btn kw-btn' id='tab-decklists' title='Deck Lists' onclick="showTab('decklists')"><svg class='ico' aria-hidden='true'><use href='#i-stack'/></svg> Deck Lists<span class='hk-circle'>L</span></button>
@@ -6836,7 +6892,7 @@ body .kwp-body.tpp-body{display:block}
   <aside class='sb' id='sbPanel'>
     <div class='mob-phead mob-only'><h1>Filters</h1><button type='button' class='mob-close' onclick='mobFilters(false)'>Close &#x2715;</button></div>
     <button class='sb-close nb nb-red nb-m' onclick='toggleSidebar()'>Close &#x2715;</button>
-    <div class='sbh' style='justify-content:flex-end'><button class='rb nb nb-red nb-l' onclick='reset()'>Reset</button><button class='sb-min nb nb-green nb-l' onclick='minimizeSidebar(true)'>Minimize</button></div>
+    <div class='sbh'><button class='rb nb nb-red nb-l' onclick='reset()'>Reset</button><button class='sb-min nb nb-green nb-l' onclick='minimizeSidebar(true)'>Minimize</button></div>
     <div class='fs'><div style='position:relative'><span style='position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--tm);pointer-events:none'><svg class='ico' aria-hidden='true'><use href='#i-search'/></svg></span><input type='text' id='ns' aria-label='Search card names' placeholder='Search…' autocomplete='off' style='width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:18px;padding:6px 12px 6px 30px;color:var(--tx);font-family:"Crimson Pro",serif;font-size:1rem;outline:none'></div></div>
     <div class='fs mob-hide' style='padding-bottom:6px'><button class='apply-btn nb nb-green nb-l' onclick='run()'><svg class='ico' aria-hidden='true'><use href='#i-play'/></svg>Apply Filters</button></div>
     <div class='fs'>
@@ -7025,27 +7081,29 @@ body .kwp-body.tpp-body{display:block}
         <table class='ct' id='dv-ct'><thead><tr><th class='th-ctl'></th><th style='width:40px' class='th-date'></th><th>Name</th><th>Mana</th><th>CMC</th><th>Color</th><th>Super</th><th>Sub</th><th>ATK</th><th>HP</th><th>ARC</th><th>Rule</th></tr></thead><tbody id='dv-ctb'></tbody></table>
         <div class='stat-section'>
           <div id='deckWarnBox'></div>
-          <div class='chart-box' style='margin-bottom:14px'>
-            <h4>Color Pips in Mana Costs</h4>
-            <div style='display:flex;align-items:center;gap:10px'>
-              <div style='flex:0 0 80px;width:80px;height:80px'><canvas id='chart-pips' style='width:80px!important;height:80px!important'></canvas></div>
-              <div style='flex:1;min-width:0'><canvas id='chart-pipbar'></canvas></div>
-            </div>
+          <div class='chart-box dv-chart-row' style='margin-bottom:14px'>
+            <h4>Colored Costs</h4>
+            <div class='dv-chart-pie'><canvas id='chart-pips' style='width:80px!important;height:80px!important'></canvas></div>
+            <div class='dv-chart-bar'><canvas id='chart-pipbar'></canvas></div>
           </div>
-          <div class='chart-box' style='margin-bottom:14px' id='dv-ess-stats'>
-            <h4>Types of Essence</h4>
-            <div style='display:flex;align-items:center;gap:10px'>
-              <div style='flex:0 0 80px;width:80px;height:80px'><canvas id='chart-esspie' style='width:80px!important;height:80px!important'></canvas></div>
-              <div style='flex:1;min-width:0'><canvas id='chart-essbar'></canvas></div>
-            </div>
+          <div class='chart-box dv-chart-row' style='margin-bottom:14px' id='dv-ess-stats'>
+            <h4>Essence</h4>
+            <div class='dv-chart-pie'><canvas id='chart-esspie' style='width:80px!important;height:80px!important'></canvas></div>
+            <div class='dv-chart-bar'><canvas id='chart-essbar'></canvas></div>
           </div>
-          <div class='chart-box' style='margin-bottom:14px'><h4>Mana Curve</h4><canvas id='chart-cmc'></canvas></div>
-          <div class='stat-cmc-horiz' id='statCmcBox'>
-            <div class='stat-cmc-h-item'><span class='stat-pill-lbl'>Avg CMC</span><span class='stat-pill-val' id='statAvgCmc'>--</span></div>
-            <div class='stat-cmc-h-item'><span class='stat-pill-lbl'>Total</span><span class='stat-pill-val' id='statTotalCmc'>--</span></div>
-            <div class='stat-cmc-h-item'><span class='stat-pill-lbl'>Std Dev</span><span class='stat-pill-val' id='statStdDev'>--</span></div>
-            <div class='stat-cmc-h-item'><span class='stat-pill-lbl'>Mode</span><span class='stat-pill-val' id='statMode'>--</span></div>
-            <div class='stat-cmc-h-item' id='dv-inf-wrap' style='min-width:120px'><span class='stat-pill-lbl'>Main Deck</span><div class='dv-inf-line' id='dv-inf'>--</div></div>
+          <div class='chart-box dv-curve' style='margin-bottom:14px'>
+            <h4>Mana Curve</h4>
+            <div class='dv-curve-row'>
+              <div class='stat-cmc-horiz' id='statCmcBox'>
+                <div class='stat-cmc-h-item'><span class='stat-pill-lbl'>Avg CMC</span><span class='stat-pill-val' id='statAvgCmc'>--</span></div>
+                <div class='stat-cmc-h-item'><span class='stat-pill-lbl'>Total</span><span class='stat-pill-val' id='statTotalCmc'>--</span></div>
+                <div class='stat-cmc-h-item'><span class='stat-pill-lbl'>Std Dev</span><span class='stat-pill-val' id='statStdDev'>--</span></div>
+                <div class='stat-cmc-h-item'><span class='stat-pill-lbl'>Mode</span><span class='stat-pill-val' id='statMode'>--</span></div>
+                <div class='stat-cmc-h-item' id='dv-inf-wrap'><span class='stat-pill-lbl'>Main Deck</span><div class='dv-inf-line' id='dv-inf'>--</div></div>
+              </div>
+              <div class='dv-curve-chart'><canvas id='chart-cmc'></canvas></div>
+            </div>
+            <div id='dvCmcCards'></div>
           </div>
         </div>
         <div class='dv-section-hdr' id='dv-ess-hdr' style='display:none'><svg class='ico' aria-hidden='true'><use href='#i-diamond'/></svg> Essence Deck</div>
@@ -7088,7 +7146,7 @@ body .kwp-body.tpp-body{display:block}
       </div>
       <div style='padding:14px'>
         <div id='dlGrid' class='dl-grid'></div>
-        <div id='dlEmpty' class='dv-empty' style='display:none'><div class='ei'><svg class='ico' aria-hidden='true'><use href='#i-orb'/></svg></div><p>No saved decks yet. Use the Save field <span class='mob-hide'>in the Deck Panel</span><span class='mob-only'>on Build Deck</span> to save a deck.</p></div>
+        <div id='dlEmpty' class='dv-empty' style='display:none'><div class='ei'><svg class='ico' aria-hidden='true'><use href='#i-orb'/></svg></div><p>No saved decks yet. Use the Save field <span class='mob-hide'>in the Deck Panel</span><span class='mob-only'>on Build</span> to save a deck.</p></div>
       </div>
     </div>
 
@@ -7143,7 +7201,7 @@ body .kwp-body.tpp-body{display:block}
   </main>
   <button id='dpShow' class='dp-show' style='display:none' onclick='minimizeDeckPanel(false)'><svg class='ico' aria-hidden='true'><use href='#i-deck'/></svg> Deck</button>
   <aside class='dp'>
-    <div class='dph'><div class='dph-top mob-phead'><span class='dph-title'>Deck List</span><button class='sb-min nb nb-green nb-l' onclick='minimizeDeckPanel(true)'>Minimize</button><button type='button' class='mob-close mob-only' onclick='mobDeckList(false)'>Close &#x2715;</button></div><div class='dpb'><button class='dco' onclick='copyDeck()'>Copy</button><button class='dim' onclick='importDeck()'>Import</button><button class='dcl' onclick='clearDeck()'>Clear</button></div></div>
+    <div class='dph'><button class='sb-min nb nb-green nb-l' onclick='minimizeDeckPanel(true)'>Minimize</button><div class='dph-top mob-phead'><span class='dph-title'>Deck List</span><button type='button' class='mob-close mob-only' onclick='mobDeckList(false)'>Close &#x2715;</button></div><div class='dpb'><button class='dco' onclick='copyDeck()'>Copy</button><button class='dim' onclick='importDeck()'>Import</button><button class='dcl' onclick='clearDeck()'>Clear</button></div></div>
     <input type='file' id='dimFile' accept='.txt,.dec,.dek' style='display:none' onchange='importDeckFile(this)'>
     <div class='dp-scroll'>
       <div class='dp-sec-hdr' id='dpsec-main' onclick="setDVFilter('main')"><svg class='ico' aria-hidden='true'><use href='#i-deck'/></svg> Main Deck<span class='dp-sec-cnt' id='dpCnt-main'>0</span></div>
@@ -7156,8 +7214,8 @@ body .kwp-body.tpp-body{display:block}
       <textarea class='dta dta-sec rb-only' id='dta-armament' placeholder='Add Armament cards…' spellcheck='false'></textarea>
     </div>
     <div class='dcnt' id='dcnt'>0 cards</div>
-    <div style='border-top:1px solid var(--b1);flex-shrink:0'>
-      <div class='saved-hdr'><span>Saved Decks</span></div>
+    <div class='saved-sec'>
+      <div class='saved-hdr'><button type='button' class='saved-tog' id='savedTog' aria-expanded='false' aria-label='Expand Saved Decks' title='Expand Saved Decks' onclick='toggleSavedDecks()'><svg class='ico' aria-hidden='true'><use href='#i-arrow-up'/></svg></button><span>Saved Decks</span></div>
       <div class='saved-save-row'>
         <input class='saved-input' id='savedNameInp' placeholder='Deck name…' type='text' onkeydown='if(event.key==="Enter")saveDeckAs()'>
         <button type='button' class='mob-copy mob-only' onclick='copyDeck(this)'>Copy</button>
@@ -7167,7 +7225,9 @@ body .kwp-body.tpp-body{display:block}
     </div>
   </aside>
 </div>
-<div class='mo' id='mo' onclick='closeOv(event)'><div class='md'>
+<div class='mo' id='mo' onclick='closeOv(event)'><div class='md-shell'>
+  <button class='mnav-out mnav-out-l' onclick='navigateMod(-1)' aria-label='Previous card' title='Previous card (&#8592;)'><svg class='ico' aria-hidden='true'><use href='#i-arrow-left'/></svg></button>
+  <div class='md'>
   <button class='mcl' onclick='closeMod()'>Close &#x2715;</button>
   <button class='medit' onclick='editCurrentCard()'>&#9998; Edit</button>
   <button class='mdup' onclick='dupCurrentCard()' style='display:none'>&#10697; Duplicate</button>
@@ -7180,6 +7240,8 @@ body .kwp-body.tpp-body{display:block}
   </div>
   <div class='mkw' id='mkw' style='display:none'></div>
   <div class='mob-mcnt mob-only' id='mobMcnt'><button type='button' class='mob-mrem' id='mobMrem' onclick='mobCardRemove()' aria-label='Remove one from the Main Deck'>&#8722;</button><span class='mob-mcnt-t' id='mobMcntT'></span></div>
+  </div>
+  <button class='mnav-out mnav-out-r' onclick='navigateMod(1)' aria-label='Next card' title='Next card (&#8594;)'><svg class='ico' aria-hidden='true'><use href='#i-arrow-right'/></svg></button>
 </div></div>
 <div class='kw-overlay' id='scOverlay'>
   <div class='kw-page' style='max-width:1100px'>
@@ -7301,7 +7363,7 @@ body .kwp-body.tpp-body{display:block}
 <nav class='mob-bar mob-only' id='mobBar' aria-label='Pages'>
   <button type='button' class='mob-tab' id='mobTab-filters' onclick="mobGo('filters')"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' aria-hidden='true'><path d='M4 6h16M7 12h10M10 18h4'/></svg><span class='mob-tl'>Filters</span><span class='mob-badge' id='mobFiltersN'></span></button>
   <button type='button' class='mob-tab' id='mobTab-browse' onclick="mobGo('browse')"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' aria-hidden='true'><circle cx='11' cy='11' r='6.5'/><path d='M16 16l4.5 4.5'/></svg><span class='mob-tl'>Browse</span></button>
-  <button type='button' class='mob-tab' id='mobTab-deck' onclick="mobGo('deck')"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linejoin='round' aria-hidden='true'><rect x='4' y='6.5' width='11' height='14' rx='1.5'/><path d='M8.5 3.5h9A1.5 1.5 0 0 1 19 5v12.5'/></svg><span class='mob-tl'>Build Deck</span><span class='mob-badge' id='mobDeckN'></span></button>
+  <button type='button' class='mob-tab' id='mobTab-deck' onclick="mobGo('deck')"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linejoin='round' aria-hidden='true'><rect x='4' y='6.5' width='11' height='14' rx='1.5'/><path d='M8.5 3.5h9A1.5 1.5 0 0 1 19 5v12.5'/></svg><span class='mob-tl'>Build</span><span class='mob-badge' id='mobDeckN'></span></button>
   <button type='button' class='mob-tab' id='mobTab-decklists' onclick="mobGo('decklists')"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' aria-hidden='true'><path d='M9 6h11M9 12h11M9 18h11'/><circle cx='4.5' cy='6' r='1'/><circle cx='4.5' cy='12' r='1'/><circle cx='4.5' cy='18' r='1'/></svg><span class='mob-tl'>Deck Lists</span><span class='mob-badge mob-badge-dim' id='mobListsN'></span></button>
   <button type='button' class='mob-tab' id='mobTab-keywords' onclick="mobGo('keywords')"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' aria-hidden='true'><rect x='3' y='8' width='18' height='8' rx='4'/><path d='M8 12h8'/></svg><span class='mob-tl'>Keywords</span></button>
   <button type='button' class='mob-tab' id='mobTab-more' onclick="mobGo('more')"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' aria-hidden='true'><path d='M4 7h16M4 12h16M4 17h16'/></svg><span class='mob-tl'>More</span><span class='mob-dot' id='mobMoreDot'></span></button>
@@ -7327,7 +7389,7 @@ body .kwp-body.tpp-body{display:block}
     <a class='mob-row' href='https://discord.com/invite/TZec5kaVa9' target='_blank' rel='noopener noreferrer'><svg class='mob-ico' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linejoin='round' aria-hidden='true'><path d='M4 5h16v11H9l-5 4z'/></svg><span class='mob-rt'>Discord</span><svg class='mob-chev' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M14 4h6v6M20 4l-9 9M18 14v6H4V6h6'/></svg></a>
     <a class='mob-row' href='https://www.instagram.com/conjureucg' target='_blank' rel='noopener noreferrer'><svg class='mob-ico' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linejoin='round' aria-hidden='true'><path d='M3 8h4l2-3h6l2 3h4v12H3z'/><circle cx='12' cy='13.5' r='3.5'/></svg><span class='mob-rt'>Instagram</span><svg class='mob-chev' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M14 4h6v6M20 4l-9 9M18 14v6H4V6h6'/></svg></a>
     <a class='mob-row' href='https://steamcommunity.com/sharedfiles/filedetails/?id=3222664327' target='_blank' rel='noopener noreferrer'><svg class='mob-ico' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linejoin='round' aria-hidden='true'><rect x='4' y='4' width='16' height='16' rx='2.5'/><circle cx='9' cy='9' r='1.2'/><circle cx='15' cy='15' r='1.2'/></svg><span class='mob-rt'>TTS</span><svg class='mob-chev' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M14 4h6v6M20 4l-9 9M18 14v6H4V6h6'/></svg></a>
-    <a class='mob-row' href='https://drive.google.com/drive/folders/115Tvw24LfAHCpe04Zkj6bMBMZ1Z8kTuW?usp=drive_link' target='_blank' rel='noopener noreferrer'><svg class='mob-ico' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linejoin='round' aria-hidden='true'><path d='M3 7.5A1.5 1.5 0 0 1 4.5 6H9l2 2h8.5A1.5 1.5 0 0 1 21 9.5v8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z'/></svg><span class='mob-rt'>Set Editor</span><svg class='mob-chev' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M14 4h6v6M20 4l-9 9M18 14v6H4V6h6'/></svg></a>
+    <a class='mob-row' href='https://github.com/ConjureUCG/Conjure_Card_Catalog' target='_blank' rel='noopener noreferrer'><svg class='mob-ico' viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/></svg><span class='mob-rt'>GitHub</span><svg class='mob-chev' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M14 4h6v6M20 4l-9 9M18 14v6H4V6h6'/></svg></a>
   </div>
 </div>
 <button type='button' class='mob-shade mob-only' id='mobShade' aria-label='Put the sheet away' onclick='mobSheetClose()'></button>
@@ -8817,9 +8879,22 @@ function run(){
   _hashSaveFilters();
 }
 
+function fmtRuleTags(t){
+  var open=[];
+  t=t.replace(/&lt;(\/?)(b|i|u)&gt;/g,function(m,sl,tg){
+    if(!sl){ open.push(tg); return '<'+tg+'>'; }
+    var at=open.lastIndexOf(tg);
+    if(at<0) return '';
+    open.splice(at,1);
+    return '</'+tg+'>';
+  });
+  while(open.length) t+='</'+open.pop()+'>';
+  return t;
+}
 function fmtRule(text){
   if(!text) return '';
   var t=String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  t=fmtRuleTags(t);
   var _lk=[]; t=cardLinksHold(t,_lk);
   t=t.replace(/\n/g,'<br>');
   t=t.replace(/\{([A-Za-z0-9\/]+)\}/g,function(match,inner){ return renderManaCost(inner,16); });
@@ -8936,7 +9011,7 @@ function stripRuleFmt(s){
 function fmtRuleInline(text){
   if(!text) return '';
   var t=String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  t=t.replace(/&lt;(\/?)(b|i|u)&gt;/g,'<$1$2>');
+  t=fmtRuleTags(t);
   var _lk=[]; t=cardLinksHold(t,_lk);
   t=t.replace(/\n/g,'<br>');
   t=t.replace(/\{([A-Za-z0-9\/]+)\}/g,function(match,inner){ return renderManaCost(inner,14); });
@@ -8947,6 +9022,7 @@ function fmtRuleInline(text){
 function fmtRuleNoLinks(text){
   if(!text) return '';
   var t=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  t=fmtRuleTags(t);
   var _lk=[]; t=cardLinksHold(t,_lk);
   t=t.replace(/\n/g,'<br>');
   t=t.replace(/\{([A-Za-z0-9\/]+)\}/g,function(match,inner){ return renderManaCost(inner,16); });
@@ -9344,21 +9420,21 @@ function openMod(card){
     var addWhere = gearOnly ? 'Armament' : 'Main Deck';
     h+='<div style="display:flex;gap:8px;margin-top:auto">'
       +'<button class="madd-3" id="maddbtn3" type="button" data-deck="'+(gearOnly ? 'armament' : 'main')+'" title="Add 3 copies" aria-label="Add 3 copies to the '+addWhere+'">+3</button>'
-      +'<button class="madd" id="maddbtn" type="button" data-deck="'+(gearOnly ? 'armament' : 'main')+'" style="flex:1">'+uiIco('plus')+' Add to '+addWhere+'</button>'
+      +'<button class="madd" id="maddbtn" type="button" data-deck="'+(gearOnly ? 'armament' : 'main')+'" aria-label="Add to '+addWhere+'" style="flex:1">'+uiIco('plus')+' Add</button>'
       +(!gearOnly && _isArmamentLegal(card) ? '<button class="madd madd-wish madd-arm" id="maddbtn2" type="button" data-deck="armament" style="flex:0.9;font-size:.85rem;padding:13px 10px">'+uiIco('plus')+' Armament</button>' : '')
       +'</div>';
   } else if(isEssenceMod){
-    h+='<button class="madd" id="maddbtn" type="button" data-deck="essence">'+uiIco('plus')+' Add to Essence Deck</button>';
+    h+='<button class="madd" id="maddbtn" type="button" data-deck="essence" aria-label="Add to Essence Deck">'+uiIco('plus')+' Add</button>';
   } else {
     h+='<div style="display:flex;gap:8px;margin-top:auto">'
       +'<button class="madd-3" id="maddbtn3" type="button" data-deck="main" title="Add 3 copies" aria-label="Add 3 copies to the Main Deck">+3</button>'
-      +'<button class="madd" id="maddbtn" type="button" data-deck="main" style="flex:1">'+uiIco('plus')+' Add to Main Deck</button>'
+      +'<button class="madd" id="maddbtn" type="button" data-deck="main" aria-label="Add to Main Deck" style="flex:1">'+uiIco('plus')+' Add</button>'
       +'<button class="madd madd-wish" id="maddbtn2" type="button" data-deck="wish" style="flex:0.7;font-size:.85rem;padding:13px 10px">'+uiIco('plus')+' Wish</button>'
       +'</div>';
   }
   var _mine=null;
   try{ if(_locked && typeof window.edMySagaFor==='function') _mine=window.edMySagaFor(card); }catch(_){ _mine=null; }
-  h+='<div class="mlink-row"><button class="mlink" id="mlinkBtn" type="button" title="Copy a link that opens this card">Copy link</button>'
+  h+='<div class="mlink-row"><button class="mlink" id="mlinkBtn" type="button" title="Copy a link that opens this card">'+uiIco('link')+' Link</button>'
     +(_mine ? '<button class="mlink msaga" id="msagaBtn" type="button" title="'+e('Put this official card in '+_mine.name
         +'. It keeps following the official card: name, cost, rules, stats and pictures. '+_mine.name
         +' sets its own flavor text, artist, Owner, watermark, border and reminders, and which picture it shows.')+'">Add to '
@@ -9417,11 +9493,13 @@ function openMod(card){
   }
 
   var mdnBtn = document.getElementById('mdnBtn');
-  if(mdnBtn) mdnBtn.style.display = _artSrc(card) ? '' : 'none';
+  var _hasArt = !!_artSrc(card);
+  if(mdnBtn) mdnBtn.style.display = _hasArt ? '' : 'none';
   var _mo=document.getElementById('mo');
+  _mo.classList.toggle('no-dn', !_hasArt || !mdnBtn);
   _mo.classList.add('on');
   _catTitleFor(card);
-  modalOpen(_mo,{label:'Card details: '+(card&&card.name||''), onClose:closeMod});
+  modalOpen(_mo,{label:'Card details: '+(card&&card.name||''), onClose:closeMod, focus:_mo.querySelector('.mcl')});
   if(typeof mobOnCard === 'function') mobOnCard(card);
 }
 var _kwRemRx = (typeof WeakMap === 'function') ? new WeakMap() : null;
@@ -9464,9 +9542,9 @@ function copyCardLink(card, btn){
   var url = cardLinkUrl(card);
   function said(ok){
     if(btn){
-      if(btn.__t) clearTimeout(btn.__t); else btn.__o = btn.textContent;
+      if(btn.__t) clearTimeout(btn.__t); else btn.__o = btn.innerHTML;
       btn.textContent = ok ? 'Link copied' : 'Copy failed';
-      btn.__t = setTimeout(function(){ btn.textContent = btn.__o; btn.__t = 0; }, 1600);
+      btn.__t = setTimeout(function(){ btn.innerHTML = btn.__o; btn.__t = 0; }, 1600);
     }
     if(!ok && typeof window.toast === 'function') window.toast('Could not copy the link. It is ' + url);
   }
@@ -11273,13 +11351,20 @@ function renderSavedDecks(){
         updCnt(); _hashSaveDeck(); refreshDeckView();
       }
     });
-    var del = document.createElement('button'); del.className='saved-del nb nb-red nb-s'; del.title='Delete'; del.textContent='Delete '+'\u2715';
+    var sv = document.createElement('button'); sv.type='button'; sv.className='saved-save nb nb-green nb-s';
+    sv.title='Save to "'+name+'"'; sv.setAttribute('aria-label','Save the deck lists as '+name); sv.innerHTML=uiIco('save');
+    sv.addEventListener('click', function(){ saveDeckTo(name); });
+    var dup = document.createElement('button'); dup.type='button'; dup.className='saved-dup nb nb-purple nb-s';
+    dup.title='Duplicate'; dup.setAttribute('aria-label','Duplicate '+name); dup.innerHTML=uiIco('copy');
+    dup.addEventListener('click', function(){ if(savedDeckDuplicate(name)) _savedChanged(); });
+    var del = document.createElement('button'); del.type='button'; del.className='saved-del nb nb-red nb-s';
+    del.title='Delete'; del.setAttribute('aria-label','Delete '+name); del.textContent='\u2715';
     del.addEventListener('click', function(){
       if(confirm('Delete saved deck "'+name+'"?')){
         var d=_savedLoad(); delete d[name]; _savedWrite(d); renderSavedDecks();
       }
     });
-    row.appendChild(nm); row.appendChild(del);
+    row.appendChild(nm); row.appendChild(sv); row.appendChild(dup); row.appendChild(del);
     listEl.appendChild(row);
   });
 }
@@ -11287,6 +11372,12 @@ function saveDeckAs(){
   var inp = document.getElementById('savedNameInp');
   var name = inp ? inp.value.trim() : '';
   if(!name){ inp && inp.focus(); return; }
+  if(!saveDeckTo(name)) return;
+  if(inp) inp.value = '';
+  var btn = document.getElementById('savedSaveBtn');
+  if(btn){ var orig=btn.textContent; btn.textContent='\u2713 Saved'; setTimeout(function(){ btn.textContent=orig; },1400); }
+}
+function saveDeckTo(name){
   var allEmpty = true;
   var entry = {};
   Object.keys(DECK_IDS).forEach(function(k){
@@ -11295,24 +11386,45 @@ function saveDeckAs(){
     entry[k] = v;
     if(v) allEmpty = false;
   });
-  if(allEmpty){ alert('All deck lists are empty.'); return; }
+  if(allEmpty){ alert('All deck lists are empty.'); return false; }
   entry.mode = _gameMode;
   if(typeof tdReadStatRow === 'function'){
     var st = tdReadStatRow();
     if(st) Object.keys(st).forEach(function(k){ entry[k] = st[k]; });
   }
   var d = _savedLoad();
-  if(d[name] && !confirm('"'+name+'" already exists. Overwrite?')) return;
+  if(d[name] && !confirm('"'+name+'" already exists. Overwrite?')) return false;
   d[name] = entry;
-  if(!_savedWrite(d)) return;
-  if(inp) inp.value = '';
+  if(!_savedWrite(d)) return false;
+  _savedChanged();
+  return true;
+}
+function savedDeckDuplicate(dn){
+  var d = _savedLoad();
+  if(!d[dn]) return '';
+  var copyName = dn + ' (Copy)', n = 2;
+  while(d[copyName]){ copyName = dn + ' (Copy '+n+')'; n++; }
+  d[copyName] = JSON.parse(JSON.stringify(d[dn]));
+  return _savedWrite(d) ? copyName : '';
+}
+function _savedChanged(){
   renderSavedDecks();
   _dlDirty = true;
   var dlPane = document.getElementById('pane-decklists');
   if(dlPane && dlPane.style.display !== 'none') { _dlDirty=false; renderDeckLists(); }
   _updateDLCount();
-  var btn = document.getElementById('savedSaveBtn');
-  if(btn){ var orig=btn.textContent; btn.textContent='\u2713 Saved'; setTimeout(function(){ btn.textContent=orig; },1400); }
+}
+function toggleSavedDecks(open){
+  var dp = document.querySelector('.dp'), b = document.getElementById('savedTog');
+  if(!dp) return;
+  open = (open === undefined) ? !dp.classList.contains('saved-open') : !!open;
+  dp.classList.toggle('saved-open', open);
+  if(b){
+    var say = open ? 'Collapse Saved Decks' : 'Expand Saved Decks';
+    b.setAttribute('aria-expanded', open ? 'true' : 'false');
+    b.setAttribute('aria-label', say); b.title = say;
+    b.innerHTML = uiIco(open ? 'arrow-down' : 'arrow-up');
+  }
 }
 
 function _updateDLCount(){
@@ -12053,11 +12165,9 @@ function refreshDeckView(){
     mainDeck.forEach(function(entry){
       if(entry.card && _isUniqueCard(entry.card)) uniqueCount+=entry.count;
     });
-    dvInf.innerHTML='<span style="font-family:Cinzel,serif;font-size:1.2rem;font-weight:700;color:var(--txt-accent)">'
-      +total+' cards</span>'
-      +'<span style="font-family:Cinzel,serif;font-size:1.2rem;font-weight:700;color:var(--txt-accent)"> &middot; '+mainDeck.length+' diff'
-      +(uniqueCount?' &middot; '+uniqueCount+' Uniq':'')
-      +'</span>';
+    var infParts=[total+' cards', mainDeck.length+' diff'].concat(uniqueCount?[uniqueCount+' Uniq']:[]);
+    dvInf.innerHTML=infParts.map(function(p,i){
+      return (i?'<span class="dv-inf-sep"> &middot; </span>':'')+'<span class="dv-inf-p">'+p+'</span>'; }).join('');
   }
 
   requestAnimationFrame(function(){
@@ -12230,11 +12340,13 @@ function drawStats(mainCards, essDeck){
   var cmcKeys=['0','1','2','3','4','5','6','7','8','9+'];
   var cmcVals=cmcKeys.map(function(){ return 0; });
   var cmcShare=cmcKeys.map(function(){ return {}; });
+  var cmcCards=cmcKeys.map(function(){ return []; });
   deckCards.forEach(function(e){
     var c=parseInt(e.card.cmc)||0;
     var idx=cmcKeys.indexOf(c>=9?'9+':String(c));
     if(idx<0) return;
     cmcVals[idx]+=e.count;
+    cmcCards[idx].push(e);
     var p=manaPips(e.card.manaCost,1), tot=0;
     COLORS.forEach(function(k){ tot+=p[k]||0; });
     if(!tot){ cmcShare[idx].Colorless=(cmcShare[idx].Colorless||0)+e.count; return; }
@@ -12246,7 +12358,9 @@ function drawStats(mainCards, essDeck){
       .map(function(k){ return {fill:PIP_FILL[k]||cmcLess, n:sh[k]}; })
       .concat(sh.Colorless ? [{fill:cmcLess, n:sh.Colorless}] : []);
   });
-  drawBarMulticolor('chart-cmc',cmcKeys,cmcVals,cmcSegs,textClr,gridClr);
+  _dvCurve={keys:cmcKeys,vals:cmcVals,segs:cmcSegs,cards:cmcCards,text:textClr,grid:gridClr};
+  if(_dvCurvePick!==null && !(cmcCards[cmcKeys.indexOf(_dvCurvePick)]||[]).length) _dvCurvePick=null;
+  dvCurveDraw();
 
   var pipC={}; COLORS.forEach(function(c){pipC[c]=0;});
   deckCards.forEach(function(entry){
@@ -12438,10 +12552,63 @@ function _initChartResizeObserver(){
 }
 
 
-function drawBarMulticolor(id,labels,values,barColors,textClr,gridClr){
+var _dvCurve=null, _dvCurvePick=null;
+function dvCurveDraw(){
+  var d=_dvCurve; if(!d) return;
+  drawBarMulticolor('chart-cmc',d.keys,d.vals,d.segs,d.text,d.grid,d.keys.indexOf(_dvCurvePick));
+  dvCurveList();
+  var cv=document.getElementById('chart-cmc');
+  if(cv && !cv._dvPick){
+    cv._dvPick=true;
+    cv.addEventListener('click',function(ev){
+      var i=dvCurveBarAt(cv,ev); if(i<0||!_dvCurve) return;
+      var k=_dvCurve.keys[i];
+      _dvCurvePick=(_dvCurvePick===k||!_dvCurve.cards[i].length)?null:k;
+      dvCurveDraw();
+    });
+    cv.addEventListener('mousemove',function(ev){
+      var i=dvCurveBarAt(cv,ev);
+      cv.style.cursor=(i>=0&&_dvCurve&&_dvCurve.cards[i].length)?'pointer':'';
+    });
+  }
+}
+function dvCurveBarAt(cv,ev){
+  var g=cv._bars, r=cv.getBoundingClientRect(); if(!g||!r.width) return -1;
+  var k=g.w/r.width, x=(ev.clientX-r.left)*k, y=(ev.clientY-r.top)*k;
+  if(y<g.top||y>g.bottom) return -1;
+  var i=Math.floor((x-g.left)/g.gap);
+  return (i>=0&&i<g.n)?i:-1;
+}
+function dvCurveList(){
+  var host=document.getElementById('dvCmcCards'); if(!host) return;
+  var d=_dvCurve, i=d?d.keys.indexOf(_dvCurvePick):-1, list=i>=0?d.cards[i]:[];
+  if(!list.length){ host.innerHTML=''; return; }
+  var n=list.reduce(function(s,x){ return s+x.count; },0);
+  host.innerHTML="<div class='stat-cards'><h4>Cost "+e(d.keys[i])+" — "+n+" card(s)</h4><div class='stat-grid'>"
+    +list.map(function(x,ci){
+      var c=x.card, sup=_catArr(c.superTypes).join(' '), sub=_catArr(c.subTypes).join(' ');
+      var tl=(sup&&sub)?(sup+' — '+sub):(sup||sub);
+      var cost=c.manaCost?renderManaCost(c.manaCost,13):'';
+      return "<button type='button' class='stat-card' onclick='dvCurveOpen("+ci+")'>"
+        +"<span class='sc-name'>"+e(c.name)+"</span>"
+        +"<span class='sc-note'>"+x.count+"x</span>"
+        +"<span class='sc-cost'>"+cost+"</span>"
+        +"<span class='sc-type'>"+e(tl||'—')+"</span>"
+      +"</button>"; }).join('')
+    +"</div></div>";
+}
+function dvCurveOpen(ci){
+  var d=_dvCurve, i=d?d.keys.indexOf(_dvCurvePick):-1, x=i>=0?d.cards[i][ci]:null;
+  if(x&&x.card) openMod(x.card);
+}
+
+function drawBarMulticolor(id,labels,values,barColors,textClr,gridClr,sel){
   var canvas=document.getElementById(id); if(!canvas) return;
   var dpr=window.devicePixelRatio||1;
   var W=Math.max(getCanvasW(canvas),220), H=220;
+  var side=document.getElementById('statCmcBox');
+  if(side && side.offsetHeight>H && Math.abs(side.getBoundingClientRect().top-canvas.parentElement.getBoundingClientRect().top)<1)
+    H=side.offsetHeight;
   canvas.width=W*dpr; canvas.height=H*dpr;
   canvas.style.width=W+'px'; canvas.style.height=H+'px';
   var ctx=canvas.getContext('2d'); ctx.scale(dpr,dpr);
@@ -12449,6 +12616,7 @@ function drawBarMulticolor(id,labels,values,barColors,textClr,gridClr){
   var cW=W-pad.l-pad.r, cH=H-pad.t-pad.b;
   var max=Math.max.apply(null,values)||1;
   var gap=cW/labels.length, bw=gap*0.65;
+  canvas._bars={w:W,left:pad.l,gap:gap,n:labels.length,top:pad.t-20,bottom:H-pad.b+20};
   ctx.font='bold 13px sans-serif';
   var tight=typeof catIsPhone==='function' && catIsPhone() && ctx.measureText('Total '+max).width>gap-2;
   for(var i=0;i<=4;i++){
@@ -12474,6 +12642,7 @@ function drawBarMulticolor(id,labels,values,barColors,textClr,gridClr){
       ctx.fillStyle=segs||'#7b9cda';
       ctx.fillRect(x,by,bw,bh);
     }
+    if(i===sel && values[i]>0){ ctx.strokeStyle=textClr; ctx.lineWidth=2; ctx.strokeRect(x-1,by-1,bw+2,bh+2); }
     ctx.fillStyle=textClr; ctx.textAlign='center'; ctx.font='bold 11px sans-serif';
     ctx.fillText((tight?'':'Cost ')+lbl, x+bw/2, H-pad.b+15);
     if(values[i]>0){
@@ -20599,7 +20768,7 @@ function tblTopParts(){
       tools: log,
       end: (s === 'joining' || s === 'lost' || (s === 'error' && TBL.note)) ? leave
         : tblToolHTML('leave', "tblLeaveSolo()", 'Leave', 0, false, 'tbl-red tbl-keep',
-                      'Back to Build Deck - this game is kept for when you come back')
+                      'Back to Build - this game is kept for when you come back')
     };
   }
   var waiting = (TBL.phase === 'waiting');
@@ -30594,7 +30763,7 @@ function drRenderBuild(main, side, st, acts){
     ? 'Saved as <b>' + e(DR.savedAs) + '</b>'
     : 'Build &middot; <b>' + size + '</b> of ' + goal + ' &middot; ' + DR.pool.length + ' drafted';
   if(acts) acts.innerHTML = DR.phase === 'saved' && DR.mode === 'solo'
-    ? "<button class='ed2-btn primary' id='drOpenDeck' onclick='drOpenSaved()'>Open in Build Deck</button>" : '';
+    ? "<button class='ed2-btn primary' id='drOpenDeck' onclick='drOpenSaved()'>Open in Build</button>" : '';
   var rows = Object.keys(DR.deck).sort(function(a, b){
     return drCost(a) - drCost(b) || (a < b ? -1 : a > b ? 1 : 0);
   }).map(function(n){
@@ -35622,14 +35791,7 @@ function renderDeckLists(){
 
     cardEl.querySelector('.dl-card-dup').addEventListener('click', function(ev){
       ev.stopPropagation();
-      var dn = this.dataset.dn;
-      var d = _savedLoad();
-      if(!d[dn]) return;
-      var copyName = dn + ' (Copy)';
-      var n = 2;
-      while(d[copyName]){ copyName = dn + ' (Copy '+n+')'; n++; }
-      d[copyName] = JSON.parse(JSON.stringify(d[dn]));
-      _savedWrite(d);
+      if(!savedDeckDuplicate(this.dataset.dn)) return;
       renderDeckLists(); renderSavedDecks(); _updateDLCount();
     });
 
@@ -35688,14 +35850,14 @@ function renderDeckLists(){
 
 var _SC_KEYS = [
   {keys:['B'], desc:'Switch to Browse tab'},
-  {keys:['D'], desc:'Switch to Build Deck tab'},
+  {keys:['D'], desc:'Switch to Build tab'},
   {keys:['L'], desc:'Switch to Deck Lists tab'},
   {keys:['1'], desc:'Switch to Grid view'},
   {keys:['2'], desc:'Switch to Details view'},
   {keys:['3'], desc:'Switch to List view'},
   {keys:['I'], desc:'Toggle Info overlay on/off (Grid view)'},
   {keys:['F','/'], desc:'Focus the search box'},
-  {keys:['H'], desc:'Toggle Highlight panel (Build Deck tab)'},
+  {keys:['H'], desc:'Toggle Highlight panel (Build tab)'},
   {keys:['\u2190','\u2192'], desc:'Previous / Next page (Browse)'},
   {keys:['\u2190','\u2192'], desc:'Previous / Next card (Modal open)'},
   {keys:['K'], desc:'Open Keywords page'},
@@ -35704,18 +35866,18 @@ var _SC_KEYS = [
   {keys:['?'], desc:'Open this Help page'}
 ];
 var _SC_TIPS = [
-  {title:'Saved Decks', desc:'You save and load Decks from the bottom of the Deck Panel. Click a saved name to load it; click \u2715 to delete it.', phone:'You save a Deck with the Save row at the top of Build Deck. Your saved Decks are on the Deck Lists tab: tap one to load it; tap \u2715 to delete it.'},
-  {title:'Importing Decks', desc:'"Import" on the Deck Panel will load Decks you have copied in your clipboard, or it will open a file explorer for you to choose a file to load. The format is "3x Card Name", "3 Card Name". Not case or symbol sensitive (dashes, quotes, and punctuation differences are read properly).', phone:'"Import" on the Deck List page (Build Deck, then Deck List) will load Decks you have copied, or let you choose a file to load. The format is "3x Card Name", "3 Card Name". Not case or symbol sensitive (dashes, quotes, and punctuation differences are read properly).'},
+  {title:'Saved Decks', desc:'You save and load Decks from the bottom of the Deck Panel. Click a saved name to load it; click \u2715 to delete it.', phone:'You save a Deck with the Save row at the top of Build. Your saved Decks are on the Deck Lists tab: tap one to load it; tap \u2715 to delete it.'},
+  {title:'Importing Decks', desc:'"Import" on the Deck Panel will load Decks you have copied in your clipboard, or it will open a file explorer for you to choose a file to load. The format is "3x Card Name", "3 Card Name". Not case or symbol sensitive (dashes, quotes, and punctuation differences are read properly).', phone:'"Import" on the Deck List page (Build, then Deck List) will load Decks you have copied, or let you choose a file to load. The format is "3x Card Name", "3 Card Name". Not case or symbol sensitive (dashes, quotes, and punctuation differences are read properly).'},
   {title:'Multi-Deck System', desc:'Your (Main) Deck, Essence Deck, and Wish Deck are all accommodated for. Essence cards are automatically added to the Essence Deck, and card copy limits are checked across all Decks.'},
-  {title:'Group \u0026 Sort Cards in Your Deck', desc:'On the Build Deck page, "Group By" organizes cards under section headers (by Super-Type, Sub-Type, Color, or CMC). "Sort By" reorders cards within groups. Both work in Grid, Details, and List views.', phone:'On the Build Deck page, "Group By" organizes cards under section headers (by Super-Type, Sub-Type, Color, or CMC). "Sort By" reorders cards within groups.'},
+  {title:'Group \u0026 Sort Cards in Your Deck', desc:'On the Build page, "Group By" organizes cards under section headers (by Super-Type, Sub-Type, Color, or CMC). "Sort By" reorders cards within groups. Both work in Grid, Details, and List views.', phone:'On the Build page, "Group By" organizes cards under section headers (by Super-Type, Sub-Type, Color, or CMC). "Sort By" reorders cards within groups.'},
   {title:'Different Game Mode Rules', desc:'Different Game Mode Deck building restrictions are built in, and appropriate error messages are shown for each type. Constructed, Kingdoms, or None. Each mode has different deck size limits, copy limits, and Unique card rules. Choose "None" to disable all error messages.'},
-  {title:'Highlight Cards', desc:'On the Build Deck page, you can use the "Highlight" option to highlight cards of a certain criteria. To help you single out certain cards even when viewing everything at once. You can highlight by color, CMC, type, or rule text.', phone:''},
+  {title:'Highlight Cards', desc:'On the Build page, you can use the "Highlight" option to highlight cards of a certain criteria. To help you single out certain cards even when viewing everything at once. You can highlight by color, CMC, type, or rule text.', phone:''},
   {title:'Auto Fill Essence', desc:'"Populate Essence" will automatically fill your Essence Deck with Core Essence to most closely match the same ratio of "Mana Pips by Color" of your Main Deck. This option DOES NOT account for Dual Essence or otherwise, and does not take any cards in your Wish Deck into account. This option is only recommended for simple Decks. You can only use this if you have no cards in your Essence Deck.'},
-  {title:'Saving Images / Print Options', desc:'All four are in the "Export" menu on the Build Deck page, and each takes every section of your Deck.\n"Images": Will download a .zip file of each card image of cards in your Decks. (Only 1x of each card)\n"Print": Generates a PDF of all the card images in your Deck, with the appropriate amount of each card matching your Deck list. (3 \u00d7 3 per page)\n"Proxies": Generates a PDF of all the cards in your Deck as text-only with symbols for the Mana Cost and Stats of the cards. (For a low ink alternative when wanting quick paper prototyping and playtesting.) (3 \u00d7 3 per page)', phone:''},
+  {title:'Saving Images / Print Options', desc:'All four are in the "Export" menu on the Build page, and each takes every section of your Deck.\n"Images": Will download a .zip file of each card image of cards in your Decks. (Only 1x of each card)\n"Print": Generates a PDF of all the card images in your Deck, with the appropriate amount of each card matching your Deck list. (3 \u00d7 3 per page)\n"Proxies": Generates a PDF of all the cards in your Deck as text-only with symbols for the Mana Cost and Stats of the cards. (For a low ink alternative when wanting quick paper prototyping and playtesting.) (3 \u00d7 3 per page)', phone:''},
   {title:'Deck Saved via URL', desc:'Your Deck is saved to the page URL as you edit it. You can copy and share the URL as an alternative to copying the Deck list.'},
   {title:'Filter Persistence via URL', desc:'Browse filters (name search, color, type, CMC) are also saved to the URL. Share a filtered view by copying the URL after applying your filters. (For showing other people certain groups of cards of interest.)'},
-  {title:'Drafting', desc:'A "Draft Deck" (a Deck Type on the Build Deck page) is a card list to draft from, not a Deck to play - every card in it is in the pool except Essence, which Arena provides. Press "Draft" on it in Deck Lists and choose:\n"Default Draft": four packs of 15 each - pick one, pass the rest (left, right, left, right).\n"Vault": 120 cards each, nothing to pick.\n"Hex Draft" (2 players): six piles of 30 round a hexagon - take the top card of two side-by-side piles; the other player takes two of the four left; the last two are removed.\n"Winchester" (2-4 players): four face-up piles - take a whole pile, then every pile gets one more card.\nChairs you do not fill are bots that pick at random. A short pool deals every card once before repeating any. When the draft ends, build an Arena Deck of exactly 30 from what you took and save it. At a table, the host picks Mode: Draft in Options and presses "Start Draft" in the waiting room.', phone:'A "Draft Deck" (a Deck Type on the Build Deck page) is a card list to draft from, not a Deck to play - every card in it is in the pool except Essence, which Arena provides. Press "Draft" on it in Deck Lists and choose:\n"Default Draft": four packs of 15 each - pick one, pass the rest (left, right, left, right).\n"Vault": 120 cards each, nothing to pick.\n"Hex Draft" (2 players): six piles of 30 round a hexagon - take the top card of two side-by-side piles; the other player takes two of the four left; the last two are removed.\n"Winchester" (2-4 players): four face-up piles - take a whole pile, then every pile gets one more card.\nChairs you do not fill are bots that pick at random. A short pool deals every card once before repeating any. When the draft ends, build an Arena Deck of exactly 30 from what you took and save it.'},
-  {title:'Tabletop Simulator', desc:'Use "TTS" in the Export menu on the Build Deck page to export your Deck as a single .json file you can copy and paste into Tabletop Simulator.', phone:''}
+  {title:'Drafting', desc:'A "Draft Deck" (a Deck Type on the Build page) is a card list to draft from, not a Deck to play - every card in it is in the pool except Essence, which Arena provides. Press "Draft" on it in Deck Lists and choose:\n"Default Draft": four packs of 15 each - pick one, pass the rest (left, right, left, right).\n"Vault": 120 cards each, nothing to pick.\n"Hex Draft" (2 players): six piles of 30 round a hexagon - take the top card of two side-by-side piles; the other player takes two of the four left; the last two are removed.\n"Winchester" (2-4 players): four face-up piles - take a whole pile, then every pile gets one more card.\nChairs you do not fill are bots that pick at random. A short pool deals every card once before repeating any. When the draft ends, build an Arena Deck of exactly 30 from what you took and save it. At a table, the host picks Mode: Draft in Options and presses "Start Draft" in the waiting room.', phone:'A "Draft Deck" (a Deck Type on the Build page) is a card list to draft from, not a Deck to play - every card in it is in the pool except Essence, which Arena provides. Press "Draft" on it in Deck Lists and choose:\n"Default Draft": four packs of 15 each - pick one, pass the rest (left, right, left, right).\n"Vault": 120 cards each, nothing to pick.\n"Hex Draft" (2 players): six piles of 30 round a hexagon - take the top card of two side-by-side piles; the other player takes two of the four left; the last two are removed.\n"Winchester" (2-4 players): four face-up piles - take a whole pile, then every pile gets one more card.\nChairs you do not fill are bots that pick at random. A short pool deals every card once before repeating any. When the draft ends, build an Arena Deck of exactly 30 from what you took and save it.'},
+  {title:'Tabletop Simulator', desc:'Use "TTS" in the Export menu on the Build page to export your Deck as a single .json file you can copy and paste into Tabletop Simulator.', phone:''}
 ];
 var _SC_EDITOR = [
   {title:'Opening a Card', desc:'Press Edit (✎) on a card in the catalog or in its card window, or press "New card". Official cards are read-only and do not open here. The arrows over the preview, or the arrow keys when no field has focus, step through the cards the catalog is showing, in its order. The preview is the card as it prints, redrawn as you type.'},
@@ -35799,7 +35961,7 @@ document.addEventListener('keydown', function(ev){
   var k = ev.key;
   switch(k.toLowerCase()){
     case 'b': _keyTab('browse', 'Browse'); ev.preventDefault(); break;
-    case 'd': _keyTab('deck', 'Build Deck'); ev.preventDefault(); break;
+    case 'd': _keyTab('deck', 'Build'); ev.preventDefault(); break;
     case 'l': _keyTab('decklists', 'Deck Lists'); ev.preventDefault(); break;
     case '1': setView('grid'); ev.preventDefault(); break;
     case '2': setView('details'); ev.preventDefault(); break;
@@ -41856,6 +42018,7 @@ function orbBoxClass(type){
   if(type==='attack')return 'ed2-nf-atk';
   if(type==='health')return 'ed2-nf-hp';
   if(type==='arcane')return 'ed2-nf-arc';
+  if(type==='range')return 'ed2-nf-rng';
   return 'ed2-nf-blank';
 }
 function orbPreviewHTML(o){
@@ -41876,13 +42039,13 @@ function orbEditorRows(c){
     var isBlank=(o.type==='blank'||o.type==='hidden');
     var isStar=(String(o.value).trim()==='*');
     html+="<div class='ed2-nf ed2-orb "+orbBoxClass(o.type)+"' id='f-orb-box-"+i+"'>"
+      +"<select class='ed2-orb-type' id='f-orb-type-"+i+"' aria-label='Orb "+(i+1)+" type'"
+        +" onchange='edOrbType("+i+",this.value)'>"+opts+"</select>"
+      +"<div class='ed2-orb-body'>"
       +orbPreviewHTML(o)
       +"<div class='ed2-orb-fields'>"
-      +"<select class='ed2-orb-type' id='f-orb-type-"+i+"' aria-label='Orb "+(i+1)+" type' title='"+ORB_TYPE_LABEL[o.type]+"'"
-        +" onchange='edOrbType("+i+",this.value)'>"+opts+"</select>"
-      +"<div class='ed2-orb-valrow'>"
-        +"<input class='ed2-orb-val' id='f-orb-val-"+i+"' aria-label='Orb "+(i+1)+" value' value='"+e(o.value)+"' placeholder='\u2013'"+(isBlank||isStar?' disabled':'')+" oninput='edOrbVal("+i+",this.value)'>"
         +"<label class='ed2-orb-star' title='Set stat to * (centered)'><input type='checkbox' id='f-orb-star-"+i+"' aria-label='Orb "+(i+1)+": star (*) instead of a number'"+(isStar?' checked':'')+(isBlank?' disabled':'')+" onchange='edOrbStar("+i+",this.checked)'>*</label>"
+        +"<input class='ed2-orb-val' id='f-orb-val-"+i+"' aria-label='Orb "+(i+1)+" value' value='"+e(o.value)+"' placeholder='\u2013'"+(isBlank||isStar?' disabled':'')+" oninput='edOrbVal("+i+",this.value)'>"
       +"</div>"
       +"</div>"
     +"</div>";
@@ -42119,8 +42282,9 @@ function renderFields(){
         +" onchange='edSagaFieldAdd()'>"+sagaDatalistHTML()+"</div>"
       +"<div class='ed2-field ed2-inl f-rev-wrap'><label for='f-rev'>Rev #</label><input class='ed2-input' id='f-rev' value='"+e(m.revision||'')+"' oninput='edLive()'></div>"
       +"<div class='ed2-field ed2-inl f-artist-wrap'><label for='f-artist'>Artist</label><input class='ed2-input' id='f-artist' value='"+e(m.artist||'')+"' oninput='edLive()'></div>"
+      +(window.REBIRTH ? rarityFieldHTML(c) : '')
     +"</div>"
-    +(window.REBIRTH ? "<div class='ed2-meta2'>"+sagaBoxHTML(c)+rarityFieldHTML(c)+"</div>" : sagaBoxHTML(c))
+    +sagaBoxHTML(c)
     +"</div>";
   renderTypeToks();
   setupCombo('super'); setupCombo('sub');
@@ -42402,7 +42566,7 @@ function orbPvSwap(i,o){
   var box=document.getElementById('f-orb-box-'+i), pv=box&&box.querySelector('.ed2-orb-pv'); if(!pv)return;
   var tmp=document.createElement('div');
   tmp.innerHTML=orbPreviewHTML(o||{type:'hidden',value:''});
-  box.replaceChild(tmp.firstChild,pv);
+  pv.parentNode.replaceChild(tmp.firstChild,pv);
 }
 window.edRefreshOrbPreviews=function(){
   var c=curCard(); if(!c)return;
