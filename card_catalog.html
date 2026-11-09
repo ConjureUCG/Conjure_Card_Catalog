@@ -299,6 +299,7 @@ body.testdeck-active .sb-show,body.testdeck-active .dp-show{
 .apply-btn{width:100%;margin-top:4px}
 
 .fs{padding:9px 13px;border-bottom:1px solid color-mix(in srgb,var(--th-fill) 12%,var(--b1))}
+.sb .fs.fs-box,.sb .fs:has(+ .fs-box){border-bottom:0}
 .fl{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;letter-spacing:.08em;color:var(--txt-accent);margin-bottom:5px;display:flex;align-items:center;gap:6px;justify-content:flex-end;text-align:right}
 .fl-center{justify-content:center;text-align:center}
 .fl-left{justify-content:flex-start;text-align:left}
@@ -807,15 +808,19 @@ body.light tr.hl-match{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--black)
 .dv-chart-bar{flex:1;min-width:0}
 @media (min-width:900px){
   .chart-box.dv-chart-row{display:flex;align-items:center;gap:14px}
-  .dv-chart-row>h4{flex:0 0 auto;min-width:9.4em;margin:0}
-  .dv-curve-row{display:flex;align-items:flex-start;gap:14px}
-  .dv-curve-chart{flex:1 1 auto;min-width:0}
+  .chart-box.dv-chart-row>h4{flex:0 0 auto;width:min-content;min-width:5.6em;margin:0;font-size:1.125rem}
+  .chart-box.dv-curve{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:14px;align-items:start}
+  .chart-box.dv-curve>h4{grid-column:1;grid-row:1;margin:0 0 6px;font-size:1.125rem}
+  .dv-curve-row{display:contents}
+  .dv-curve-chart{grid-column:2;grid-row:1 / span 2;min-width:0}
+  #statCmcBox{grid-column:1;grid-row:2}
+  .chart-box.dv-curve>#dvCmcCards{grid-column:1 / -1}
   #statCmcBox{flex:0 0 auto;flex-direction:column;flex-wrap:nowrap;gap:6px;margin:0}
   #statCmcBox>.stat-cmc-h-item{flex:0 0 auto;flex-direction:row;align-items:baseline;justify-content:space-between;gap:18px;padding:4px 12px}
   #statCmcBox .stat-pill-lbl{margin:0}
-  #statCmcBox .stat-pill-val{font-size:1.5rem}
+  #statCmcBox .stat-pill-val{font-size:1.125rem}
   #statCmcBox>#dv-inf-wrap{flex-direction:column;align-items:center;gap:2px;padding:6px 12px}
-  #dv-inf-wrap .dv-inf-line{white-space:normal;text-align:center;font-size:1.05rem}
+  #dv-inf-wrap .dv-inf-line{white-space:normal;text-align:center;font-size:.79rem}
   #dv-inf-wrap .dv-inf-p{display:block}
   #dv-inf-wrap .dv-inf-sep{display:none}
 }
@@ -1346,6 +1351,10 @@ body.light .ed2-modal .ed2-btn.close-x:hover{background:rgba(128,48,48,.75);colo
 .tpl-meta{flex:1;min-width:0;color:var(--tx);font-size:12.5px}
 .tpl-meta i{display:block;color:var(--tm);font-size:11px;font-style:normal}
 .tpl-acts{display:flex;gap:6px;flex:0 0 auto}
+@media (min-width:900px){
+  .tpl-slots3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .tpl-slots3>.tpl-slot{margin:0}
+}
 .ed2-btn.tiny{padding:3px 8px;font-size:11.5px;cursor:pointer}
 .ed2-btn.tiny.on{background:var(--blue-mid-2);border-color:var(--ac);color:var(--white)}
 .ed2-btn.tiny.on:hover{background:var(--ac);color:var(--white);border-color:var(--ac);
@@ -2767,6 +2776,25 @@ body:not(.mse-template) .mcard .m-mana-orb{
 body:not(.mse-template) .mcard .m-mana-orb img{
   width:72px;height:72px;border-radius:50%;display:block;
   filter:drop-shadow(var(--ico-sx,.91px) var(--ico-sy,1.82px) var(--ico-blur,3.03px) rgba(0,0,0,.75))}
+body:not(.mse-template) .mcard .m-mana-orb.m-mana-arc{position:relative;width:102px;height:102px;border:0;
+  background:none;box-shadow:none}
+body:not(.mse-template) .mcard .m-mana-ring{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.55))}
+body:not(.mse-template) .mcard .m-mana-ring svg,
+body:not(.mse-template) .mcard .m-mana-ring .o-gal,
+body:not(.mse-template) .mcard .m-mana-ring .o-gc,
+body:not(.mse-template) .mcard .m-mana-ring .o-halo,
+body:not(.mse-template) .mcard .m-mana-ring .o-sheen,
+body:not(.mse-template) .mcard .m-mana-ring .o-ring{position:absolute;left:0;top:0;width:100%;height:100%}
+body:not(.mse-template) .mcard .m-mana-ring .o-sheen{opacity:.8}
+body:not(.mse-template) .mcard .m-mana-ring .o-hw{position:absolute;overflow:hidden}
+body:not(.mse-template) .mcard .m-mana-ring .o-hf{position:absolute}
+body:not(.mse-template) .mcard .m-mana-ring .o-galimg{position:absolute;left:-76.32%;top:-76.32%;width:252.63%;height:252.63%;
+  background:center/100% 100% no-repeat}
+body:not(.mse-template) .mcard .m-mana-ring .o-galimg.o-haloimg{left:-82.89%;top:-82.89%;width:265.79%;height:265.79%;opacity:.5}
+body:not(.mse-template) .mcard .m-mana-bg{position:absolute;left:11px;top:11px;width:80px;height:80px;border-radius:50%;
+  background:var(--pin,var(--frame))}
+body:not(.mse-template) .mcard .m-mana-arc img{position:relative}
 
 body:not(.mse-template) .mcard-tpl-essence-boxed .m-art .m-rules{
   position:absolute;left:50%;transform:translateX(-50%);bottom:0;
@@ -2917,8 +2945,6 @@ body:not(.mse-template) .mcard .m-rules-split.has-ident.has-flavor>.m-rsecs{
   font-variant-numeric:tabular-nums}
 .td-sr-in:focus{outline:none;border-color:var(--txt-accent)}
 .td-sr-lvl{width:118px;letter-spacing:.14em;}
-.td-sr-echo{font-family:'Crimson Pro',serif;font-size:.8rem;color:var(--tm);
-  font-style:italic;max-width:340px}
 @media (min-width:900px){
   .td-statrow{flex-wrap:nowrap;gap:8px;padding:4px 8px;border:2px solid var(--gd);
     background:color-mix(in srgb,var(--go) 6%,transparent)}
@@ -2932,7 +2958,6 @@ body:not(.mse-template) .mcard .m-rules-split.has-ident.has-flavor>.m-rsecs{
   .td-sr-in{height:27px;box-sizing:border-box;border-radius:0;
     background:color-mix(in srgb,var(--st) 12%,transparent);border-color:color-mix(in srgb,var(--st) 30%,transparent)}
   .td-sr-in:focus{border-color:var(--st)}
-  .td-sr-echo{max-width:220px;line-height:1.15}
 }
 
 .td-counters{display:flex;align-items:center;gap:14px;flex-wrap:nowrap;
@@ -3172,15 +3197,16 @@ body.rebirth #tdBoard > .td-half-mine{
     "play  deck  grave essarea hand";
 }
 @media (min-width:901px){
-  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-row{display:grid;gap:8px;align-items:start;
-    grid-template-columns:188px 188px auto 188px;
-    grid-template-areas:"atk hp bar turn" "mp . bar turn"}
+  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-row{display:grid;row-gap:14px;column-gap:8px;
+    align-items:start;grid-template-columns:auto 188px;
+    grid-template-areas:"atk side" "hp side" "mp side"}
+  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-stat{zoom:.75}
   body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-stat[data-ctr='atk']{grid-area:atk}
   body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-stat[data-ctr='hp']{grid-area:hp}
   body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-stat[data-ctr='mp']{grid-area:mp}
-  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-row > .td-play-bar{grid-area:bar;align-self:center}
-  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-row > .td-turn-host{grid-area:turn}
-  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play-bar .td-barcol{flex-direction:column}
+  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-row > .td-play-bar{grid-area:side;align-self:start}
+  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-row > .td-turn-host{grid-area:side;align-self:stretch;
+    margin-top:33px;contain:size;overflow:hidden auto;scrollbar-width:thin}
   body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-esstally{grid-template-rows:repeat(var(--ess-rows4,4),min-content);
     flex-basis:calc(34px * var(--ess-cols4,1) + 4px)}
   body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-zone[data-zone='essarea'] .td-zacts{
@@ -5573,9 +5599,9 @@ body .kwp-body.tpp-body{display:block}
 .tpp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin:8px 0 18px}
 .tpp-orbsets{grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
 .tpp-backs{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
-.tpp-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:-6px 0 22px}
+.tpp-sec .kwp-head{flex-wrap:wrap}
+.tpp-row{display:inline-flex;flex-wrap:nowrap;align-items:center;gap:8px;margin:0 0 0 14px;letter-spacing:normal}
 .tpp-lbl{font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;color:var(--tx);margin-right:4px}
-.tpp-hint{flex:1 1 260px;font-size:.85rem;font-style:normal;color:var(--tm)}
 .tpp-opt{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 10px 10px;border:2px solid var(--b1);border-radius:10px;background:var(--s2);color:var(--tx);cursor:pointer;user-select:none}
 .tpp-opt:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
 .tpp-opt:focus-visible{outline:2px solid var(--gd);outline-offset:2px}
@@ -5965,8 +5991,6 @@ body .kwp-body.tpp-body{display:block}
   .td-sr{min-width:0;gap:4px}
   .td-sr-lab{font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--td)}
   .td-sr-in,.td-sr-in.td-sr-lvl{width:100%;height:44px;box-sizing:border-box;padding:0 8px;border-radius:0;background:var(--s1);font-size:16px}
-  .td-sr-echo{grid-column:1 / -1;max-width:none;font-size:14px}
-  .td-sr-echo:empty{display:none}
   #deckRulesBtn,#popEssBtn{grid-column:span 3;order:2;height:22px;padding:0 4px;font-size:12px;letter-spacing:.03em;line-height:1;
     display:flex;align-items:center;justify-content:center;gap:5px;border-width:1px;white-space:nowrap;overflow:hidden}
   #popEssBtn{order:3}
@@ -6961,7 +6985,7 @@ body .kwp-body.tpp-body{display:block}
     <div class='sbh'><button class='rb nb nb-red nb-l' onclick='reset()'>Reset</button><button class='sb-min nb nb-green nb-l' onclick='minimizeSidebar(true)'>Minimize</button></div>
     <div class='fs'><div style='position:relative'><span style='position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--tm);pointer-events:none'><svg class='ico' aria-hidden='true'><use href='#i-search'/></svg></span><input type='text' id='ns' aria-label='Search card names' placeholder='Search…' autocomplete='off' style='width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:18px;padding:6px 12px 6px 30px;color:var(--tx);font-family:"Crimson Pro",serif;font-size:1rem;outline:none'></div></div>
     <div class='fs mob-hide' style='padding-bottom:6px'><button class='apply-btn nb nb-green nb-l' onclick='run()'><svg class='ico' aria-hidden='true'><use href='#i-play'/></svg>Apply Filters</button></div>
-    <div class='fs'>
+    <div class='fs fs-box'>
       <div class='nf nf-saga'><span class='fl fl-inbox'>Saga</span><select id='fsaga' aria-label='Saga'><option value=''>All sagas</option></select></div>
     </div>
     <div class='fs'>
@@ -6986,21 +7010,21 @@ body .kwp-body.tpp-body{display:block}
         </div>
       </div>
     </div>
-    <div class='fs'>
+    <div class='fs fs-box'>
       <div class='nf nf-cmc'><span class='fl fl-inbox'><svg width='14' height='14' viewBox='0 0 18 18' fill='none'><rect x='3' y='3' width='12' height='12' stroke='#a8afc0' stroke-width='3'/></svg> CMC</span><select id='cop' aria-label='Mana Cost: how it compares'><option value=''>Any</option><option value='eq'>Equal =</option><option value='lt'>Lesser &lt;</option><option value='gt'>Greater &gt;</option><option value='x'>Contains X</option></select><input type='number' id='cval' min='0' placeholder='0' aria-label='Mana Cost'></div></div>
-    <div class='fs'>
+    <div class='fs fs-box'>
       <div class='nf nf-atk'><span class='fl fl-inbox'><svg width='14' height='14' viewBox='0 0 18 18' fill='none'><rect x='4' y='4' width='10' height='10' transform='rotate(45 9 9)' stroke='#c45c5c' stroke-width='3'/></svg> ATK</span><select id='aop' aria-label='Attack: how it compares'><option value=''>Any</option><option value='eq'>Equal =</option><option value='lt'>Lesser &lt;</option><option value='gt'>Greater &gt;</option><option value='star'>Contains *</option></select><input type='number' id='aval' min='0' placeholder='0' aria-label='Attack'></div></div>
-    <div class='fs'>
+    <div class='fs fs-box'>
       <div class='nf nf-hp'><span class='fl fl-inbox'><svg width='14' height='14' viewBox='0 0 18 18' fill='none'><polygon points='9,1 17,5 17,13 9,17 1,13 1,5' stroke='#c9a84c' stroke-width='3'/></svg> HLTH</span><select id='hop' aria-label='Health: how it compares'><option value=''>Any</option><option value='eq'>Equal =</option><option value='lt'>Lesser &lt;</option><option value='gt'>Greater &gt;</option><option value='star'>Contains *</option></select><input type='number' id='hval' min='0' placeholder='0' aria-label='Health'></div></div>
-    <div class='fs rb-only'>
+    <div class='fs fs-box rb-only'>
       <div class='nf nf-rng'><span class='fl fl-inbox fl-keepcase'><svg width='14' height='14' viewBox='0 0 18 18' fill='none'><polygon points='9,2 16,15 2,15' stroke='#5c9e6e' stroke-width='3' stroke-linejoin='round'/></svg> Rg</span><select id='rop' aria-label='Range: how it compares'><option value=''>Any</option><option value='eq'>Equal =</option><option value='lt'>Lesser &lt;</option><option value='gt'>Greater &gt;</option><option value='star'>Contains *</option></select><input type='number' id='rval' min='0' placeholder='0' aria-label='Range'></div></div>
-    <div class='fs'>
+    <div class='fs fs-box'>
       <div class='nf nf-arc'><span class='fl fl-inbox'><svg width='14' height='14' viewBox='0 0 18 18' fill='none'><circle cx='9' cy='9' r='7' stroke='#2980b9' stroke-width='3'/></svg> ARC</span><select id='arop' aria-label='Arcane: how it compares'><option value=''>Any</option><option value='eq'>Equal =</option><option value='lt'>Lesser &lt;</option><option value='gt'>Greater &gt;</option><option value='star'>Contains *</option></select><input type='number' id='arval' min='0' placeholder='0' aria-label='Arcane'></div>
       <div class='cbtn-row'>
         <span class='cbtn cbtn-atk'><input type='checkbox' id='atkarc'><label for='atkarc'><span class='cbtn-ck' aria-hidden='true'></span><span class='cbtn-t'>Attack + Arcane</span><svg class='cbtn-ico' width='15' height='15' viewBox='0 0 18 18' fill='none' aria-hidden='true'><polyline points='1,9 9,1 17,9' stroke='#c45c5c' stroke-width='3' fill='none' stroke-linejoin='round'/><path d='M 2,9 A 7,7 0 0 0 16,9' stroke='#2980b9' stroke-width='3' fill='none'/></svg></label></span>
         <span class='cbtn cbtn-hp'><input type='checkbox' id='hparc'><label for='hparc'><span class='cbtn-ck' aria-hidden='true'></span><span class='cbtn-t'>Health + Arcane</span><svg class='cbtn-ico' width='15' height='15' viewBox='0 0 18 18' fill='none' aria-hidden='true'><polyline points='1,9 1,5 9,1 17,5 17,9' stroke='#c9a84c' stroke-width='3' fill='none' stroke-linejoin='round'/><path d='M 2,9 A 7,7 0 0 0 16,9' stroke='#2980b9' stroke-width='3' fill='none'/></svg></label></span>
       </div></div>
-    <div class='fs'>
+    <div class='fs fs-box'>
       <div class='fl-row fl-row-tight'><span class='fl fl-inline'>Rule Text</span>
       <select id='rtMode' aria-label='How the rule text matches' style='background:var(--s2);border:1px solid var(--b1);border-radius:0;color:var(--tx);font-family:Crimson Pro,serif;font-size:.75rem;padding:3px 0 3px 4px;cursor:pointer'>
         <option value='all' selected>All Words</option>
@@ -7107,14 +7131,13 @@ body .kwp-body.tpp-body{display:block}
           <label class='td-sr td-st-lvl' title='Colour string, e.g. RRRGG. Each letter is one Core Essence.'>
             <span class='td-sr-lab'>LVL</span>
             <input type='text' id='dta-lvl' class='td-sr-in td-sr-lvl' placeholder='RRRGG'
-                   spellcheck='false' maxlength='24' oninput='tdLvlEcho()'></label>
+                   spellcheck='false' maxlength='24'></label>
           <label class='td-sr td-st-atk'><span class='td-sr-lab'>ATK</span>
             <input type='number' id='dta-atk' class='td-sr-in' placeholder='0'></label>
           <label class='td-sr td-st-hp'><span class='td-sr-lab'>HP</span>
             <input type='number' id='dta-hp' class='td-sr-in' placeholder='0'></label>
           <label class='td-sr td-st-mp'><span class='td-sr-lab'>MP</span>
             <input type='number' id='dta-mp' class='td-sr-in' placeholder='0'></label>
-          <span class='td-sr-echo' id='tdLvlEcho'></span>
         </div>
         <button class='dv-vbtn deck-rules-btn' id='deckRulesBtn' onclick='showDeckRules()'><svg class='ico' aria-hidden='true'><use href='#i-book'/></svg> Deck Rules</button>
         <div class='dv-pair'>
@@ -10872,7 +10895,7 @@ function _dtaInput(){
   _deckRefreshTimer = setTimeout(function(){ if(_deckPaneShowing()) refreshDeckView(); }, 600);
 }
 var TD_STAT_INPUT_IDS = ['dta-lvl', 'dta-atk', 'dta-hp', 'dta-mp'];
-function _statInput(){ _hashSaveDeck(); if(typeof tdLvlEcho === 'function') tdLvlEcho(); }
+function _statInput(){ _hashSaveDeck(); }
 
 function deckStatsSyncToText(){
   if(typeof tdReadStatRow !== 'function') return;
@@ -15062,6 +15085,7 @@ function tdBuildBoard(){
     board.counts.deck = board.zones.deck.length;
     board.counts.gear = board.zones.gear.length;
   }
+  if(board.zones.gear && board.zones.gear.length > 1) board.zones.gear.sort(tdGearOrder);
 
   if(board.zones.lord){
     for(var i = board.zones.deck.length - 1; i >= 0; i--){
@@ -15139,6 +15163,24 @@ function tdDmZoneFor(toId){
   if(toId === 'grave') return 'dmgrave';
   if(toId === 'deck') return 'dmdeck';
   return (toId === 'field' || TD_DM_ZONES[toId]) ? toId : '';
+}
+var TD_GEAR_RANK = {background:0, ongoing:1, armament:2};
+function tdGearRank(c){
+  var rank = function(list){
+    var best = 3;
+    _catArr(list).forEach(function(t){
+      var r = TD_GEAR_RANK[String(t).toLowerCase()];
+      if(r != null && r < best) best = r;
+    });
+    return best;
+  };
+  var r = rank(c && c.superTypes);
+  return r < 3 ? r : rank(c && c.subTypes);
+}
+function tdGearOrder(a, b){
+  var d = tdGearRank(a.card) - tdGearRank(b.card);
+  if(d) return d;
+  return String((a.card && a.card.name) || '').localeCompare(String((b.card && b.card.name) || ''), undefined, {sensitivity:'base'});
 }
 function tdIsGearCard(c){
   return !!c && (typeof _isGearCard === 'function') && !!_isGearCard(c);
@@ -15332,7 +15374,6 @@ function tdWriteStatRow(entry){
     var el = document.getElementById('dta-' + k);
     if(el) el.value = (entry && entry[k] != null) ? entry[k] : '';
   });
-  tdLvlEcho();
 }
 function tdSyncStatRow(){
   var row = document.getElementById('tdStatRow');
@@ -15341,25 +15382,7 @@ function tdSyncStatRow(){
     var p = window._tdPendingStatRow;
     window._tdPendingStatRow = null;
     tdWriteStatRow(p);
-    return;
   }
-  tdLvlEcho();
-}
-function tdLvlEcho(){
-  var out = document.getElementById('tdLvlEcho');
-  if(!out) return;
-  var el = document.getElementById('dta-lvl');
-  var letters = tdLevelLetters(el ? el.value : '');
-  if(!letters.length){ out.textContent = ''; return; }
-  var by = tdCoreEssenceByColor(), counts = {}, order = [];
-  letters.forEach(function(L){
-    var card = by[TD_LVL_COLOR[L]];
-    var nm = card ? card.name.replace(/\s*Essence$/i, '') : L;
-    if(!counts[nm]){ counts[nm] = 0; order.push(nm); }
-    counts[nm]++;
-  });
-  out.textContent = order.map(function(n){ return counts[n] + ' ' + n; }).join(', ')
-    + '  —  draw ' + letters.length;
 }
 
 
@@ -17467,7 +17490,7 @@ function tdZoneSectionHTML(z, board){
     body = items.map(function(it){ return tdCardHTML(it, z, {board:b}); }).join('');
   }
   var acts = '';
-  if(TD_LOCK_ZONES[z.id] && !foe){
+  if(TD_LOCK_ZONES[z.id] && !foe && !(REBIRTH && z.id === 'field')){
     var nLocked = items.filter(function(it){ return it.locked; }).length;
     var nFree = items.length - nLocked;
     var canUnlock = nLocked > 0;
@@ -17513,6 +17536,7 @@ function tdZoneSectionHTML(z, board){
 
 var TD_CW_MAX = 132, TD_CW_MIN = 60;
 var TD_RB_ROW_MIN = 90;
+var TD_RB_CW_MAX = 240;
 var _tdFit = {cw:TD_CW_MAX, two:false, key:''};
 function tdFitRoom(b){
   var top = b.getBoundingClientRect().top + (window.pageYOffset || 0);
@@ -17540,6 +17564,17 @@ function tdFitTable(){
     mine.classList.toggle('td-rbside', !!two && rb);
   };
   var fld = mine ? mine.querySelector(".td-zone[data-zone='field']") : null;
+  var wide = rb && window.innerWidth > 900;
+  var play = wide ? mine.querySelector(':scope > .td-play') : null;
+  var ctrs = play ? play.querySelector(':scope > .td-play-ctrs') : null;
+  var rowFits = function(){
+    if(!ctrs || mine.classList.contains('td-rbside')) return true;
+    var cs = getComputedStyle(play);
+    var own = ctrs.getBoundingClientRect().height + (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0)
+      + (parseFloat(cs.borderTopWidth) || 0) + (parseFloat(cs.borderBottomWidth) || 0);
+    return play.getBoundingClientRect().height <= own + 1;
+  };
+  var cwTop = function(two){ return (ctrs && !two) ? TD_RB_CW_MAX : TD_CW_MAX; };
   var ess = (REBIRTH && mine && window.innerWidth > 900) ? mine.querySelector(".td-zone[data-zone='essarea'] > .td-zbody") : null;
   var essRoom = function(cw){
     var t = ess.parentNode.querySelector('.td-esstally');
@@ -17551,6 +17586,7 @@ function tdFitTable(){
     tdSideLayout(b);
     if(fld && fld.offsetWidth < 3 * cw + 40) return false;
     if(ess && !essRoom(cw)) return false;
+    if(!rowFits()) return false;
     return b.scrollHeight <= room && b.scrollWidth <= b.clientWidth + 2;
   };
   var key = window.innerWidth + 'x' + window.innerHeight
@@ -17561,14 +17597,15 @@ function tdFitTable(){
   if(F.key === key){
     mode(F.two);
     tdSmallCards(b, F.cw);
-    var keep = fits(F.cw) && (F.cw >= TD_CW_MAX || !fits(F.cw + 1));
+    var keep = fits(F.cw) && (F.cw >= cwTop(F.two) || !fits(F.cw + 1));
     if(keep){ b.style.setProperty('--td-cw', F.cw + 'px'); tdSideLayout(b); fill(); return F.cw; }
   }
   var best = function(two){
     mode(two);
-    if(fits(TD_CW_MAX)) return TD_CW_MAX;
+    var top = cwTop(two);
+    if(fits(top)) return top;
     if(!fits(TD_CW_MIN)) return 0;
-    var lo = TD_CW_MIN, hi = TD_CW_MAX;
+    var lo = TD_CW_MIN, hi = top;
     while(hi - lo > 1){ var mid = (lo + hi) >> 1; if(fits(mid)) lo = mid; else hi = mid; }
     return lo;
   };
@@ -40913,6 +40950,12 @@ function rulesAreaHTML(c,rulesAlign,rules,flavor){
     +"</div>";
 }
 
+function manaRingHTML(col){
+  if(typeof window.edOrbTinted!=='function')return '';
+  var h='';
+  try{ h=window.edOrbTinted('arc','',fillHex(col))||''; }catch(_){ h=''; }
+  return h?("<span class='m-mana-ring' aria-hidden='true'>"+h+"</span><span class='m-mana-bg'></span>"):'';
+}
 function buildFaceHTML(c, opts){
   opts=opts||{};
   var fcols=frameColorsOf(c);
@@ -40976,7 +41019,8 @@ function buildFaceHTML(c, opts){
         var own=(col&&FRAME_ORDER.indexOf(col)>=0)?(";--pin:"+frameOf([col])+";--ink-dark:"+outlineSolid([col])):'';
         var sym=(col&&MANA_LETTER[col])?tplGet('sym:'+MANA_LETTER[col]):'';
         if(sym)m=m.replace(/\ssrc="[^"]*"/,' src="'+e(sym)+'"');
-        return "<span class='m-mana-orb' style='"+own+"'>"+m+"</span>";
+        var ring=own?manaRingHTML(col):'';
+        return "<span class='m-mana-orb"+(ring?" m-mana-arc":"")+"' style='"+own+"'>"+ring+m+"</span>";
       });
       if(wrapped===ic)wrapped="<span class='m-mana-orb'>"+ic+"</span>";
       manaBar="<div class='m-mana-bar'>"+wrapped+"</div>";
@@ -44516,25 +44560,24 @@ function tppOpt(attr,key,on,inner,name){
   return "<div class='tpp-opt"+(on?' on':'')+"' role='button' tabindex='0' aria-pressed='"+(on?'true':'false')+"' data-tpp-"+attr+"='"+key+"'>"
     +inner+"<span class='tpp-name'>"+name+"</span></div>";
 }
-function tppHead(id,title,n){
-  return "<h3 class='kwp-head' id='tppsec-"+id+"'>"+title+"<span class='kwp-count'>"+n+"</span></h3>";
+function tppHead(id,title,n,extra){
+  return "<h3 class='kwp-head' id='tppsec-"+id+"'>"+title+"<span class='kwp-count'>"+n+"</span>"+(extra||'')+"</h3>";
 }
 function tppEdgeRow(){
   var off=frOutlineOff();
-  return "<div class='tpp-row tpp-edge'><span class='tpp-lbl'>Outline</span>"
+  return "<span class='tpp-row tpp-edge'><span class='tpp-lbl'>Outline</span>"
     +"<button type='button' class='nb nb-gold nb-s"+(off?'':' on')+"' data-tpp-edge='gradient' aria-pressed='"+(off?'false':'true')+"'>On</button>"
-    +"<button type='button' class='nb nb-gold nb-s"+(off?' on':'')+"' data-tpp-edge='none' aria-pressed='"+(off?'true':'false')+"'>Off</button>"
-    +"<i class='tpp-hint'>The card’s outer border. Off, the frame’s field reaches the card’s edge; every box keeps its own.</i></div>";
+    +"<button type='button' class='nb nb-gold nb-s"+(off?' on':'')+"' data-tpp-edge='none' aria-pressed='"+(off?'true':'false')+"'>Off</button></span>";
 }
 function tppFramesHTML(){
   var c=frSampleCard();
-  return tppHead('frame','Card Frame',FR_KEYS.length)+"<div class='tpp-grid tpp-frames'>"
+  return tppHead('frame','Card Frame',FR_KEYS.length,tppEdgeRow())+"<div class='tpp-grid tpp-frames'>"
     +FR_KEYS.map(function(k){
       var face='';
       if(c){ try{ face=frWithLook({frame:k},function(){ return buildFaceHTML(c,{}); }); }catch(_){ face=''; } }
       var inner="<span class='tpp-card'>"+(face?"<div class='mcard-fit'><div class='mcard-scale'>"+face+"</div></div>":"")+"</span>";
       return tppOpt('frame',k,FR_LOOK.frame===k,inner,FR_NAMES[k]);
-    }).join('')+"</div>"+tppEdgeRow();
+    }).join('')+"</div>";
 }
 function tppOrbRow(mode){
   var vals=[['attack','3'],['health','4'],['arcane','2']];
@@ -44836,15 +44879,9 @@ window.edTplPanelRefresh=function(){
     +"<span class='tpl-lbl'>Print bleed</span>"
     +"<button class='ed2-btn tiny"+(bleed?' on':'')+"' onclick='edSetBleed("+(!bleed)+")'>"
     +(bleed?'On \u2014 0.12\" bleed rendered':'Off \u2014 trimmed to 2.5\u00d73.5\"')+"</button>"
-    +"<i class='tpl-hint'>Leave off for screen and normal image export; turn on only for print/PDF.</i>"
     +"</div></div>";
 
   h+="<div class='tpl-sec'><h4>Art Defaults</h4>"
-    +"<i class='tpl-hint'><b>These only reach cards set to Auto.</b> A card whose "
-    +"Art fit is anything but Auto, or that has been framed by hand in its art "
-    +"panel, keeps exactly what it was given and is not touched by anything on "
-    +"this page. Contain shows the whole illustration, letterboxed; Cover fills "
-    +"the frame and crops what does not fit; Fill stretches.</i>"
     +defaultsBlock('h','Horizontal Art Cards',
         'Cards on the standard frame, art above the rules box.')
     +defaultsBlock('v','Vertical Art Cards',
@@ -44852,17 +44889,14 @@ window.edTplPanelRefresh=function(){
         +'narrower art box, which usually wants its own fit and zoom.')
     +"</div>";
 
-  h+="<div class='tpl-sec'><h4>Card Frames</h4>"
-    +"<i class='tpl-hint'>Canvas is 1644\u00d72244 (a 1500\u00d72100 card plus 0.12\" bleed). "
-    +"\u201cAll cards\u201d is used unless a more specific slot is filled.</i>"
+  h+="<div class='tpl-sec'><h4>Card Frames</h4><div class='tpl-slots3'>"
     +tplSlotHTML('frame:all','All cards','fallback for every card')
     +tplSlotHTML('frame:none','Colourless','')
     +tplSlotHTML('frame:multi','Multi-colour','')
     +FRAME_ORDER.map(function(c){return tplSlotHTML('frame:'+c,c.charAt(0).toUpperCase()+c.slice(1),'');}).join('')
-    +"</div>";
+    +"</div></div>";
 
   h+="<div class='tpl-sec'><h4>Orb Icons</h4>"
-    +"<i class='tpl-hint'>Replaces the built-in SVG orbs. The stat value is drawn over the image.</i>"
     +TPL_ORBS.map(function(t){return tplSlotHTML('orb:'+t,t.charAt(0).toUpperCase()+t.slice(1),'');}).join('')
     +"</div>";
 
@@ -44876,9 +44910,6 @@ window.edTplPanelRefresh=function(){
     +"</div>";
 
   h+="<div class='tpl-sec'><h4>Saved Templates</h4>"
-    +"<i class='tpl-hint'>A saved template captures every uploaded asset plus edge, "
-    +"pinlines, bleed, alignment and both art-default sets. Switching replaces the "
-    +"current assets.</i>"
     +"<div class='tpl-opts'><button class='ed2-btn tiny' onclick='edPackSave()'>Save current as\u2026</button></div>"
     +(PACKS.length?PACKS.map(function(pk){
         var n=Object.keys(pk.slots||{}).length;
@@ -44906,9 +44937,10 @@ window.edTplPanelRefresh=function(){
           +x+"</button>";
       }).join('');
   };
+  var ALIGN_LABEL={action:'Action/Spell'};
   var alignRow=function(r,removable){
     return "<div class='tpl-opts tpl-align'>"
-      +"<span class='tpl-lbl'>"+e(r.key.charAt(0).toUpperCase()+r.key.slice(1))+"</span>"
+      +"<span class='tpl-lbl'>"+e(ALIGN_LABEL[r.key]||(r.key.charAt(0).toUpperCase()+r.key.slice(1)))+"</span>"
       +alignBtns(r,'h',ALIGN_H)
       +"<span class='tpl-lbl tpl-lbl-gap'></span>"
       +alignBtns(r,'v',ALIGN_V)
@@ -44942,12 +44974,9 @@ window.edTplPanelRefresh=function(){
         +"' onclick=\"edSetAlignBase('v','"+x+"')\">"+x+"</button>";}).join('')
     +"</div>"
     +"<i class='tpl-hint'>Everything set to <b>Default</b> follows the row above, "
-    +"and moves with it. A new type starts on Default, so it needs no decision "
-    +"until you want one.</i>"
+    +"and moves with it.</i>"
 
     +"<h5 class='tpl-sub'>Super-Types</h5>"
-    +"<i class='tpl-hint'>The first matching row wins. “Action” also "
-    +"matches Spell.</i>"
     +supRows.map(function(r){
         return alignRow(r,!builtin(r.key)&&!alignFromCatalog('super',r.key));
       }).join('')
@@ -44957,11 +44986,7 @@ window.edTplPanelRefresh=function(){
       +"<button class='ed2-btn tiny' onclick='edAddAlignFrom(\"super\")'>Add</button></div>"
 
     +"<h5 class='tpl-sub'>Sub-Types</h5>"
-    +"<i class='tpl-hint'>A card carrying one of these follows it instead of its "
-    +"super-type. With two, the one the card lists <b>first</b> wins — drag "
-    +"the type line on the card to change which.</i>"
-    +(subRows.length?subRows.map(function(r){ return alignRow(r,true); }).join('')
-        :"<i class='tpl-hint'>No sub-type rows. Every card follows its super-type.</i>")
+    +subRows.map(function(r){ return alignRow(r,true); }).join('')
     +"<div class='tpl-opts'><span class='tpl-lbl'>Add</span>"
       +pickHTML('edAlignSubPick',freeSub,freeSub.length?'Pick a sub-type…':'every sub-type has a row','Add a sub-type row')
       +"<input id='edAlignSubNew' class='ed2-in tiny tpl-align-new' placeholder='or type a new one' aria-label='New sub-type' maxlength='40'>"
