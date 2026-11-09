@@ -18651,14 +18651,14 @@ function tdKeySheetHTML(){
     }).filter(Boolean);
   rows = rows.concat([
     "<tr><td><kbd>&#8592;</kbd> <kbd>&#8594;</kbd></td>"
-      + "<td>Step along your hand, card by card</td></tr>",
+      + "<td>Show the cards in your Hand.</td></tr>",
     "<tr><td><kbd>&#8593;</kbd> <kbd>&#8595;</kbd></td>"
       + "<td>Step up and down the pile you are pointing at</td></tr>",
-    "<tr><td><kbd>Alt</kbd></td><td>Hold to read the card under the pointer</td></tr>",
-    "<tr><td><kbd>Ctrl</kbd>+drag</td><td>Attach one card under another &mdash; at Declare Blockers, draw a block line from your blocker to an attacker</td></tr>",
+    "<tr><td><kbd>Alt</kbd></td><td>Hold to zoom in on a card that you're hovering over</td></tr>",
+    "<tr><td><kbd>Ctrl</kbd>+drag</td><td>Hold down &quot;CTRL&quot;, then click and drag counter onto cards, connect a card to another, or declare blockers against attackers.</td></tr>",
     "<tr><td><kbd>Shift</kbd>+drag</td><td>Draw an arrow from one card to another</td></tr>",
     "<tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td><td>Undo</td></tr>",
-    "<tr><td><kbd>Esc</kbd></td><td>Back out of whatever is open</td></tr>"
+    "<tr><td><kbd>Esc</kbd></td><td>Close anything that is open</td></tr>"
   ]);
   var per = Math.ceil(rows.length / 3), cols = [[], [], []];
   rows.forEach(function(r, i){ cols[Math.min(2, Math.floor(i / per))].push(r); });
@@ -20075,17 +20075,17 @@ function tdBindMenu(){
     d: [function(){
           if(tdKeyOnCard(function(h){ tdMove(h.uid, 'grave'); tdRender(); })) return;
           tdDrawOne();
-        }, 'Draw a card', 'over a card: send it to the Grave'],
+        }, 'Draw a card', 'Over a card: Send it to the Grave'],
     s: [function(){
           if(tdKeyOnCard(function(h){ tdMove(h.uid, 'susp'); tdRender(); })) return;
           tdShuffleDeck();
-        }, 'Shuffle your deck', 'over a card: send it to Suspended'],
+        }, 'Shuffle your deck', 'Over a card: Send it to Suspended'],
     q: [function(){
           tdKeyOnCard(function(h){
             if(!TD_LOCK_ZONES[h.zone] || h.item.locked) return;
             tdSetLock(h.uid, true);
           });
-        }, null, 'over an unlocked card: lock it'],
+        }, null, 'Over an unlocked card: Lock it'],
     e: [function(){
           if(tdEssenceSearchOpen()
              && tdKeyOnCard(function(h){
@@ -20099,9 +20099,9 @@ function tdBindMenu(){
              })) return;
           if(TD.board.zones.essdeck) tdOpenSearch('essdeck');
           else tdFindLastMove();
-        }, 'Search your Essence deck', 'over a locked card: unlock it'],
+        }, 'Search your Essence deck', 'Over a locked card: Unlock it'],
     u: [function(ev){ tdUndo(!!(ev && ev.repeat)); }, 'Undo'],
-    m: [function(){ tdMulligan(); },     'Mulligan — take a new opening hand'],
+    m: [function(){ tdMulligan(); },     'Mulligan — Take a new opening hand'],
     n: [function(){ tdUntapStep(); },    'New turn'],
     ' ': [function(){
           if(typeof tblOn === 'function' && tblOn()){
@@ -20109,12 +20109,12 @@ function tdBindMenu(){
             return;
           }
           if(typeof window.tdPassPhase === 'function') window.tdPassPhase();
-        }, 'Pass — the phase you are on; at a table, the turn'],
+        }, 'Pass — The phase you are on; at a table, the turn'],
     '?': [function(){ tdToggleKeySheet(); }, 'This list']
   };
   for(var _n = 1; _n <= 9; _n++){
     TD_KEYS[String(_n)] = (function(n){
-      return [function(){ tdDrawN(n); }, 'Draw that many — 1 to 9'];
+      return [function(){ tdDrawN(n); }, 'Draw that many (1 to 9)'];
     })(_n);
   }
   document.addEventListener('keydown', function(ev){
@@ -36091,52 +36091,47 @@ function renderDeckLists(){
 }
 
 var _SC_KEYS = [
-  {keys:['B'], desc:'Switch to Browse tab'},
-  {keys:['D'], desc:'Switch to Build tab'},
-  {keys:['L'], desc:'Switch to Deck Lists tab'},
-  {keys:['1'], desc:'Switch to Grid view'},
-  {keys:['2'], desc:'Switch to Details view'},
-  {keys:['3'], desc:'Switch to List view'},
-  {keys:['I'], desc:'Toggle Info overlay on/off (Grid view)'},
-  {keys:['F','/'], desc:'Focus the search box'},
-  {keys:['H'], desc:'Toggle Highlight panel (Build tab)'},
-  {keys:['\u2190','\u2192'], desc:'Previous / Next page (Browse)'},
-  {keys:['\u2190','\u2192'], desc:'Previous / Next card (Modal open)'},
-  {keys:['K'], desc:'Open Keywords page'},
-  {keys:['R'], desc:'Open Rules page'},
-  {keys:['Esc'], desc:'Close any open modal or overlay'},
-  {keys:['?'], desc:'Open this Help page'}
+  {keys:["B"], desc:"Browse tab"},
+  {keys:["D"], desc:"Build tab"},
+  {keys:["L"], desc:"Deck Lists tab"},
+  {keys:["1"], desc:"Grid view"},
+  {keys:["2"], desc:"Details view"},
+  {keys:["3"], desc:"List view"},
+  {keys:["I"], desc:"Toggle Info overlay On/Off"},
+  {keys:["F","/"], desc:"Focus the search box"},
+  {keys:["H"], desc:"Toggle Highlight panel"},
+  {keys:["←","→"], desc:"Previous / Next page"},
+  {keys:["←","→"], desc:"Previous / Next card"},
+  {keys:["K"], desc:"Keywords page"},
+  {keys:["R"], desc:"Rules page"},
+  {keys:["Esc"], desc:"Close opened page"},
+  {keys:["?"], desc:"Help page"}
 ];
 var _SC_TIPS = [
-  {title:'Saved Decks', desc:'You save and load Decks from the bottom of the Deck Panel. Click a saved name to load it; click \u2715 to delete it.', phone:'You save a Deck with the Save row at the top of Build. Your saved Decks are on the Deck Lists tab: tap one to load it; tap \u2715 to delete it.'},
-  {title:'Importing Decks', desc:'"Import" on the Deck Panel will load Decks you have copied in your clipboard, or it will open a file explorer for you to choose a file to load. The format is "3x Card Name", "3 Card Name". Not case or symbol sensitive (dashes, quotes, and punctuation differences are read properly).', phone:'"Import" on the Deck List page (Build, then Deck List) will load Decks you have copied, or let you choose a file to load. The format is "3x Card Name", "3 Card Name". Not case or symbol sensitive (dashes, quotes, and punctuation differences are read properly).'},
-  {title:'Multi-Deck System', desc:'Your (Main) Deck, Essence Deck, and Wish Deck are all accommodated for. Essence cards are automatically added to the Essence Deck, and card copy limits are checked across all Decks.'},
-  {title:'Group \u0026 Sort Cards in Your Deck', desc:'On the Build page, "Group By" organizes cards under section headers (by Super-Type, Sub-Type, Color, or CMC). "Sort By" reorders cards within groups. Both work in Grid, Details, and List views.', phone:'On the Build page, "Group By" organizes cards under section headers (by Super-Type, Sub-Type, Color, or CMC). "Sort By" reorders cards within groups.'},
-  {title:'Different Game Mode Rules', desc:'Different Game Mode Deck building restrictions are built in, and appropriate error messages are shown for each type. Constructed, Kingdoms, or None. Each mode has different deck size limits, copy limits, and Unique card rules. Choose "None" to disable all error messages.'},
-  {title:'Highlight Cards', desc:'On the Build page, you can use the "Highlight" option to highlight cards of a certain criteria. To help you single out certain cards even when viewing everything at once. You can highlight by color, CMC, type, or rule text.', phone:''},
-  {title:'Auto Fill Essence', desc:'"Populate Essence" will automatically fill your Essence Deck with Core Essence to most closely match the same ratio of "Mana Pips by Color" of your Main Deck. This option DOES NOT account for Dual Essence or otherwise, and does not take any cards in your Wish Deck into account. This option is only recommended for simple Decks. You can only use this if you have no cards in your Essence Deck.'},
-  {title:'Saving Images / Print Options', desc:'All four are in the "Export" menu on the Build page, and each takes every section of your Deck.\n"Images": Will download a .zip file of each card image of cards in your Decks. (Only 1x of each card)\n"Print": Generates a PDF of all the card images in your Deck, with the appropriate amount of each card matching your Deck list. (3 \u00d7 3 per page)\n"Proxies": Generates a PDF of all the cards in your Deck as text-only with symbols for the Mana Cost and Stats of the cards. (For a low ink alternative when wanting quick paper prototyping and playtesting.) (3 \u00d7 3 per page)', phone:''},
-  {title:'Deck Saved via URL', desc:'Your Deck is saved to the page URL as you edit it. You can copy and share the URL as an alternative to copying the Deck list.'},
-  {title:'Filter Persistence via URL', desc:'Browse filters (name search, color, type, CMC) are also saved to the URL. Share a filtered view by copying the URL after applying your filters. (For showing other people certain groups of cards of interest.)'},
-  {title:'Drafting', desc:'A "Draft Deck" (a Deck Type on the Build page) is a card list to draft from, not a Deck to play - every card in it is in the pool except Essence, which Arena provides. Press "Draft" on it in Deck Lists and choose:\n"Default Draft": four packs of 15 each - pick one, pass the rest (left, right, left, right).\n"Vault": 120 cards each, nothing to pick.\n"Hex Draft" (2 players): six piles of 30 round a hexagon - take the top card of two side-by-side piles; the other player takes two of the four left; the last two are removed.\n"Winchester" (2-4 players): four face-up piles - take a whole pile, then every pile gets one more card.\nChairs you do not fill are bots that pick at random. A short pool deals every card once before repeating any. When the draft ends, build an Arena Deck of exactly 30 from what you took and save it. At a table, the host picks Mode: Draft in Options and presses "Start Draft" in the waiting room.', phone:'A "Draft Deck" (a Deck Type on the Build page) is a card list to draft from, not a Deck to play - every card in it is in the pool except Essence, which Arena provides. Press "Draft" on it in Deck Lists and choose:\n"Default Draft": four packs of 15 each - pick one, pass the rest (left, right, left, right).\n"Vault": 120 cards each, nothing to pick.\n"Hex Draft" (2 players): six piles of 30 round a hexagon - take the top card of two side-by-side piles; the other player takes two of the four left; the last two are removed.\n"Winchester" (2-4 players): four face-up piles - take a whole pile, then every pile gets one more card.\nChairs you do not fill are bots that pick at random. A short pool deals every card once before repeating any. When the draft ends, build an Arena Deck of exactly 30 from what you took and save it.'},
-  {title:'Tabletop Simulator', desc:'Use "TTS" in the Export menu on the Build page to export your Deck as a single .json file you can copy and paste into Tabletop Simulator.', phone:''}
+  {title:"Saved Decks", desc:"Save and load Decks from the bottom of the Deck Panel.", phone:"Save a Deck with the Save row at the top of Build. Your saved Decks are on the Deck Lists tab."},
+  {title:"Importing Decks", desc:"\"Import\" on the Deck Panel will load a Deck in your clipboard, or open a file explorer. The format is \"3x Card Name\", \"3 Card Name\". (Not case or symbol sensitive)", phone:"\"Import\" on the Deck List page (Build, then Deck List) will load Decks you have copied, or choose a file to load. The format is \"3x Card Name\", \"3 Card Name\". (Not case or symbol sensitive)"},
+  {title:"Multi-Deck System", desc:"Separate Deck lists for each of your Decks. Essence cards are automatically added to the Essence Deck. Use the \"Deck Type\" drop down on the \"Build\" page to change your Deck building rules."},
+  {title:"Game Mode Rules", desc:"Error messages are shown by your \"Deck Type\". Choose \"None\" to disable error messages."},
+  {title:"Auto Fill Essence", desc:"\"Populate Essence\" will automatically fill your Essence Deck with Core Essence to the same ratio of \"Colors\" of your Main Deck. This option DOES NOT account for Dual Essence or otherwise, and does not take any cards in your Wish Deck into account. You can only use this if you have no cards in your Essence Deck."},
+  {title:"Saving Images / Print Options", desc:"\"Images\": Download a .zip file (Only 1x of each card)\n\"Print\": Generate PDF of your Deck, amount of each card matching your Deck list. (3 × 3 per page)\n\"Proxies\": Generate Text-Only PDF of your Deck. (Low Ink Printing, 3 × 3 per page)", phone:''},
+  {title:"Deck Saved via URL", desc:"Your Deck is saved to the page URL as you edit it. You can copy and share the URL as an alternative to copying the Deck list."},
+  {title:"Filter Persistence via URL", desc:"Browse filters (name search, color, type, CMC) are also saved to the URL."},
+  {title:"Drafting", desc:"\"Draft Deck\": Card pool to use for drafting.\nPress \"Draft\" on it in Deck Lists and choose:\n\"Default Draft\": Four packs of 15 each - pick one, pass the rest (left, right, left, right).\n\"Vault\": 120 cards each.\n\"Hex Draft\" (2 players): Six piles of 30 round a hexagon - take the top card of two side-by-side piles; the other player takes two of the four left; the last two are removed.\n\"Winchester\" (2-4 players): Four face-up piles - take a whole pile, then every pile gets one more card.\nWhen the draft ends, build an \"Arena\" Deck of exactly 30 from your card pool (and save it as a Deck List).\nAt a table, the host picks Mode: Draft in Options and presses \"Start Draft\" in the waiting room."}
 ];
 var _SC_EDITOR = [
-  {title:'Opening a Card', desc:'Press Edit (✎) on a card in the catalog or in its card window, or press "New card". Official cards are read-only and do not open here. The arrows over the preview, or the arrow keys when no field has focus, step through the cards the catalog is showing, in its order. The preview is the card as it prints, redrawn as you type.'},
-  {title:'The Toolbar', desc:'"Back to catalog" returns to Browse.\n"Autosave" (on to begin with) stores each change a moment after you make it; turned off, a card is stored only on "Save", "Save All" or leaving it.\n"Save" stores this card and "Save All" every card waiting; the badge on Save All counts them.\n"Duplicate" makes a copy of this card and opens it.\n"Keywords" opens the Keywords page.\n"New card" starts a blank card.\n"Test" keeps this card out of the published catalog: it goes to testing.json, which only your copy reads.\n"Delete card" deletes this card, and it stays deleted after a reload.'},
-  {title:'Fix', desc:'Clean-up tools that look through every card you can edit: "Fix —", "Strip ( )" (reminder text left in brackets), "Essence Rule Text", "Fused Stats", "Duplicate Cards", "Same Shape, Different Name", "Same Card in Several Sagas", "Saga Fields Disagree", "Card IDs" and "Orphaned Cards".'},
-  {title:'Templates', desc:'"Templates" opens the settings every card is drawn with: Display, Art Defaults (what a card whose art fill is "Auto" gets), Card Frames, Orb Icons, Mana & Rule Symbols, Saved Templates, Rules Text Alignment and Pack.'},
-  {title:'Mana Cost and Name', desc:'Type the Mana Cost in braces, such as {2}{R}{R}; it is put in order when you leave the field. The \u25BE at the right end of the box picks a color, X, a number from 0 to 20 or a hybrid from a menu. The date at the end of the Name row is when the card was last saved.'},
-  {title:'Super-Type and Sub-Type', desc:'Type in the box to search, then press Enter or pick one from the list. Each type is added as a chip to the right of its box, and the box narrows to make room. Press × on a chip to take it off, or drag a chip to change the order: the type line reads in that order, and Templates match a card on its first Sub-Type.'},
-  {title:'Stats', desc:'Four slots, each a stat (Attack, Health, Arcane, Range, Attack + Arcane, Health + Arcane, Blank or Hidden) and its value. Tick * to print a centered * in place of a number.'},
-  {title:'Rule Text', desc:'"No split" is one rules box; "Split 2", "Split 3" and "Split 4" divide it into sections, each with its own text. "All Individual" gives every section its own name, type line and mana cost (or tick a section by itself), and "Choice" adds one line across the top.\nB, I and U make the selected text bold, italic or underlined, "Add —" puts an em dash at the cursor, and "Insert Card Name" links another card: it prints bold and underlined, shows that card when hovered, and the Play Test board can create a copy of it.\n"Symbols \u25BE" types a symbol at the cursor: the seven colors, Lock, X, 0 to 20, every symbol uploaded on Templates, the stat marks (Attack, Health and Arcane; in Rebirth ATK, HP, MP and Rg) and the dice (D4 to D20), which type their word. For a hybrid, tick two or three colors in the Hybrid row and press "Add". Hover over a symbol for its name. The menu stays open, so you can add several in a row, until you click elsewhere.'},
-  {title:'Flavor Text', desc:'The italic text under the rules. "lines" sets how many lines it may use on the card; blank is automatic. The rules text always fills what is left.'},
-  {title:'Art', desc:'"Variant" is the card’s looks: "+" adds one, ✎ renames it and "Delete" removes it. The art, its fill and its framing belong to the look.\nThe first menu places the art: "Horizontal Art" (above the rules box), "Left Vertical Art" or "Right Vertical Art" (beside it). The second sets how it fills its window: "Auto" (Templates’ Art Defaults), "Contain" (all of it, letterboxed), "Cover" (fills the window, cropping) or "Fill" (stretched).\nDrag the picture on the stage to move it and scroll to zoom; the bright window is what lands on the card. X, Y, Zoom and Rotate do the same by number. "Upload" adds or replaces the picture, "Reset" puts its framing back, "Flip" mirrors it and "Remove" takes it off. Everything here can be set before there is art, and applies as soon as there is.'},
-  {title:'Look', desc:'Highlight gradients for the card’s Image, Background, Pinlines and Border: each takes a preset (the same set the keyword pills use), a blend mode and a strength. "Watermark" opens the watermark editor, and the menu beside it picks this card’s watermark.'},
-  {title:'Colour', desc:'Prints this card in other colors: pick as many as you like. What the card is does not change, only how it is drawn. Click a color again to take it out, or "Clear" to go back to the card’s own.'},
-  {title:'Keyword Reminders', desc:'Every keyword, key term and counter in the rules text is listed under the colors. Click one to print its reminder text on the card, and again to take it off; hover over one to read it.'},
-  {title:'Credits', desc:'"Owner" is who the card belongs to, printed at its bottom left; "Rev #" is its revision and "Artist" who made the art. Type a saga’s name in "Saga" and press Enter to add the card to that saga. In Rebirth, "Rarity" sets its rarity.'},
-  {title:'Sagas', desc:'Every saga the card is in sits beside "Sagas" and its count. Click one to edit the card as that saga prints it; × takes the card out of that saga (a card has to stay in at least one).\nAll copies of this card share Name, Type-Line, Mana Cost, Rules Text, Stats and Rev #. Different versions of this card can have its Flavor Text, Art and Artist, and Owner individually changed.'}
+  {title:"Opening a Card", desc:"Press Edit (✎) on a card in the catalog, or press \"New card\". The preview is the card as it prints, redrawn as you type."},
+  {title:"Templates", desc:"Used for changing the frame / icons / and default layouts of your cards. Display, Art Defaults, Card Frames, Orb Icons, Mana & Rule Symbols, Saved Templates, Rules Text Alignment and Pack."},
+  {title:"Mana Cost and Name", desc:"Type the Mana Cost in braces, such as {2}{R}{R}. Use the \"▾\" to the right of the box to use clickable Mana icons.\nThe date at the end of the Name row is when the card was last saved."},
+  {title:"Super-Type and Sub-Type", desc:"Type in the box to search, then press Enter to create a new one, or pick one from the list. Each type is added as a chip to the right of its box. Press × on a chip to take it off, or drag a chip to change the order."},
+  {title:"Stats", desc:"Four slots, each a stat (Attack, Health, Arcane, Range, Attack + Arcane, Health + Arcane, Blank or Hidden) and its value.\nUse the \"*\" to use the variable * as a Stat on a card. "},
+  {title:"Rule Text", desc:"You can use the \"Split\" Rules Text for certain formatting and abilities. Use \"All Individual\" gives every section its own name, type line and mana cost, and \"Choice\" adds one line across the top to type Rules Text above the split Rules Text boxes.\n\"Insert Card Name\" links another card: it prints bold and underlined, shows that card when hovered, and the Play Test board can create a copy of it."},
+  {title:"Flavor Text", desc:"The italic text under the rules. \"lines\" sets how many lines it may use on the card; blank is automatic."},
+  {title:"Art", desc:"\"Variant\" is the card’s looks: \"+\" adds one, ✎ renames it and \"Delete\" removes it.\n\"Horizontal Art\" (above the rules box), \"Left Vertical Art\" or \"Right Vertical Art\" (beside it)\n\"Auto\" (Default), \"Contain\" (all of it), \"Cover\" (fills the window, cropping) or \"Fill\" (stretched).\nDrag the picture on the stage to move it and scroll to zoom. "},
+  {title:"Look", desc:"Highlight gradients for the card’s Image, Background, Pinlines and Border, a blend mode and a strength.\n\"Watermark\" opens the watermark editor, and the menu beside it picks this card’s watermark."},
+  {title:"Colour", desc:"You can override a card's default colors using the \"Color Selection\" under the image adjustments."},
+  {title:"Keyword Reminders", desc:"Click the listed Keywords to include its reminder text on the card."},
+  {title:"Credits", desc:"\"Owner\" is who the card belongs to, printed at its bottom left; \"Rev #\" is its revision and \"Artist\" who made the art. Type a saga’s name in \"Saga\" and press Enter to add the card to that saga. In Rebirth, \"Rarity\" sets its rarity."},
+  {title:"Sagas", desc:"Every saga the card is in sits beside \"Sagas\" and its count.\nAll copies of this card share Name, Type-Line, Mana Cost, Rules Text, Stats and Rev #.\nDifferent versions of this card can have its Flavor Text, Art and Artist, and Owner individually changed."}
 ];
 var _scMode = 'keys';
 function switchScTab(mode){
