@@ -289,7 +289,7 @@
     "Beginnings"
    ],
    "sagaId": "Beginnings",
-   "lastUpdated": "2026-10-03",
+   "lastUpdated": "2026-11-08",
    "testing": 1
   },
   {
@@ -1640,7 +1640,7 @@
      "value": "1"
     },
     {
-     "type": "hidden",
+     "type": "blank",
      "value": ""
     },
     {
@@ -1648,7 +1648,7 @@
      "value": ""
     }
    ],
-   "lastUpdated": "2026-10-08",
+   "lastUpdated": "2026-11-08",
    "testing": 1,
    "range": ""
   },
@@ -1876,7 +1876,7 @@
   },
   {
    "id": "cmuzen7ocun8l0",
-   "name": "_Argent Im[",
+   "name": "_Argent Imp",
    "manaCost": "V1",
    "cmc": "2",
    "colors": [
@@ -1889,7 +1889,7 @@
     "Winged",
     "Imp"
    ],
-   "attack": "2",
+   "attack": "3",
    "health": "2",
    "arcane": "1",
    "ruleText": "Airborne\nAs long as this card has a -1 counter on it, it gains Sustain.",
@@ -1904,7 +1904,7 @@
    "orbs": [
     {
      "type": "attack",
-     "value": "2"
+     "value": "3"
     },
     {
      "type": "health",
@@ -1919,7 +1919,7 @@
      "value": ""
     }
    ],
-   "lastUpdated": "2026-10-08",
+   "lastUpdated": "2026-11-08",
    "testing": 1,
    "range": ""
   },

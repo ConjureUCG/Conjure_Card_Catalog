@@ -102141,7 +102141,7 @@
    "revision": "Rev 1.0",
    "artist": "Midjourney",
    "designer": "Conjure UCG LLC 2026",
-   "lastUpdated": "2026-09-27",
+   "lastUpdated": "2026-11-10",
    "variants": [
     {
      "id": "v1",
@@ -102149,12 +102149,13 @@
      "art": "",
      "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/art_1173.webp",
      "artXf": {
-      "z": 1,
-      "x": 0,
+      "z": 1.15,
+      "x": 1,
       "y": 9,
       "r": 0,
       "f": 1
-     }
+     },
+     "fit": "contain"
     },
     {
      "id": "v2",
@@ -102174,10 +102175,18 @@
      "id": "v3",
      "label": "Art 3",
      "art": "",
-     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image165.webp"
+     "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art/image165.webp",
+     "artXf": {
+      "z": 1.45,
+      "x": 0.5,
+      "y": 13,
+      "r": 0,
+      "f": 1
+     },
+     "fit": "contain"
     }
    ],
-   "variant": "v2",
+   "variant": "v1",
    "sagaId": "Beginnings",
    "flavorRows": 1,
    "id": "cmtrwhiozx6vgk",
@@ -102188,7 +102197,8 @@
    "sagaFields": {
     "Creators": {
      "flavor": "\"This spell is nice, I’ll make better use of it.\"",
-     "artist": "Lain Lines"
+     "artist": "Lain Lines",
+     "variant": "v3"
     }
    },
    "cid": "c147i86c05uli2y"
