@@ -13,11 +13,15 @@ function downloadCardImage(card){
   };
   faceToPngBlob(card, 2).then(function(r){
     save(r.blob);
-    if(r.missingArt && !_artFolderLinked()
-       && confirm('Saved, but with an EMPTY ART BOX.\n\nA page opened from file:// cannot'
+    if(!r.missingArt) return;
+    if(_artFolderMayHelp()){
+      if(confirm('Saved, but with an EMPTY ART BOX.\n\nA page opened from file:// cannot'
          + ' read its own image files back.\nPick your art folder once to include the art'
          + ' from now on.\n\nChoose it now?')){
-      window.edLinkArtFolder(function(n){ alert('Linked ' + n + ' art file(s).'); });
+        window.edLinkArtFolder(function(n){ alert('Linked ' + n + ' art file(s).'); });
+      }
+    } else {
+      alert('Saved, but with an EMPTY ART BOX: the art could not be loaded (' + r.why.join('; ') + ').');
     }
   }).catch(function(err){
     alert('Could not render this card: ' + (err && err.message ? err.message : err));
@@ -39,6 +43,8 @@ function _faceCss(){
 var _artFiles = null;
 function _artFolderLinked(){ return !!(_artFiles && _artFiles.size); }
 window.edArtFolderLinked = _artFolderLinked;
+/* Over http the art is fetched (_artLoad), so a picture still missing there is the network's doing, and a folder would not help. */
+function _artFolderMayHelp(){ return location.protocol === 'file:' && !_artFolderLinked(); }
 window.edLinkArtFolder = function(then){
   var inp = document.createElement('input');
   inp.type = 'file'; inp.accept = 'image/*';
@@ -69,59 +75,216 @@ function _artFromFolder(url){
   });
 }
 
-/* Over http a canvas reads the art back (downscaled: it is ~3300px wide); from file:// that taints, so the folder bridge is tried. */
-function _shrinkDataUrl(src, maxW){
+/* A picture drawn onto a canvas of the size it is shown at (the cover rule, so it still fills a maxW x maxH box; never
+   enlarged) and read back as a data: URL. JPEG, unless it has see-through pixels, which JPEG would make black. Throws on a
+   picture whose pixels may not be read: a file:// one, or another site's fetched without CORS. */
+function _shrinkTo(img, w, h, maxW, maxH){
+  var k = Math.max(maxW > 0 ? maxW / w : 0, maxH > 0 ? maxH / h : 0);
+  var s = k > 0 ? Math.min(1, k) : 1;
+  var cv = document.createElement('canvas');
+  cv.width  = Math.max(1, Math.round(w * s));
+  cv.height = Math.max(1, Math.round(h * s));
+  var g = cv.getContext('2d');
+  g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+  g.drawImage(img, 0, 0, cv.width, cv.height);
+  var px = g.getImageData(0, 0, cv.width, cv.height).data, clear = false;
+  for(var i = 3; i < px.length; i += 4){ if(px[i] < 255){ clear = true; break; } }
+  return clear ? cv.toDataURL('image/png') : cv.toDataURL('image/jpeg', 0.92);
+}
+function _shrinkDataUrl(src, maxW, maxH){
   return new Promise(function(res){
     var img = new Image();
     img.onload = function(){
-      try{
-        var w = img.naturalWidth || 1, h = img.naturalHeight || 1;
-        var s = Math.min(1, maxW / w);
-        var cv = document.createElement('canvas');
-        cv.width  = Math.max(1, Math.round(w * s));
-        cv.height = Math.max(1, Math.round(h * s));
-        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
-        res(cv.toDataURL('image/jpeg', 0.92));
-      }catch(e){ res(null); }
+      try{ res(_shrinkTo(img, img.naturalWidth || 1, img.naturalHeight || 1, maxW, maxH)); }
+      catch(e){ res(null); }
     };
     img.onerror = function(){ res(null); };
     img.src = src;
   });
 }
-function _artDataUrl(url, maxW){
-  return new Promise(function(res){
-    if(!url){ res(null); return; }
-    if(url.indexOf('data:') === 0){ res(url); return; }
+/* createImageBitmap decodes off the page's thread; an <img> of an object URL where it cannot (an SVG, an older browser) */
+function _shrinkBlob(blob, maxW, maxH){
+  var viaUrl = function(){
+    var ou = URL.createObjectURL(blob);
+    return _shrinkDataUrl(ou, maxW, maxH).then(function(d){ URL.revokeObjectURL(ou); return d; });
+  };
+  if(typeof createImageBitmap !== 'function') return viaUrl();
+  return createImageBitmap(blob).then(function(bm){
+    var d = null;
+    try{ d = _shrinkTo(bm, bm.width, bm.height, maxW, maxH); }catch(_){}
+    try{ bm.close(); }catch(_){}
+    return d;
+  }, viaUrl);
+}
+function _artFail(why, last){ var er = new Error(why); er.why = why; er.last = !!last; return er; }
+/* With CORS, or the canvas may not read the pixels back: the published art is on another site, the CDN. Once more past the
+   browser's cache when that fails, as the cache can hold a copy fetched without CORS; a missing picture is not asked twice. */
+function _artFetch(url){
+  var host = '';
+  try{ host = new URL(url).host; }catch(_){}
+  var get = function(cache){
+    var ac = (typeof AbortController === 'function') ? new AbortController() : null;
+    var tm = ac ? setTimeout(function(){ ac.abort(); }, 60000) : 0;
+    return fetch(url, {mode:'cors', credentials:'omit', cache:cache, signal:ac ? ac.signal : undefined})
+      .then(function(r){
+        if(!r.ok) throw _artFail('HTTP ' + r.status, true);
+        return r.blob();
+      })
+      .then(function(b){ clearTimeout(tm); return b; }, function(err){
+        clearTimeout(tm);
+        if(err && err.why) throw err;
+        if(err && err.name === 'AbortError') throw _artFail('no answer from ' + (host || 'the art site') + ' in 60 s', true);
+        throw _artFail(navigator.onLine === false ? 'offline' : 'blocked, or no answer from ' + (host || 'the art site'));
+      });
+  };
+  return get('default').catch(function(err){
+    if(err && err.last) throw err;
+    return get('reload');
+  });
+}
+/* The reason a picture could not be read, by its address, for the message that says so. */
+var _artWhy = {};
+function _artLoad(url, maxW, maxH){
+  var abs = null;
+  try{ abs = new URL(url, location.href); }catch(_){}
+  var first;
+  if(abs && /^(https?|blob):$/.test(abs.protocol) && typeof fetch === 'function'){
+    first = _artFetch(abs.href).then(function(blob){
+      return _shrinkBlob(blob, maxW, maxH).then(function(d){
+        if(!d) _artWhy[url] = 'not a picture the browser can read';
+        return d;
+      });
+    }, function(err){
+      _artWhy[url] = (err && err.why) || 'no answer from the art site';
+      return null;
+    });
+  } else {
+    /* file://: the picture loads, and its pixels taint the canvas */
+    first = _shrinkDataUrl(url, maxW, maxH).then(function(d){
+      if(!d) _artWhy[url] = 'a page opened from file:// cannot read it';
+      return d;
+    });
+  }
+  return first.then(function(d){
+    if(d) return d;
+    return _artFromFolder(url).then(function(f){
+      if(!f){
+        if(_artFolderLinked()) _artWhy[url] = 'not in the linked art folder';
+        return null;
+      }
+      return _shrinkDataUrl(f, maxW, maxH).then(function(small){ return small || f; });
+    });
+  });
+}
+/* One picture as a data: URL that a canvas, and the SVG a face is rasterised through, can use; null if it cannot be read,
+   with the reason in _artWhy. One job per picture and size at a time, and three pictures at once: each is a full-size
+   bitmap while it is shrunk, and a deck asks for dozens. */
+var _artJobs = {}, _artBusy = 0, _artQueue = [];
+function _artDataUrl(url, maxW, maxH){
+  if(!url) return Promise.resolve(null);
+  url = String(url);
+  if(url.indexOf('data:') === 0) return Promise.resolve(url);
+  var key = url + ' ' + Math.round(maxW || 0) + 'x' + Math.round(maxH || 0);
+  if(_artJobs[key]) return _artJobs[key];
+  _artJobs[key] = new Promise(function(res){
+    var run = function(){
+      _artBusy++;
+      _artLoad(url, maxW, maxH).then(null, function(){ return null; }).then(function(d){
+        _artBusy--; delete _artJobs[key];
+        var nx = _artQueue.shift(); if(nx) nx();
+        res(d);
+      });
+    };
+    if(_artBusy < 3) run(); else _artQueue.push(run);
+  });
+  return _artJobs[key];
+}
+
+/* The pictures in the background layers under root: each address once, at the largest size it is drawn at (k output
+   pixels a CSS pixel; the box's rectangle, so the art's zoom counts). A box not shown (Full art's layer on a card without
+   it) draws nothing, so its pictures are not fetched. */
+var _BG_URL = /url\(["']?([^"')]+)["']?\)/g;
+function _bgPictures(root, k){
+  var found = {pics:[], nodes:[], byUrl:{}};
+  Array.prototype.forEach.call(root.querySelectorAll('*'), function(n){
+    var bi = getComputedStyle(n).backgroundImage || '', urls = [], m;
+    if(bi.indexOf('url(') < 0) return;
+    _BG_URL.lastIndex = 0;
+    while((m = _BG_URL.exec(bi))){ if(m[1].indexOf('data:') !== 0) urls.push(m[1]); }
+    if(!urls.length) return;
+    var r = n.getBoundingClientRect(), shown = r.width > 0 && r.height > 0;
+    found.nodes.push({n:n, bi:bi, shown:shown});
+    if(!shown) return;
+    urls.forEach(function(u){
+      var j = found.byUrl[u];
+      if(!j){ j = found.byUrl[u] = {url:u, w:0, h:0, data:null}; found.pics.push(j); }
+      j.w = Math.max(j.w, r.width * k); j.h = Math.max(j.h, r.height * k);
+    });
+  });
+  return found;
+}
+/* Every picture under root swapped for its data: URL, its other layers kept. Resolves {missing, why, pics}. A picture that
+   could not be read keeps its address when `keep` is set (a print, where the browser draws it unread); in a face to be
+   rasterised it, and a box not shown, become none, as the SVG can load nothing. onEach(done, of) as each one ends. */
+function _inlineArt(root, k, keep, onEach){
+  var found = _bgPictures(root, k), done = 0;
+  return Promise.all(found.pics.map(function(j){
+    return _artDataUrl(j.url, j.w, j.h).then(function(d){
+      j.data = d;
+      done++;
+      if(typeof onEach === 'function'){ try{ onEach(done, found.pics.length); }catch(_){} }
+    });
+  })).then(function(){
+    found.nodes.forEach(function(it){
+      if(keep && !it.shown) return;
+      var v = it.bi.replace(_BG_URL, function(m, u){
+        if(u.indexOf('data:') === 0) return m;
+        var j = it.shown ? found.byUrl[u] : null;
+        if(j && j.data) return 'url("' + j.data + '")';
+        return keep ? m : 'none';
+      });
+      if(v !== it.bi) it.n.style.backgroundImage = v;
+    });
+    var bad = found.pics.filter(function(j){ return !j.data; });
+    return {missing:bad.length, pics:found.pics,
+            why:bad.map(function(j){ return _artWhy[j.url] || 'not read'; })
+                   .filter(function(w, i, all){ return all.indexOf(w) === i; })};
+  });
+}
+/* The editor's edPrintCards readies its pictures through this. */
+window.edInlineArt = _inlineArt;
+
+/* The markup (xml) drawn W x H CSS pixels at `scale` output pixels each, as `type` (PNG unless set) at `quality`. bg fills
+   what the face's rounded corners leave, as a JPEG has no see-through. */
+function _rasterise(xml, W, H, scale, type, quality, bg){
+  return new Promise(function(resolve, reject){
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'">'
+      + '<foreignObject width="100%" height="100%">'
+      + '<body xmlns="http://www.w3.org/1999/xhtml" class="' + (document.body.className||'') + '"'
+      +      ' style="margin:0;width:'+W+'px;height:'+H+'px">'
+      + '<style><![CDATA[' + _faceCss() + ']]></style>' + xml
+      + '</body></foreignObject></svg>';
     var img = new Image();
     img.onload = function(){
       try{
-        var w = img.naturalWidth || 1, h = img.naturalHeight || 1;
-        var s = Math.min(1, maxW / w);
         var cv = document.createElement('canvas');
-        cv.width  = Math.max(1, Math.round(w * s));
-        cv.height = Math.max(1, Math.round(h * s));
-        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
-        res(cv.toDataURL('image/jpeg', 0.92));
-      }catch(e){
-        _artFromFolder(url).then(function(d){
-          if(!d){ res(null); return; }
-          _shrinkDataUrl(d, maxW).then(function(small){ res(small || d); });
-        });
-      }
+        cv.width = Math.round(W * scale); cv.height = Math.round(H * scale);
+        var g = cv.getContext('2d');
+        if(bg){ g.fillStyle = bg; g.fillRect(0, 0, cv.width, cv.height); }
+        g.drawImage(img, 0, 0, cv.width, cv.height);
+        cv.toBlob(function(b){
+          if(b) resolve(b);
+          else reject(new Error('canvas produced no image'));
+        }, type || 'image/png', quality);
+      }catch(err){ reject(err); }
     };
-    img.onerror = function(){
-      _artFromFolder(url).then(function(d){
-        if(!d){ res(null); return; }
-        _shrinkDataUrl(d, maxW).then(function(small){ res(small || d); });
-      });
-    };
-    img.src = url;
+    img.onerror = function(){ reject(new Error('face SVG failed to rasterise')); };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   });
 }
-/* The editor's edPrintCards prints through this. */
-window.edArtDataUrl = _artDataUrl;
-
-function faceToPngBlob(card, scale){
+function faceToPngBlob(card, scale){ return faceToBlob(card, scale); }
+/* Tabletop Simulator's pictures are JPEG on black (the TTS publish, ed2_publish.js). */
+function faceToBlob(card, scale, type, quality, bg){
   scale = scale || 2;
   var W = 340, H = 476;
   return new Promise(function(resolve, reject){
@@ -136,23 +299,10 @@ function faceToPngBlob(card, scale){
     var face = host.querySelector('.mcard');
     if(!face){ cleanup(); reject(new Error('no face element')); return; }
 
-    var nodes = [], missing = 0;
-    Array.prototype.forEach.call(host.querySelectorAll('*'), function(n){
-      var bi = getComputedStyle(n).backgroundImage || '';
-      var m = bi.match(/url\(["']?([^"')]+)["']?\)/);
-      if(m && m[1].indexOf('data:') !== 0) nodes.push({n:n, url:m[1]});
-    });
-
-    var i = 0;
-    function next(){
-      if(i >= nodes.length){ finish(); return; }
-      var it = nodes[i++];
-      _artDataUrl(it.url, Math.round(W * scale)).then(function(d){
-        if(d) it.n.style.backgroundImage = 'url("' + d + '")';
-        else { missing++; it.n.style.backgroundImage = 'none'; }
-        next();
-      });
-    }
+    /* The host is the face at 340px, so `scale` output pixels a CSS pixel; why[] is each missing picture's reason. */
+    var missing = 0, why = [];
+    _inlineArt(host, scale, false).then(function(r){ missing = r.missing; why = r.why; finish(); },
+                                       function(err){ cleanup(); reject(err); });
     function finish(){
       /* The .mcard-fit wrapper, not the bare .mcard, which has no size of its own; and inside a <body> with the page's classes,
          because the face's rules are written body:not(.mse-template) .m-... and body.edge-* / body.pin-*. */
@@ -160,32 +310,31 @@ function faceToPngBlob(card, scale){
       var xml;
       try{ xml = new XMLSerializer().serializeToString(wrap); }
       catch(err){ cleanup(); reject(err); return; }
-      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'">'
-        + '<foreignObject width="100%" height="100%">'
-        + '<body xmlns="http://www.w3.org/1999/xhtml" class="' + (document.body.className||'') + '"'
-        +      ' style="margin:0;width:'+W+'px;height:'+H+'px">'
-        + '<style><![CDATA[' + _faceCss() + ']]></style>' + xml
-        + '</body></foreignObject></svg>';
-      var img = new Image();
-      img.onload = function(){
-        try{
-          var cv = document.createElement('canvas');
-          cv.width = Math.round(W * scale); cv.height = Math.round(H * scale);
-          cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
-          cv.toBlob(function(b){
-            cleanup();
-            if(b) resolve({blob:b, missingArt:missing});
-            else reject(new Error('canvas produced no image'));
-          }, 'image/png');
-        }catch(err){ cleanup(); reject(err); }
-      };
-      img.onerror = function(){ cleanup(); reject(new Error('face SVG failed to rasterise')); };
-      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      _rasterise(xml, W, H, scale, type, quality, bg).then(function(b){
+        cleanup(); resolve({blob:b, missingArt:missing, why:why});
+      }, function(err){ cleanup(); reject(err); });
     }
-    next();
   });
 }
 window.edFaceToPngBlob = faceToPngBlob;
+window.edFaceToBlob = faceToBlob;
+/* A card back whole (CB_MARKUP, card_backs.js), at its own 750 x 1050, still: its pictures are data: URLs already. */
+function backToBlob(key, type, quality, bg){
+  var W = 750, H = 1050;
+  if(typeof CB_MARKUP === 'undefined' || !CB_MARKUP[key])
+    return Promise.reject(new Error('there is no card back "' + key + '"'));
+  var host = document.createElement('div');
+  host.setAttribute('style','position:fixed;left:-20000px;top:0;width:'+W+'px;height:'+H+'px;pointer-events:none');
+  host.innerHTML = "<div class='cbk cbk-" + key + "'>" + CB_MARKUP[key] + "</div>";
+  document.body.appendChild(host);
+  var xml;
+  try{ xml = new XMLSerializer().serializeToString(host.firstChild); }
+  catch(err){ host.remove(); return Promise.reject(err); }
+  return _rasterise(xml, W, H, 1, type, quality, bg).then(function(b){
+    host.remove(); return {blob:b};
+  }, function(err){ host.remove(); throw err; });
+}
+window.edBackToBlob = backToBlob;
 
 /* The whole face, not imageUrl: that is only the art panel, and under file:// every fetch of one is refused. */
 function downloadDeckImages(){
@@ -285,13 +434,13 @@ function downloadDeckImages(){
     if(btn) btn.innerHTML = origText;
   }
   /* One card at a time, on purpose: each face embeds the whole stylesheet and its art. */
-  var idx = 0, noArt = 0, failed = [];
+  var idx = 0, noArt = [], failed = [];
   function step(){
     if(idx >= toDownload.length){ _report(); return; }
     var card = toDownload[idx++];
     var safeName = (card.name||'card').replace(/[\\/:*?"<>|]/g,'_') + '.png';
     faceToPngBlob(card, 2).then(function(r){
-      if(r.missingArt) noArt++;
+      if(r.missingArt) noArt.push((card.name||'?') + ' (' + r.why.join('; ') + ')');
       return r.blob.arrayBuffer();
     }).then(function(buf){
       files.push({name:safeName, data:buf});
@@ -312,9 +461,9 @@ function downloadDeckImages(){
     _done();
     if(failed.length) alert('Exported ' + files.length + ', failed ' + failed.length
       + ':\n' + failed.slice(0,5).join('\n'));
-    /* Never ship blank art boxes silently: from file:// offer the one folder pick that fixes it. */
-    if(noArt && !_artFolderLinked()){
-      if(confirm(noArt + ' of ' + files.length + ' card(s) exported with an EMPTY ART BOX.\n\n'
+    /* Never ship blank art boxes silently: from file:// offer the one folder pick that fixes it; anywhere else say why. */
+    if(noArt.length && _artFolderMayHelp()){
+      if(confirm(noArt.length + ' of ' + files.length + ' card(s) exported with an EMPTY ART BOX.\n\n'
         + 'A page opened from file:// is not allowed to read its own image\n'
         + 'files back. Pick your art folder once and the art will be included\n'
         + 'from then on, for this session.\n\nChoose the art folder now?')){
@@ -322,146 +471,218 @@ function downloadDeckImages(){
           alert('Linked ' + n + ' art file(s). Run the export again.');
         });
       }
-    } else if(noArt){
-      alert(noArt + ' card(s) still exported without art - those pictures were not'
-        + '\nfound in the linked folder.');
+    } else if(noArt.length){
+      alert(noArt.length + ' of ' + files.length + ' card(s) exported with an EMPTY ART BOX, as the art could not be loaded:\n'
+        + noArt.slice(0,5).join('\n') + (noArt.length > 5 ? '\nand ' + (noArt.length - 5) + ' more' : ''));
     }
   }
   step();
 }
 
-function exportTTS(){
-  var CARD_BACK_URL = 'https://files.catbox.moe/xw1tw7.png';
-  var cardMap = {};
+/* Build Deck → Export → TTS: a window to pick the card back, then the deck as a Tabletop Simulator saved object. Each card
+   is its own picture in the TTS repository its set publishes (edTtsLists, ed2_publish.js); every copy of a card shares it. */
+var _ttsWin = null;
+function _ttsDeckItems(){
+  var cardMap = {}, items = [], byName = {};
   CARDS.forEach(function(c){ cardMap[c.name] = c; });
-
-  var allEntries = [];
-  Object.keys(DECK_IDS).forEach(function(k){
-    allEntries = allEntries.concat(parseDeckIn(DECK_IDS[k]));
+  deckAllEntries().forEach(function(en){
+    var c = cardMap[en.name];
+    if(!c) return;
+    if(byName[en.name]){ byName[en.name].count += en.count; return; }
+    byName[en.name] = {card:c, count:en.count};
+    items.push(byName[en.name]);
   });
-
-  if(!allEntries.length){ alert('No cards in deck to export.'); return; }
-
-  var deck = {
-    Name: 'DeckCustom',
-    Transform: {
-      posX:0, posY:1, posZ:0,
-      rotX:0, rotY:180, rotZ:180,
-      scaleX:1, scaleY:1, scaleZ:1
-    },
-    Nickname: DECK_NAME||'Deck',
-    Description: '', GMNotes: '',
-    ColorDiffuse: {r:0.713, g:0.713, b:0.713},
-    Locked:false, Grid:true, Snap:true,
-    Autoraise:true, Sticky:true, Tooltip:true,
-    GridProjection:false, HideWhenFaceDown:true,
-    Hands:false, SidewaysCard:false,
-    DeckIDs: [],
-    CustomDeck: {},
-    ContainedObjects: [],
-    GUID: 'aaaaaa'
-  };
-
-  var slot = 0;
-  var skipped = [];
-
-  allEntries.forEach(function(entry){
-    var card = cardMap[entry.name];
-    if(!card || !card.imageUrl){
-      skipped.push(entry.name);
-      return;
+  return items;
+}
+function exportTTS(){
+  var items = _ttsDeckItems();
+  if(!items.length){ alert('No cards in deck to export.'); return; }
+  if(typeof window.edTtsLists !== 'function'){ alert('The editor did not load, so the Tabletop Simulator pictures cannot be found.'); return; }
+  var back = (typeof tdBackKind === 'function') ? tdBackKind() : (((window.CB_LIST || [])[0] || {}).key || '');
+  var seq = (_ttsWin ? _ttsWin.seq : 0) + 1;
+  _ttsWin = {items:items, faces:null, backs:null, back:back, err:'', seq:seq};
+  _ttsRender();
+  window.edTtsLists(items.map(function(it){ return it.card; })).then(function(r){
+    if(!_ttsWin || _ttsWin.seq !== seq) return;
+    _ttsWin.faces = r.faces || [];
+    _ttsWin.backs = r.backs || {};
+    /* the board's back when Tabletop Simulator has it, else the first on the list that it has */
+    if(!_ttsWin.backs[_ttsWin.back]){
+      var have = (window.CB_LIST || []).filter(function(b){ return !!_ttsWin.backs[b.key]; })[0];
+      if(have) _ttsWin.back = have.key;
     }
-
-    var typeLine = '';
-    if(_catArr(card.superTypes).length) typeLine += _catArr(card.superTypes).join(' ');
-    if(_catArr(card.subTypes).length) typeLine += (typeLine?' — ':'')+_catArr(card.subTypes).join(' ');
-    /* cardPlainRules, not card.ruleText: a choice card's options go one to a line. */
-    var _rules = (typeof cardPlainRules === 'function')
-      ? cardPlainRules(card) : (card.ruleText || '');
-    var desc = typeLine;
-    if(_rules) desc += (desc?'\n':'')+_rules;
-
-    var deckEntry = {
-      FaceURL: card.imageUrl,
-      BackURL: CARD_BACK_URL,
-      NumWidth: 1,
-      NumHeight: 1,
-      BackIsHidden: true,
-      UniqueBack: false,
-      Type: 0
-    };
-
-    for(var copy=0; copy<entry.count; copy++){
-      slot++;
-      var deckKey = String(slot);
-      var cardId = slot * 100;
-
-      deck.CustomDeck[deckKey] = deckEntry;
-
-      var cardObj = {
-        Name: 'Card',
-        Transform: {
-          posX:0, posY:0, posZ:0,
-          rotX:0, rotY:180, rotZ:180,
-          scaleX:1, scaleY:1, scaleZ:1
-        },
-        Nickname: card.name,
-        Description: desc,
-        GMNotes: '',
-        ColorDiffuse: {r:0.713, g:0.713, b:0.713},
-        Locked:false, Grid:true, Snap:true,
-        Autoraise:true, Sticky:true, Tooltip:true,
-        GridProjection:false, HideWhenFaceDown:true,
-        Hands: true,
-        CardID: cardId,
-        GUID: _ttsGuid(slot),
-        CustomDeck: {}
-      };
-      cardObj.CustomDeck[deckKey] = deckEntry;
-
-      deck.DeckIDs.push(cardId);
-      deck.ContainedObjects.push(cardObj);
-    }
+    _ttsRender();
+  }, function(err){
+    if(!_ttsWin || _ttsWin.seq !== seq) return;
+    _ttsWin.err = 'Could not find the pictures: ' + (err && err.message ? err.message : err);
+    _ttsRender();
   });
-
-  if(!deck.ContainedObjects.length){
-    alert('No valid cards found for TTS export.' + (skipped.length ? '\nSkipped: '+skipped.join(', ') : ''));
-    return;
+}
+function _ttsCounts(w){
+  var out = {ready:0, of:0, why:{}};
+  w.items.forEach(function(it, i){
+    out.of += it.count;
+    var f = w.faces ? w.faces[i] : null;
+    if(f && f.url) out.ready += it.count;
+    else if(f) (out.why[f.why] = out.why[f.why] || []).push(it.card.name);
+  });
+  return out;
+}
+function _ttsCanSave(w){
+  return !!(w && w.faces && w.backs && w.backs[w.back] && _ttsCounts(w).ready);
+}
+function _ttsRender(){
+  var w = _ttsWin; if(!w) return;
+  var ov = document.getElementById('ttsOv'), fresh = !ov;
+  if(fresh){
+    ov = document.createElement('div');
+    ov.id = 'ttsOv'; ov.className = 'td-ov tts-ov';
+    document.body.appendChild(ov);
+    ov.addEventListener('click', function(ev){
+      if(ev.target === ov){ ttsClose(); return; }
+      var t = ev.target.closest && ev.target.closest('[data-tts-back]');
+      if(t) _ttsPick(t.getAttribute('data-tts-back'));
+    });
+    /* Escape and the focus trap are modalOpen's, below */
+    ov.addEventListener('keydown', function(ev){
+      var t = ev.target.closest && ev.target.closest('[data-tts-back]');
+      if(t && (ev.key === 'Enter' || ev.key === ' ')){ ev.preventDefault(); _ttsPick(t.getAttribute('data-tts-back')); }
+    });
   }
-
-  var save = {
-    SaveName: deck.Nickname,
-    Date: '', VersionNumber: '', GameMode: '',
-    GameType: '', GameComplexity: '', Tags: [],
-    Gravity: 0.5, PlayArea: 0.5,
-    Table: 'Table_None', Sky: 'Sky_Museum',
-    Note: '', Rules: '', XmlUI: '',
-    LuaScript: '', LuaScriptState: '',
-    ObjectStates: [deck]
-  };
-
-  var json = JSON.stringify(save, null, 2);
-  var blob = new Blob([json], {type:'application/json'});
+  /* drawn again once the pictures are found: the control in focus keeps it */
+  var had = document.activeElement, hadBack = '', hadId = '';
+  if(had && had !== ov && ov.contains(had)){ hadBack = had.getAttribute('data-tts-back') || ''; hadId = had.id || ''; }
+  var ready = !!w.faces, n = _ttsCounts(w), lines = [];
+  if(w.err) lines.push(w.err);
+  else if(!ready) lines.push('Finding the cards’ pictures…');
+  else {
+    lines.push(n.ready + ' of ' + n.of + ' card' + (n.of === 1 ? '' : 's') + ' ready');
+    Object.keys(n.why).forEach(function(why){
+      var list = n.why[why];
+      lines.push(why + ': ' + list.slice(0, 6).join(', ') + (list.length > 6 ? ' and ' + (list.length - 6) + ' more' : ''));
+    });
+    if(!Object.keys(w.backs || {}).length) lines.push('No card backs for Tabletop Simulator yet');
+  }
+  var tiles = (window.CB_LIST || []).map(function(b){
+    var has = !ready || !!(w.backs && w.backs[b.key]), on = b.key === w.back;
+    return "<div class='tpp-opt" + (on ? ' on' : '') + (has ? '' : ' tts-off') + "' role='button' tabindex='0'"
+      + " aria-pressed='" + (on ? 'true' : 'false') + "'" + (has ? '' : " aria-disabled='true'")
+      + " data-tts-back='" + e(b.key) + "'>"
+      + "<span class='tpp-back cbk-tok cbk-tok-" + e(b.key) + "'></span>"
+      + "<span class='tpp-name'>" + e(b.name) + "</span></div>";
+  }).join('');
+  ov.innerHTML = "<div class='ed2-modal tts-modal'>"
+    + "<div class='ed2-modal-head wh'><b class='wh-t'>Tabletop Simulator</b><span class='sg-head-gap'></span>"
+    + "<button class='ed2-btn close-x nb nb-red nb-m wh-x' id='ttsX' onclick='ttsClose()'>Close &#10005;</button></div>"
+    + "<div class='ed2-modal-body tts-body'>"
+    + "<h4 class='tts-head'>Card Back</h4>"
+    + "<div class='tpp-grid tpp-backs tts-backs'>" + tiles + "</div>"
+    + "<div class='tts-msg' id='ttsMsg'>" + lines.map(function(l){ return "<div>" + e(l) + "</div>"; }).join('') + "</div>"
+    + "<div class='tts-btns'><button class='ed2-btn primary' id='ttsGo' onclick='ttsDownload()'"
+    + (_ttsCanSave(w) ? '' : ' disabled') + ">Download</button></div>"
+    + "</div></div>";
+  var again = hadBack ? ov.querySelector("[data-tts-back='" + hadBack + "']") : (hadId ? document.getElementById(hadId) : null);
+  if(again){ try{ again.focus(); }catch(_){} }
+  if(fresh && typeof modalOpen === 'function')
+    modalOpen(ov, {label:'Tabletop Simulator', onClose:ttsClose, focus:ov.querySelector('[data-tts-back].on')});
+}
+function _ttsPick(key){
+  var w = _ttsWin; if(!w) return;
+  if(w.faces && !(w.backs && w.backs[key])) return;
+  w.back = key;
+  var ov = document.getElementById('ttsOv'); if(!ov) return;
+  ov.querySelectorAll('[data-tts-back]').forEach(function(t){
+    var on = t.getAttribute('data-tts-back') === key;
+    t.classList.toggle('on', on); t.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  var go = document.getElementById('ttsGo'); if(go) go.disabled = !_ttsCanSave(w);
+}
+function ttsClose(){
+  _ttsWin = null;
+  var ov = document.getElementById('ttsOv'); if(!ov) return;
+  if(typeof modalClose === 'function') modalClose(ov);
+  ov.remove();
+}
+function ttsDownload(){
+  var w = _ttsWin;
+  if(!_ttsCanSave(w)) return;
+  var items = [];
+  w.items.forEach(function(it, i){ var f = w.faces[i]; if(f && f.url) items.push({card:it.card, count:it.count, url:f.url}); });
+  var save = _ttsSave(DECK_NAME || 'Deck', items, w.backs[w.back]);
+  if(!save) return;
+  var n = save.ObjectStates[0].ContainedObjects ? save.ObjectStates[0].ContainedObjects.length : 1;
+  _ttsSaveFile(JSON.stringify(save, null, 2), _ttsFileName(save.SaveName), 'application/json');
+  ttsClose();
+  if(typeof toast === 'function') toast('Saved ' + n + ' card' + (n === 1 ? '' : 's') + ' for Tabletop Simulator');
+}
+function _ttsSaveFile(data, name, type){
+  var blob = new Blob([data], {type:type});
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a');
-  a.href = url;
-  var _dn = '';
-  var savedInp = document.getElementById('savedNameInp');
-  if(savedInp && savedInp.value.trim()) _dn = savedInp.value.trim();
-  if(!_dn) _dn = deck.Nickname || 'Deck';
-  var _now = new Date();
-  var _months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  var _dd = String(_now.getDate()).padStart(2,'0');
-  var _mmm = _months[_now.getMonth()];
-  var _yy = String(_now.getFullYear()).slice(-2);
-  var _dateSuffix = _dd + _mmm + _yy;
-  a.download = _dn.replace(/[\\/:*?"<>|]/g,'_') + '_' + _dateSuffix + '_TTS.json';
+  a.href = url; a.download = name;
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  setTimeout(function(){ URL.revokeObjectURL(url); },5000);
-
-  var msg = 'TTS deck exported: '+deck.ContainedObjects.length+' cards.';
-  if(skipped.length) msg += '\n'+skipped.length+' cards skipped (no image): '+skipped.join(', ');
-  alert(msg);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 5000);
+}
+function _ttsFileName(fallback){
+  var dn = '';
+  var savedInp = document.getElementById('savedNameInp');
+  if(savedInp && savedInp.value.trim()) dn = savedInp.value.trim();
+  if(!dn) dn = fallback || 'Deck';
+  var now = new Date();
+  var months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  return dn.replace(/[\\/:*?"<>|]/g,'_') + '_' + String(now.getDate()).padStart(2,'0') + months[now.getMonth()]
+    + String(now.getFullYear()).slice(-2) + '_TTS.json';
+}
+function _ttsDesc(card){
+  var typeLine = '';
+  if(_catArr(card.superTypes).length) typeLine += _catArr(card.superTypes).join(' ');
+  if(_catArr(card.subTypes).length) typeLine += (typeLine?' — ':'')+_catArr(card.subTypes).join(' ');
+  /* cardPlainRules, not card.ruleText: a choice card's options go one to a line. */
+  var rules = (typeof cardPlainRules === 'function') ? cardPlainRules(card) : (card.ruleText || '');
+  return typeLine + (rules ? (typeLine ? '\n' : '') + rules : '');
+}
+/* items: [{card, count, url}]. One CustomDeck entry a card, its copies sharing its CardID; a deck of one card is a card. */
+function _ttsSave(name, items, backUrl){
+  var flip = {posX:0,posY:1,posZ:0,rotX:0,rotY:180,rotZ:180,scaleX:1,scaleY:1,scaleZ:1};
+  var deck = {
+    Name:'DeckCustom', Transform:flip, Nickname:name, Description:'', GMNotes:'',
+    ColorDiffuse:{r:0.713,g:0.713,b:0.713},
+    Locked:false, Grid:true, Snap:true, Autoraise:true, Sticky:true, Tooltip:true,
+    GridProjection:false, HideWhenFaceDown:true, Hands:false, SidewaysCard:false,
+    DeckIDs:[], CustomDeck:{}, ContainedObjects:[], GUID:'aaaaaa'
+  };
+  var n = 0;
+  items.forEach(function(it, i){
+    var key = String(i + 1), cardId = (i + 1) * 100;
+    var face = {FaceURL:it.url, BackURL:backUrl, NumWidth:1, NumHeight:1, BackIsHidden:true, UniqueBack:false, Type:0};
+    var desc = _ttsDesc(it.card);
+    deck.CustomDeck[key] = face;
+    for(var k = 0; k < it.count; k++){
+      n++;
+      var obj = {
+        Name:'Card',
+        Transform:{posX:0,posY:0,posZ:0,rotX:0,rotY:180,rotZ:180,scaleX:1,scaleY:1,scaleZ:1},
+        Nickname:it.card.name, Description:desc, GMNotes:'',
+        ColorDiffuse:{r:0.713,g:0.713,b:0.713},
+        Locked:false, Grid:true, Snap:true, Autoraise:true, Sticky:true, Tooltip:true,
+        GridProjection:false, HideWhenFaceDown:true, Hands:true,
+        CardID:cardId, GUID:_ttsGuid(n), CustomDeck:{}
+      };
+      obj.CustomDeck[key] = face;
+      deck.DeckIDs.push(cardId);
+      deck.ContainedObjects.push(obj);
+    }
+  });
+  if(!n) return null;
+  var top = deck;
+  if(n === 1){ top = deck.ContainedObjects[0]; top.Transform = flip; }
+  return {
+    SaveName:name,
+    Date:'', VersionNumber:'', GameMode:'', GameType:'', GameComplexity:'', Tags:[],
+    Gravity:0.5, PlayArea:0.5, Table:'Table_None', Sky:'Sky_Museum',
+    Note:'', Rules:'', XmlUI:'', LuaScript:'', LuaScriptState:'',
+    ObjectStates:[top]
+  };
 }
 
 function _ttsGuid(n){
@@ -493,9 +714,6 @@ var _devClickCount = 0, _devClickTimer = null;
 })();
 
 function _devExportAll(){
-  var CARD_BACK_URL = 'https://files.catbox.moe/xw1tw7.png';
-  var COLORS_LIST = ['Red','Orange','Yellow','Green','Blue','Indigo','Violet'];
-
   var buckets = {
     'Red': [], 'Orange': [], 'Yellow': [], 'Green': [], 'Blue': [], 'Indigo': [], 'Violet': [],
     'Two-Color': [], 'Three-Plus-Color': [], 'Colorless': [],
@@ -527,72 +745,38 @@ function _devExportAll(){
     }
   });
 
-  function _buildTTSDeck(name, cards){
-    var deck = {
-      Name:'DeckCustom',
-      Transform:{posX:0,posY:1,posZ:0,rotX:0,rotY:180,rotZ:180,scaleX:1,scaleY:1,scaleZ:1},
-      Nickname:name, Description:'', GMNotes:'',
-      ColorDiffuse:{r:0.713,g:0.713,b:0.713},
-      Locked:false,Grid:true,Snap:true,Autoraise:true,Sticky:true,Tooltip:true,
-      GridProjection:false,HideWhenFaceDown:true,Hands:false,SidewaysCard:false,
-      DeckIDs:[],CustomDeck:{},ContainedObjects:[],GUID:'aaaaaa'
-    };
-    var slot = 0;
-    cards.forEach(function(card){
-      if(!card.imageUrl) return;
-      slot++;
-      var deckKey = String(slot);
-      var cardId = slot * 100;
-      var typeLine = '';
-      if(_catArr(card.superTypes).length) typeLine += _catArr(card.superTypes).join(' ');
-      if(_catArr(card.subTypes).length) typeLine += (typeLine?' \u2014 ':'')+_catArr(card.subTypes).join(' ');
-      var _rules = (typeof cardPlainRules === 'function')
-        ? cardPlainRules(card) : (card.ruleText || '');
-      var desc = typeLine;
-      if(_rules) desc += (desc?'\n':'')+_rules;
-      var deckEntry = {FaceURL:card.imageUrl,BackURL:CARD_BACK_URL,NumWidth:1,NumHeight:1,BackIsHidden:true,UniqueBack:false,Type:0};
-      deck.CustomDeck[deckKey] = deckEntry;
-      var cardObj = {
-        Name:'Card',
-        Transform:{posX:0,posY:0,posZ:0,rotX:0,rotY:180,rotZ:180,scaleX:1,scaleY:1,scaleZ:1},
-        Nickname:card.name, Description:desc, GMNotes:'',
-        ColorDiffuse:{r:0.713,g:0.713,b:0.713},
-        Locked:false,Grid:true,Snap:true,Autoraise:true,Sticky:true,Tooltip:true,
-        GridProjection:false,HideWhenFaceDown:true,Hands:true,
-        CardID:cardId, GUID:_ttsGuid(slot), CustomDeck:{}
-      };
-      cardObj.CustomDeck[deckKey] = deckEntry;
-      deck.DeckIDs.push(cardId);
-      deck.ContainedObjects.push(cardObj);
-    });
-    if(!deck.ContainedObjects.length) return null;
-    return {
-      SaveName:name,
-      Date:'',VersionNumber:'',GameMode:'',GameType:'',GameComplexity:'',Tags:[],
-      Gravity:0.5,PlayArea:0.5,Table:'Table_None',Sky:'Sky_Museum',
-      Note:'',Rules:'',XmlUI:'',LuaScript:'',LuaScriptState:'',
-      ObjectStates:[deck]
-    };
-  }
-
+  if(typeof window.edTtsLists !== 'function'){ alert('The editor did not load, so the Tabletop Simulator pictures cannot be found.'); return; }
+  var all = CARDS.slice();
+  window.edTtsLists(all).then(function(r){
+    var urls = new Map(), missing = 0;
+    all.forEach(function(c, i){ var f = (r.faces || [])[i]; if(f && f.url) urls.set(c, f.url); else missing++; });
+    var backs = r.backs || {}, k = (typeof tdBackKind === 'function') ? tdBackKind() : '';
+    var backUrl = backs[k] || backs[Object.keys(backs)[0]];
+    if(!backUrl){ alert('No card backs for Tabletop Simulator yet.'); return; }
+    _devExportZip(buckets, urls, backUrl, missing);
+  }, function(err){
+    alert('Could not find the pictures: ' + (err && err.message ? err.message : err));
+  });
+}
+function _devExportZip(buckets, urls, backUrl, missing){
   var zipFiles = [];
   var order = ['Red','Orange','Yellow','Green','Blue','Indigo','Violet',
                'Two-Color','Three-Plus-Color','Colorless',
                'Core Essence','Dual Essence','Other Essence','Uncategorized'];
   var totalCards = 0;
   order.forEach(function(key){
-    var cards = buckets[key];
-    if(!cards.length) return;
-    var save = _buildTTSDeck(key, cards);
+    var items = buckets[key].filter(function(c){ return urls.has(c); })
+      .map(function(c){ return {card:c, count:1, url:urls.get(c)}; });
+    var save = _ttsSave(key, items, backUrl);
     if(!save) return;
     var json = JSON.stringify(save, null, 2);
     var data = new TextEncoder().encode(json);
     var safeName = key.replace(/[\\/:*?"<>|]/g,'_').replace(/\s+/g,'_');
     zipFiles.push({name: safeName + '_TTS.json', data: data});
-    totalCards += cards.length;
+    totalCards += items.length;
   });
 
-  if(!zipFiles.length){ alert('No cards to export.'); return; }
+  if(!zipFiles.length){ alert('No cards with a Tabletop Simulator picture to export.'); return; }
 
   function _crc32(buf){
     var t = window._crc32Table;
@@ -648,7 +832,7 @@ function _devExportAll(){
   a.download = 'Conjure_All_Cards_' + String(now.getDate()).padStart(2,'0') + months[now.getMonth()] + String(now.getFullYear()).slice(-2) + '_TTS.zip';
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   setTimeout(function(){ URL.revokeObjectURL(url); }, 5000);
-  alert('Dev Export: '+totalCards+' cards across '+zipFiles.length+' decks exported.');
+  alert('Dev Export: '+totalCards+' cards across '+zipFiles.length+' decks exported.'+(missing?' '+missing+' had no Tabletop Simulator picture.':''));
 }
 
 /* Real faces through edPrintCards, in this document so its stylesheet applies; a popup of imageUrl would be bare art without the CSS. */

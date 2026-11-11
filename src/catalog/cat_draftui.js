@@ -733,7 +733,7 @@ function drRenderBuild(main, side, st, acts){
     ? 'Saved as <b>' + e(DR.savedAs) + '</b>'
     : 'Build &middot; <b>' + size + '</b> of ' + goal + ' &middot; ' + DR.pool.length + ' drafted';
   if(acts) acts.innerHTML = DR.phase === 'saved' && DR.mode === 'solo'
-    ? "<button class='ed2-btn primary' id='drOpenDeck' onclick='drOpenSaved()'>Open in Build Deck</button>" : '';
+    ? "<button class='ed2-btn primary' id='drOpenDeck' onclick='drOpenSaved()'>Open in Build</button>" : '';
   var rows = Object.keys(DR.deck).sort(function(a, b){
     return drCost(a) - drCost(b) || (a < b ? -1 : a > b ? 1 : 0);
   }).map(function(n){

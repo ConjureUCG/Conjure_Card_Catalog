@@ -125,7 +125,7 @@
   .sb .nf .fl-inbox,.sb .nf-inline .fl-inline{flex:0 0 90px;font-size:16px}
   .sb .nf select{height:44px;padding:0 8px;font-size:16px}
   .sb .nf input[type=number]{width:64px;height:44px;padding:0 8px;font-size:16px}
-  .sb .nf-atk,.sb .nf-hp,.sb .nf-arc,.sb .nf-rng{padding:5px 5px 5px 10px}
+  .sb .nf-atk,.sb .nf-hp,.sb .nf-arc,.sb .nf-rng,.sb .nf-cmc,.sb .nf-saga{padding:5px 5px 5px 10px}
   .sb .fs .nf+.nf{margin-top:10px}
   .sb .cbtn-row{gap:8px;margin-top:10px}
   .sb .cbtn label{min-height:48px;padding:0 10px;gap:8px;font-size:15px}
@@ -347,8 +347,8 @@
   .mob-dtop{margin-bottom:4px}
   .mob-sdock2 .saved-save-row{display:flex;gap:8px;padding:0;border:0}
   .mob-sdock2 .saved-input{height:44px;padding:0 12px;border:1px solid var(--b2);background:var(--s1);font-size:17px}
-  .mob-sdock2 .saved-save-btn{flex:0 0 auto;height:44px;padding:0 18px;border:2px solid var(--gd);background:color-mix(in srgb,var(--go) 10%,transparent);
-    color:var(--go);font-size:14px;letter-spacing:.05em}
+  .mob-sdock2 .saved-save-btn{flex:0 0 auto;height:44px;padding:0 18px;border:2px solid var(--gr);background:color-mix(in srgb,var(--gr) 10%,transparent);
+    color:var(--gr);font-size:14px;letter-spacing:.05em}
   .mob-copy{flex:0 0 auto;height:44px;padding:0 16px;border:2px solid var(--gr);border-radius:0;background:color-mix(in srgb,var(--gr) 14%,transparent);
     color:var(--gr);font-family:'Cinzel',serif;font-size:14px;font-weight:700;letter-spacing:.05em;white-space:nowrap;cursor:pointer}
   .mob-secs{display:grid;grid-auto-columns:minmax(0,1fr);grid-auto-flow:column;margin-top:12px;border-bottom:1px solid var(--b1)}
@@ -387,8 +387,6 @@
   .td-sr{min-width:0;gap:4px}
   .td-sr-lab{font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--td)}
   .td-sr-in,.td-sr-in.td-sr-lvl{width:100%;height:44px;box-sizing:border-box;padding:0 8px;border-radius:0;background:var(--s1);font-size:16px}
-  .td-sr-echo{grid-column:1 / -1;max-width:none;font-size:14px}
-  .td-sr-echo:empty{display:none}
   #deckRulesBtn,#popEssBtn{grid-column:span 3;order:2;height:22px;padding:0 4px;font-size:12px;letter-spacing:.03em;line-height:1;
     display:flex;align-items:center;justify-content:center;gap:5px;border-width:1px;white-space:nowrap;overflow:hidden}
   #popEssBtn{order:3}
@@ -433,6 +431,8 @@
   .stat-cmc-h-item{min-width:0!important;padding:6px 4px}
   .stat-pill-val{font-size:22px}
   #dv-inf-wrap{grid-column:1 / -1}
+  .dv-curve-row{display:flex;flex-direction:column}
+  .dv-curve-row>#statCmcBox{order:1;margin:10px 0 0}
   .chart-box{min-width:0}
   .chart-box h4{font-size:18px}
   /* The bar alone: drawPipBar never draws under 272px, so beside the pie it ran off any phone under 390px (HANDOFF §82.4). */
@@ -495,6 +495,7 @@
     border:1px solid color-mix(in srgb,var(--white) 30%,transparent);border-radius:50%;background:color-mix(in srgb,var(--bg) 55%,transparent);color:var(--tx);font-size:20px}
   .mnav-l{left:22px}
   .mnav-r{right:22px}
+  .mnav-out{display:none}
 
   .mdb{display:block;margin-top:18px;padding:0;overflow:visible}
   .mnm{margin:0 0 6px;padding:0;font-size:24px}
@@ -636,13 +637,13 @@
   .ed2-fields{padding:0;overflow:visible}
   .ed2-empty{height:auto;padding:48px 0}
 
-  .ed2-group,.ed2-topsplit-main>.ed2-group:first-child>*,#pane-editor .ed2-rules-col>.ed2-field,#pane-editor .ed2-kwbar{
+  .ed2-group,.ed2-topsplit-main>.ed2-group:first-child>*,.ed2-rulesrow>.ed2-g-stats>*,#pane-editor .ed2-rules-col>.ed2-field,#pane-editor .ed2-kwbar{
     width:auto;box-sizing:border-box;margin:14px 0 0;padding:12px;border:3px solid transparent;border-radius:10px;
     background:linear-gradient(var(--mob-grp),var(--mob-grp)) padding-box,
       var(--td-gold) border-box;
     box-shadow:none}
-  .ed2-topsplit-main>.ed2-group{margin:0;padding:0;border:0;border-radius:0;background:none}
-  .ed2-topsplit,.ed2-topsplit-main,.ed2-artcol,#pane-editor .ed2-row3,#pane-editor .ed2-rules-col,.ed2-art{display:block}
+  .ed2-topsplit-main>.ed2-group,.ed2-rulesrow>.ed2-group{margin:0;padding:0;border:0;border-radius:0;background:none}
+  .ed2-topsplit,.ed2-topsplit-main,.ed2-rulesrow,.ed2-artcol,#pane-editor .ed2-row3,#pane-editor .ed2-rules-col,.ed2-art{display:block}
   .ed2-art{overflow:visible}
   .ed2-mn-row::before,.ed2-row2::before,.ed2-group-stats::before,.ed2-art::before,.ed2-hlbox::before,
   #pane-editor .ed2-kwbar::before,#edFields>.ed2-g-meta::before,#pane-editor .ed2-flavor-row>.ed2-stack-lbl::before{
@@ -685,11 +686,11 @@
   #pane-editor .ed2-combo-opt{display:flex;align-items:center;min-height:44px;padding:0 12px;border-bottom:1px solid var(--b1);font-size:16px}
 
   .ed2-group-stats .ed2-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-  .ed2-group-stats .ed2-orb{align-items:flex-start;gap:8px;padding:8px}
-  .ed2-group-stats .ed2-orb-pv{flex:0 0 38px;width:38px;height:38px;margin:3px 0 0}
+  .ed2-group-stats .ed2-orb{gap:8px;padding:8px}
+  .ed2-group-stats .ed2-orb-body{gap:8px}
+  .ed2-group-stats .ed2-orb-pv{flex:0 0 38px;width:38px;height:38px;margin:0}
   .ed2-group-stats .ed2-orb-fields{gap:6px}
   .ed2-group-stats .ed2-orb-type{height:44px;padding:0 4px;font-size:16px}
-  .ed2-group-stats .ed2-orb-valrow{gap:6px}
   .ed2-group-stats .ed2-orb-val{height:44px;font-size:16px}
   .ed2-group-stats .ed2-orb-star{gap:3px;font-size:16px}
   .ed2-group-stats .ed2-orb-star input{width:20px;height:20px}
@@ -728,7 +729,6 @@
   .ed2-sym-hyb{flex-wrap:wrap;gap:5px}
   .ed2-sym-hyb-lbl{flex:0 0 100%;margin:0 0 2px;font-size:15px}
   .ed2-sym-hadd{padding:0 14px;font-size:15px}
-  .ed2-sym-x.nb.nb{height:44px;padding:0 14px;font-size:13px;letter-spacing:.05em}
 
   /* The heading is ::before words on one line; screen readers are told only the label's. */
   #pane-editor .ed2-field.ed2-flavor-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 10px}
@@ -795,6 +795,7 @@
   #pane-editor .ed2-meta>.ed2-field:nth-child(-n+2){grid-column:1/-1}
   #pane-editor .ed2-field-rar select{height:44px;padding:0 8px;font-size:16px}
   #pane-editor .ed2-sagabox{margin-top:14px}
+  #pane-editor .ed2-meta>.ed2-field-rar{grid-column:1/-1}
   #pane-editor .ed2-sagabox>label{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-size:12px;color:var(--td)}
   #pane-editor .ed2-sagacount{min-width:20px;height:20px;margin:0;padding:0 6px;box-sizing:border-box;border-radius:10px;
     background:var(--s3);font-family:'Crimson Pro',serif;font-size:13px;line-height:20px;text-align:center}
@@ -1068,8 +1069,6 @@
   #edStatsOverlay .stat-cl-e{min-height:32px;font-size:13px}
   #edStatsOverlay .ed2-input.stat-cl-in,#edStatsOverlay .ed2-input.stat-cl-sel{height:44px;font-size:16px}
   #edStatsOverlay .stat-cl-in{flex:1 1 160px}
-  .ed2-rate-f{font-size:14px}
-  .ed2-rate-f .ed2-input{min-height:44px;font-size:16px}
   #edStatsOverlay .stat-title{margin:14px 0 4px;font-size:13px}
   #edStatsOverlay .stat-sum{font-size:13px}
   #edStatsOverlay .stat-chart{max-height:none;overflow:visible;padding-right:0}

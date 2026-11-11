@@ -105,11 +105,10 @@ function refreshDeckView(){
     mainDeck.forEach(function(entry){
       if(entry.card && _isUniqueCard(entry.card)) uniqueCount+=entry.count;
     });
-    dvInf.innerHTML='<span style="font-family:Cinzel,serif;font-size:1.2rem;font-weight:700;color:var(--txt-accent)">'
-      +total+' cards</span>'
-      +'<span style="font-family:Cinzel,serif;font-size:1.2rem;font-weight:700;color:var(--txt-accent)"> &middot; '+mainDeck.length+' diff'
-      +(uniqueCount?' &middot; '+uniqueCount+' Uniq':'')
-      +'</span>';
+    /* A part a line beside the Mana Curve (catalog.css), on one line on a phone. */
+    var infParts=[total+' cards', mainDeck.length+' diff'].concat(uniqueCount?[uniqueCount+' Uniq']:[]);
+    dvInf.innerHTML=infParts.map(function(p,i){
+      return (i?'<span class="dv-inf-sep"> &middot; </span>':'')+'<span class="dv-inf-p">'+p+'</span>'; }).join('');
   }
 
   requestAnimationFrame(function(){
@@ -285,11 +284,13 @@ function drawStats(mainCards, essDeck){
   var cmcKeys=['0','1','2','3','4','5','6','7','8','9+'];
   var cmcVals=cmcKeys.map(function(){ return 0; });
   var cmcShare=cmcKeys.map(function(){ return {}; });
+  var cmcCards=cmcKeys.map(function(){ return []; });
   deckCards.forEach(function(e){
     var c=parseInt(e.card.cmc)||0;
     var idx=cmcKeys.indexOf(c>=9?'9+':String(c));
     if(idx<0) return;
     cmcVals[idx]+=e.count;
+    cmcCards[idx].push(e);
     var p=manaPips(e.card.manaCost,1), tot=0;
     COLORS.forEach(function(k){ tot+=p[k]||0; });
     if(!tot){ cmcShare[idx].Colorless=(cmcShare[idx].Colorless||0)+e.count; return; }
@@ -301,7 +302,9 @@ function drawStats(mainCards, essDeck){
       .map(function(k){ return {fill:PIP_FILL[k]||cmcLess, n:sh[k]}; })
       .concat(sh.Colorless ? [{fill:cmcLess, n:sh.Colorless}] : []);
   });
-  drawBarMulticolor('chart-cmc',cmcKeys,cmcVals,cmcSegs,textClr,gridClr);
+  _dvCurve={keys:cmcKeys,vals:cmcVals,segs:cmcSegs,cards:cmcCards,text:textClr,grid:gridClr};
+  if(_dvCurvePick!==null && !(cmcCards[cmcKeys.indexOf(_dvCurvePick)]||[]).length) _dvCurvePick=null;
+  dvCurveDraw();
 
   var pipC={}; COLORS.forEach(function(c){pipC[c]=0;});
   deckCards.forEach(function(entry){
@@ -497,10 +500,67 @@ function _initChartResizeObserver(){
 }
 
 
-function drawBarMulticolor(id,labels,values,barColors,textClr,gridClr){
+/* The Mana Curve's bars pick their cards (the author, 8 November): a click lists that bar's cards under the chart, as the saga
+   Statistics page lists a bar's, and a second click puts the list away. */
+var _dvCurve=null, _dvCurvePick=null;
+function dvCurveDraw(){
+  var d=_dvCurve; if(!d) return;
+  drawBarMulticolor('chart-cmc',d.keys,d.vals,d.segs,d.text,d.grid,d.keys.indexOf(_dvCurvePick));
+  dvCurveList();
+  var cv=document.getElementById('chart-cmc');
+  if(cv && !cv._dvPick){
+    cv._dvPick=true;
+    cv.addEventListener('click',function(ev){
+      var i=dvCurveBarAt(cv,ev); if(i<0||!_dvCurve) return;
+      var k=_dvCurve.keys[i];
+      _dvCurvePick=(_dvCurvePick===k||!_dvCurve.cards[i].length)?null:k;
+      dvCurveDraw();
+    });
+    cv.addEventListener('mousemove',function(ev){
+      var i=dvCurveBarAt(cv,ev);
+      cv.style.cursor=(i>=0&&_dvCurve&&_dvCurve.cards[i].length)?'pointer':'';
+    });
+  }
+}
+/* The bar's whole column counts, its Total above it too; a phone draws the canvas scaled (mobile.css), hence k. */
+function dvCurveBarAt(cv,ev){
+  var g=cv._bars, r=cv.getBoundingClientRect(); if(!g||!r.width) return -1;
+  var k=g.w/r.width, x=(ev.clientX-r.left)*k, y=(ev.clientY-r.top)*k;
+  if(y<g.top||y>g.bottom) return -1;
+  var i=Math.floor((x-g.left)/g.gap);
+  return (i>=0&&i<g.n)?i:-1;
+}
+function dvCurveList(){
+  var host=document.getElementById('dvCmcCards'); if(!host) return;
+  var d=_dvCurve, i=d?d.keys.indexOf(_dvCurvePick):-1, list=i>=0?d.cards[i]:[];
+  if(!list.length){ host.innerHTML=''; return; }
+  var n=list.reduce(function(s,x){ return s+x.count; },0);
+  host.innerHTML="<div class='stat-cards'><h4>Cost "+e(d.keys[i])+" — "+n+" card(s)</h4><div class='stat-grid'>"
+    +list.map(function(x,ci){
+      var c=x.card, sup=_catArr(c.superTypes).join(' '), sub=_catArr(c.subTypes).join(' ');
+      var tl=(sup&&sub)?(sup+' — '+sub):(sup||sub);
+      var cost=c.manaCost?renderManaCost(c.manaCost,13):'';
+      return "<button type='button' class='stat-card' onclick='dvCurveOpen("+ci+")'>"
+        +"<span class='sc-name'>"+e(c.name)+"</span>"
+        +"<span class='sc-note'>"+x.count+"x</span>"
+        +"<span class='sc-cost'>"+cost+"</span>"
+        +"<span class='sc-type'>"+e(tl||'—')+"</span>"
+      +"</button>"; }).join('')
+    +"</div></div>";
+}
+function dvCurveOpen(ci){
+  var d=_dvCurve, i=d?d.keys.indexOf(_dvCurvePick):-1, x=i>=0?d.cards[i][ci]:null;
+  if(x&&x.card) openMod(x.card);
+}
+
+function drawBarMulticolor(id,labels,values,barColors,textClr,gridClr,sel){
   var canvas=document.getElementById(id); if(!canvas) return;
   var dpr=window.devicePixelRatio||1;
   var W=Math.max(getCanvasW(canvas),220), H=220;
+  /* As tall as the numbers when they stand beside it (catalog.css), so the two end level. */
+  var side=document.getElementById('statCmcBox');
+  if(side && side.offsetHeight>H && Math.abs(side.getBoundingClientRect().top-canvas.parentElement.getBoundingClientRect().top)<1)
+    H=side.offsetHeight;
   canvas.width=W*dpr; canvas.height=H*dpr;
   canvas.style.width=W+'px'; canvas.style.height=H+'px';
   var ctx=canvas.getContext('2d'); ctx.scale(dpr,dpr);
@@ -508,6 +568,7 @@ function drawBarMulticolor(id,labels,values,barColors,textClr,gridClr){
   var cW=W-pad.l-pad.r, cH=H-pad.t-pad.b;
   var max=Math.max.apply(null,values)||1;
   var gap=cW/labels.length, bw=gap*0.65;
+  canvas._bars={w:W,left:pad.l,gap:gap,n:labels.length,top:pad.t-20,bottom:H-pad.b+20};
   ctx.font='bold 13px sans-serif';
   var tight=typeof catIsPhone==='function' && catIsPhone() && ctx.measureText('Total '+max).width>gap-2;
   for(var i=0;i<=4;i++){
@@ -533,6 +594,7 @@ function drawBarMulticolor(id,labels,values,barColors,textClr,gridClr){
       ctx.fillStyle=segs||'#7b9cda';
       ctx.fillRect(x,by,bw,bh);
     }
+    if(i===sel && values[i]>0){ ctx.strokeStyle=textClr; ctx.lineWidth=2; ctx.strokeRect(x-1,by-1,bw+2,bh+2); }
     ctx.fillStyle=textClr; ctx.textAlign='center'; ctx.font='bold 11px sans-serif';
     ctx.fillText((tight?'':'Cost ')+lbl, x+bw/2, H-pad.b+15);
     if(values[i]>0){

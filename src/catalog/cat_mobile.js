@@ -146,7 +146,7 @@ function mobSegSync(){
   });
 }
 
-var MOB_NUM_ROWS = [['cop', 'cval', 'Mana Cost'], ['aop', 'aval', 'ATK'], ['hop', 'hval', 'HLTH'],
+var MOB_NUM_ROWS = [['cop', 'cval', 'CMC'], ['aop', 'aval', 'ATK'], ['hop', 'hval', 'HLTH'],
                     ['rop', 'rval', 'Rg'], ['arop', 'arval', 'ARC']];
 var MOB_SIGNS = {eq: '=', lt: '<', gt: '>'};
 

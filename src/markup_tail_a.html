@@ -1,7 +1,7 @@
   </main>
-  <button id='dpShow' class='dp-show' style='display:none' onclick='minimizeDeckPanel(false)'><svg class='ico' aria-hidden='true'><use href='#i-deck'/></svg> Deck</button>
+  <button id='dpShow' class='dp-show nb nb-green nb-m nb-over' style='display:none' onclick='minimizeDeckPanel(false)'><svg class='ico' aria-hidden='true'><use href='#i-deck'/></svg>Deck</button>
   <aside class='dp'>
-    <div class='dph'><div class='dph-top mob-phead'><span class='dph-title'>Deck List</span><button class='sb-min nb nb-green nb-l' onclick='minimizeDeckPanel(true)'>Minimize</button><button type='button' class='mob-close mob-only' onclick='mobDeckList(false)'>Close &#x2715;</button></div><div class='dpb'><button class='dco' onclick='copyDeck()'>Copy</button><button class='dim' onclick='importDeck()'>Import</button><button class='dcl' onclick='clearDeck()'>Clear</button></div></div>
+    <div class='dph'><div class='dph-top mob-phead'><span class='dph-title'>Deck List</span><button type='button' class='mob-close mob-only' onclick='mobDeckList(false)'>Close &#x2715;</button></div><button class='sb-min nb nb-green nb-l' onclick='minimizeDeckPanel(true)'>Minimize</button><div class='dpb'><button class='dco' onclick='copyDeck()'>Copy</button><button class='dim' onclick='importDeck()'>Import</button><button class='dcl' onclick='clearDeck()'>Clear</button></div></div>
     <input type='file' id='dimFile' accept='.txt,.dec,.dek' style='display:none' onchange='importDeckFile(this)'>
     <div class='dp-scroll'>
       <div class='dp-sec-hdr' id='dpsec-main' onclick="setDVFilter('main')"><svg class='ico' aria-hidden='true'><use href='#i-deck'/></svg> Main Deck<span class='dp-sec-cnt' id='dpCnt-main'>0</span></div>
@@ -14,8 +14,9 @@
       <textarea class='dta dta-sec rb-only' id='dta-armament' placeholder='Add Armament cards…' spellcheck='false'></textarea>
     </div>
     <div class='dcnt' id='dcnt'>0 cards</div>
-    <div style='border-top:1px solid var(--b1);flex-shrink:0'>
-      <div class='saved-hdr'><span>Saved Decks</span></div>
+    <div class='saved-sec'>
+      <div class='saved-hdr'><button type='button' class='saved-tog' id='savedTog' aria-expanded='false' aria-label='Expand Saved Decks' title='Expand Saved Decks' onclick='toggleSavedDecks()'><svg class='ico' aria-hidden='true'><use href='#i-arrow-up'/></svg></button><span>Saved Decks</span></div>
+      <div class='saved-sort'><label class='saved-sort-l' for='savedSort'>Sort</label><select class='saved-sort-sel' id='savedSort' onchange='setSavedSort(this.value)'><option value='alpha'>Alphabetical</option><option value='chrono'>Chronological</option><option value='color'>Color</option><option value='count'>Color Count</option><option value='newest'>Newest to Oldest</option></select></div>
       <div class='saved-save-row'>
         <input class='saved-input' id='savedNameInp' placeholder='Deck name…' type='text' onkeydown='if(event.key==="Enter")saveDeckAs()'>
         <button type='button' class='mob-copy mob-only' onclick='copyDeck(this)'>Copy</button>
@@ -25,7 +26,9 @@
     </div>
   </aside>
 </div>
-<div class='mo' id='mo' onclick='closeOv(event)'><div class='md'>
+<div class='mo' id='mo' onclick='closeOv(event)'><div class='md-shell'>
+  <button class='mnav-out mnav-out-l' onclick='navigateMod(-1)' aria-label='Previous card' title='Previous card (&#8592;)'><svg class='ico' aria-hidden='true'><use href='#i-arrow-left'/></svg></button>
+  <div class='md'>
   <button class='mcl' onclick='closeMod()'>Close &#x2715;</button>
   <button class='medit' onclick='editCurrentCard()'>&#9998; Edit</button>
   <button class='mdup' onclick='dupCurrentCard()' style='display:none'>&#10697; Duplicate</button>
@@ -38,6 +41,8 @@
   </div>
   <div class='mkw' id='mkw' style='display:none'></div>
   <div class='mob-mcnt mob-only' id='mobMcnt'><button type='button' class='mob-mrem' id='mobMrem' onclick='mobCardRemove()' aria-label='Remove one from the Main Deck'>&#8722;</button><span class='mob-mcnt-t' id='mobMcntT'></span></div>
+  </div>
+  <button class='mnav-out mnav-out-r' onclick='navigateMod(1)' aria-label='Next card' title='Next card (&#8594;)'><svg class='ico' aria-hidden='true'><use href='#i-arrow-right'/></svg></button>
 </div></div>
 <div class='kw-overlay' id='scOverlay'>
   <div class='kw-page' style='max-width:1100px'>

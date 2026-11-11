@@ -246,15 +246,9 @@ window.edTplPanelRefresh=function(){
     +"<span class='tpl-lbl'>Print bleed</span>"
     +"<button class='ed2-btn tiny"+(bleed?' on':'')+"' onclick='edSetBleed("+(!bleed)+")'>"
     +(bleed?'On \u2014 0.12\" bleed rendered':'Off \u2014 trimmed to 2.5\u00d73.5\"')+"</button>"
-    +"<i class='tpl-hint'>Leave off for screen and normal image export; turn on only for print/PDF.</i>"
     +"</div></div>";
 
   h+="<div class='tpl-sec'><h4>Art Defaults</h4>"
-    +"<i class='tpl-hint'><b>These only reach cards set to Auto.</b> A card whose "
-    +"Art fit is anything but Auto, or that has been framed by hand in its art "
-    +"panel, keeps exactly what it was given and is not touched by anything on "
-    +"this page. Contain shows the whole illustration, letterboxed; Cover fills "
-    +"the frame and crops what does not fit; Fill stretches.</i>"
     +defaultsBlock('h','Horizontal Art Cards',
         'Cards on the standard frame, art above the rules box.')
     +defaultsBlock('v','Vertical Art Cards',
@@ -262,17 +256,14 @@ window.edTplPanelRefresh=function(){
         +'narrower art box, which usually wants its own fit and zoom.')
     +"</div>";
 
-  h+="<div class='tpl-sec'><h4>Card Frames</h4>"
-    +"<i class='tpl-hint'>Canvas is 1644\u00d72244 (a 1500\u00d72100 card plus 0.12\" bleed). "
-    +"\u201cAll cards\u201d is used unless a more specific slot is filled.</i>"
+  h+="<div class='tpl-sec'><h4>Card Frames</h4><div class='tpl-slots3'>"
     +tplSlotHTML('frame:all','All cards','fallback for every card')
     +tplSlotHTML('frame:none','Colourless','')
     +tplSlotHTML('frame:multi','Multi-colour','')
     +FRAME_ORDER.map(function(c){return tplSlotHTML('frame:'+c,c.charAt(0).toUpperCase()+c.slice(1),'');}).join('')
-    +"</div>";
+    +"</div></div>";
 
   h+="<div class='tpl-sec'><h4>Orb Icons</h4>"
-    +"<i class='tpl-hint'>Replaces the built-in SVG orbs. The stat value is drawn over the image.</i>"
     +TPL_ORBS.map(function(t){return tplSlotHTML('orb:'+t,t.charAt(0).toUpperCase()+t.slice(1),'');}).join('')
     +"</div>";
 
@@ -286,9 +277,6 @@ window.edTplPanelRefresh=function(){
     +"</div>";
 
   h+="<div class='tpl-sec'><h4>Saved Templates</h4>"
-    +"<i class='tpl-hint'>A saved template captures every uploaded asset plus edge, "
-    +"pinlines, bleed, alignment and both art-default sets. Switching replaces the "
-    +"current assets.</i>"
     +"<div class='tpl-opts'><button class='ed2-btn tiny' onclick='edPackSave()'>Save current as\u2026</button></div>"
     +(PACKS.length?PACKS.map(function(pk){
         var n=Object.keys(pk.slots||{}).length;
@@ -316,9 +304,11 @@ window.edTplPanelRefresh=function(){
           +x+"</button>";
       }).join('');
   };
+  /* how a row's type reads here: an Action row is also the Spell row (the author, 9 November) */
+  var ALIGN_LABEL={action:'Action/Spell'};
   var alignRow=function(r,removable){
     return "<div class='tpl-opts tpl-align'>"
-      +"<span class='tpl-lbl'>"+e(r.key.charAt(0).toUpperCase()+r.key.slice(1))+"</span>"
+      +"<span class='tpl-lbl'>"+e(ALIGN_LABEL[r.key]||(r.key.charAt(0).toUpperCase()+r.key.slice(1)))+"</span>"
       +alignBtns(r,'h',ALIGN_H)
       +"<span class='tpl-lbl tpl-lbl-gap'></span>"
       +alignBtns(r,'v',ALIGN_V)
@@ -352,12 +342,9 @@ window.edTplPanelRefresh=function(){
         +"' onclick=\"edSetAlignBase('v','"+x+"')\">"+x+"</button>";}).join('')
     +"</div>"
     +"<i class='tpl-hint'>Everything set to <b>Default</b> follows the row above, "
-    +"and moves with it. A new type starts on Default, so it needs no decision "
-    +"until you want one.</i>"
+    +"and moves with it.</i>"
 
     +"<h5 class='tpl-sub'>Super-Types</h5>"
-    +"<i class='tpl-hint'>The first matching row wins. “Action” also "
-    +"matches Spell.</i>"
     +supRows.map(function(r){
         /* a built-in row, or one the catalogue supplies, would be back on the next open, so neither can be deleted */
         return alignRow(r,!builtin(r.key)&&!alignFromCatalog('super',r.key));
@@ -368,11 +355,7 @@ window.edTplPanelRefresh=function(){
       +"<button class='ed2-btn tiny' onclick='edAddAlignFrom(\"super\")'>Add</button></div>"
 
     +"<h5 class='tpl-sub'>Sub-Types</h5>"
-    +"<i class='tpl-hint'>A card carrying one of these follows it instead of its "
-    +"super-type. With two, the one the card lists <b>first</b> wins — drag "
-    +"the type line on the card to change which.</i>"
-    +(subRows.length?subRows.map(function(r){ return alignRow(r,true); }).join('')
-        :"<i class='tpl-hint'>No sub-type rows. Every card follows its super-type.</i>")
+    +subRows.map(function(r){ return alignRow(r,true); }).join('')
     +"<div class='tpl-opts'><span class='tpl-lbl'>Add</span>"
       +pickHTML('edAlignSubPick',freeSub,freeSub.length?'Pick a sub-type…':'every sub-type has a row','Add a sub-type row')
       +"<input id='edAlignSubNew' class='ed2-in tiny tpl-align-new' placeholder='or type a new one' aria-label='New sub-type' maxlength='40'>"

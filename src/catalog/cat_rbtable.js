@@ -260,16 +260,9 @@ function tdRbFit(host){
     while(hi - lo > 1){ var mid = (lo + hi) >> 1; if(fits(mid)) lo = mid; else hi = mid; }
     return lo;
   };
-  var one = best(false);
-  var two = (mineEl && one < TD_CW_MAX) ? best(true) : 0;
-  var useTwo = !!mineEl && two > one;
-  /* Nothing fits: the page scrolls. Two columns only if the Field still fits beside them, as it does not narrow like the main game's. */
-  if(!one && !two && mineEl){
-    mode(true);
-    b.style.setProperty('--td-cw', TD_CW_MIN + 'px');
-    useTwo = wide();
-  }
-  var cw = (useTwo ? two : one) || TD_CW_MIN;
+  /* The panel stays one section wide, never two columns: where nothing fits, the page scrolls. */
+  var one = best(false), useTwo = false;
+  var cw = one || TD_CW_MIN;
   mode(useTwo);
   b.style.setProperty('--td-cw', cw + 'px');
   _rbFit = {cw:cw, two:useTwo, key:key};
@@ -515,12 +508,12 @@ function tdRbChipStatsHTML(b){
   /* a damaged Character card's HP left, in place of the HP counter (Q27, cat_rbplay.js) */
   var chp = (typeof tdDmgCharHp === 'function') ? tdDmgCharHp(b) : null;
   if(chp != null){ c = Object.assign({}, c); c.hp = chp; }
-  var orbs = (typeof window.edOrbSvg === 'function') ? ['atk', 'hp', 'mp'].filter(function(k){
+  var orbs = ['atk', 'hp', 'mp'].filter(function(k){
     return c[k] != null;
   }).map(function(k){
-    return "<span class='rb-corb' title='" + words[k] + ' ' + e(String(c[k])) + "'>"
-      + window.edOrbSvg(TD_STAT_ORB[k], String(c[k]), 24) + "</span>";
-  }).join('') : '';
+    var orb = tdStatIconHTML(TD_STAT_ORB[k], String(c[k]), 24);
+    return orb ? "<span class='rb-corb' title='" + words[k] + ' ' + e(String(c[k])) + "'>" + orb + "</span>" : '';
+  }).join('');
   var lv = tdLevelLetters(b.lvl);
   var lvl = lv.length ? "<span class='rb-clvl' title='" + e('LVL ' + lv.join('')) + "'>"
     + lv.map(function(L){

@@ -68,6 +68,15 @@ function rulesAreaHTML(c,rulesAlign,rules,flavor){
     +"</div>";
 }
 
+/* An Essence's circle outlined as the Arcane stat icon of the set in use, in the colour's own fill, as a map token wears it
+   (edOrbTinted, ed2_frames.js): the colour's background covers its middle and the colour's icon sits on that, so only its
+   outline shows (the author, 9 November). '' where the frames are not loaded. */
+function manaRingHTML(col){
+  if(typeof window.edOrbTinted!=='function')return '';
+  var h='';
+  try{ h=window.edOrbTinted('arc','',fillHex(col))||''; }catch(_){ h=''; }
+  return h?("<span class='m-mana-ring' aria-hidden='true'>"+h+"</span><span class='m-mana-bg'></span>"):'';
+}
 /* Every view draws faces with this, and it reads editor state: the card open in the editor is drawn as the saga being edited (edDrawSaga). */
 function buildFaceHTML(c, opts){
   opts=opts||{};
@@ -128,7 +137,9 @@ function buildFaceHTML(c, opts){
   }catch(_){}
   var rev=f.revision||'';
   var artist=f.artist||SETINFO.artist||'';
-  var num=cardNumber(c);
+  /* none on a Tabletop Simulator picture (__noNum, ttsDrawCopy): the number counts the whole saga, so one card more would
+     change every picture in it */
+  var num=c.__noNum?'':cardNumber(c);
   var isEssence=isEssenceCard(c);
   var tplId=templateIdFor(c);
   var tplCls=tplId?(' mcard-tpl-'+tplId):'';
@@ -144,7 +155,8 @@ function buildFaceHTML(c, opts){
         var own=(col&&FRAME_ORDER.indexOf(col)>=0)?(";--pin:"+frameOf([col])+";--ink-dark:"+outlineSolid([col])):'';
         var sym=(col&&MANA_LETTER[col])?tplGet('sym:'+MANA_LETTER[col]):'';
         if(sym)m=m.replace(/\ssrc="[^"]*"/,' src="'+e(sym)+'"');
-        return "<span class='m-mana-orb' style='"+own+"'>"+m+"</span>";
+        var ring=own?manaRingHTML(col):'';
+        return "<span class='m-mana-orb"+(ring?" m-mana-arc":"")+"' style='"+own+"'>"+ring+m+"</span>";
       });
       if(wrapped===ic)wrapped="<span class='m-mana-orb'>"+ic+"</span>";
       manaBar="<div class='m-mana-bar'>"+wrapped+"</div>";
@@ -515,16 +527,20 @@ window.edOpenCardLink = function(btn){
 /* A press in the menu takes no focus (edSymHold), so the caret stays in the box; from the keyboard or on a phone edKeepCaret keeps it.
    Stat and dice words are marked only standing alone (markStats, markDice), so a space is put in, but never inside 2D6. */
 var ED_SYM_COLOURS=[['R','Red'],['O','Orange'],['Y','Yellow'],['G','Green'],['B','Blue'],['I','Indigo'],['V','Violet']];
-var ED_SYM_STATS=[['ATK','Attack'],['HP','Health'],['MP','Arcane'],['Rg','Range']];
+/* Rebirth's short forms and Range; the main game types the stat's whole word and has no Range. */
+function edSymStats(){
+  return window.REBIRTH ? [['ATK','Attack'],['HP','Health'],['MP','Arcane'],['Rg','Range']]
+    : [['Attack','Attack'],['Health','Health'],['Arcane','Arcane']];
+}
 var _edSym=null;
 function edSymPhone(){ return typeof catIsPhone==='function'&&catIsPhone(); }
 window.edSymHold=function(ev){ if(ev&&!edSymPhone())ev.preventDefault(); };
 function edSymGroups(cost){
   var mana=ED_SYM_COLOURS.map(function(c){ return {code:c[0],name:c[1]}; });
   if(!cost)mana.push({code:'L',name:'Lock'});
-  mana.push({code:'X',name:'X'});
+  mana.push({code:'X',name:'X'},{code:'0',name:'Number 0'});
   var nums=[];
-  for(var n=0;n<=20;n++)nums.push({code:String(n),name:'Number '+n});
+  for(var n=1;n<=20;n++)nums.push({code:String(n),name:'Number '+n});
   var out=[mana,nums];
   if(cost)return out;
   /* Uploads the rules can read (letters, digits and / in braces, as symbolizeRules has it) that are not drawn above already. */
@@ -535,7 +551,7 @@ function edSymGroups(cost){
     .filter(function(t){ return /^[A-Za-z0-9\/]+$/.test(t)&&!have[t]; }).sort()
     .map(function(t){ return {code:t,name:'Uploaded symbol'}; });
   if(up.length)out.push(up);
-  out.push(ED_SYM_STATS.map(function(s){ return {word:s[0],name:s[1],mark:STAT_MARKS[s[0]]}; })
+  out.push(edSymStats().map(function(s){ return {word:s[0],name:s[1],mark:STAT_MARKS[s[0]]}; })
     .concat(DICE_SIDES.map(function(d){ return {word:'D'+d,name:'Die',die:d}; })));
   return out;
 }
@@ -595,15 +611,10 @@ window.edOpenSymbols=function(btn,cost,ev){
     b.title=name; b.setAttribute('aria-label',name); b.innerHTML=html;
     return b;
   };
-  var top=document.createElement('div'); top.className='ed2-sym-top';
-  var x=document.createElement('button'); x.type='button';
-  x.className='ed2-btn nb nb-red nb-s close-x ed2-sym-x'; x.textContent='Close \u2715';
-  x.addEventListener('click',function(){ window.edCloseSymbols(true); });
-  top.appendChild(x); pop.appendChild(top);
   edSymGroups(cost).forEach(function(g){
     var grid=document.createElement('div'); grid.className='ed2-sym-grid';
     g.forEach(function(it){
-      var b=mk('ed2-sym-btn',it.name+' ('+(it.word||(cost?it.code:'{'+it.code+'}'))+')',
+      var b=mk('ed2-sym-btn',it.word===it.name?it.name:it.name+' ('+(it.word||(cost?it.code:'{'+it.code+'}'))+')',
         it.mark?statMarkSVG(it.mark):it.die?diceMarkSVG(it.die):symToken(it.code,px));
       b.addEventListener('click',function(e2){ edSymPut(it,e2); });
       grid.appendChild(b);
@@ -1446,7 +1457,7 @@ function fitFace(root){
   try{ frameDecorate(root); }catch(_){}
 }
 
-(function(){ if(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+(function(){
   var cur=null;
   function reset(card){if(!card)return;['--rx','--ry','--holo-ang','--ico-sx','--ico-sy'].forEach(function(p){card.style.removeProperty(p);});
     card.querySelectorAll('linearGradient[data-rot]').forEach(function(g){ g.setAttribute('gradientTransform',ORB_ANG); });
@@ -1501,13 +1512,19 @@ function orbBoxClass(type){
   if(type==='attack')return 'ed2-nf-atk';
   if(type==='health')return 'ed2-nf-hp';
   if(type==='arcane')return 'ed2-nf-arc';
+  if(type==='range')return 'ed2-nf-rng';
   return 'ed2-nf-blank';
 }
+/* The icon as the card face draws it in the template's icon set (edOrbSetHTML): its layers stacked as a board token's (.td-gorb),
+   or an uploaded icon with its value over it. */
 function orbPreviewHTML(o){
-  var t=o.type,v=o.value;
+  var t=o.type,v=o.value==null?'':o.value;
   if(t==='blank'||t==='hidden')return "<span class='ed2-orb-pv ed2-orb-pv-none'></span>";
+  var set='';
+  try{ set=window.edOrbSetHTML(t,v)||''; }catch(_){}
+  if(set)return "<span class='ed2-orb-pv ed2-orb-pv-set'><span class='td-gorb td-sicon'>"+set+"</span></span>";
   return "<span class='ed2-orb-pv'><svg viewBox='0 0 38 38' width='38' height='38'>"
-    +orbShapeByType(t,v==null?'':v)+"</svg></span>";
+    +orbShapeByType(t,v)+"</svg></span>";
 }
 function orbEditorRows(c){
   var orbs=ensureOrbs(c);
@@ -1517,13 +1534,15 @@ function orbEditorRows(c){
     var opts=ORB_TYPES.map(function(t){return "<option value='"+t+"'"+(t===o.type?' selected':'')+">"+ORB_TYPE_LABEL[t]+"</option>";}).join('');
     var isBlank=(o.type==='blank'||o.type==='hidden');
     var isStar=(String(o.value).trim()==='*');
+    /* The type across the slot's top, then the icon beside the * over the value (the author, 8 November). */
     html+="<div class='ed2-nf ed2-orb "+orbBoxClass(o.type)+"' id='f-orb-box-"+i+"'>"
+      +"<select class='ed2-orb-type' id='f-orb-type-"+i+"' aria-label='Orb "+(i+1)+" type'"
+        +" onchange='edOrbType("+i+",this.value)'>"+opts+"</select>"
+      +"<div class='ed2-orb-body'>"
       +orbPreviewHTML(o)
       +"<div class='ed2-orb-fields'>"
-      +"<select class='ed2-orb-type' id='f-orb-type-"+i+"' aria-label='Orb "+(i+1)+" type' onchange='edOrbType("+i+",this.value)'>"+opts+"</select>"
-      +"<div class='ed2-orb-valrow'>"
-        +"<input class='ed2-orb-val' id='f-orb-val-"+i+"' aria-label='Orb "+(i+1)+" value' value='"+e(o.value)+"' placeholder='\u2013'"+(isBlank||isStar?' disabled':'')+" oninput='edOrbVal("+i+",this.value)'>"
         +"<label class='ed2-orb-star' title='Set stat to * (centered)'><input type='checkbox' id='f-orb-star-"+i+"' aria-label='Orb "+(i+1)+": star (*) instead of a number'"+(isStar?' checked':'')+(isBlank?' disabled':'')+" onchange='edOrbStar("+i+",this.checked)'>*</label>"
+        +"<input class='ed2-orb-val' id='f-orb-val-"+i+"' aria-label='Orb "+(i+1)+" value' value='"+e(o.value)+"' placeholder='\u2013'"+(isBlank||isStar?' disabled':'')+" oninput='edOrbVal("+i+",this.value)'>"
       +"</div>"
       +"</div>"
     +"</div>";
@@ -1545,6 +1564,7 @@ window.edOrbType=function(i,val){ var c=curCard(); if(!c)return; ensureOrbs(c);
 };
 window.edOrbVal=function(i,val){ var c=curCard(); if(!c)return; ensureOrbs(c);
   c.orbs[i].value=val.trim(); syncLegacyStats(c); markDirty(c); renderPreview(c);
+  orbPvSwap(i,c.orbs[i]);
 };
 function syncLegacyStats(c){
   var o=c.orbs||[];
@@ -1655,7 +1675,7 @@ function sagaBoxHTML(c){
   }).join('');
   var note = (ids.length>1)
     ? " title='All copies of this card share Name, Type-Line, Mana Cost, Rules Text, Stats and "
-      +"Revision #. Different versions of this card can have its Flavor Text, Art and Artist, and "
+      +"Rev #. Different versions of this card can have its Flavor Text, Art and Artist, and "
       +"Owner individually changed.'"
     : "";
   return "<div class='ed2-sagabox'>"
@@ -1719,7 +1739,6 @@ function renderFields(){
     +"</div>"
     +linkNote
     +"<div class='ed2-topsplit'><div class='ed2-topsplit-main'>"
-    /* ed2-group-stats stays an inner wrapper: eight ed2_style.css selectors hang off it, and the orb slots need them to fit one row. */
     +"<div class='ed2-group ed2-g-id'>"
       +"<div class='ed2-mn-row'>"
         /* Sorted on blur, not on input: reordering between keystrokes makes a hybrid impossible to type. */
@@ -1745,9 +1764,12 @@ function renderFields(){
             +"<div class='ed2-combo-list hidden' id='f-sub-list'></div></div>"
           +"<div class='ed2-tokrow' id='f-sub-toks'></div></div></div>"
       +"</div>"
-      +"<div class='ed2-group-stats'><div class='ed2-stats' id='f-orbs'>"
-        +orbEditorRows(c)+"</div></div>"
     +"</div>"
+    /* The stat icons stacked in a box of their own at the left of the rules and flavour, as tall as theirs (the author, 8 November).
+       .ed2-group-stats stays the inner wrapper the slots' rules and a phone's heading (mobile.css) hang off. */
+    +"<div class='ed2-rulesrow'>"
+    +"<div class='ed2-group ed2-g-stats'><div class='ed2-group-stats'><div class='ed2-stats' id='f-orbs'>"
+      +orbEditorRows(c)+"</div></div></div>"
     +"<div class='ed2-group ed2-g-rules'><div class='ed2-row3'>"
       +"<div class='ed2-rules-col'>"
         +rulesEditorHTML(c)
@@ -1760,6 +1782,7 @@ function renderFields(){
           +"</div></div>"
       +"</div>"
     +"</div></div>"
+    +"</div>"
     /* The split closes after the rules and flavour, or align-items:stretch pads the left column out above Rule Text. */
     +"</div><div class='ed2-artcol'>"
       +"<div class='ed2-group ed2-art' id='edArtPanel'></div>"
@@ -1777,17 +1800,18 @@ function renderFields(){
         +" title='Type a saga and press Enter to add this card to it. The chips below are every saga it is in.'"
         +" onkeydown='if(event.key===\"Enter\"){event.preventDefault();edSagaFieldAdd();}'"
         +" onchange='edSagaFieldAdd()'>"+sagaDatalistHTML()+"</div>"
-      +"<div class='ed2-field ed2-inl f-rev-wrap'><label for='f-rev'>Revision #</label><input class='ed2-input' id='f-rev' value='"+e(m.revision||'')+"' oninput='edLive()'></div>"
+      +"<div class='ed2-field ed2-inl f-rev-wrap'><label for='f-rev'>Rev #</label><input class='ed2-input' id='f-rev' value='"+e(m.revision||'')+"' oninput='edLive()'></div>"
       +"<div class='ed2-field ed2-inl f-artist-wrap'><label for='f-artist'>Artist</label><input class='ed2-input' id='f-artist' value='"+e(m.artist||'')+"' oninput='edLive()'></div>"
+      /* Rebirth's Rarity ends the credits' row, right of Artist (the author, 8 November). */
       +(window.REBIRTH ? rarityFieldHTML(c) : '')
-    +"</div>"+sagaBoxHTML(c)+"</div>"
-    +edRateCardHTML(c);
+    +"</div>"
+    +sagaBoxHTML(c)
+    +"</div>";
   renderTypeToks();
   setupCombo('super'); setupCombo('sub');
   /* after innerHTML, because #edArtPanel and #f-mark are created by it */
   try{ window.edRenderArtPanel(); }catch(_){}
   try{ refreshMarkPicker(); }catch(_){}
-  try{ window.edRateCalc(); }catch(_){}
   try{ edFitBtnRows(); edWatchBtnBox(); }catch(_){}
   try{ window.edSyncSaveBtns(); }catch(_){}
   /* Quiet: this paints the preview, and a card only looked at must not queue to save (see markDirty). */
@@ -2065,7 +2089,7 @@ function renderKwBar(){
   if(!c){ bar.innerHTML=''; return; }
   var kws=detectKeywords(c.ruleText||'');
   if(!kws.length){ bar.innerHTML="<div class='ed2-kwbar-title'>Keyword Reminders</div><div class='ed2-kwbar-empty'>No keywords detected in the rule text.</div>"; return; }
-  bar.innerHTML="<div class='ed2-kwbar-title'>Toggle reminder text for these terms.</div>"
+  bar.innerHTML="<div class='ed2-kwbar-title'>Toggle Reminder Text</div>"
     +"<div class='ed2-kwbtns'>"+kws.map(function(k){
       var on=(kwRemindersOf(edFieldSource(c)).indexOf(k.name)>=0)?' on':'';
       var label=(k.mode==='keyword'&&PILLS_ON)?kwPill(k.name,e(k.name)):e(k.name);
@@ -2089,16 +2113,17 @@ window.edSetFlavorRows=function(v){
   markDirty(c);
   renderPreview(c);
 };
+/* A slot's icon drawn again in place, its fields untouched: as its value is typed, and when the icon set or an upload changes. */
+function orbPvSwap(i,o){
+  var box=document.getElementById('f-orb-box-'+i), pv=box&&box.querySelector('.ed2-orb-pv'); if(!pv)return;
+  var tmp=document.createElement('div');
+  tmp.innerHTML=orbPreviewHTML(o||{type:'hidden',value:''});
+  pv.parentNode.replaceChild(tmp.firstChild,pv);
+}
 window.edRefreshOrbPreviews=function(){
   var c=curCard(); if(!c)return;
   var orbs=ensureOrbs(c);
-  for(var i=0;i<4;i++){
-    var box=document.getElementById('f-orb-box-'+i); if(!box)continue;
-    var pv=box.querySelector('.ed2-orb-pv');
-    var tmp=document.createElement('div');
-    tmp.innerHTML=orbPreviewHTML(orbs[i]||{type:'hidden',value:''});
-    if(pv)box.replaceChild(tmp.firstChild,pv);
-  }
+  for(var i=0;i<4;i++)orbPvSwap(i,orbs[i]);
 };
 window.edToggleKw=function(name){
   var c=curCard(); if(!c)return;
@@ -2274,7 +2299,7 @@ window.edTplUpload=function(key,input){
       TPL[key]=r.dataUrl;
       setMetaSafe('customTemplate',tplHasAny());
       try{ scheduleFace(); }catch(_){}
-      var c=curCard(); if(c)renderPreview(c);
+      var c=curCard(); if(c){ renderPreview(c); window.edRefreshOrbPreviews(); }
       edTplPanelRefresh();
     });
   }).catch(function(e){ alert('Could not read that image: '+e); });
@@ -2284,7 +2309,7 @@ window.edTplRemove=function(key){
   tplDel(key).then(function(){
     setMetaSafe('customTemplate',tplHasAny());
     try{ scheduleFace(); }catch(_){}
-    var c=curCard(); if(c)renderPreview(c);
+    var c=curCard(); if(c){ renderPreview(c); window.edRefreshOrbPreviews(); }
     edTplPanelRefresh();
   });
 };
@@ -2296,7 +2321,7 @@ window.edTplClearAll=function(){
     TPL={};
     setMetaSafe('customTemplate',false);
     try{ scheduleFace(); }catch(_){}
-    var c=curCard(); if(c)renderPreview(c);
+    var c=curCard(); if(c){ renderPreview(c); window.edRefreshOrbPreviews(); }
     edTplPanelRefresh();
   });
 };
@@ -2348,7 +2373,7 @@ window.edTplImport=function(input){
         }
         setMetaSafe('customTemplate',tplHasAny());
         try{ scheduleFace(); }catch(_){}
-        var c=curCard(); if(c)renderPreview(c);
+        var c=curCard(); if(c){ renderPreview(c); window.edRefreshOrbPreviews(); }
         edTplPanelRefresh();
         alert('Imported '+Object.keys(man.slots||{}).length+' template asset(s).');
       });
@@ -2453,7 +2478,7 @@ function applyPackBody(pk){
     if(nCustom){ KWCUSTOM=nCustom; edApplyCustomEntries(); }
     if(pk.cardLook&&typeof pk.cardLook==='object'){ window.edApplyLook(pk.cardLook,false); window.edLookSaved(true); }
     try{ scheduleFace(); }catch(_){}
-    var c=curCard(); if(c)renderPreview(c);
+    var c=curCard(); if(c){ renderPreview(c); window.edRefreshOrbPreviews(); }
     edTplPanelRefresh();
   });
 }
@@ -2498,6 +2523,9 @@ window.edPrintCards=function(list){
   var B=bleed?0.12:0, W=2.5+2*B, H=3.5+2*B;
   var scale=(2.5*96)/340;                     // 96 CSS px per inch
   var root=document.createElement('div'); root.id='edPrintRoot';
+  /* Laid out off screen until the print is over (pr-prep, a screen rule): in a display:none box fitFace measured nothing, so
+     a long name printed cut off and the frame's layers were never drawn, and the browser loaded none of its pictures. */
+  root.className='pr-prep';
   root.innerHTML=list.map(function(c){
     return "<div class='pr-card' style='width:"+W+"in;height:"+H+"in"
         +(B?(";background:"+e(printBleedBg(c))):'')+"'>"
@@ -2507,36 +2535,40 @@ window.edPrintCards=function(list){
   document.body.appendChild(root);
   document.body.classList.add('ed-printing');
   try{ fitFace(root); }catch(_){}
-  var done=function(){ var r=document.getElementById('edPrintRoot'); if(r)r.remove();
-    document.body.classList.remove('ed-printing');
-    window.removeEventListener('afterprint',done); };
+  /* this print's own root: a print started since has replaced it, and keeps body.ed-printing */
+  var done=function(){
+    window.removeEventListener('afterprint',done);
+    if(root.parentNode)root.remove();
+    if(!document.getElementById('edPrintRoot'))document.body.classList.remove('ed-printing');
+  };
   window.addEventListener('afterprint',done);
-
-  /* Art is shrunk to print size first, once per picture: full-size art is 26 MB of bitmap a card, and print preview never
-     finishes. A picture whose pixels cannot be read (file:// with no art folder) keeps its URL. */
-  var jobs={}, imgs=root.querySelectorAll('.m-art-img'), pending=0, fired=false;
-  var go=function(){ if(fired)return; fired=true; setTimeout(function(){ window.print(); },250); };
-  Array.prototype.forEach.call(imgs,function(el){
-    var m=(getComputedStyle(el).backgroundImage||'').match(/url\(["']?([^"')]+)["']?\)/);
-    if(!m||m[1].indexOf('data:')===0)return;
-    var url=m[1];
-    pending++;
-    var apply=function(d){ if(d)el.style.backgroundImage='url("'+d+'")';
-      if(--pending<=0)go(); };
-    if(jobs[url]){ jobs[url].push(apply); return; }
-    jobs[url]=[apply];
-    (function(u){
-      var fn=(typeof window.edArtDataUrl==='function')?window.edArtDataUrl
-            :function(){ return Promise.resolve(null); };
-      fn(u,900).then(function(d){ var q=jobs[u]; jobs[u]=null;
-        q.forEach(function(f){ f(d); }); })
-        .catch(function(){ var q=jobs[u]; jobs[u]=null; q.forEach(function(f){ f(null); }); });
-    })(url);
+  prReadyArt(root).then(function(){
+    if(root.parentNode)setTimeout(function(){ if(root.parentNode)window.print(); },250);
   });
-  if(!pending)go();
-  /* Never hang waiting on a picture that will not resolve. */
-  setTimeout(go,8000);
 };
+/* A print waits for no picture, so each is ready first: read and shrunk to its size on paper at 300 dpi by edInlineArt
+   (cat_export.js; full-size art was 26 MB of bitmap a card, and print preview never finished), then decoded and held until
+   the print is over. One that cannot be read keeps its address, loaded as it is. The toast counts them while it takes long. */
+function prReadyArt(root){
+  var t0=Date.now(), held=[];
+  root._prHeld=held;
+  var say=function(n,of){ if(Date.now()-t0>400)toast('Preparing the pictures to print: '+n+' of '+of); };
+  var inline=(typeof window.edInlineArt==='function')?window.edInlineArt(root,300/96,true,say)
+                                                      :Promise.resolve({pics:[]});
+  var ready=inline.then(function(r){
+    return Promise.all(r.pics.map(function(j){ return prHold(j.data||j.url,held); }));
+  },function(){});
+  /* never hang on a picture that will not resolve: each fetch gives up after a minute */
+  return Promise.race([ready,new Promise(function(res){ setTimeout(res,120000); })]);
+}
+function prHold(src,held){
+  return new Promise(function(res){
+    var im=new Image(); held.push(im);
+    im.onload=function(){ if(im.decode)im.decode().then(res,res); else res(); };
+    im.onerror=function(){ res(); };
+    im.src=src;
+  });
+}
 window.edPrintCurrent=function(){ var c=curCard(); if(!c){alert('Open a card first.');return;} window.edPrintCards([c]); };
 window.edPrintFiltered=function(){
   var list=(window._allFiltered&&window._allFiltered.length)?window._allFiltered:(window.CARDS||[]);

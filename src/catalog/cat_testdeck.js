@@ -1036,6 +1036,9 @@ function tdBuildBoard(){
     board.counts.deck = board.zones.deck.length;
     board.counts.gear = board.zones.gear.length;
   }
+  /* The Armament laid out Background, then Ongoing, then Armament, each A to Z, whatever order the lists give (the author,
+     9 November). */
+  if(board.zones.gear && board.zones.gear.length > 1) board.zones.gear.sort(tdGearOrder);
 
   /* The Lord comes out before the shuffle, into its own slot (tdHasLord, Kingdoms only). */
   if(board.zones.lord){
@@ -1135,6 +1138,26 @@ function tdDmZoneFor(toId){
   if(toId === 'grave') return 'dmgrave';
   if(toId === 'deck') return 'dmdeck';
   return (toId === 'field' || TD_DM_ZONES[toId]) ? toId : '';
+}
+/* Background, Ongoing, Armament: the lowest of a card's super-types, else of its sub-types (Rebirth's cards are typed by
+   hand); a card of none of the three after them. */
+var TD_GEAR_RANK = {background:0, ongoing:1, armament:2};
+function tdGearRank(c){
+  var rank = function(list){
+    var best = 3;
+    _catArr(list).forEach(function(t){
+      var r = TD_GEAR_RANK[String(t).toLowerCase()];
+      if(r != null && r < best) best = r;
+    });
+    return best;
+  };
+  var r = rank(c && c.superTypes);
+  return r < 3 ? r : rank(c && c.subTypes);
+}
+function tdGearOrder(a, b){
+  var d = tdGearRank(a.card) - tdGearRank(b.card);
+  if(d) return d;
+  return String((a.card && a.card.name) || '').localeCompare(String((b.card && b.card.name) || ''), undefined, {sensitivity:'base'});
 }
 /* The deck page's rule (_isGearCard, cat_deck.js), so the board and the Armament section agree. */
 function tdIsGearCard(c){
@@ -1274,7 +1297,9 @@ function tdEssenceTally(board){
 function tdEssenceTallyHTML(board){
   var rows = tdEssenceTally(board);
   if(!rows.length) return '';
-  return "<div class='td-esstally' aria-label='Essence you control'>"
+  /* Three to a column at most, a column more as colours arrive; four in the row under a solo Field (testdeck.css). */
+  var per = function(most){ return Math.ceil(rows.length / Math.ceil(rows.length / most)); };
+  return "<div class='td-esstally' aria-label='Essence you control' style='--ess-rows:" + per(3) + ";--ess-rows4:" + per(4) + "'>"
     + rows.map(function(r){
         return "<div class='td-esstally-b' title='" + e(r.n + ' ' + r.name
                  + ' Essence' + (r.n === 1 ? '' : 's')) + "'"
@@ -1285,6 +1310,9 @@ function tdEssenceTallyHTML(board){
       }).join('')
     + "</div>";
 }
+/* The tally's columns, which the Essence area's Lock and Unlock step aside by (tdZoneSectionHTML), at most three or four
+   to a column. */
+function tdEssTallyCols(board, most){ return Math.max(1, Math.ceil(tdEssenceTally(board).length / (most || 3))); }
 /* Core only: other cards share the subtypes and are not what "each Arch" means. The subtype is returned as the card
    spells it, for "Lock each Arch". */
 function tdIsCoreEssence(c){
@@ -1348,7 +1376,6 @@ function tdWriteStatRow(entry){
     var el = document.getElementById('dta-' + k);
     if(el) el.value = (entry && entry[k] != null) ? entry[k] : '';
   });
-  tdLvlEcho();
 }
 function tdSyncStatRow(){
   var row = document.getElementById('tdStatRow');
@@ -1358,25 +1385,7 @@ function tdSyncStatRow(){
     var p = window._tdPendingStatRow;
     window._tdPendingStatRow = null;
     tdWriteStatRow(p);
-    return;                                  /* tdWriteStatRow echoes already */
   }
-  tdLvlEcho();
-}
-function tdLvlEcho(){
-  var out = document.getElementById('tdLvlEcho');
-  if(!out) return;
-  var el = document.getElementById('dta-lvl');
-  var letters = tdLevelLetters(el ? el.value : '');
-  if(!letters.length){ out.textContent = ''; return; }
-  var by = tdCoreEssenceByColor(), counts = {}, order = [];
-  letters.forEach(function(L){
-    var card = by[TD_LVL_COLOR[L]];
-    var nm = card ? card.name.replace(/\s*Essence$/i, '') : L;
-    if(!counts[nm]){ counts[nm] = 0; order.push(nm); }
-    counts[nm]++;
-  });
-  out.textContent = order.map(function(n){ return counts[n] + ' ' + n; }).join(', ')
-    + '  —  draw ' + letters.length;
 }
 
 
@@ -1548,6 +1557,7 @@ var TD_REW_ICON = {
   hp:  "<svg width='14' height='14' viewBox='0 0 18 18' fill='none'><polygon points='9,1 17,5 17,13 9,17 1,13 1,5' stroke='#c9a84c' stroke-width='3'/></svg>",
   arc: "<svg width='14' height='14' viewBox='0 0 18 18' fill='none'><circle cx='9' cy='9' r='7' stroke='#2980b9' stroke-width='3'/></svg>",
   rng: "<svg width='14' height='14' viewBox='0 0 18 18' fill='none'><polygon points='9,2 16,15 2,15' stroke='#5c9e6e' stroke-width='3' stroke-linejoin='round'/></svg>",
+  cmc: "<svg width='14' height='14' viewBox='0 0 18 18' fill='none'><rect x='3' y='3' width='12' height='12' stroke='#a8afc0' stroke-width='3'/></svg>",
   atkArc: "<svg class='cbtn-ico' width='15' height='15' viewBox='0 0 18 18' fill='none' aria-hidden='true'><polyline points='1,9 9,1 17,9' stroke='#c45c5c' stroke-width='3' fill='none' stroke-linejoin='round'/><path d='M 2,9 A 7,7 0 0 0 16,9' stroke='#2980b9' stroke-width='3' fill='none'/></svg>",
   hpArc:  "<svg class='cbtn-ico' width='15' height='15' viewBox='0 0 18 18' fill='none' aria-hidden='true'><polyline points='1,9 1,5 9,1 17,5 17,9' stroke='#c9a84c' stroke-width='3' fill='none' stroke-linejoin='round'/><path d='M 2,9 A 7,7 0 0 0 16,9' stroke='#2980b9' stroke-width='3' fill='none'/></svg>"
 };
@@ -1611,7 +1621,7 @@ function tdRewSpecHTML(){
         + "<div class='stf' id='tdRewStf'></div></div>"
     + "</div></div>"
     + "<div class='fs'>"
-      + "<div class='nf nf-inline'><span class='fl fl-inline'>Mana Cost</span>"
+      + "<div class='nf nf-cmc'><span class='fl fl-inbox'>" + TD_REW_ICON.cmc + " CMC</span>"
         + "<select id='tdRewCop' aria-label='Mana Cost comparison'>" + TD_REW_OPS_X + "</select>"
         + "<input type='number' id='tdRewCval' min='0' placeholder='0' aria-label='Mana Cost'></div>"
     + "</div>"
@@ -1776,21 +1786,38 @@ function tdLifeDoubled(id, value){
   var v = Number(value);
   return isFinite(v) && v >= start * 2;
 }
-/* '' for an id with no orb, or when edOrbSvg (the editor's) is not there. */
+/* A tracker's stat as the card faces draw it now: the template's uploaded icon, or the icon set in use, its layers stacked
+   as a token's (.td-gorb, edOrbSetHTML); the Default set through edOrbSvg. pair is two hues on one icon: edOrbSvg mixes
+   them into one fill, a set is drawn twice, in each, the second faded in across the first (testdeck.css, .td-sicon-b).
+   '' when the editor's half is not there. */
+function tdStatIconHTML(type, value, size, pair){
+  var v = (value == null ? '' : String(value)), kind = 'app';
+  try{ if(typeof window.edOrbSetKind === 'function') kind = window.edOrbSetKind(type) || 'app'; }catch(_){ kind = 'app'; }
+  if(kind !== 'app' && typeof window.edOrbSetHTML === 'function'){
+    var a = '', b = '', two = !!pair && kind !== 'img';
+    try{
+      a = window.edOrbSetHTML(type, v, two ? pair[0] : '') || '';
+      if(a && two) b = window.edOrbSetHTML(type, v, pair[1]) || '';
+    }catch(_){ a = ''; }
+    if(a) return "<span class='td-gorb td-sicon'>" + a + "</span>"
+      + (b ? "<span class='td-gorb td-sicon td-sicon-b'>" + b + "</span>" : '');
+  }
+  if(typeof window.edOrbSvg !== 'function') return '';
+  try{ return window.edOrbSvg(type, v, size, pair ? {fill:pair, ink:TD_LIFE_HIGH_INK} : null) || ''; }catch(_){ return ''; }
+}
+/* '' for an id with no orb, or when the editor's half is not there. */
 function tdStatOrbBox(id, value){
   var t = TD_STAT_ORB[id];
-  if(!t || typeof window.edOrbSvg !== 'function') return '';
+  if(!t) return '';
   var high = tdLifeDoubled(id, value);
-  try{
-    return "<span class='td-ctr-orbbox" + (high ? ' td-orb-high' : '') + "'>"
-      + window.edOrbSvg(t, (value == null ? '' : String(value)), 86,
-                        high ? {fill:TD_LIFE_HIGH, ink:TD_LIFE_HIGH_INK} : null)
-      /* The glimmer is drawn over the orb, not into its SVG, which is the card face's shape everywhere; aria-hidden
-         decoration. */
-      + (high ? "<span class='td-orb-glim' aria-hidden='true'>"
-                + "<i></i><i></i><i></i><i></i></span>" : '')
-      + "</span>";
-  }catch(_){ return ''; }
+  var orb = tdStatIconHTML(t, value, 86, high ? TD_LIFE_HIGH : null);
+  if(!orb) return '';
+  return "<span class='td-ctr-orbbox" + (high ? ' td-orb-high' : '') + "'>" + orb
+    /* The glimmer is drawn over the orb, not into its SVG, which is the card face's shape everywhere; aria-hidden
+       decoration. */
+    + (high ? "<span class='td-orb-glim' aria-hidden='true'>"
+              + "<i></i><i></i><i></i><i></i></span>" : '')
+    + "</span>";
 }
 
 /* Rebirth Character swaps Life for ATK/HP/MP, read off the deck; Encounter and Rewards have none. */
@@ -2256,8 +2283,11 @@ function tdRenderCounters(){
     if(stray && stray.parentNode === document.body)
       stray.parentNode.removeChild(stray);
   });
+  /* In Rebirth the lists and the Dice Tray stand in the map's bar (#tdGbarMk, tdGfBarHTML), right of Cover Fog; a phone,
+     whose bar has no room for them, keeps them in the panel. */
+  var mkHost = (REBIRTH && !(typeof catIsPhone === 'function' && catIsPhone())) ? document.getElementById('tdGbarMk') : null;
   /* A spectator owns no board, so the whole set goes: the life total would be a player's. */
-  if(!TD.board || TD.watching){ host.innerHTML = ''; return; }
+  if(!TD.board || TD.watching){ host.innerHTML = ''; if(mkHost) mkHost.innerHTML = ''; return; }
   var defs = (typeof tdRbDmOnly === 'function' && tdRbDmOnly(TD.board)
               && typeof tdRbOn === 'function' && tdRbOn()) ? [] : tdCounterDefs();
   /* Rewards is not a board; Encounter keeps the controls, as the counter buttons are its only way to put a counter down. */
@@ -2367,7 +2397,8 @@ function tdRenderCounters(){
   host.innerHTML = "<div class='td-ctr-row'>" + trackers
     + "<div class='td-play-bar' id='tdPlayBar'></div>"
     + "<div id='tdTurn' class='td-turn-host'></div>"
-    + mkBox + tokenBox + "</div>";
+    + (mkHost ? '' : mkBox) + tokenBox + "</div>";
+  if(mkHost) mkHost.innerHTML = mkBox;
   tdRenderTurn();
   /* After the markup, which it fills; tdRender fills the bar itself only when this returns false. */
   var barDone = false;
@@ -2377,7 +2408,7 @@ function tdRenderCounters(){
 
   tdFitTitles(host);
   /* Wired from the data attribute, so no keyword name is ever parsed as code. */
-  host.querySelectorAll('[data-kw]').forEach(function(b){
+  (mkHost || host).querySelectorAll('[data-kw]').forEach(function(b){
     b.addEventListener('click', function(){
       tdCloseDrops();
       /* Keyword and Special are both 'kw' to tdAddToken: the lists differ in what the set calls them. */
@@ -3753,7 +3784,8 @@ function tdZoneSectionHTML(z, board){
   /* In the body's corner, not the header: the 30px rail cannot hold a word. Both are drawn even when dead, so the
      corner keeps its shape. */
   var acts = '';
-  if(TD_LOCK_ZONES[z.id] && !foe){
+  /* Not on Rebirth's Field, whose cards are not locked and unlocked that way (the author, 9 November). */
+  if(TD_LOCK_ZONES[z.id] && !foe && !(REBIRTH && z.id === 'field')){
     var nLocked = items.filter(function(it){ return it.locked; }).length;
     var nFree = items.length - nLocked;
     var canUnlock = nLocked > 0;
@@ -3785,6 +3817,7 @@ function tdZoneSectionHTML(z, board){
         && (seen || (!foe && tdZShow('hand') === 'all'))) ? ' td-shown' : '')
     + (z.inHand ? ' td-gear' : '')
     + "' data-zone='" + z.id + "' data-side='" + (foe ? 'foe' : 'mine') + "'"
+    + (z.id === 'essarea' ? " style='--ess-cols:" + tdEssTallyCols(b, 3) + ";--ess-cols4:" + tdEssTallyCols(b, 4) + "'" : '')
     + (z.inHand ? " aria-label='" + e(z.label) + "'" : '') + ">"
     + (gf ? tdGfBarHTML() : '')
     /* The Armament part has no rail: a second name and count would make it a second area. */
@@ -3807,6 +3840,12 @@ function tdZoneSectionHTML(z, board){
 /* One card size for every half (--td-cw), fitted to the window: no transform:scale, which every drag and fixed list
    would have to correct for. The last size is tried first; below the floor the page scrolls. */
 var TD_CW_MAX = 132, TD_CW_MIN = 60;
+/* Rebirth keeps its panel in the bottom row unless that leaves the cards narrower than this and the panel beside the
+   Field would make them bigger. */
+var TD_RB_ROW_MIN = 90;
+/* In that row the cards are as tall as the panel's stats (the author, 9 November), which may be wider than TD_CW_MAX: this
+   is only a ceiling for the search, the row's height being the real bound. */
+var TD_RB_CW_MAX = 240;
 /* The panel beside your Field can also stand as two columns, half as tall; the fit tries both and keeps the bigger
    cards, a tie keeping one column. */
 var _tdFit = {cw:TD_CW_MAX, two:false, key:''};
@@ -3825,16 +3864,52 @@ function tdFitTable(){
   if(typeof tdRbFit === 'function' && b.querySelector(':scope > .rb-table')) return tdRbFit(b);
   var mine = b.querySelector('.td-half-mine');
   var room = tdFitRoom(b);
-  var mode = function(two){ if(mine) mine.classList.toggle('td-play2', !!two); };
+  /* Rebirth's panel stands one section wide (testdeck.css), never two columns; the Field is measured at its least and
+     then grown to the window's foot. */
+  var rb = !!mine && document.body.classList.contains('rebirth');
+  if(rb) b.style.setProperty('--td-gfill', '0px');
+  var fill = function(){
+    if(!rb) return;
+    var spare = Math.floor(room - b.scrollHeight);
+    if(spare > 0) b.style.setProperty('--td-gfill', spare + 'px');
+  };
+  /* Rebirth's second form is its panel beside the Field, as it stood before the author moved it under (9 November). */
+  var mode = function(two){
+    if(!mine) return;
+    mine.classList.toggle('td-play2', !!two && !rb);
+    mine.classList.toggle('td-rbside', !!two && rb);
+  };
   var fld = mine ? mine.querySelector(".td-zone[data-zone='field']") : null;
-  /* Rebirth's Essence area shares its row with Deck, Grave and the Hand (testdeck.css): two cards side by side at least */
-  var ess = (REBIRTH && mine) ? mine.querySelector(".td-zone[data-zone='essarea'] > .td-zbody") : null;
+  /* Rebirth's bottom row is as tall as its panel's own contents and no taller: a card that would make it taller does not
+     fit. Measured against the panel's frame, as the grid stretches the panel to the row. */
+  var wide = rb && window.innerWidth > 900;
+  var play = wide ? mine.querySelector(':scope > .td-play') : null;
+  var ctrs = play ? play.querySelector(':scope > .td-play-ctrs') : null;
+  var rowFits = function(){
+    if(!ctrs || mine.classList.contains('td-rbside')) return true;
+    var cs = getComputedStyle(play);
+    var own = ctrs.getBoundingClientRect().height + (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0)
+      + (parseFloat(cs.borderTopWidth) || 0) + (parseFloat(cs.borderBottomWidth) || 0);
+    return play.getBoundingClientRect().height <= own + 1;
+  };
+  var cwTop = function(two){ return (ctrs && !two) ? TD_RB_CW_MAX : TD_CW_MAX; };
+  /* Rebirth's Essence area shares its row with Deck, Grave and the Hand (testdeck.css): room for its tally at its widest,
+     all seven colours, whatever is down now, so a card keeps its size as a Level grows; then a card and a quarter, as its
+     stacks close up and cover one another (tdEssStacks). A phone lays the area out its own way (mobile.css). */
+  var ess = (REBIRTH && mine && window.innerWidth > 900) ? mine.querySelector(".td-zone[data-zone='essarea'] > .td-zbody") : null;
+  var essRoom = function(cw){
+    var t = ess.parentNode.querySelector('.td-esstally');
+    /* 34px a column (testdeck.css), four to a column in the row under the Field and three beside it */
+    var most = 34 * Math.ceil(TD_COLOR_NAMES.length / (mine.classList.contains('td-rbside') ? 3 : 4)) + 4;
+    return ess.clientWidth + (t ? t.offsetWidth : 0) - most >= Math.ceil(1.25 * cw) + 8;
+  };
   var fits = function(cw){
     b.style.setProperty('--td-cw', cw + 'px');
     tdSideLayout(b);
     /* Your Field must stay at least three cards wide: the side halves take their width from the middle. */
     if(fld && fld.offsetWidth < 3 * cw + 40) return false;
-    if(ess && ess.clientWidth < 2 * cw + 8) return false;
+    if(ess && !essRoom(cw)) return false;
+    if(!rowFits()) return false;
     return b.scrollHeight <= room && b.scrollWidth <= b.clientWidth + 2;
   };
   /* The last answer is tried first, and kept if it fits and one pixel more would not. */
@@ -3846,19 +3921,20 @@ function tdFitTable(){
   if(F.key === key){
     mode(F.two);
     tdSmallCards(b, F.cw);
-    var keep = fits(F.cw) && (F.cw >= TD_CW_MAX || !fits(F.cw + 1));
-    if(keep){ b.style.setProperty('--td-cw', F.cw + 'px'); tdSideLayout(b); return F.cw; }
+    var keep = fits(F.cw) && (F.cw >= cwTop(F.two) || !fits(F.cw + 1));
+    if(keep){ b.style.setProperty('--td-cw', F.cw + 'px'); tdSideLayout(b); fill(); return F.cw; }
   }
   var best = function(two){
     mode(two);
-    if(fits(TD_CW_MAX)) return TD_CW_MAX;
+    var top = cwTop(two);
+    if(fits(top)) return top;
     if(!fits(TD_CW_MIN)) return 0;
-    var lo = TD_CW_MIN, hi = TD_CW_MAX;
+    var lo = TD_CW_MIN, hi = top;
     while(hi - lo > 1){ var mid = (lo + hi) >> 1; if(fits(mid)) lo = mid; else hi = mid; }
     return lo;
   };
   var one = best(false);
-  var two = (mine && one < TD_CW_MAX) ? best(true) : 0;
+  var two = (mine && (rb ? one < TD_RB_ROW_MIN : one < TD_CW_MAX)) ? best(true) : 0;
   /* Nothing fits even at the smallest card: the shorter form, and the page scrolls. */
   var useTwo = !!mine && (two > one || (!one && !two));
   var cw = (useTwo ? two : one) || TD_CW_MIN;
@@ -3867,6 +3943,7 @@ function tdFitTable(){
   tdSideLayout(b);
   _tdFit = {cw:cw, two:useTwo, key:key};
   tdSmallCards(b, cw);
+  fill();
   return cw;
 }
 /* Below 100px the Hand's rail has no room for "Hidden" as well as the eye (testdeck.css). */
@@ -4448,6 +4525,9 @@ function tdRender(){
   /* The panels are filled before the table is fitted, as the panel sets the height. tdRenderCounters fills the bar,
      so it is filled here only when that did not run. */
   if(!tdRenderCounters()) tdRenderBar();
+  /* Rebirth's Essence row laid out before the fit: cards still where the board keeps them can hang below the area and
+     make the board measure taller than its rows. The DOM only (tdReflowFree), and laid out again once fitted. */
+  if(REBIRTH && TD.board) tdReflowFree(host.querySelector('.td-half-mine'), TD.board);
   /* Before any face is painted: a face is sized to its card when it is painted. */
   tdFitTable();
   tdFitHands(host);
@@ -4588,6 +4668,7 @@ function tdReflowFree(host, board){
     if(!br.width || !br.height || !any) return;
     var cr = tdLocalSize(any.getBoundingClientRect(), rot);
     if(!cr.width || !cr.height) return;
+    if(REBIRTH && z.id === 'essarea'){ tdEssStacks(body, items, br.width, cr.width); return; }
     var stepX = ((cr.width  + 10) / br.width)  * 100;
     var stepY = ((cr.height + 10) / br.height) * 100;
     var maxX  = Math.max(0, (1 - cr.width  / br.width)  * 100);
@@ -4623,6 +4704,46 @@ function tdReflowFree(host, board){
   });
 }
 
+
+/* Rebirth's Essence area (the author, 9 November): one row however many there are, each colour's cards stacked together
+   in ROYGBIV order with a sliver of each showing, the stacks closing up and then covering one another rather than the area
+   growing. The DOM only, as tdReflowFree; --td-ez is the paint order (testdeck.css), so a stack's top card is the last
+   of its colour to arrive. */
+var TD_ESS_PEEK = 0.16;         /* how much of each card under the top one shows, in card widths */
+function tdEssStacks(body, items, W, cw){
+  if(!(W > 0) || !(cw > 0)) return;
+  var order = TD_COLOR_NAMES.map(function(n){ return n.toLowerCase(); });
+  var rank = function(it){
+    var k = tdEssenceColors((it && it.card) || {})[0] || '';
+    var i = order.indexOf(k);
+    return i < 0 ? order.length : i;
+  };
+  var live = [];
+  items.forEach(function(it, i){
+    if(it.auto === false || it.connectedTo) return;
+    live.push({it:it, r:rank(it), i:i});
+  });
+  if(!live.length) return;
+  live.sort(function(a, b){ return a.r - b.r || a.i - b.i; });
+  var peek = cw * TD_ESS_PEEK, gap = 10, steps = [], total = 0;
+  live.forEach(function(p, j){
+    var s = !j ? 0 : (p.r === live[j - 1].r ? peek : cw + gap);
+    steps.push(s); total += s;
+  });
+  /* The row spans its steps and one card; wider than the area, every step shrinks alike. */
+  var f = (total + cw > W && total > 0) ? Math.max(0, (W - cw) / total) : 1;
+  var x = (total + cw <= W) ? (W - total - cw) / 2 : 0;
+  live.forEach(function(p, j){
+    x += steps[j] * f;
+    var el = body.querySelector('.td-card' + tdSel(p.it.uid));
+    if(!el) return;
+    var g = el.parentNode;
+    var target = (g && g.classList && g.classList.contains('td-group')) ? g : el;
+    target.style.left = (Math.round(x / W * 10000) / 100) + '%';
+    target.style.top = '0%';
+    target.style.setProperty('--td-ez', String(j + 1));
+  });
+}
 
 /* Out from the middle (0, +1, -1, +2, ...), skipping spots already taken, as cores also arrive by the Level seeder,
    a drag or an Undo. Percentages, as a free zone stores them. */
@@ -4700,7 +4821,9 @@ function tdSeedCharacter(){
   var el = document.getElementById('dta-lvl');
   var letters = tdLevelLetters(el ? el.value : '');
   var by = tdCoreEssenceByColor(), ess = [], miss = [], seenMiss = {};
-  letters.forEach(function(L){
+  /* In ROYGBIV order, whatever order the Level spells them in, so each colour's cards arrive together (the author,
+     9 November). */
+  letters.slice().sort(function(a, b){ return 'ROYGBIV'.indexOf(a) - 'ROYGBIV'.indexOf(b); }).forEach(function(L){
     var key = TD_LVL_COLOR[L];
     var card = by[key];
     if(!card){
@@ -5004,14 +5127,14 @@ function tdKeySheetHTML(){
   /* Modifiers and arrows join the same list, so the grid is dealt from one set of rows. */
   rows = rows.concat([
     "<tr><td><kbd>&#8592;</kbd> <kbd>&#8594;</kbd></td>"
-      + "<td>Step along your hand, card by card</td></tr>",
+      + "<td>Show the cards in your Hand.</td></tr>",
     "<tr><td><kbd>&#8593;</kbd> <kbd>&#8595;</kbd></td>"
       + "<td>Step up and down the pile you are pointing at</td></tr>",
-    "<tr><td><kbd>Alt</kbd></td><td>Hold to read the card under the pointer</td></tr>",
-    "<tr><td><kbd>Ctrl</kbd>+drag</td><td>Attach one card under another &mdash; at Declare Blockers, draw a block line from your blocker to an attacker</td></tr>",
+    "<tr><td><kbd>Alt</kbd></td><td>Hold to zoom in on a card that you're hovering over</td></tr>",
+    "<tr><td><kbd>Ctrl</kbd>+drag</td><td>Hold down &quot;CTRL&quot;, then click and drag counter onto cards, connect a card to another, or declare blockers against attackers.</td></tr>",
     "<tr><td><kbd>Shift</kbd>+drag</td><td>Draw an arrow from one card to another</td></tr>",
     "<tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td><td>Undo</td></tr>",
-    "<tr><td><kbd>Esc</kbd></td><td>Back out of whatever is open</td></tr>"
+    "<tr><td><kbd>Esc</kbd></td><td>Close anything that is open</td></tr>"
   ]);
   /* Dealt column by column, so each column reads top to bottom. */
   var per = Math.ceil(rows.length / 3), cols = [[], [], []];
@@ -6590,18 +6713,18 @@ function tdBindMenu(){
     d: [function(){
           if(tdKeyOnCard(function(h){ tdMove(h.uid, 'grave'); tdRender(); })) return;
           tdDrawOne();
-        }, 'Draw a card', 'over a card: send it to the Grave'],
+        }, 'Draw a card', 'Over a card: Send it to the Grave'],
     s: [function(){
           if(tdKeyOnCard(function(h){ tdMove(h.uid, 'susp'); tdRender(); })) return;
           tdShuffleDeck();
-        }, 'Shuffle your deck', 'over a card: send it to Suspended'],
+        }, 'Shuffle your deck', 'Over a card: Send it to Suspended'],
     q: [function(){
           tdKeyOnCard(function(h){
             /* Only in the zones the Lock button is offered in. */
             if(!TD_LOCK_ZONES[h.zone] || h.item.locked) return;
             tdSetLock(h.uid, true);
           });
-        }, null, 'over an unlocked card: lock it'],
+        }, null, 'Over an unlocked card: Lock it'],
     e: [function(){
           if(tdEssenceSearchOpen()
              && tdKeyOnCard(function(h){
@@ -6616,11 +6739,11 @@ function tdBindMenu(){
           /* A board with no Essence pile (Rebirth, Encounter) falls back to what E always did. */
           if(TD.board.zones.essdeck) tdOpenSearch('essdeck');
           else tdFindLastMove();
-        }, 'Search your Essence deck', 'over a locked card: unlock it'],
+        }, 'Search your Essence deck', 'Over a locked card: Unlock it'],
     /* held down, each repeat steps back at once and the board is drawn once
        a frame (tdRenderSoon) */
     u: [function(ev){ tdUndo(!!(ev && ev.repeat)); }, 'Undo'],
-    m: [function(){ tdMulligan(); },     'Mulligan — take a new opening hand'],
+    m: [function(){ tdMulligan(); },     'Mulligan — Take a new opening hand'],
     n: [function(){ tdUntapStep(); },    'New turn'],
     /* At a table Space is the top row's Pass (the turn); alone it is the tracker's Pass on the live phase. */
     ' ': [function(){
@@ -6629,14 +6752,14 @@ function tdBindMenu(){
             return;
           }
           if(typeof window.tdPassPhase === 'function') window.tdPassPhase();
-        }, 'Pass — the phase you are on; at a table, the turn'],
+        }, 'Pass — The phase you are on; at a table, the turn'],
     '?': [function(){ tdToggleKeySheet(); }, 'This list']
   };
   for(var _n = 1; _n <= 9; _n++){
     /* All nine carry the description, which the help sheet prints once: a key with none reads as undocumented to the
        sheet and the checks. */
     TD_KEYS[String(_n)] = (function(n){
-      return [function(){ tdDrawN(n); }, 'Draw that many — 1 to 9'];
+      return [function(){ tdDrawN(n); }, 'Draw that many (1 to 9)'];
     })(_n);
   }
   /* Capture phase, and stopped: the catalog binds bare letters and digits on document too (D, L and B switch tabs,
@@ -7001,6 +7124,8 @@ function tdAltHolo(face, nx, ny){
   for(var i = 0; i < gs.length; i++)
     gs[i].setAttribute('gradientTransform', 'rotate(' + ang + ' .5 .5)');
   if(typeof window.edFrameHolo === 'function') window.edFrameHolo(z, px, py, ang);
+  /* a map token's own zoom has no face for that to turn: its icon's galaxies (cat_rbgrid.js) */
+  if(typeof window.edOrbHolo === 'function') window.edOrbHolo(z, ang);
 }
 /* A back's light, as the card backs' 3D viewer moves it (ConjureBack.holo): px and py run 0..1 across the card.
    With neither, the back is at rest, as it is drawn before the pointer moves: no glare. */

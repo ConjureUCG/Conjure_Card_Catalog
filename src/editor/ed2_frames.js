@@ -1167,7 +1167,27 @@ function frameTiltReset(card){
 window.edFrameHolo=function(root,px,py,ang){ if(!root) return; root.querySelectorAll('.mcard').forEach(function(card){ try{ frameTilt(card,px,py,ang); }catch(_){} }); };
 window.edFrameZoom=function(root){ frameDecorate(root); };
 window.edOrbTinted=function(kind,text,col,opts){ return frOrbTinted(kind,text,col,!!(opts&&opts.stretch)); };
+/* a stat icon in no face (a map token's own zoom on the board): its galaxies turn with the light, as frameTilt turns a face's */
+window.edOrbHolo=function(root,ang){
+  if(!root) return;
+  root.querySelectorAll('[data-gal-rot]').forEach(function(el){
+    if(el.closest('.mcard')) return;
+    var k=parseFloat(el.getAttribute('data-gal-rot')); if(isNaN(k)) k=1;
+    el.style.transform='rotate('+((ang-120)*k).toFixed(2)+'deg)';
+  });
+};
 window.edOrbMode=function(){ return frOrbMode(); };
+/* the board's trackers (cat_testdeck.js): what a stat's icon is on the faces now - img (the template's upload), app (the
+   Default set, which the trackers draw with edOrbSvg) or the set in use - and its markup, as the face draws it */
+window.edOrbSetKind=function(type){ return tplGet('orb:'+type)?'img':frOrbMode(); };
+window.edOrbSetHTML=function(type,value,col){
+  var v=value==null?'':String(value);
+  if(tplGet('orb:'+type)) return orbShapeByType(type,v);
+  var mode=frOrbMode();
+  if(mode==='stone'||mode==='glass'){ try{ frNoiseDefs(); }catch(_){} }
+  if(mode==='stars'){ try{ frGalLoad(); }catch(_){} }
+  return frOrbSvg(type,v,frUid(),mode,/^#[0-9a-f]{6}$/i.test(String(col||''))?{col:col}:{});
+};
 /* ---------------------------------------------------------------- Nebula's sky
    Every layer of the Cosmos back's sky, composited into one picture with the blend modes the back's stack of layers used,
    its colour wheel run through the card's colours. A card at rest shows a still sky, drawn once per colour and shared
@@ -1430,6 +1450,7 @@ function frLookChanged(what){
   if(what!=='back'){
     try{ if(typeof scheduleFace==='function') scheduleFace(); }catch(_){}
     try{ if(typeof curCard==='function'&&typeof renderPreview==='function'){ var c=curCard(); if(c) renderPreview(c); } }catch(_){}
+    try{ if(typeof window.edRefreshOrbPreviews==='function') window.edRefreshOrbPreviews(); }catch(_){}
   }
   try{ if(document.body.classList.contains('testdeck-active')&&typeof tdRender==='function') tdRender(); }catch(_){}
   tppSync(what);
@@ -1459,26 +1480,26 @@ function tppOpt(attr,key,on,inner,name){
   return "<div class='tpp-opt"+(on?' on':'')+"' role='button' tabindex='0' aria-pressed='"+(on?'true':'false')+"' data-tpp-"+attr+"='"+key+"'>"
     +inner+"<span class='tpp-name'>"+name+"</span></div>";
 }
-function tppHead(id,title,n){
-  return "<h3 class='kwp-head' id='tppsec-"+id+"'>"+title+"<span class='kwp-count'>"+n+"</span></h3>";
+function tppHead(id,title,n,extra){
+  return "<h3 class='kwp-head' id='tppsec-"+id+"'>"+title+"<span class='kwp-count'>"+n+"</span>"+(extra||'')+"</h3>";
 }
-/* the Outline row (session 92, from the Adjustments window): On or Off, edSetEdge (ed2_face.js), the lit one the state in force */
+/* the Outline buttons (session 92, from the Adjustments window): On or Off, edSetEdge (ed2_face.js), the lit one the state in
+   force; beside the Card Frame heading (the author, 9 November) */
 function tppEdgeRow(){
   var off=frOutlineOff();
-  return "<div class='tpp-row tpp-edge'><span class='tpp-lbl'>Outline</span>"
+  return "<span class='tpp-row tpp-edge'><span class='tpp-lbl'>Outline</span>"
     +"<button type='button' class='nb nb-gold nb-s"+(off?'':' on')+"' data-tpp-edge='gradient' aria-pressed='"+(off?'false':'true')+"'>On</button>"
-    +"<button type='button' class='nb nb-gold nb-s"+(off?' on':'')+"' data-tpp-edge='none' aria-pressed='"+(off?'true':'false')+"'>Off</button>"
-    +"<i class='tpp-hint'>The card’s outer border. Off, the frame’s field reaches the card’s edge; every box keeps its own.</i></div>";
+    +"<button type='button' class='nb nb-gold nb-s"+(off?' on':'')+"' data-tpp-edge='none' aria-pressed='"+(off?'true':'false')+"'>Off</button></span>";
 }
 function tppFramesHTML(){
   var c=frSampleCard();
-  return tppHead('frame','Card Frame',FR_KEYS.length)+"<div class='tpp-grid tpp-frames'>"
+  return tppHead('frame','Card Frame',FR_KEYS.length,tppEdgeRow())+"<div class='tpp-grid tpp-frames'>"
     +FR_KEYS.map(function(k){
       var face='';
       if(c){ try{ face=frWithLook({frame:k},function(){ return buildFaceHTML(c,{}); }); }catch(_){ face=''; } }
       var inner="<span class='tpp-card'>"+(face?"<div class='mcard-fit'><div class='mcard-scale'>"+face+"</div></div>":"")+"</span>";
       return tppOpt('frame',k,FR_LOOK.frame===k,inner,FR_NAMES[k]);
-    }).join('')+"</div>"+tppEdgeRow();
+    }).join('')+"</div>";
 }
 function tppOrbRow(mode){
   var vals=[['attack','3'],['health','4'],['arcane','2']];

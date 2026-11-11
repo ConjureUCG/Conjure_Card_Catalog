@@ -543,7 +543,7 @@ function tblTopParts(){
       tools: log,
       end: (s === 'joining' || s === 'lost' || (s === 'error' && TBL.note)) ? leave
         : tblToolHTML('leave', "tblLeaveSolo()", 'Leave', 0, false, 'tbl-red tbl-keep',
-                      'Back to Build Deck - this game is kept for when you come back')
+                      'Back to Build - this game is kept for when you come back')
     };
   }
   var waiting = (TBL.phase === 'waiting');

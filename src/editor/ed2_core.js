@@ -1212,6 +1212,12 @@ function markStats(seg,ph){
   });
   return seg;
 }
+/* A glossary entry that is a die (the main game's D4 to D20 are) takes the word before markDice sees it, so the die is put in front of
+   the link here, by markDice's rules: case as written, and D100 is no D10. */
+function markLead(m){
+  var d=/^\d*D(\d+)(?![\w-])/.exec(m);
+  return (d&&DICE_SIDES.indexOf(+d[1])>=0)?diceMarkSVG(+d[1]):'';
+}
 var _noPills=false;
 /* A defined counter gets its own pill and "<Keyword> counter" one pill in that keyword's style, both matched before the bare keyword. */
 var CNT_LEAD='(?:(?:\\d+|X)\\s+)?';
@@ -1272,10 +1278,11 @@ function pillifyRules(html){
         return;
       }
       seg=seg.replace(ent.re,function(m){
+        var lead=markLead(m);
         if(k.mode==='keyword'||k.mode==='damage')
-          return (PILLS_ON&&!_noPills)?ph(kwPill(k.name,m,k.reminder,k.mode))
-          :ph("<span class='kw-link'"+kwLinkAttrs(k.mode,k.name)+">"+m+"</span>");
-        return ph("<span class='kw-link'"+kwLinkAttrs(k.mode,k.name)+">"+m+"</span>");
+          return ph(lead+((PILLS_ON&&!_noPills)?kwPill(k.name,m,k.reminder,k.mode)
+            :"<span class='kw-link'"+kwLinkAttrs(k.mode,k.name)+">"+m+"</span>"));
+        return ph(lead+"<span class='kw-link'"+kwLinkAttrs(k.mode,k.name)+">"+m+"</span>");
       });
     });
     /* each pass wraps what it emits in ph(), so neither can match inside the other's output and the order does not matter */

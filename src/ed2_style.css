@@ -33,7 +33,7 @@ body.light{--ed-info:#235b8c;--ed-info-edge:#7ea3c6;--ed-info-hi:#4f7fae;
 .ed2-inl>.ed2-input,.ed2-inl>.ed2-combo{flex:1 1 0;min-width:0}
 .ed2-inl>.ed2-rev-date{flex:0 0 auto;white-space:nowrap;margin-left:0}
 .ed2-field.ed2-flavor-row{display:flex;align-items:flex-start;gap:8px}
-.ed2-field.ed2-flavor-row>.ed2-stack-lbl{margin:0;flex:0 0 auto;line-height:1.3;padding-top:3px}
+.ed2-field.ed2-flavor-row>.ed2-stack-lbl{margin:0;flex:0 0 auto;align-self:center;line-height:1.3;text-align:center}
 .ed2-input,.ed2-textarea{width:100%;background:var(--s2);border:1px solid var(--b1);
   border-radius:0;color:var(--tx);font-family:'Crimson Pro',serif;font-size:.98rem;padding:6px 8px;box-sizing:border-box}
 .ed2-input:focus,.ed2-textarea:focus{outline:none;border-color:var(--go)}
@@ -88,6 +88,10 @@ body.light{--ed-info:#235b8c;--ed-info-edge:#7ea3c6;--ed-info-hi:#4f7fae;
 .ed2-nf-atk input{background:color-mix(in srgb,var(--re) 12%,transparent);border:1px solid color-mix(in srgb,var(--re) 30%,transparent)}
 .ed2-nf-hp input{background:color-mix(in srgb,var(--go) 10%,transparent);border:1px solid color-mix(in srgb,var(--go) 30%,transparent)}
 .ed2-nf-arc input{background:color-mix(in srgb,var(--ac) 12%,transparent);border:1px solid color-mix(in srgb,var(--ac) 30%,transparent)}
+/* Range in the filter panel's green (.nf-rng). */
+.ed2-nf-rng{border:2px solid #5c9e6e;border-image:linear-gradient(180deg,#1f3325 0%,#416f4e 15%,#c4e4cd 40%,#5c9e6e 50%,#558b64 60%,#416f4e 85%,#1f3325 100%) 1}
+.ed2-nf-rng input{background:rgba(92,158,110,.12);border:1px solid rgba(92,158,110,.3)}
+body.light .ed2-nf-rng input{background:rgba(92,158,110,.07)}
 
 .ed2-orb{grid-template-columns:1fr 50px 26px !important;gap:5px}
 .ed2-orb-type{background:var(--s2);border:1px solid var(--b1);color:var(--tx);font-family:'Crimson Pro',serif;
@@ -327,6 +331,8 @@ body.light .ed2-modal .ed2-btn.close-x:hover{background:rgba(128,48,48,.75);colo
 .gate-step.skipped .gate-num{background:var(--gd);color:var(--g2)}
 .gate-step.skipped .gate-note{color:var(--g2)}
 .gate-bk-btns .ed2-btn[aria-pressed='true']{border-color:var(--go);color:var(--g2)}
+/* the TTS repository's Clean up window (ed2_publish.js): GitHub's own pages, each opening in a new tab */
+.tts-clean .gate-txt a{color:var(--go);text-decoration:underline;white-space:nowrap}
 /* Above everything until answered: a notice nobody can see is the fault it replaces. */
 .ed-store-notes{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:100000;
   display:flex;flex-direction:column;gap:6px;width:min(640px,calc(100vw - 32px))}
@@ -366,6 +372,11 @@ body.light .ed2-modal .ed2-btn.close-x:hover{background:rgba(128,48,48,.75);colo
 .tpl-meta{flex:1;min-width:0;color:var(--tx);font-size:12.5px}
 .tpl-meta i{display:block;color:var(--tm);font-size:11px;font-style:normal}
 .tpl-acts{display:flex;gap:6px;flex:0 0 auto}
+/* The frame uploads three across (the author, 9 November); a phone keeps one a row. */
+@media (min-width:900px){
+  .tpl-slots3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .tpl-slots3>.tpl-slot{margin:0}
+}
 .ed2-btn.tiny{padding:3px 8px;font-size:11.5px;cursor:pointer}
 .ed2-btn.tiny.on{background:var(--blue-mid-2);border-color:var(--ac);color:var(--white)}
 .ed2-btn.tiny.on:hover{background:var(--ac);color:var(--white);border-color:var(--ac);
@@ -375,6 +386,8 @@ body.light .ed2-modal .ed2-btn.close-x:hover{background:rgba(128,48,48,.75);colo
   border:1px solid var(--b1);border-radius:5px;color:var(--tx)}
 
 #edPrintRoot{display:none}
+/* while edPrintCards readies the cards and they print: laid out, off screen and unseen, so the fitting can measure them */
+@media screen{#edPrintRoot.pr-prep{display:block;position:fixed;left:-100000px;top:0;visibility:hidden;pointer-events:none}}
 #edPrintRoot .pr-card{overflow:hidden;page-break-inside:avoid;break-inside:avoid;
   display:inline-block;vertical-align:top;margin:0}
 #edPrintRoot .pr-scale{transform-origin:top left;width:340px;height:476px}
@@ -391,6 +404,13 @@ body.light .ed2-modal .ed2-btn.close-x:hover{background:rgba(128,48,48,.75);colo
     -webkit-print-color-adjust:exact!important;
     print-color-adjust:exact!important;
   }
+  /* Chrome prints a two-layer mask as no mask (mask-composite is dropped on paper), so the rules box's rim ring, frames.css's
+     border-box less its padding-box, printed solid over the rules. On paper the ring is cut by a clip path; the Pinlines
+     highlight, a ring made the same way and already clipped by its own paths, stays off paper, as it always was. */
+  body.ed-printing #edPrintRoot .m-rules-rim i{-webkit-mask:none;mask:none;
+    clip-path:polygon(evenodd,0 0,100% 0,100% 100%,0 100%,0 0,4px 4px,4px calc(100% - 4px),
+      calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 4px,4px 4px)}
+  body.ed-printing #edPrintRoot .m-pin-holo{display:none!important}
 }
 .ed2-btn.warn{color:var(--ed-warn);border-color:var(--ed-warn-edge)}
 .ed2-btn.warn:hover{color:var(--ed-warn-hi);border-color:var(--ed-warn-hi-edge);
@@ -526,18 +546,18 @@ body.light .ed2-group,body.arcane .ed2-group{--grp-face:var(--s1)}
 
 /* Layout only: a border or background here would flatten the per-stat metal (.ed2-nf-atk/-hp/-arc) to one grey box. */
 .ed2-group-stats .ed2-stats{display:flex;flex-direction:row;flex-wrap:nowrap;gap:5px;align-items:stretch}
-.ed2-group-stats .ed2-orb{display:flex;flex-direction:row;align-items:center;gap:6px;
+.ed2-group-stats .ed2-orb{display:flex;flex-direction:column;align-items:stretch;gap:4px;
   flex:1 1 0;min-width:0;padding:5px}
 .ed2-group-stats .ed2-orb-pv{flex:0 0 30px;width:30px;height:30px;margin:6px}
-.ed2-orb-fields{display:flex;flex-direction:column;gap:4px;width:100%;min-width:0}
-.ed2-orb-valrow{display:flex;align-items:center;gap:4px;min-width:0}
+.ed2-orb-body{display:flex;align-items:center;gap:6px;min-width:0}
+.ed2-orb-fields{display:flex;flex-direction:column;gap:4px;flex:1 1 0;min-width:0}
 .ed2-orb-pv{flex:0 0 38px;width:38px;height:38px;display:block}
 .ed2-orb-pv svg{display:block;overflow:visible}
 .ed2-orb-pv-none{border:1px dashed var(--b1);border-radius:6px;opacity:.5}
+.ed2-orb-pv-set{position:relative;--si-fs:13px}
 .ed2-group-stats .ed2-orb-type{max-width:none;width:100%;min-width:0;padding:1px 2px;font-size:.7rem}
-.ed2-group-stats .ed2-orb-val{flex:1 1 0;width:auto;min-width:0;text-align:center;padding:2px 3px;font-size:.82rem}
+.ed2-group-stats .ed2-orb-val{flex:0 0 auto;width:100%;min-width:0;text-align:center;padding:2px 3px;font-size:.82rem}
 .ed2-group-stats .ed2-orb-star{flex:0 0 auto;font-size:.72rem;gap:1px}
-.ed2-group-stats .ed2-orb-valrow{gap:3px}
 .ed2-group-stats .ed2-orb-fields{gap:3px}
 
 
@@ -964,15 +984,6 @@ span.ed2-sagachip{cursor:default}
 .ed2-input.stat-cl-sel{width:auto;height:26px;box-sizing:border-box}
 .fx-words{display:inline-flex;flex-wrap:wrap;gap:4px 8px;min-width:0}
 
-.ed2-rate-t{margin:0 0 6px;color:var(--tx);font-family:'Cinzel',serif;font-size:12px;font-weight:700}
-.ed2-rate-row{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 12px}
-.ed2-rate-f{display:flex;flex-direction:column;gap:3px;color:var(--tx);font-size:12px}
-.ed2-rate-f .ed2-input{width:84px;box-sizing:border-box}
-.ed2-rate-f #edRateLink{width:170px}
-.ed2-rate-out{margin-top:8px;color:var(--tx);font-size:13px;line-height:1.45}
-.ed2-rate-big{font-size:14px;font-weight:700}
-@media (min-width:900px){ #edFields > .ed2-g-rate{grid-column:1 / -1;grid-row:7} }
-
 /* Over every editor window (9000): opened from Statistics, the card would be behind it. */
 .mo{z-index:9500}
 
@@ -1004,6 +1015,16 @@ span.ed2-sagachip{cursor:default}
   border-image:linear-gradient(180deg,#2a1a44 0%,#4a3080 15%,#e0d0ff 40%,#9b7bda 50%,#7a5ab8 60%,#4a3080 85%,#2a1a44 100%) 1;
   box-shadow:0 0 8px color-mix(in srgb,var(--spect-ink) 35%,transparent)}
 body.light .mo .mdup{color:var(--spect-ink);background:rgba(155,123,218,.2)}
+/* Link under Download, as wide and tall as the stack and in its lettering, in its own colours (the author, 8 November). A phone keeps
+   it in the row under the rules. */
+@media (min-width:900px){
+  .mo .mlink-row>#mlinkBtn{position:absolute;top:calc(11px + (var(--m-ctlh) + var(--m-ctlgap)) * 3);right:var(--m-ctlright);
+    width:var(--m-ctlw);height:var(--m-ctlh);padding:0;box-sizing:border-box;border-width:2.5px;z-index:10;
+    display:flex;align-items:center;justify-content:center;gap:5px;
+    font-family:var(--btn-font);font-size-adjust:var(--btn-adjust);font-size:.8rem;font-weight:600;letter-spacing:.02em;white-space:nowrap}
+  .mo.no-edit .mlink-row>#mlinkBtn,.mo.no-dn .mlink-row>#mlinkBtn{top:calc(11px + (var(--m-ctlh) + var(--m-ctlgap)) * 2)}
+  .mo.no-edit.no-dn .mlink-row>#mlinkBtn{top:calc(11px + var(--m-ctlh) + var(--m-ctlgap))}
+}
 .m-upd{font-family:'Crimson Pro',serif;font-size:.86rem;color:var(--td);
   white-space:nowrap;margin-left:2px}
 .gh-page{display:flex;flex-direction:column;gap:18px;padding:4px 2px 10px}
@@ -1176,10 +1197,9 @@ body.light .ed2-hl-ovr,body.arcane .ed2-hl-ovr{--ovr-face:var(--s1)}
 
 .ed2-caret{font-size:.85em;opacity:.8}
 .ed2-sym-pop{position:fixed;z-index:9000;display:flex;flex-direction:column;gap:8px;width:max-content;
-  max-width:calc(100vw - 16px);padding:6px 8px 8px;border:1px solid var(--b2);border-radius:4px;background:var(--s2);
+  max-width:calc(100vw - 16px);padding:8px;border:1px solid var(--b2);border-radius:4px;background:var(--s2);
   box-shadow:0 8px 28px color-mix(in srgb,var(--black) 55%,transparent)}
-.ed2-sym-top{display:flex;justify-content:flex-end}
-.ed2-sym-grid{display:grid;grid-template-columns:repeat(11,28px);gap:3px}
+.ed2-sym-grid{display:grid;grid-template-columns:repeat(10,28px);gap:3px}
 .ed2-sym-btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;padding:0;
   border:1px solid var(--b1);border-radius:3px;background:var(--s1);color:var(--tx);cursor:pointer}
 .ed2-sym-btn:hover:not(:disabled){background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
@@ -1301,7 +1321,7 @@ body.light .ed2-hl-ovr,body.arcane .ed2-hl-ovr{--ovr-face:var(--s1)}
   #edFields > .ed2-group{width:auto}
   #edFields > .ed2-btnbox{grid-column:1;grid-row:1}
   #edFields .ed2-g-id{grid-column:1;grid-row:2}
-  #edFields .ed2-g-rules{grid-column:1;grid-row:3 / span 2}
+  #edFields .ed2-rulesrow{grid-column:1;grid-row:3 / span 2}
   #edFields > .ed2-g-meta{grid-column:1;grid-row:5}
   #edFields .ed2-artcol > .ed2-art{grid-column:2;grid-row:1 / span 3;align-self:stretch;contain:size;
     margin:0 0 6px}
@@ -1311,9 +1331,30 @@ body.light .ed2-hl-ovr,body.arcane .ed2-hl-ovr{--ovr-face:var(--s1)}
   .ed2-row2 .ed2-inl > .ed2-combo{min-width:56px}
   .ed2-row2 .ed2-inl > .ed2-combo:focus-within{min-width:150px}
 
-  .ed2-group .ed2-meta{display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr);
-    gap:10px 10px;align-items:center}
-  .ed2-group .ed2-meta > .ed2-field.ed2-inl{display:contents}
+  .ed2-group .ed2-meta{align-items:center;gap:14px}
+  .ed2-group .ed2-meta>.f-rev-wrap{flex:0 0 auto;width:auto}
+  .ed2-group .ed2-meta>.f-rev-wrap>.ed2-input{flex:0 0 60px;width:60px}
+  .ed2-group .ed2-meta>.ed2-field-rar{flex:0 0 auto;width:auto}
+  .ed2-group .ed2-meta>.ed2-field-rar>select{flex:0 0 auto;width:auto}
+
+  /* The stat icons stacked down a box of their own, as tall as the rules and flavour beside it (the author, 8 November), the rules text
+     taking up what the slots add. The box is as wide as the longest type name, which runs the slot's width over the icon and the value. */
+  .ed2-rulesrow{display:flex;gap:12px;align-items:stretch;min-width:0}
+  .ed2-topsplit-main .ed2-rulesrow>.ed2-group{width:auto}
+  .ed2-rulesrow>.ed2-g-rules{flex:1 1 0;min-width:0;display:flex;flex-direction:column}
+  .ed2-rulesrow>.ed2-g-rules>.ed2-row3{flex:1 1 auto}
+  .ed2-rulesrow>.ed2-g-stats{flex:0 0 auto;display:flex;flex-direction:column;padding:10px}
+  .ed2-g-stats>.ed2-group-stats{flex:1 1 auto;display:flex;flex-direction:column}
+  .ed2-g-stats .ed2-stats{flex:1 1 auto;flex-direction:column;justify-content:space-between;gap:6px}
+  .ed2-g-stats .ed2-orb{flex:0 0 auto;gap:3px;padding:4px}
+  .ed2-g-stats .ed2-orb-body{gap:4px}
+  .ed2-g-stats .ed2-orb-pv{margin:3px}
+  .ed2-g-stats .ed2-orb-fields{width:0;gap:2px}
+  .ed2-g-stats .ed2-orb-type{height:20px;padding:0 13px 0 3px;cursor:pointer;-webkit-appearance:none;appearance:none;
+    background:linear-gradient(45deg,transparent 50%,var(--td) 50%) calc(100% - 7px) 55% / 5px 5px no-repeat,
+      linear-gradient(135deg,var(--td) 50%,transparent 50%) calc(100% - 2px) 55% / 5px 5px no-repeat,var(--s2)}
+  .ed2-g-stats .ed2-orb-type option{color:var(--tx);background:var(--s2)}
+  .ed2-g-stats .ed2-orb-val{padding:2px 1px}
 
   .ed2-sagabox{display:flex;align-items:center;gap:10px}
   .ed2-sagabox > label{flex:0 0 auto;margin:0}

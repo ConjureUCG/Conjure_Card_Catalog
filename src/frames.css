@@ -165,14 +165,14 @@ body .mcard.fr.fr-nebula .m-nameline,body .mcard.fr.fr-nebula .m-rules{box-shado
 body .mcard.fr.fr-nebula .m-orb-slot{--orbS:1px}
 /* the Essence box inside the art: its window must not sink under the art */
 body .mcard.fr.fr-nebula .m-art .m-rules{z-index:6}
-/* ===== the Templates page (edRenderTplPage): Card Frame with the Outline row, Card Back, Stat Icons in two rows, Adjustments at the foot ===== */
+/* ===== the Templates page (edRenderTplPage): Card Frame with the Outline buttons beside its heading, Card Back, Stat Icons in two rows, Adjustments at the foot ===== */
 body .kwp-body.tpp-body{display:block}
 .tpp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin:8px 0 18px}
 .tpp-orbsets{grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
 .tpp-backs{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
-.tpp-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:-6px 0 22px}
+.tpp-sec .kwp-head{flex-wrap:wrap}
+.tpp-row{display:inline-flex;flex-wrap:nowrap;align-items:center;gap:8px;margin:0 0 0 14px;letter-spacing:normal}
 .tpp-lbl{font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;color:var(--tx);margin-right:4px}
-.tpp-hint{flex:1 1 260px;font-size:.85rem;font-style:normal;color:var(--tm)}
 .tpp-opt{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 10px 10px;border:2px solid var(--b1);border-radius:10px;background:var(--s2);color:var(--tx);cursor:pointer;user-select:none}
 .tpp-opt:hover{background:var(--hv-fill);box-shadow:0 0 8px var(--hv-glow)}
 .tpp-opt:focus-visible{outline:2px solid var(--gd);outline-offset:2px}

@@ -41,6 +41,9 @@ window.REBIRTH = REBIRTH;
 try{ var _rbT=document.getElementById('rebirthToggle'); if(_rbT)_rbT.checked=REBIRTH; }catch(_){}
 /* Reloads rather than swapping in place: a half-swapped state is how one game's cards get written into the other's store. */
 window.setRebirth = function(on){
+  /* Each game keeps its own deck lists (cat_deck.js): this game's are put by and the other's put in the address, for the
+     reload to load (the author, 9 November). */
+  if(!!on !== REBIRTH && typeof _deckListsPark === 'function') _deckListsPark(!!on);
   try{ localStorage.setItem('conjure_mode', on?'rebirth':'main'); }catch(_){}
   /* The param must go: the reload reads the address before localStorage, so ?game=rebirth left in the bar would undo the switch. */
   /* and ?open=, so the switch does not reopen a document already closed */
@@ -554,7 +557,8 @@ function minimizeDeckPanel(hide){
   var showBtn = document.getElementById('dpShow');
   document.body.classList.toggle('dp-folded', hide);
   if(dp) dp.style.display = hide ? 'none' : '';
-  if(showBtn) showBtn.style.display = hide ? 'block' : 'none';
+  /* .on as the Filters button wears it (minimizeSidebar), so the two folded buttons look alike (the author, 9 November). */
+  if(showBtn){ showBtn.style.display = hide ? 'flex' : 'none'; showBtn.classList.toggle('on', hide); }
   if(!hide) setTimeout(function(){
     var dlPane=document.getElementById('pane-decklists');
     if(dlPane && dlPane.style.display!=='none') renderDeckLists();
@@ -1559,9 +1563,24 @@ function run(){
   _hashSaveFilters();
 }
 
+/* Rules text's own <b>, <i> and <u>, drawn as the face draws them, in escaped text; one left open is closed at the end of the
+   text, so what is drawn after the rules does not inherit it, and a closer with nothing open is dropped. */
+function fmtRuleTags(t){
+  var open=[];
+  t=t.replace(/&lt;(\/?)(b|i|u)&gt;/g,function(m,sl,tg){
+    if(!sl){ open.push(tg); return '<'+tg+'>'; }
+    var at=open.lastIndexOf(tg);
+    if(at<0) return '';
+    open.splice(at,1);
+    return '</'+tg+'>';
+  });
+  while(open.length) t+='</'+open.pop()+'>';
+  return t;
+}
 function fmtRule(text){
   if(!text) return '';
   var t=String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  t=fmtRuleTags(t);
   var _lk=[]; t=cardLinksHold(t,_lk);        /* before the [x] rule below */
   t=t.replace(/\n/g,'<br>');
   /* The face's token pattern, not anything in braces: {mana in any combination of R} stays words, as on the face. */
@@ -1685,7 +1704,7 @@ function stripRuleFmt(s){
 function fmtRuleInline(text){
   if(!text) return '';
   var t=String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  t=t.replace(/&lt;(\/?)(b|i|u)&gt;/g,'<$1$2>');
+  t=fmtRuleTags(t);
   var _lk=[]; t=cardLinksHold(t,_lk);        /* before the [x] rule below */
   t=t.replace(/\n/g,'<br>');
   t=t.replace(/\{([A-Za-z0-9\/]+)\}/g,function(match,inner){ return renderManaCost(inner,14); });
@@ -1696,6 +1715,7 @@ function fmtRuleInline(text){
 function fmtRuleNoLinks(text){
   if(!text) return '';
   var t=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  t=fmtRuleTags(t);
   var _lk=[]; t=cardLinksHold(t,_lk);        /* before the [x] rule below */
   t=t.replace(/\n/g,'<br>');
   t=t.replace(/\{([A-Za-z0-9\/]+)\}/g,function(match,inner){ return renderManaCost(inner,16); });
@@ -2110,22 +2130,22 @@ function openMod(card){
     var addWhere = gearOnly ? 'Armament' : 'Main Deck';
     h+='<div style="display:flex;gap:8px;margin-top:auto">'
       +'<button class="madd-3" id="maddbtn3" type="button" data-deck="'+(gearOnly ? 'armament' : 'main')+'" title="Add 3 copies" aria-label="Add 3 copies to the '+addWhere+'">+3</button>'
-      +'<button class="madd" id="maddbtn" type="button" data-deck="'+(gearOnly ? 'armament' : 'main')+'" style="flex:1">'+uiIco('plus')+' Add to '+addWhere+'</button>'
+      +'<button class="madd" id="maddbtn" type="button" data-deck="'+(gearOnly ? 'armament' : 'main')+'" aria-label="Add to '+addWhere+'" style="flex:1">'+uiIco('plus')+' Add</button>'
       +(!gearOnly && _isArmamentLegal(card) ? '<button class="madd madd-wish madd-arm" id="maddbtn2" type="button" data-deck="armament" style="flex:0.9;font-size:.85rem;padding:13px 10px">'+uiIco('plus')+' Armament</button>' : '')
       +'</div>';
   } else if(isEssenceMod){
-    h+='<button class="madd" id="maddbtn" type="button" data-deck="essence">'+uiIco('plus')+' Add to Essence Deck</button>';
+    h+='<button class="madd" id="maddbtn" type="button" data-deck="essence" aria-label="Add to Essence Deck">'+uiIco('plus')+' Add</button>';
   } else {
     h+='<div style="display:flex;gap:8px;margin-top:auto">'
       +'<button class="madd-3" id="maddbtn3" type="button" data-deck="main" title="Add 3 copies" aria-label="Add 3 copies to the Main Deck">+3</button>'
-      +'<button class="madd" id="maddbtn" type="button" data-deck="main" style="flex:1">'+uiIco('plus')+' Add to Main Deck</button>'
+      +'<button class="madd" id="maddbtn" type="button" data-deck="main" aria-label="Add to Main Deck" style="flex:1">'+uiIco('plus')+' Add</button>'
       +'<button class="madd madd-wish" id="maddbtn2" type="button" data-deck="wish" style="flex:0.7;font-size:.85rem;padding:13px 10px">'+uiIco('plus')+' Wish</button>'
       +'</div>';
   }
   /* not a copy, as Duplicate makes: the official card itself, kept in step with the official set, in a saga of yours */
   var _mine=null;
   try{ if(_locked && typeof window.edMySagaFor==='function') _mine=window.edMySagaFor(card); }catch(_){ _mine=null; }
-  h+='<div class="mlink-row"><button class="mlink" id="mlinkBtn" type="button" title="Copy a link that opens this card">Copy link</button>'
+  h+='<div class="mlink-row"><button class="mlink" id="mlinkBtn" type="button" title="Copy a link that opens this card">'+uiIco('link')+' Link</button>'
     +(_mine ? '<button class="mlink msaga" id="msagaBtn" type="button" title="'+e('Put this official card in '+_mine.name
         +'. It keeps following the official card: name, cost, rules, stats and pictures. '+_mine.name
         +' sets its own flavor text, artist, Owner, watermark, border and reminders, and which picture it shows.')+'">Add to '
@@ -2181,6 +2201,7 @@ function openMod(card){
     });
     mkwEl.innerHTML = rh;
     mkwEl.style.display = '';
+    mkwEl.scrollTop = 0;
   } else {
     mkwEl.innerHTML = '';
     mkwEl.style.display = 'none';
@@ -2188,11 +2209,15 @@ function openMod(card){
 
   var mdnBtn = document.getElementById('mdnBtn');
   /* _artSrc, not imageUrl: most cards keep their picture on a variant. */
-  if(mdnBtn) mdnBtn.style.display = _artSrc(card) ? '' : 'none';
+  var _hasArt = !!_artSrc(card);
+  if(mdnBtn) mdnBtn.style.display = _hasArt ? '' : 'none';
   var _mo=document.getElementById('mo');
+  /* With no picture to download, Link moves up into Download's place in the stack (ed2_style.css). */
+  _mo.classList.toggle('no-dn', !_hasArt || !mdnBtn);
   _mo.classList.add('on');
   _catTitleFor(card);
-  modalOpen(_mo,{label:'Card details: '+(card&&card.name||''), onClose:closeMod});
+  /* Close first, as before the arrows stood outside the window and came first in its order. */
+  modalOpen(_mo,{label:'Card details: '+(card&&card.name||''), onClose:closeMod, focus:_mo.querySelector('.mcl')});
   if(typeof mobOnCard === 'function') mobOnCard(card);
 }
 /* linkKeywords' word rule (nothing word-like or a hyphen either side), plus an optional s, es, ed or ing; cached per entry. */
@@ -2236,9 +2261,9 @@ function copyCardLink(card, btn){
   var url = cardLinkUrl(card);
   function said(ok){
     if(btn){
-      if(btn.__t) clearTimeout(btn.__t); else btn.__o = btn.textContent;
+      if(btn.__t) clearTimeout(btn.__t); else btn.__o = btn.innerHTML;
       btn.textContent = ok ? 'Link copied' : 'Copy failed';
-      btn.__t = setTimeout(function(){ btn.textContent = btn.__o; btn.__t = 0; }, 1600);
+      btn.__t = setTimeout(function(){ btn.innerHTML = btn.__o; btn.__t = 0; }, 1600);
     }
     if(!ok && typeof window.toast === 'function') window.toast('Could not copy the link. It is ' + url);
   }

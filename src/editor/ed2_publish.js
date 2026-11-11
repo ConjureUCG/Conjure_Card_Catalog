@@ -19,6 +19,8 @@ var GH_SOURCE='', GH_OWNER_MODE=false;
 var GH_HAS_WHOLE_SET=false;
 var GH_WEEKLY_LAST='';
 var GH_REPO={owner:'',repo:'',branch:'main'};
+/* The Tabletop Simulator pictures' repository, beside the cards' one and published to with the same token: this game's own (HANDOFF §1.2, TTS). */
+var GH_TTS={owner:'',repo:'',branch:'main'};
 /* Held for this visit only, never written to the database: after a reload it is pasted again (HANDOFF §1.2). */
 var GH_TOKEN='';
 /* The date the token was first given, never the token itself: kept until Forget it (HANDOFF §1.2). */
@@ -107,6 +109,8 @@ function ghSettingsFrom(r){
   GH_OWNER_MODE=!!(r&&r.owner);
   var rp=(r&&r.repo)||null;
   if(rp&&typeof rp==='object')GH_REPO={owner:rp.owner||'',repo:rp.repo||'',branch:rp.branch||'main'};
+  var tt=(r&&r.tts)||null;
+  if(tt&&typeof tt==='object')GH_TTS={owner:tt.owner||'',repo:tt.repo||'',branch:tt.branch||'main'};
   /* A token pasted while the settings loaded is kept, as it is held nowhere else; r.token is only ever one an older copy stored. */
   if(!GH_TOKEN)GH_TOKEN=(r&&r.token)||'';
   GH_TOKEN_SINCE=(r&&r.since)||'';
@@ -130,12 +134,12 @@ function ghLoadSettings(){
                       getMeta('ghRepo'),getMeta(GH_SECRET),Promise.resolve(null),
                       Promise.resolve(null),getMeta('ghWeeklyLast'),getMeta('ghTokenSince'),
                       getMeta('officialIds'),getMeta('bakeCaptured'),
-                      getMeta('sources'),getMeta('lastNewSaga')])
+                      getMeta('sources'),getMeta('lastNewSaga'),getMeta('ghTtsRepo')])
     .then(function(v){
       SOURCES=Array.isArray(v[10])?v[10].filter(function(s){ return s&&s.url; }):[];
       LAST_NEW_SAGA=v[11]||'';
       srcMigrateLinks();
-      ghSettingsFrom({src:v[0],owner:v[1],repo:v[2],token:v[3],since:v[7]});
+      ghSettingsFrom({src:v[0],owner:v[1],repo:v[2],token:v[3],since:v[7],tts:v[12]});
       if(v[3]!=null)ghDropStoredToken();
       GH_WEEKLY_LAST=v[6]||'';
       /* the stored official index, unless a fetched one has already arrived */
@@ -175,7 +179,15 @@ window.edGhSetRepo=function(field,val,fromPage){
   if(field!=='owner'&&field!=='repo'&&field!=='branch')return;
   GH_REPO[field]=String(val||'').trim();
   setMetaSafe('ghRepo',{owner:GH_REPO.owner,repo:GH_REPO.repo,branch:GH_REPO.branch||'main'},'the publish target');
-  if(fromPage)ghCheckTarget();
+  if(fromPage){ ghCheckTarget(); if(GH_TTS.owner||GH_TTS.repo)ttsCheckTarget(); }
+};
+window.edGhSetTts=function(field,val,fromPage){
+  if(field!=='owner'&&field!=='repo'&&field!=='branch')return;
+  GH_TTS[field]=String(val||'').trim();
+  /* the list read for the look's line was another repository's */
+  _ttsList=null; _ttsListRead=false; _ttsLook=null;
+  setMetaSafe('ghTtsRepo',{owner:GH_TTS.owner,repo:GH_TTS.repo,branch:GH_TTS.branch||'main'},'the TTS repository');
+  if(fromPage){ ttsCheckTarget(); ttsLookRefresh(); }
 };
 /* Checked when saved, not first at Publish; the line is kept here so the next drawing of the page shows it, as the publish line is. */
 var _ghTargetMsg='', _ghTargetTimer=0, _ghTargetSeq=0;
@@ -194,20 +206,39 @@ function ghCheckTarget(){
     _ghTargetTimer=setTimeout(function(){ res(ghCheckTargetNow(seq)); },400);
   });
 }
-function ghCheckTargetNow(seq){
-  var name=GH_REPO.owner+'/'+GH_REPO.repo, br=GH_REPO.branch||'main';
-  var say=function(m){ if(seq===_ghTargetSeq)ghTargetLine(m); return m; };
+/* GitHub's size of a repository, in KB with its history, counted again about once an hour; 0 while new or empty. It asks
+   for a repository ideally under 1 GB (PUBLISHING.md 11). */
+var GH_SIZE_NEAR=900*1024;
+function ghSizeText(kb){
+  kb=Math.max(0,Math.round(+kb||0));
+  if(kb<1024)return kb+' KB';
+  if(kb<1048576)return Math.round(kb/1024)+' MB';
+  return (kb/1048576).toFixed(2)+' GB';
+}
+function ghSizeLine(repo){
+  var kb=+(repo&&repo.size)||0;
+  if(!(kb>0))return '';
+  return ' GitHub counts '+ghSizeText(kb)+' for it, history included.'
+    +(kb>=GH_SIZE_NEAR?' GitHub suggests keeping a repository under 1 GB.':'');
+}
+/* t, show and isNow for the TTS repository's row (ttsCheckTarget); the cards' row by default */
+function ghCheckTargetNow(seq,t,show,isNow){
+  t=t||GH_REPO; show=show||ghTargetLine;
+  isNow=isNow||function(){ return seq===_ghTargetSeq; };
+  var name=t.owner+'/'+t.repo, br=t.branch||'main';
+  var say=function(m){ if(isNow())show(m); return m; };
   say('Checking '+name+'…');
-  return ghApi('GET','').then(function(repo){
+  return ghApi('GET','',undefined,0,t).then(function(repo){
     var push=!!(repo&&repo.permissions&&repo.permissions.push);
     var line=name+(push?': this token can push here':': this token cannot push here');
-    return ghApi('GET','/git/ref/heads/'+ghRefPath(br)).then(function(){
-      return say(line+', branch "'+br+'".');
+    var size=ghSizeLine(repo);
+    return ghApi('GET','/git/ref/heads/'+ghRefPath(br),undefined,0,t).then(function(){
+      return say(line+', branch "'+br+'".'+size);
     },function(err){
       var st=err&&err.status;
       return say(line+(st===409?' - the repository is empty.'
         :st===404?' - no branch "'+br+'" (the default branch is "'+String((repo&&repo.default_branch)||'')+'").'
-        :'.'));
+        :'.')+size);
     });
   },function(err){
     return say(name+': '+((err&&err.message)||err));
@@ -229,7 +260,7 @@ window.edGhSetToken=function(val,fromPage){
   GH_TOKEN_SINCE=since;
   setMetaSafe('ghTokenSince',GH_TOKEN_SINCE,"the access token's date");
   toast(GH_TOKEN?'Token kept until this page closes':'Token cleared');
-  if(fromPage||!GH_TOKEN)ghCheckTarget();
+  if(fromPage||!GH_TOKEN){ ghCheckTarget(); if(GH_TTS.owner||GH_TTS.repo||!GH_TOKEN)ttsCheckTarget(); }
   edRenderOwnerSync();
 };
 window.edGhForgetToken=function(){ window.edGhSetToken(''); };
@@ -1034,14 +1065,15 @@ function ghBlobSha(bytes){
   });
 }
 
-/* The token goes to this host and to this repository only: `path` is a path inside it, and the names are checked first (ghRepoProblem). */
+/* The token goes to this host and to the repository named only, the cards' (GH_REPO) unless t is the TTS one: `path` is a path inside it, and the names are checked first (ghRepoProblem). */
 var GH_API='https://api.github.com/';
 var GH_NAME_RE=/^[A-Za-z0-9_.-]+$/;
-function ghApiUrl(path){
+function ghApiUrl(path,t){
+  t=t||GH_REPO;
   path=String(path==null?'':path);
   if(path&&path.charAt(0)!=='/')return '';
   if(/(^|\/)\.\.?(\/|$|\?)/.test(path.split('?')[0]))return '';
-  var url=GH_API+'repos/'+encodeURIComponent(GH_REPO.owner)+'/'+encodeURIComponent(GH_REPO.repo)+path;
+  var url=GH_API+'repos/'+encodeURIComponent(t.owner)+'/'+encodeURIComponent(t.repo)+path;
   try{ var u=new URL(url); if(u.origin+'/'!==GH_API)return ''; }catch(_){ return ''; }
   return url;
 }
@@ -1088,17 +1120,18 @@ var GH_RETRY_MAX=2, GH_RETRY_WAIT_CAP=60;
 function ghSafeTwice(method,path){
   return method==='GET'||(method==='POST'&&(path==='/git/blobs'||path==='/git/trees'));
 }
-function ghApi(method,path,body,tries){
+function ghApi(method,path,body,tries,t){
+  t=t||GH_REPO;
   if(!GH_TOKEN)return Promise.reject(new Error('no token set.'));
-  if(!GH_REPO.owner||!GH_REPO.repo)return Promise.reject(new Error('no repository set.'));
-  var bad=ghRepoProblem();
+  if(!t.owner||!t.repo)return Promise.reject(new Error('no repository set.'));
+  var bad=ghRepoProblem(t);
   if(bad)return Promise.reject(new Error(bad));
-  var url=ghApiUrl(path);
+  var url=ghApiUrl(path,t);
   if(!url)return Promise.reject(new Error('that is not a path in this repository.'));
   tries=tries||0;
   var again=function(secs){
     return new Promise(function(res){ setTimeout(res,Math.min(secs,GH_RETRY_WAIT_CAP)*1000); })
-      .then(function(){ return ghApi(method,path,body,tries+1); });
+      .then(function(){ return ghApi(method,path,body,tries+1,t); });
   };
   var opt={method:method,headers:{
     'Accept':'application/vnd.github+json',
@@ -1125,12 +1158,12 @@ function ghApi(method,path,body,tries){
 }
 /* GitHub takes about 80 new files a minute from one account: a publish that writes more than GH_WRITE_FREE starts each write GH_WRITE_GAP ms after the one before. */
 var GH_WRITE_GAP=800, GH_WRITE_FREE=70, _ghLastWrite=0;
-function ghPacedApi(pace,method,path,body){
-  if(!pace)return ghApi(method,path,body);
+function ghPacedApi(pace,method,path,body,t){
+  if(!pace)return ghApi(method,path,body,0,t);
   var wait=Math.max(0,_ghLastWrite+GH_WRITE_GAP-Date.now());
   return new Promise(function(res){ setTimeout(res,wait); }).then(function(){
     _ghLastWrite=Date.now();
-    return ghApi(method,path,body);
+    return ghApi(method,path,body,0,t);
   });
 }
 
@@ -1489,6 +1522,8 @@ function ghPayload(prev){
     artBase:ghCdnBase()+'/art/'};
   if(prev&&prev.artFiles!=null)manifest.artFiles=prev.artFiles;
   if(prev&&prev.artEncoding)manifest.artEncoding=prev.artEncoding;
+  /* where these cards' Tabletop Simulator pictures are listed, for a player's deck export (edTtsLists) */
+  if(ttsTargetSet())manifest.tts={owner:GH_TTS.owner,repo:GH_TTS.repo,branch:GH_TTS.branch||'main'};
   /* testing.json is written even empty, or a last Test card switched off would stay in the repository and come back elsewhere. */
   var testing=ghBuildTesting();
   var out={'cards.json':JSON.stringify({manifest:manifest,cards:cards,look:null,marks:null},null,1),
@@ -1655,7 +1690,7 @@ function ghStableJson(v){
   var s=JSON.stringify(v); return s===undefined?'null':s;
 }
 /* in the shape a reload gives back (keywords in id order, boot's pill highlight and width), or every reload would read as a change */
-function ghLookNow(){
+function ghLookShape(){
   var b=currentPackBody();
   b.kwCustom=(b.kwCustom||[]).slice().sort(function(x,y){
     var a=String(x&&x.id), c=String(y&&y.id); return a<c?-1:a>c?1:0; });
@@ -1665,8 +1700,9 @@ function ghLookNow(){
     if(v.hl===undefined){ v.hl=v.irid?'irid':'none'; delete v.irid; }
     if(v.w===undefined)v.w=1.5;
   });
-  return ghFingerprint(ghStableJson(b));
+  return b;
 }
+function ghLookNow(){ return ghFingerprint(ghStableJson(ghLookShape())); }
 /* A look changed since the last automatic apply (meta ghLookAfter) is saved as a template pack first; if it cannot be saved, nothing is applied. */
 function ghKeepLookCopy(){
   return getMeta('ghLookAfter').then(function(after){
@@ -1854,8 +1890,9 @@ function ghBranchOk(b){
   return b.split('/').every(function(p){ return p.charAt(0)!=='.'&&p.slice(-5)!=='.lock'; });
 }
 function ghNameOk(n){ return GH_NAME_RE.test(n)&&!/^[.]+$/.test(n); }
-function ghRepoProblem(){
-  var o=GH_REPO.owner||'', r=GH_REPO.repo||'', b=GH_REPO.branch||'main';
+function ghRepoProblem(t){
+  t=t||GH_REPO;
+  var o=t.owner||'', r=t.repo||'', b=t.branch||'main';
   if(o&&!ghNameOk(o))return 'The username "'+o+'" cannot be a GitHub name: letters, digits, - _ and . only.';
   if(r&&!ghNameOk(r))return 'The repository "'+r+'" cannot be a GitHub repository name: letters, digits, - _ and . only.';
   if(!ghBranchOk(b))return 'The branch "'+b+'" cannot be a git branch name.';
@@ -1865,13 +1902,13 @@ function ghRefPath(b){
   return String(b||'main').split('/').map(encodeURIComponent).join('/');
 }
 
-function ghTreeAt(br){
-  return ghApi('GET','/git/ref/heads/'+ghRefPath(br)).then(function(ref){
+function ghTreeAt(br,t){
+  return ghApi('GET','/git/ref/heads/'+ghRefPath(br),undefined,0,t).then(function(ref){
     var head=ref.object.sha;
-    return ghApi('GET','/git/commits/'+head).then(function(c){
-      return ghApi('GET','/git/trees/'+c.tree.sha+'?recursive=1').then(function(t){
+    return ghApi('GET','/git/commits/'+head,undefined,0,t).then(function(c){
+      return ghApi('GET','/git/trees/'+c.tree.sha+'?recursive=1',undefined,0,t).then(function(tr){
         var map={};
-        (t.tree||[]).forEach(function(en){ if(en.type==='blob')map[en.path]=en.sha; });
+        (tr.tree||[]).forEach(function(en){ if(en.type==='blob')map[en.path]=en.sha; });
         return {paths:map,head:head,tree:c.tree.sha};
       });
     });
@@ -1880,30 +1917,36 @@ function ghTreeAt(br){
 /* A missing branch answers with the default branch's tree, marked newBranch, and an empty repository is marked empty.
    Anything else, such as a bad token, surfaces as itself, never as "would upload 2 files". */
 var _ghLastRt=null;
+/* no argument: it is a .then() callback, which would hand it the step before's answer */
 function ghRemoteTree(){
-  var br=GH_REPO.branch||'main';
+  return ghRemoteTreeFor(GH_REPO).then(function(rt){ _ghLastRt=rt; return rt; });
+}
+function ghRemoteTreeFor(t){
+  var br=t.branch||'main';
   var empty={paths:{},head:null,tree:null,empty:true,branch:br};
-  return ghTreeAt(br).catch(function(err){
+  return ghTreeAt(br,t).catch(function(err){
     var st=err&&err.status;
     if(st===409)return empty;
     if(st!==404)throw err;
-    return ghApi('GET','').then(function(repo){
+    return ghApi('GET','',undefined,0,t).then(function(repo){
       var def=String((repo&&repo.default_branch)||'');
       if(!def||def===br)return empty;
-      return ghTreeAt(def).then(function(rt){
+      return ghTreeAt(def,t).then(function(rt){
         rt.newBranch=br; rt.from=def; return rt;
       },function(e2){
         if(e2&&(e2.status===409||e2.status===404))return empty;
         throw e2;
       });
     });
-  }).then(function(rt){ _ghLastRt=rt; return rt; });
+  });
 }
 /* The git data calls cannot build on an empty repository, so its first commit is a README through the contents call; only into one that holds nothing. */
-function ghStartEmptyRepo(){
-  var txt='# '+GH_REPO.repo+'\n\nCards published from the Conjure card catalog.\n';
+function ghStartEmptyRepo(t){
+  var tts=!!t; t=t||GH_REPO;
+  var txt='# '+t.repo+'\n\n'+(tts?'Card pictures for Tabletop Simulator, published':'Cards published')
+    +' from the Conjure card catalog.\n';
   var bytes=new TextEncoder().encode(txt);
-  return ghApi('PUT','/contents/README.md',{message:'Start the repository',content:ghB64Bytes(bytes)});
+  return ghApi('PUT','/contents/README.md',{message:'Start the repository',content:ghB64Bytes(bytes)},0,t);
 }
 
 function ghTargetNote(rt){
@@ -1946,17 +1989,20 @@ window.edGhPreview=function(){
 
 /* An empty repository gets its README; a missing branch is created from the default branch, only when the person agrees, never without history. */
 var _ghStarted=false;
-function ghPublishTarget(){
-  return ghRemoteTree().then(function(rt){
+/* t and say for the TTS repository (edGhTtsPublish); the cards' one by default */
+function ghPublishTarget(t,say){
+  var tt=t||GH_REPO; say=say||ghPushStatus;
+  var tree=function(){ return t?ghRemoteTreeFor(t):ghRemoteTree(); };
+  return tree().then(function(rt){
     if(!rt.empty)return rt;
-    ghPushStatus('Starting the empty repository with a README…');
-    return ghStartEmptyRepo().then(function(){ _ghStarted=true; return ghRemoteTree(); });
+    say('Starting the empty repository with a README…');
+    return ghStartEmptyRepo(t).then(function(){ if(t)_ttsStarted=true; else _ghStarted=true; return tree(); });
   }).then(function(rt){
     if(rt.empty)throw new Error('the repository still reads as empty after its README was written.');
     if(!rt.newBranch)return true;
     return edChooseModal({
       title:'There is no branch "'+rt.newBranch+'"',
-      body:GH_REPO.owner+'/'+GH_REPO.repo+' has no branch called "'+rt.newBranch
+      body:tt.owner+'/'+tt.repo+' has no branch called "'+rt.newBranch
         +'". Its default branch is "'+rt.from+'".',
       choices:[{key:'create',label:'Create "'+rt.newBranch+'" from "'+rt.from+'" and publish to it',
                 detail:'The new branch starts at '+rt.from+'’s latest commit.'}]
@@ -2043,6 +2089,8 @@ window.edGhPublish=function(){
         +(run.parts>1?' The pictures went up in '+run.parts+' parts.':'')
         +(rt.newBranch?' Branch "'+rt.newBranch+'" was created from "'+rt.from+'".':''));
       toast('Published to '+GH_REPO.owner+'/'+GH_REPO.repo);
+      /* the TTS row's "publish the cards first" is answered now */
+      if(/^Publish the cards first/.test(_ttsPushMsg))ttsPushStatus('');
       try{ ghAfterPublish(); }catch(_){}
     });
   });
@@ -2100,6 +2148,705 @@ function ghAfterPublish(){
   }
   return Promise.all(changed.map(sagaPut)).then(srcRender);
 }
+
+/* ── TABLETOP SIMULATOR (sessions 97 to 99) ────────────────────────────────
+   One JPEG a card in a repository of its own (GH_TTS): cards/<cid>.jpg, backs/<key>.jpg and tts.json, the list. A picture is
+   drawn from the card as published and kept at one address, the branch's (jsDelivr @branch), so a deck already made shows a
+   changed card's new picture once jsDelivr renews its copy (the author, session 98). Publish TTS cards draws a card only
+   when it is new or plays differently: its name, type line, mana cost, rules text or stats (ttsRulesPrint, the author,
+   session 99). Redraw all, pressed by hand, is the sync for everything else: a change of look, a card's art, frame,
+   artist, revision and the like, and the card backs. */
+var TTS_W=750, TTS_H=1050, TTS_QUALITY=.9, TTS_LIST='tts.json';
+/* in the look's print: a change to how a picture is drawn reads as a change of look (tts2: no card number, session 98) */
+var TTS_DRAW='tts2 '+TTS_W+'x'+TTS_H+' jpeg '+TTS_QUALITY;
+var TTS_KEY=/^[A-Za-z0-9_-]{1,80}$/, TTS_SHA=/^[0-9a-f]{40}$/, TTS_FILE=/^(cards|backs)\/[A-Za-z0-9_-]{1,80}\.jpg$/;
+/* the files a picture is drawn from, beside the cards: what is here must be what is published */
+var TTS_SAME=['cards.json','keywords.json','look.json'];
+var _ttsPushMsg='', _ttsTargetMsg='', _ttsTargetTimer=0, _ttsTargetSeq=0, _ttsStarted=false;
+/* the list as last read or written this visit, and how many of its cards were drawn with another look than this one */
+var _ttsList=null, _ttsListRead=false, _ttsLook=null;
+
+function ttsTarget(){
+  return {owner:String(GH_TTS.owner||'').trim(),repo:String(GH_TTS.repo||'').trim(),branch:GH_TTS.branch||'main'};
+}
+function ttsRepoProblem(){
+  var bad=ghRepoProblem(GH_TTS);
+  if(bad)return bad;
+  if(GH_TTS.owner&&GH_TTS.repo&&String(GH_TTS.owner).toLowerCase()===String(GH_REPO.owner||'').toLowerCase()
+     &&String(GH_TTS.repo).toLowerCase()===String(GH_REPO.repo||'').toLowerCase())
+    return 'The TTS repository must be one of its own, not the cards’ repository.';
+  return '';
+}
+/* set and fit to publish to: only then does the manifest name it (ghPayload) */
+function ttsTargetSet(){ return !!(GH_TTS.owner&&GH_TTS.repo)&&!ttsRepoProblem(); }
+function ttsConfigProblem(){
+  if(!GH_TTS.owner||!GH_TTS.repo)return 'Set the TTS repository first.';
+  return ttsRepoProblem();
+}
+window.edTtsRepo=function(){ return {owner:GH_TTS.owner,repo:GH_TTS.repo,branch:GH_TTS.branch||'main'}; };
+function ttsTargetLine(m){
+  _ttsTargetMsg=String(m||'');
+  var el=document.getElementById('ttsTargetMsg'); if(el)el.textContent=_ttsTargetMsg;
+}
+/* as ghCheckTarget, with the same token */
+function ttsCheckTarget(){
+  clearTimeout(_ttsTargetTimer);
+  var seq=++_ttsTargetSeq;
+  var bad=(GH_TTS.owner||GH_TTS.repo)?ttsRepoProblem():'';
+  if(bad||!GH_TTS.owner||!GH_TTS.repo||!GH_TOKEN){ ttsTargetLine(bad); return Promise.resolve(bad); }
+  var blocked=syncBlockedReason(GH_API);
+  if(blocked){ ttsTargetLine(blocked); return Promise.resolve(blocked); }
+  return new Promise(function(res){
+    _ttsTargetTimer=setTimeout(function(){
+      res(ghCheckTargetNow(seq,ttsTarget(),ttsTargetLine,function(){ return seq===_ttsTargetSeq; }));
+    },400);
+  });
+}
+window.edGhTtsCheckTarget=function(){ return ttsCheckTarget(); };
+function ttsPushStatus(msg){
+  _ttsPushMsg=String(msg==null?'':msg);
+  var el=document.getElementById('ttsPushMsg');
+  if(el)el.textContent=_ttsPushMsg;
+}
+/* SHA-1, as hex: a card's print, where a 32-bit hash (ghFingerprint) over 1,500 cards a run could meet itself */
+function ttsSha(s){
+  if(!(window.crypto&&window.crypto.subtle))
+    return Promise.reject(new Error('this page has no crypto.subtle. Serve it over http://localhost rather than opening the file directly.'));
+  return window.crypto.subtle.digest('SHA-1',new TextEncoder().encode(String(s))).then(function(d){
+    var out=''; new Uint8Array(d).forEach(function(b){ out+=('0'+b.toString(16)).slice(-2); });
+    return out;
+  });
+}
+function ttsBefore(m){ var er=new Error(m); er.before=true; return er; }
+function ttsCardFile(cid){ return TTS_KEY.test(cid)?'cards/'+cid+'.jpg':''; }
+function ttsNames(list){
+  var out=list.slice(0,5).join(', ');
+  return list.length>5?out+' and '+(list.length-5)+' more':out;
+}
+/* the cards and backs changed only in ways Publish TTS cards leaves for Redraw all (ttsPlan) */
+function ttsWaitLine(names){
+  return names.length?' '+names.length+' changed in ways only Redraw all sends (art, frame, artist and the like): '
+    +ttsNames(names)+'.':'';
+}
+
+/* The published pictures a card names in the cards' repository, each with git's hash there: a picture replaced under its
+   own name is a changed card, and one published since it was drawn without is too. */
+function ttsArtPrint(form,rtMain){
+  var base=ghCdnBase()+'/', out=[];
+  artBearers(form).forEach(function(b){
+    var u=String((b&&b.imageUrl)||'');
+    if(u.indexOf(base)!==0)return;
+    var p=u.slice(base.length).split(/[?#]/)[0];
+    out.push(p+'='+(((rtMain&&rtMain.paths)||{})[p]||''));
+  });
+  return out.sort().join('\n');
+}
+/* How a card plays, the one change Publish TTS cards draws a card again for (the author, session 99): its name, type line,
+   mana cost and rules text - on a split card each section's as printed, and the Choice line - and its stats, read off the
+   version ttsDrawCopy draws. Its art, frame, flavour, artist, revision, designer and rarity are not in it. */
+function ttsRulesPrint(form){
+  var d=ttsDrawCopy(form,''), ess=isEssenceCard(d), secs=ess?null:cardSections(d);
+  return ghStableJson({
+    name:String(d.name||''), cost:String(d.manaCost||''), type:typeLine(d),
+    rules:secs?'':String(d.ruleText||''),
+    secs:(secs||[]).map(function(s){
+      var id=sectionShowsIdent(d,s);
+      return {name:id?s.name:'',cost:id?s.manaCost:'',type:id?typeLine(s):'',text:s.text};
+    }),
+    choice:(secs&&splitChoiceOf(d))?choiceTextOf(d):'',
+    stats:ess?[]:cardOrbs(d).map(function(o){ return [String(o.type),String(o.value)]; })
+  });
+}
+/* What is drawn: the published card with its pictures at the commit just read (a branch address on the CDN can be hours
+   behind it), as its own saga's version, whatever saga the catalogue is showing. */
+function ttsDrawCopy(form,head){
+  var base=ghCdnBase()+'/';
+  var pin=head?'https://cdn.jsdelivr.net/gh/'+GH_REPO.owner+'/'+GH_REPO.repo+'@'+head+'/':'';
+  var o=JSON.parse(JSON.stringify(form));
+  if(pin)artBearers(o).forEach(function(b){
+    var u=String((b&&b.imageUrl)||'');
+    if(u.indexOf(base)===0)b.imageUrl=pin+u.slice(base.length);
+  });
+  var sid=sagaIdsOf(o)[0]||o.sagaId||null;
+  var d=sid?cardForSaga(o,sid):o;
+  if(d.__drawSaga===undefined){ try{ Object.defineProperty(d,'__drawSaga',{value:sid,enumerable:false}); }catch(_){} }
+  /* No card number: it is the card's place among every card of its saga in this copy, so one card added to a saga would
+     change every picture in it, over a thousand in Beginnings, and this copy (its Test cards too) is not the one a player
+     sees (session 98). */
+  try{ Object.defineProperty(d,'__noNum',{value:true,enumerable:false}); }catch(_){}
+  return d;
+}
+/* The stylesheet rules a face is drawn with (its own classes, the frames, the fonts), not the print sheet's: a change to
+   one of them changes every face. */
+var TTS_FACE_SEL=/\.(mcard|m-|fr\b|fr-|fa-|fc-|art-full|kw-(pill|link|shadow)|i-(artist|distrib|num|rev|saga)\b|o-(base|num|top)\b|ring-|mana-s\b|mico\b|nocost\b|inner-fill\b|deco\b)|body\.(edge-|pin-|bleed)/;
+function ttsCssText(keep){
+  var out=[];
+  var walk=function(rules){
+    Array.prototype.forEach.call(rules||[],function(r){
+      if(r.cssRules&&r.type!==1){
+        var m=String((r.media&&r.media.mediaText)||r.conditionText||'');
+        if(!/print/i.test(m))walk(r.cssRules);
+        return;
+      }
+      if(keep(r))out.push(r.cssText);
+    });
+  };
+  Array.prototype.forEach.call(document.styleSheets||[],function(s){ try{ walk(s.cssRules); }catch(_){} });
+  return out.join('\n');
+}
+function ttsFaceCss(){
+  return ttsCssText(function(r){ return r.type===5||(r.type===1&&TTS_FACE_SEL.test(r.selectorText||'')); });
+}
+function ttsBackCss(){
+  return ttsCssText(function(r){ return r.type===1&&(/cbk/.test(r.selectorText||'')||/--conjure-logo/.test(r.cssText||'')); });
+}
+/* The look a face is drawn with: the pack (less its card back, picked for each deck and never on a face), the watermarks,
+   the keywords' reminders, the face's stylesheet rules and how a picture is drawn. */
+function ttsLookPrint(){
+  var b=ghLookShape();
+  if(b.cardLook&&typeof b.cardLook==='object')delete b.cardLook.back;
+  var kw=(window.KW_DATA||[]).concat(KW_EXTRA||[]).map(function(k){ return ghStableJson(k); }).sort();
+  return ttsSha(TTS_DRAW+'\n'+ghStableJson(b)+'\n'+ghStableJson(ghBuildMarks())+'\n'+kw.join('\n')+'\n'+ttsFaceCss());
+}
+
+function ttsEmptyList(){
+  return {format:1,game:ghMode(),set:GH_REPO.owner+'/'+GH_REPO.repo,cards:Object.create(null),backs:Object.create(null)};
+}
+function ttsCleanEntry(x){
+  if(!x||typeof x!=='object')return null;
+  /* the hash goes into the address (ttsCdn); a list from session 97 also names a commit (at), which no address needs now */
+  var f=String(x.f||''), sha=String(x.sha||'');
+  if(!TTS_FILE.test(f)||!TTS_SHA.test(sha))return null;
+  var o={n:String(x.n||''),f:f,fp:String(x.fp||''),sha:sha};
+  /* fn, the rules print (session 99): a list from before has none */
+  if(x.fn)o.fn=String(x.fn);
+  if(x.lk)o.lk=String(x.lk);
+  if(x.noart)o.noart=1;
+  return o;
+}
+/* Read from another repository, so only what fits the shape is kept; null-prototype maps, as a key is a card id. */
+function ttsCleanList(j){
+  var out=ttsEmptyList();
+  if(!j||typeof j!=='object')return out;
+  if(typeof j.game==='string')out.game=j.game;
+  if(typeof j.set==='string')out.set=j.set;
+  [['cards',out.cards],['backs',out.backs]].forEach(function(p){
+    var src=j[p[0]]; if(!src||typeof src!=='object')return;
+    Object.keys(src).forEach(function(id){
+      if(!TTS_KEY.test(id))return;
+      var en=ttsCleanEntry(src[id]); if(en)p[1][id]=en;
+    });
+  });
+  return out;
+}
+/* One entry a line, in id order, so a publish that changes one card changes one line. */
+function ttsListJson(list){
+  var block=function(m){
+    var ids=Object.keys(m).sort();
+    return ids.length?'{\n'+ids.map(function(id){ return '  '+JSON.stringify(id)+':'+ghStableJson(m[id]); }).join(',\n')+'\n }':'{}';
+  };
+  return '{"format":1,"game":'+JSON.stringify(list.game)+',"set":'+JSON.stringify(list.set)
+    +',"size":['+TTS_W+','+TTS_H+'],\n "backs":'+block(list.backs)+',\n "cards":'+block(list.cards)+'\n}\n';
+}
+function ttsListUrl(t){
+  return 'https://raw.githubusercontent.com/'+t.owner+'/'+t.repo+'/'+ghRefPath(t.branch||'main')+'/'+TTS_LIST;
+}
+/* Through the API, never the CDN, which can be minutes behind the branch this writes to. */
+function ttsReadList(t,rt){
+  var sha=rt&&rt.paths&&rt.paths[TTS_LIST];
+  if(!sha)return Promise.resolve(ttsEmptyList());
+  var name=t.owner+'/'+t.repo;
+  return ghApi('GET','/git/blobs/'+sha,undefined,0,t).then(function(r){
+    var j=null; try{ j=JSON.parse(ghB64Utf8(r&&r.content)); }catch(_){}
+    if(!j||typeof j!=='object'||!j.cards||typeof j.cards!=='object')
+      throw ttsBefore(TTS_LIST+' in '+name+' is not a list this page can read. Nothing was sent.');
+    if(j.game&&j.game!==ghMode())
+      throw ttsBefore(name+' holds the other game’s Tabletop Simulator pictures. Nothing was sent.');
+    if(j.set&&String(j.set).toLowerCase()!==String(GH_REPO.owner+'/'+GH_REPO.repo).toLowerCase())
+      throw ttsBefore(name+' holds the Tabletop Simulator pictures of '+j.set+'. Nothing was sent.');
+    return ttsCleanList(j);
+  });
+}
+/* A picture is drawn from the cards as published: what is here must be what the cards' repository holds, byte for byte. */
+function ttsCardsPublished(){
+  var local={};
+  return ghFetchManifest().then(function(prev){
+    var pay=ghPayload(prev), enc=new TextEncoder();
+    return Promise.all(TTS_SAME.map(function(n){
+      return ghBlobSha(enc.encode(pay[n])).then(function(s){ local[n]=s; });
+    }));
+  }).then(ghRemoteTree).then(function(rtm){
+    var off=TTS_SAME.filter(function(n){ return !rtm.paths||rtm.paths[n]!==local[n]; });
+    if(rtm.empty||rtm.newBranch||off.length)
+      throw ttsBefore('Publish the cards first: what is here differs from what '+GH_REPO.owner+'/'+GH_REPO.repo
+        +' holds ('+(off.length?off.join(', '):'nothing published')+'). Nothing was sent.');
+    return rtm;
+  });
+}
+/* What to draw. Publish TTS cards draws a card that is new, has no picture there, was drawn with its art missing, or now
+   plays differently (its rules print, ttsRulesPrint); any other change (its print) waits for Redraw all, which takes every
+   card drawn with another look than this one or changed since it was drawn, or, when none was, every card (the author,
+   session 99). An entry from before session 99 has no rules print: an unchanged card is given its own, a changed one is
+   drawn again, as it was then. A card back is drawn when it is new or missing, and on Redraw all. */
+function ttsPlan(rtMain,rt,list,all,lookNow){
+  var keep=ghPublishSagaSet(), jobs=[], bjobs=[], bad=[], seen=Object.create(null), rows=[], waitB=[];
+  var live=Object.create(null), liveB=Object.create(null), lk=String(lookNow||'').slice(0,12);
+  var forms=(window.CARDS||[]).filter(function(c){ return c&&!c.testing&&ghInScope(c,keep); })
+    .map(function(c){ return ghPublishedForm(c,keep); })
+    /* an official card in a saga of yours: the official set's own picture serves it */
+    .filter(function(o){ return !o.linked; });
+  var stale=forms.filter(function(o){ var en=list.cards[String(o.cid||'')]; return !!en&&en.lk!==lk; }).length;
+  var p=Promise.resolve();
+  forms.forEach(function(o){
+    var cid=String(o.cid||''), f=ttsCardFile(cid);
+    if(!f||seen[cid]){ if(!f)bad.push(o.name||'a card'); return; }
+    seen[cid]=1; live[cid]=1;
+    var row={o:o,cid:cid,f:f};
+    rows.push(row);
+    p=p.then(function(){ return ttsSha(ghStableJson(o)+'\n'+ttsArtPrint(o,rtMain)); }).then(function(fp){
+      row.fp=fp.slice(0,24);
+      return ttsSha(ttsRulesPrint(o));
+    }).then(function(fn){ row.fn=fn.slice(0,24); });
+  });
+  var bcss=null;
+  (window.CB_LIST||[]).forEach(function(b){
+    var key=String((b&&b.key)||'');
+    if(!TTS_KEY.test(key)||!(window.CB_MARKUP||{})[key])return;
+    p=p.then(function(){
+      if(bcss===null)bcss=ttsBackCss();
+      return ttsSha(TTS_DRAW+'\n'+key+'\n'+window.CB_MARKUP[key]+'\n'+bcss);
+    }).then(function(fp){
+      fp=fp.slice(0,24); liveB[key]=1;
+      var en=list.backs[key], f='backs/'+key+'.jpg', name=String(b.name||key);
+      if(all||!en||en.f!==f||!rt.paths[en.f])bjobs.push({kind:'back',id:key,name:name,path:f,fp:fp});
+      else if(en.fp!==fp)waitB.push('the '+name+' back');
+    });
+  });
+  return p.then(function(){
+    var since=function(r){ var en=list.cards[r.cid]; return !!en&&(en.lk!==lk||en.fp!==r.fp); };
+    var every=all&&!rows.some(since), waiting=[];
+    rows.forEach(function(r){
+      var en=list.cards[r.cid];
+      if(en&&!en.fn&&en.fp===r.fp)en.fn=r.fn;
+      var need=!en||en.f!==r.f||!rt.paths[en.f]||!!en.noart||en.fn!==r.fn||(all&&(every||since(r)));
+      if(need)jobs.push({kind:'card',id:r.cid,name:r.o.name||r.cid,path:r.f,fp:r.fp,fn:r.fn,form:r.o});
+      else if(en.fp!==r.fp)waiting.push(r.o.name||r.cid);
+    });
+    return {jobs:bjobs.concat(jobs),bad:bad,stale:stale,cards:rows.length,waiting:waiting.concat(waitB),
+            gone:Object.keys(list.cards).filter(function(id){ return !live[id]; }),
+            goneBacks:Object.keys(list.backs).filter(function(k){ return !liveB[k]; })};
+  });
+}
+/* A card's art box left empty because there is no picture at its address (404) is drawn so, as the site shows it, and
+   tried again next time; any other failure to read it leaves the card for next time. */
+function ttsDraw(job,head){
+  var bytes=function(b){ return b.arrayBuffer().then(function(ab){ return new Uint8Array(ab); }); };
+  if(job.kind==='back')
+    return window.edBackToBlob(job.id,'image/jpeg',TTS_QUALITY,'#000').then(function(r){
+      return bytes(r.blob).then(function(u8){ return {bytes:u8}; });
+    },function(err){ return {skip:true,why:(err&&err.message)||String(err)}; });
+  return window.edFaceToBlob(ttsDrawCopy(job.form,head),TTS_W/340,'image/jpeg',TTS_QUALITY,'#000').then(function(r){
+    var why=r.why||[], miss=r.missingArt||0;
+    if(miss&&!(why.length&&why.every(function(w){ return w==='HTTP 404'; })))
+      return {skip:true,why:'its art could not be read: '+why.join('; ')};
+    return bytes(r.blob).then(function(u8){ return {bytes:u8,noart:miss?1:0}; });
+  },function(err){ return {skip:true,why:(err&&err.message)||String(err)}; });
+}
+/* A tree, a commit and the branch moved to it, as ghSendPart does. */
+function ttsCommit(t,run,entries,msg,pace){
+  var base=run.tree, i=0, tree='';
+  function step(){
+    if(i>=entries.length)return Promise.resolve(base);
+    var body={tree:entries.slice(i,i+GH_TREE_CHUNK)};
+    if(base)body.base_tree=base;
+    i+=GH_TREE_CHUNK;
+    return ghPacedApi(pace,'POST','/git/trees',body,t).then(function(r){ base=r.sha; return step(); });
+  }
+  return step().then(function(treeSha){
+    tree=treeSha;
+    return ghPacedApi(pace,'POST','/git/commits',{message:msg,tree:treeSha,parents:[run.head]},t);
+  }).then(function(commit){
+    var br=t.branch||'main';
+    run.stage='ref'; run.commit=String(commit.sha||'');
+    return (run.made
+      ? ghPacedApi(pace,'PATCH','/git/refs/heads/'+ghRefPath(br),{sha:commit.sha},t)
+      : ghPacedApi(pace,'POST','/git/refs',{ref:'refs/heads/'+br,sha:commit.sha},t))
+      .then(function(){
+        run.stage='prep'; run.made=true; run.head=run.commit; run.tree=tree; run.commits++;
+        entries.forEach(function(en){ if(en.sha)run.paths[en.path]=en.sha; else delete run.paths[en.path]; });
+      });
+  });
+}
+function ttsSendBlob(t,u8,sha,path,pace){
+  return ghPacedApi(pace,'POST','/git/blobs',{content:ghB64Bytes(u8),encoding:'base64'},t).then(function(r){
+    if(r.sha!==sha)throw new Error('GitHub stored a different hash for '+path+' than this page computed. '
+      +'Refusing to build a tree from it.');
+  });
+}
+/* A part: its pictures in one commit, then the list naming them in a second, so a stop between parts leaves every
+   listed address good and the next press carries on; a picture already there is never sent twice. The last part
+   also takes the cards that are gone out of the list. */
+function ttsSendPart(t,run,k,jobs,list,lookNow,pace,last){
+  var part=run.parts>1?'part '+(k+1)+' of '+run.parts:'', label=part?part+': ':'';
+  var entries=[], done=[], p=Promise.resolve();
+  jobs.forEach(function(job,i){
+    p=p.then(function(){
+      ttsPushStatus('Drawing '+label+(i+1)+' of '+jobs.length+', '+job.name+'…');
+      return ttsDraw(job,run.mainHead);
+    }).then(function(r){
+      if(r.skip){ run.skipped.push(job.name+(r.why?' ('+r.why+')':'')); return; }
+      run.drawn++;
+      if(r.noart)run.noArt.push(job.name);
+      return ghBlobSha(r.bytes).then(function(sha){
+        if(run.paths[job.path]===sha){ done.push({job:job,sha:sha,noart:r.noart}); return; }
+        return ttsSendBlob(t,r.bytes,sha,job.path,pace).then(function(){
+          entries.push({path:job.path,mode:'100644',type:'blob',sha:sha});
+          done.push({job:job,sha:sha,noart:r.noart});
+          run.sent++;
+          /* another picture was at that address: a deck made before shows this one once jsDelivr renews its copy */
+          if(run.paths[job.path])run.replaced.push(job.name);
+        });
+      });
+    });
+  });
+  return p.then(function(){
+    if(!entries.length)return null;
+    ttsPushStatus('Committing'+(part?' '+part:'')+'…');
+    return ttsCommit(t,run,entries,'Tabletop Simulator pictures from the app'+(part?', '+part:'')+': '
+      +entries.length+' file(s)',pace);
+  }).then(function(){
+    done.forEach(function(d){
+      var tbl=d.job.kind==='back'?list.backs:list.cards;
+      var rec={n:d.job.name,f:d.job.path,fp:d.job.fp,sha:d.sha};
+      if(d.job.kind==='card'){ rec.fn=d.job.fn; rec.lk=String(lookNow||'').slice(0,12); }
+      if(d.noart)rec.noart=1;
+      tbl[d.job.id]=rec;
+    });
+    /* A card gone from the set leaves the list, and its picture stays where a deck made before looks for it. */
+    if(last){
+      last.gone.forEach(function(id){ delete list.cards[id]; run.gone++; });
+      last.goneBacks.forEach(function(k){ delete list.backs[k]; });
+    }
+    list.game=ghMode(); list.set=GH_REPO.owner+'/'+GH_REPO.repo;
+    var u8=new TextEncoder().encode(ttsListJson(list));
+    return ghBlobSha(u8).then(function(sha){
+      if(run.paths[TTS_LIST]===sha)return null;
+      ttsPushStatus('Writing the list'+(part?', '+part:'')+'…');
+      return ttsSendBlob(t,u8,sha,TTS_LIST,pace).then(function(){
+        return ttsCommit(t,run,[{path:TTS_LIST,mode:'100644',type:'blob',sha:sha}],'Tabletop Simulator list from the app'
+          +(part?', '+part:'')+': '+Object.keys(list.cards).length+' card(s)',pace);
+      });
+    });
+  }).then(function(){ run.landed=k+1; });
+}
+
+window.edGhTtsPublish=function(all){
+  if(_ghBusy)return Promise.resolve();
+  var bad=ghConfigProblem()||ghWholeSetProblem()||ttsConfigProblem();
+  if(bad){ ttsPushStatus(bad); return Promise.resolve(); }
+  var blocked=syncBlockedReason(GH_API);
+  if(blocked){ ttsPushStatus(blocked); return Promise.resolve(); }
+  if(typeof window.edFaceToBlob!=='function'||typeof window.edBackToBlob!=='function'){
+    ttsPushStatus('This page cannot draw card faces.'); return Promise.resolve(); }
+  _ghBusy=true; _ttsStarted=false;
+  var T=ttsTarget(), main=null, list=null, lookNow='', plan=null;
+  var run={stage:'prep',parts:1,landed:0,commits:0,head:'',tree:'',made:false,paths:{},mainHead:'',
+           newBranch:'',from:'',drawn:0,sent:0,gone:0,skipped:[],noArt:[],replaced:[]};
+  ttsPushStatus('Reading the repositories…');
+  return ttsCardsPublished().then(function(rtm){
+    main=rtm; run.mainHead=rtm.head;
+    return ghPublishTarget(T,ttsPushStatus);
+  }).then(function(go){
+    if(go!==true){
+      _ghBusy=false;
+      ttsPushStatus(go===false?'Cancelled - nothing was published.':'');
+      return;
+    }
+    return ghRemoteTreeFor(T).then(function(rt){
+      if(!rt.head)throw new Error('the repository has no commit to build on.');
+      run.head=rt.head; run.tree=rt.tree; run.made=!rt.newBranch;
+      run.newBranch=rt.newBranch||''; run.from=rt.from||'';
+      Object.keys(rt.paths).forEach(function(k){ run.paths[k]=rt.paths[k]; });
+      return ttsReadList(T,rt).then(function(l){ list=l; return ttsLookPrint(); }).then(function(lp){
+        lookNow=lp;
+        ttsPushStatus('Comparing the cards…');
+        return ttsPlan(main,rt,list,all,lookNow);
+      });
+    }).then(function(pl){
+      plan=pl;
+      var nCards=pl.jobs.filter(function(j){ return j.kind==='card'; }).length;
+      if(!all||!pl.jobs.length)return true;
+      return edChooseModal({
+        title:'Redraw '+nCards+' card'+(nCards===1?'':'s')+' for Tabletop Simulator?',
+        body:'Each is drawn again as it is now, art and frame included, and a picture that comes out different replaces '
+          +'the one at its address.',
+        choices:[{key:'go',label:'Redraw '+nCards+' card'+(nCards===1?'':'s'),
+                  detail:'Keep this page open until it says Published.'}]
+      }).then(function(k){ return k==='go'; });
+    }).then(function(ok){
+      if(ok!==true){ _ghBusy=false; ttsPushStatus('Cancelled - nothing was published.'); return; }
+      var pl=plan;
+      if(!pl.jobs.length&&!pl.gone.length&&!pl.goneBacks.length){
+        _ghBusy=false; _ttsList=list; ttsLookSet(list,lookNow);
+        ttsPushStatus('Already up to date - every card has its picture.'+ttsWaitLine(pl.waiting)
+          +(pl.bad.length?' '+pl.bad.length+' card(s) have no id to name a picture by: '+ttsNames(pl.bad)+'.':''));
+        edRenderOwnerSync();
+        return;
+      }
+      var parts=[];
+      for(var i=0;i<pl.jobs.length;i+=GH_ART_BATCH)parts.push(pl.jobs.slice(i,i+GH_ART_BATCH));
+      if(!parts.length)parts.push([]);
+      run.parts=parts.length;
+      /* each part: its pictures, two trees, two commits, two branch moves and the list */
+      var pace=pl.jobs.length+7*parts.length>GH_WRITE_FREE;
+      return parts.reduce(function(p,part,k){
+        return p.then(function(){ return ttsSendPart(T,run,k,part,list,lookNow,pace,k===parts.length-1?pl:null); });
+      },Promise.resolve()).then(function(){
+        _ghBusy=false; run.stage='done'; _ttsList=list; ttsLookSet(list,lookNow);
+        ttsPushStatus((run.commits?'Published to '+T.owner+'/'+T.repo+': ':'Nothing was committed: ')
+          +run.drawn+' drawn, '+run.sent+' sent'+(run.gone?', '+run.gone+' taken off the list':'')+'.'
+          +(run.commits?' Commit '+run.head.slice(0,10)+'.':'')
+          +(run.newBranch&&run.commits?' Branch "'+run.newBranch+'" was created from "'+run.from+'".':'')
+          +(run.replaced.length?' '+run.replaced.length+' replaced ('+ttsNames(run.replaced)+'): decks made before show the '
+            +'new picture within about 12 hours, once jsDelivr renews its copy.':'')
+          +(run.gone?' A card taken off the list keeps its picture there, for decks made before.':'')
+          +(run.noArt.length?' '+run.noArt.length+' drawn with an empty art box, as no picture is at its address: '
+            +ttsNames(run.noArt)+'.':'')
+          +(run.skipped.length?' '+run.skipped.length+' not drawn: '+ttsNames(run.skipped)
+            +'. Publish TTS cards again to try them.':'')
+          +ttsWaitLine(pl.waiting)
+          +(pl.bad.length?' '+pl.bad.length+' card(s) have no id to name a picture by: '+ttsNames(pl.bad)+'.':''));
+        if(run.commits)toast('Published to '+T.owner+'/'+T.repo);
+        edRenderOwnerSync();
+        ttsTargetAgain(run);
+      });
+    });
+  }).catch(function(err){
+    _ghBusy=false;
+    ttsTargetAgain(run);
+    var m=(err&&err.message)||String(err);
+    if(err&&err.before){ ttsPushStatus(m); return; }
+    if(run.stage==='ref'&&!(err&&err.status)){
+      ttsPushStatus('Publish TTS cards may have gone part of the way: the connection failed while the branch was '
+        +'being moved to commit '+String(run.commit||'').slice(0,10)+' ('+m+'). Press Publish TTS cards again: '
+        +'a picture already there is not sent twice.');
+      return;
+    }
+    if(run.commits){
+      ttsPushStatus('Publish TTS cards stopped part-way: '+m+(/[.!?]$/.test(m)?' ':'. ')
+        +'Every card listed so far has its picture. Press Publish TTS cards again to send the rest: a picture '
+        +'already there is not sent twice.');
+      return;
+    }
+    ttsPushStatus('Publish TTS cards failed: '+m
+      +(_ttsStarted?' The repository was started with a README; nothing else was committed.'
+        :' Nothing was committed.'));
+  });
+};
+window.edGhTtsRedraw=function(){ return window.edGhTtsPublish(true); };
+/* The row's line said the repository was empty, or had no such branch: a press that started it or made the branch reads it again. */
+function ttsTargetAgain(run){
+  if(_ttsStarted||(run&&run.newBranch&&run.commits))ttsCheckTarget();
+}
+
+/* The look's line: how many listed cards were drawn with another look than this one. */
+function ttsLookSet(list,lookNow){
+  var lk=String(lookNow||'').slice(0,12), ids=Object.keys((list&&list.cards)||{});
+  var stale=ids.filter(function(id){ return list.cards[id].lk!==lk; }).length;
+  var was=_ttsLook?_ttsLook.stale:-1;
+  _ttsLook={stale:stale,of:ids.length};
+  return was!==stale;
+}
+function ttsLookLine(){
+  return (_ttsLook&&_ttsLook.stale&&ttsTargetSet())?'The look has changed since the last full redraw.':'';
+}
+/* On opening Owner Sync: the list read once a visit (the published copy, no token needed), the look's print each time. */
+function ttsLookRefresh(){
+  if(!ttsTargetSet()){ _ttsLook=null; return Promise.resolve(); }
+  var t=ttsTarget(), read=_ttsList?Promise.resolve(_ttsList)
+    :_ttsListRead?Promise.resolve(null)
+    :ttsFetchJson(ttsListUrl(t),true).then(ttsCleanList,function(){ return null; });
+  _ttsListRead=true;
+  return read.then(function(list){
+    if(!list)return;
+    _ttsList=list;
+    return ttsLookPrint().then(function(lp){ if(ttsLookSet(list,lp))edRenderOwnerSync(); });
+  }).catch(function(){});
+}
+window.edTtsLookState=function(){ return _ttsLook?{stale:_ttsLook.stale,of:_ttsLook.of}:null; };
+/* for the checks: what Publish TTS cards reads of how a card plays (ttsRulesPrint) */
+window.edTtsRulesPrint=function(c){ return c?ttsRulesPrint(c):''; };
+
+/* ── CLEAN UP (session 98) ─────────────────────────────────────────────────
+   GitHub keeps every old version of a picture, and a history rewritten there does not give the space back (it keeps what
+   nothing points at), so the TTS repository is cleaned by deleting it and making it again under the same name: the
+   addresses are the branch's, and Publish TTS cards puts each picture back where decks made before look for it. The token
+   reaches Contents only, so this window says how, with links to GitHub's own pages, and deletes nothing itself. */
+window.edGhTtsCleanUp=function(){
+  if(_ghBusy)return Promise.resolve();
+  var bad=ghConfigProblem()||ttsConfigProblem();
+  if(bad){ ttsPushStatus(bad); return Promise.resolve(); }
+  var blocked=syncBlockedReason(GH_API);
+  if(blocked){ ttsPushStatus(blocked); return Promise.resolve(); }
+  var T=ttsTarget(), name=T.owner+'/'+T.repo, kb=0;
+  _ghBusy=true;
+  ttsPushStatus('Reading '+name+'…');
+  return ghApi('GET','',undefined,0,T).then(function(repo){
+    kb=+(repo&&repo.size)||0;
+    return ghRemoteTreeFor(T);
+  }).then(function(rt){
+    if(rt.empty)throw ttsBefore(name+' is empty: there is nothing to clean up.');
+    if(rt.newBranch)throw ttsBefore(name+' has no branch "'+T.branch+'": there is nothing to clean up.');
+    /* refused, as Publish TTS cards refuses it, when it holds the other game's pictures or another set's */
+    return ttsReadList(T,rt).then(function(){
+      _ghBusy=false;
+      var paths=Object.keys(rt.paths);
+      ttsPushStatus('');
+      ttsCleanWindow(T,{kb:kb, pics:paths.filter(function(p){ return TTS_FILE.test(p); }).length,
+        other:paths.filter(function(p){ return !TTS_FILE.test(p)&&p!==TTS_LIST&&p!=='README.md'; }).sort()});
+    });
+  }).catch(function(err){
+    _ghBusy=false;
+    var m=(err&&err.message)||String(err);
+    ttsPushStatus(err&&err.before?m.replace(/ Nothing was sent\.$/,''):'Could not read '+name+': '+m);
+  });
+};
+function ttsCleanWindow(T,info){
+  ttsCleanClose();
+  var name=T.owner+'/'+T.repo, n=info.pics, gh='https://github.com/';
+  var link=function(href,txt){ return " <a href='"+e(href)+"' target='_blank' rel='noopener noreferrer'>"+e(txt)+"</a>"; };
+  var step=function(i,txt,more){
+    return "<div class='gate-step'><div class='gate-num'>"+i+"</div><div class='gate-txt'>"+e(txt)+(more||'')+"</div></div>";
+  };
+  var other=info.other.slice(0,8).join(', ')+(info.other.length>8?' and '+(info.other.length-8)+' more':'');
+  var ov=document.createElement('div'); ov.id='ttsCleanOv'; ov.className='ed2-overlay';
+  ov.innerHTML="<div class='ed2-modal ed2-gate tts-clean'><div class='ed2-modal-head wh'>"
+    +"<b class='gate-title wh-t'>"+e('Clean up '+name)+"</b></div>"
+    +"<div class='ed2-modal-body'>"
+    +"<div class='gate-txt'>"+e(name+' holds '+n+' picture'+(n===1?'':'s')
+      +(info.kb?', and GitHub counts '+ghSizeText(info.kb)+' for it, history included':'')+'.')+"</div>"
+    +"<div class='gate-note'>"+e('GitHub keeps every old version of a picture, even when the history is rewritten, so the '
+      +'way to free that space is to delete the repository and make it again with the same name. Each picture keeps its '
+      +'address, so decks made before get it back once Publish TTS cards has sent it again.')+"</div>"
+    +(info.other.length?"<div class='gate-lose' id='ttsCleanOther'><h5>NOT MADE BY PUBLISH TTS CARDS</h5><ul><li>"
+      +e(info.other.length+' file'+(info.other.length===1?'':'s')+' that deleting the repository loses: '+other+'.')
+      +"</li></ul></div>":'')
+    +step(1,'On GitHub, delete '+name+': its Settings, at the very bottom, Delete this repository. Only this one, never '
+      +GH_REPO.owner+'/'+GH_REPO.repo+'.',link(gh+T.owner+'/'+T.repo+'/settings','Open its settings'))
+    +step(2,'Make it again: a new public repository named '+T.repo+', owned by '+T.owner+'.',link(gh+'new','New repository'))
+    +step(3,'If your access token reaches chosen repositories only, edit it and add the new '+T.repo+', with Contents read '
+      +'and write: a token does not reach a new repository of the same name by itself.',
+      link(gh+'settings/personal-access-tokens','Your tokens'))
+    +step(4,'Press Publish TTS cards. It starts the new repository and sends every picture again.'
+      +(n>500?' For '+n+' pictures that is about '+Math.ceil(n/500)+' presses, an hour apart: GitHub takes about 500 '
+        +'new files an hour.':''))
+    +"<div class='gate-note'>"+e('Until a picture is back, a deck made before shows that card blank, unless the player’s '
+      +'Tabletop Simulator saved it already. A picture kept only for decks made before, of a card taken off the list, does '
+      +'not come back.')+"</div>"
+    +"<div class='gate-actions'><button class='ed2-btn nb nb-red nb-l close-x' id='ttsCleanNo'>Close &#10005;</button></div>"
+    +"</div></div>";
+  document.body.appendChild(ov);
+  ov.querySelector('#ttsCleanNo').addEventListener('click',ttsCleanClose);
+  ov.addEventListener('click',function(ev){ if(ev.target===ov)ttsCleanClose(); });
+  edDialogOpen(ov,'Clean up '+name,ttsCleanClose,ov.querySelector('#ttsCleanNo'));
+}
+function ttsCleanClose(){
+  var ov=document.getElementById('ttsCleanOv'); if(!ov)return;
+  edDialogClose(ov);
+  if(ov.parentNode)ov.parentNode.removeChild(ov);
+}
+
+/* ── A PLAYER'S DECK (Build Deck → Export → TTS, cat_export.js) ────────────
+   Each card's picture from the TTS list its own set's manifest names (the manifest's tts), and the card backs from the
+   official set's list; a set whose list lacks a back lends its own. Read once in five minutes. */
+var _ttsReadMemo={};
+function ttsFetchJson(url,fresh){
+  var m=_ttsReadMemo[url];
+  if(m&&!fresh&&Date.now()-m.at<5*60000)return m.p;
+  var why=syncBlockedReason(url);
+  var p=(why?Promise.reject(new Error(why)):fetchSource(url)).then(function(res){
+    if(!res||res.zip||!res.json||typeof res.json!=='object')throw new Error('what came back is not a list.');
+    return res.json;
+  });
+  _ttsReadMemo[url]={at:Date.now(),p:p};
+  p.catch(function(){ if(_ttsReadMemo[url]&&_ttsReadMemo[url].p===p)delete _ttsReadMemo[url]; });
+  return p;
+}
+function ttsPointerOf(man){
+  var t=man&&man.tts;
+  if(!t||typeof t!=='object')return null;
+  var o={owner:String(t.owner||''),repo:String(t.repo||''),branch:String(t.branch||'main')};
+  return (ghNameOk(o.owner)&&ghNameOk(o.repo)&&ghBranchOk(o.branch))?o:null;
+}
+/* a set with no manifest has no pictures, and a TTS repository with no list has none drawn yet */
+function ttsMissing(err){ return /answered 404/.test(String((err&&err.message)||'')); }
+function ttsListOf(src){
+  var dir=String(src.url||'').split(/[?#]/)[0].replace(/[^\/]*$/,'');
+  return ttsFetchJson(dir+'manifest.json').then(null,function(err){
+    if(ttsMissing(err))return null;
+    throw err;
+  }).then(function(man){
+    var t=ttsPointerOf(man);
+    if(!t)return {none:true};
+    return ttsFetchJson(ttsListUrl(t)).then(function(j){ return {t:t,list:ttsCleanList(j)}; },function(err){
+      if(ttsMissing(err))return {t:t,list:ttsCleanList(null)};
+      throw err;
+    });
+  });
+}
+/* The branch's address, so a deck made before shows a card's newest picture; v is git's hash of the picture, so a deck
+   made after a change loads it afresh in Tabletop Simulator, which keeps every picture it has loaded by its address. */
+function ttsCdn(t,en){
+  return 'https://cdn.jsdelivr.net/gh/'+t.owner+'/'+t.repo+'@'+(t.branch||'main')+'/'+en.f+'?v='+en.sha.slice(0,10);
+}
+/* The set a card is published by: the official one, or the followed set its saga comes from; none for a card made here
+   and never published, or one from a table. */
+function ttsSourceOf(c){
+  if(!c)return null;
+  if(edOfficialCard(c))return srcOfficial();
+  var ids=sagaIdsOf(c);
+  for(var i=0;i<ids.length;i++){
+    var sg=sagaById(ids[i]); if(!sg)continue;
+    var k=groupKeyOf(sg);
+    if(k===GROUP_OFFICIAL)return srcOfficial();
+    if(k===GROUP_LOCAL||String(k).indexOf('table:')===0)continue;
+    var s=srcByKey(k); if(s)return s;
+  }
+  return null;
+}
+var TTS_WHY={local:'Not published from a set', none:'Its set has no Tabletop Simulator pictures',
+  unread:'Its set’s list could not be read', notyet:'Not drawn for Tabletop Simulator yet'};
+window.edTtsLists=function(cards){
+  cards=(cards||[]).filter(Boolean);
+  var off=srcOfficial(), bySrc={}, order=[], srcOf=cards.map(function(c){
+    var s=ttsSourceOf(c);
+    if(s&&!bySrc[s.key]){ bySrc[s.key]=s; order.push(s.key); }
+    return s;
+  });
+  if(!bySrc[off.key]){ bySrc[off.key]=off; order.push(off.key); }
+  var got={};
+  return Promise.all(order.map(function(k){
+    return ttsListOf(bySrc[k]).then(function(r){ got[k]=r; },function(err){ got[k]={err:(err&&err.message)||String(err)}; });
+  })).then(function(){
+    var faces=cards.map(function(c,i){
+      var s=srcOf[i];
+      if(!s)return {url:'',why:TTS_WHY.local};
+      var g=got[s.key]||{};
+      if(g.err)return {url:'',why:TTS_WHY.unread,err:g.err};
+      if(g.none||!g.list)return {url:'',why:TTS_WHY.none};
+      var en=g.list.cards[String(c.cid||'')];
+      return en?{url:ttsCdn(g.t,en)}:{url:'',why:TTS_WHY.notyet};
+    });
+    var backs={};
+    var take=function(g){
+      if(!g||!g.list)return;
+      Object.keys(g.list.backs).forEach(function(k){ if(!backs[k])backs[k]=ttsCdn(g.t,g.list.backs[k]); });
+    };
+    take(got[off.key]);
+    order.forEach(function(k){ take(got[k]); });
+    return {faces:faces,backs:backs};
+  });
+};
 
 /* What changed… reads cards.json through the API, not the CDN: a CDN copy can be minutes behind the branch the publish overwrites. */
 function ghB64Utf8(b64){
@@ -2305,6 +3052,7 @@ window.edOpenOwnerSync=function(){
   }
   ov.style.display='flex';
   edRenderOwnerSync();
+  ttsLookRefresh();
 };
 window.edCloseOwnerSync=function(){
   var o=document.getElementById('edSyncOverlay'); if(o)o.style.display='none';
@@ -2429,6 +3177,26 @@ function edRenderOwnerSync(){
     +"</div>"
     +ghDiffHTML()
     +"<div class='gh-msg' id='ghPushMsg'>"+e(_ghPushMsg)+"</div>"
+    +"</div>";
+
+  /* the pictures Tabletop Simulator loads, with the token above; the look's line only while it is so (HANDOFF §12.1 E) */
+  var ttsLook=ttsLookLine();
+  h+="<div class='gh-sec' id='ttsSec'><h4>TTS Repo</h4>"
+    +ghRow('Repository','',
+        "<input class='ed2-in tiny' id='ttsOwner' type='text' value=\""+e(GH_TTS.owner)+"\" placeholder='username' "
+        +"onchange=\"edGhSetTts('owner',this.value,1)\"> / "
+        +"<input class='ed2-in tiny' id='ttsRepo' type='text' value=\""+e(GH_TTS.repo)+"\" placeholder='repository' "
+        +"onchange=\"edGhSetTts('repo',this.value,1)\"> @ "
+        +"<input class='ed2-in tiny' id='ttsBranch' type='text' value=\""+e(GH_TTS.branch||'main')+"\" placeholder='main' "
+        +"onchange=\"edGhSetTts('branch',this.value,1)\">")
+    +"<div class='gh-msg' id='ttsTargetMsg'>"+e(_ttsTargetMsg)+"</div>"
+    +"<div class='gh-btns'>"
+    +"<button class='ed2-btn primary' id='ttsPublishBtn' onclick='edGhTtsPublish()'>Publish TTS cards</button>"
+    +"<button class='ed2-btn' id='ttsRedrawBtn' onclick='edGhTtsRedraw()'>Redraw all</button>"
+    +"<button class='ed2-btn' id='ttsCleanBtn' onclick='edGhTtsCleanUp()'>Clean up…</button>"
+    +"</div>"
+    +(ttsLook?"<div class='gh-msg warn' id='ttsLookMsg'>"+e(ttsLook)+"</div>":'')
+    +"<div class='gh-msg' id='ttsPushMsg'>"+e(_ttsPushMsg)+"</div>"
     +"</div>";
 
 

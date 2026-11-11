@@ -537,6 +537,29 @@ body:not(.mse-template) .mcard .m-mana-orb{
 body:not(.mse-template) .mcard .m-mana-orb img{
   width:72px;height:72px;border-radius:50%;display:block;
   filter:drop-shadow(var(--ico-sx,.91px) var(--ico-sy,1.82px) var(--ico-blur,3.03px) rgba(0,0,0,.75))}
+/* Outlined as the Arcane stat icon of the set in use, in the colour's own fill (manaRingHTML, ed2_face.js; the author,
+   9 November): the icon's layers stacked as a map token's (.td-gorb, testdeck.css), the colour's background over its middle
+   and the colour's icon over that, so its outline is all that shows. The circle is the icon's size, its outline's inside
+   edge at the background's, so a frame's rings round the circle (G.manas, ed2_frames.js) go round the outline. */
+body:not(.mse-template) .mcard .m-mana-orb.m-mana-arc{position:relative;width:102px;height:102px;border:0;
+  background:none;box-shadow:none}
+body:not(.mse-template) .mcard .m-mana-ring{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.55))}
+body:not(.mse-template) .mcard .m-mana-ring svg,
+body:not(.mse-template) .mcard .m-mana-ring .o-gal,
+body:not(.mse-template) .mcard .m-mana-ring .o-gc,
+body:not(.mse-template) .mcard .m-mana-ring .o-halo,
+body:not(.mse-template) .mcard .m-mana-ring .o-sheen,
+body:not(.mse-template) .mcard .m-mana-ring .o-ring{position:absolute;left:0;top:0;width:100%;height:100%}
+body:not(.mse-template) .mcard .m-mana-ring .o-sheen{opacity:.8}
+body:not(.mse-template) .mcard .m-mana-ring .o-hw{position:absolute;overflow:hidden}
+body:not(.mse-template) .mcard .m-mana-ring .o-hf{position:absolute}
+body:not(.mse-template) .mcard .m-mana-ring .o-galimg{position:absolute;left:-76.32%;top:-76.32%;width:252.63%;height:252.63%;
+  background:center/100% 100% no-repeat}
+body:not(.mse-template) .mcard .m-mana-ring .o-galimg.o-haloimg{left:-82.89%;top:-82.89%;width:265.79%;height:265.79%;opacity:.5}
+body:not(.mse-template) .mcard .m-mana-bg{position:absolute;left:11px;top:11px;width:80px;height:80px;border-radius:50%;
+  background:var(--pin,var(--frame))}
+body:not(.mse-template) .mcard .m-mana-arc img{position:relative}
 
 /* It keeps the .m-rules class, so fitFace still fits its .m-rules-body. */
 body:not(.mse-template) .mcard-tpl-essence-boxed .m-art .m-rules{

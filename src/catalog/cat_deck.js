@@ -298,7 +298,7 @@ function _dtaInput(){
 }
 /* The Character's four numbers are part of the deck, so they save to the hash as the lists do: an empty Level is an empty Essence area. */
 var TD_STAT_INPUT_IDS = ['dta-lvl', 'dta-atk', 'dta-hp', 'dta-mp'];
-function _statInput(){ _hashSaveDeck(); if(typeof tdLvlEcho === 'function') tdLvlEcho(); }
+function _statInput(){ _hashSaveDeck(); }
 
 /* Row to list on blur only (rewriting a textarea moves its caret), list to row on input; neither loops, as setting .value fires no input event. */
 function deckStatsSyncToText(){
@@ -362,7 +362,11 @@ function _hashSaveDeck(){
       var st = tdReadStatRow();
       if(st && (st.lvl || st.atk || st.hp || st.mp)) data.st = st;
     }
-    if(Object.keys(data).length && typeof _gameMode === 'string' && _gameMode) data.mode = _gameMode;
+    if(Object.keys(data).length){
+      if(typeof _gameMode === 'string' && _gameMode) data.mode = _gameMode;
+      /* whose lists these are, so the other game never loads them (_hashLoadDeck) */
+      data.g = REBIRTH ? 'rebirth' : 'main';
+    }
     var hash = window.location.hash;
     var fm = hash.match(/filters=([A-Za-z0-9+/=]+)/);
     var filterPart = fm ? '&filters=' + fm[1] : '';
@@ -376,14 +380,55 @@ function _hashSaveDeck(){
     }
   } catch(e){}
 }
+/* Each game keeps its own lists (the author, 9 November). The address holds the running game's, tagged with the game (g);
+   the switch (setRebirth, cat_core.js) puts them by for this tab under the game's name and puts the other game's in the
+   address, so the reload loads those. Lists that are the other game's are put by for it and never loaded here. */
+var DECK_PARK_KEY = 'conjure_deck_lists_';
+function _deckParkSet(game, b64){
+  try{
+    if(b64) sessionStorage.setItem(DECK_PARK_KEY + game, b64);
+    else sessionStorage.removeItem(DECK_PARK_KEY + game);
+  }catch(_){}
+}
+/* Whose lists a hash holds: its tag, or, written before the tag, the sections and deck types only one game has. */
+function _deckHashGame(d){
+  if(!d || typeof d !== 'object') return null;
+  if(d.g === 'rebirth' || d.g === 'main') return d.g;
+  if(d.armament || d.st || ['character', 'encounter', 'rewards'].indexOf(d.mode) >= 0) return 'rebirth';
+  if(d.essence || d.wish || ['constructed', 'kingdoms', 'arena', 'draft'].indexOf(d.mode) >= 0) return 'main';
+  return null;
+}
+/* This page's address with the given lists in place of its own, the filters kept. */
+function _deckHashWith(b64){
+  var fm = (location.hash || '').match(/filters=([A-Za-z0-9+/=]+)/);
+  var parts = [];
+  if(b64) parts.push('decks=' + b64);
+  if(fm) parts.push('filters=' + fm[1]);
+  return location.pathname + location.search + (parts.length ? '#' + parts.join('&') : '');
+}
+function _deckListsPark(toRebirth){
+  var m = (location.hash || '').match(/(?:^#|&)decks=([A-Za-z0-9+/=]+)/);
+  _deckParkSet(REBIRTH ? 'rebirth' : 'main', m ? m[1] : '');
+  var back = null;
+  try{ back = sessionStorage.getItem(DECK_PARK_KEY + (toRebirth ? 'rebirth' : 'main')); }catch(_){}
+  if(back && !/^[A-Za-z0-9+/=]+$/.test(back)) back = null;
+  try{ history.replaceState(null, '', _deckHashWith(back)); }catch(_){}
+}
+window._deckListsPark = _deckListsPark;
 function _hashLoadDeck(){
   try {
     var hash = window.location.hash;
     var m = hash.match(/^#decks=([A-Za-z0-9+/=]+)/);
     if(m){
       var data = JSON.parse(decodeURIComponent(escape(atob(m[1]))));
+      var whose = _deckHashGame(data);
+      if(whose && whose !== (REBIRTH ? 'rebirth' : 'main')){
+        _deckParkSet(whose, m[1]);
+        try{ history.replaceState(null, '', _deckHashWith(null)); }catch(_){}
+        return;
+      }
       Object.keys(data).forEach(function(k){
-        if(k === 'st' || k === 'mode') return;
+        if(k === 'st' || k === 'mode' || k === 'g') return;
         var el = document.getElementById(DECK_IDS[k]);
         if(el) el.value = data[k];
       });
@@ -842,12 +887,58 @@ function populateEssence(){
   refreshDeckView();
 }
 
+/* Saved Decks' Sort (the author, 9 November), kept between visits. Chronological is the order the decks were first saved in, which
+   storage keeps (a rename keeps its place, cat_tail.js); Color goes by the colours of each Main Deck in ROYGBIV order, colourless last;
+   Color Count by how many colours, fewest first. */
+var SAVED_SORTS = ['alpha', 'chrono', 'color', 'count', 'newest'];
+function _savedSortGet(){
+  var v = '';
+  try{ v = localStorage.getItem('conjure_saved_sort') || ''; }catch(_){}
+  return SAVED_SORTS.indexOf(v) >= 0 ? v : 'alpha';
+}
+function setSavedSort(v){
+  if(SAVED_SORTS.indexOf(v) < 0) v = 'alpha';
+  try{ localStorage.setItem('conjure_saved_sort', v); }catch(_){}
+  renderSavedDecks();
+}
+window.setSavedSort = setSavedSort;
+/* The Main Deck's colours as ROYGBIV places, counted by manaPips as the Deck Lists page counts them. */
+function _savedColorsOf(entry, cardMap){
+  var text = typeof entry === 'string' ? entry : ((entry && entry.main) || ''), has = {};
+  deckCanonEntries(parseDeckLines(text), true).forEach(function(en){
+    var card = cardMap[en.name]; if(!card) return;
+    var p = manaPips(card.manaCost, en.count);
+    Object.keys(p).forEach(function(c){ if(p[c] > 0) has[c] = true; });
+  });
+  return ROYGBIV.map(function(c, i){ return has[c] ? i : -1; }).filter(function(i){ return i >= 0; });
+}
+function _savedOrder(saved, how){
+  var names = Object.keys(saved);
+  var byName = function(a, b){ return a.localeCompare(b, undefined, {sensitivity:'base', numeric:true}) || (a < b ? -1 : a > b ? 1 : 0); };
+  if(how === 'chrono') return names;
+  if(how === 'newest') return names.reverse();
+  if(how === 'color' || how === 'count'){
+    var cardMap = Object.create(null), col = {};
+    ((typeof CARDS !== 'undefined' && CARDS) || []).forEach(function(c){ if(c && c.name != null) cardMap[c.name] = c; });
+    names.forEach(function(n){ col[n] = _savedColorsOf(saved[n], cardMap); });
+    var byColor = function(a, b){
+      var x = col[a], y = col[b];
+      if(!x.length !== !y.length) return x.length ? -1 : 1;
+      for(var i = 0; i < Math.min(x.length, y.length); i++) if(x[i] !== y[i]) return x[i] - y[i];
+      return x.length - y.length;
+    };
+    return names.sort(function(a, b){ return (how === 'count' ? col[a].length - col[b].length : 0) || byColor(a, b) || byName(a, b); });
+  }
+  return names.sort(byName);
+}
 function renderSavedDecks(){
   var saved = _savedLoad();
   var listEl = document.getElementById('savedList');
   if(!listEl) return;
   listEl.innerHTML = '';
-  var names = Object.keys(saved).sort();
+  var how = _savedSortGet(), sortEl = document.getElementById('savedSort');
+  if(sortEl && sortEl.value !== how) sortEl.value = how;
+  var names = _savedOrder(saved, how);
   if(!names.length){
     listEl.innerHTML = '<div style="padding:6px 11px;font-size:.8rem;color:var(--tm);font-style:italic">No saved decks yet.</div>';
     return;
@@ -876,13 +967,21 @@ function renderSavedDecks(){
         updCnt(); _hashSaveDeck(); refreshDeckView();
       }
     });
-    var del = document.createElement('button'); del.className='saved-del nb nb-red nb-s'; del.title='Delete'; del.textContent='Delete '+'\u2715';
+    /* Save (the deck lists as they stand, under this name) and Duplicate, left of the delete (the author, 8 November). */
+    var sv = document.createElement('button'); sv.type='button'; sv.className='saved-save nb nb-green nb-s';
+    sv.title='Save to "'+name+'"'; sv.setAttribute('aria-label','Save the deck lists as '+name); sv.innerHTML=uiIco('save');
+    sv.addEventListener('click', function(){ saveDeckTo(name); });
+    var dup = document.createElement('button'); dup.type='button'; dup.className='saved-dup nb nb-purple nb-s';
+    dup.title='Duplicate'; dup.setAttribute('aria-label','Duplicate '+name); dup.innerHTML=uiIco('copy');
+    dup.addEventListener('click', function(){ if(savedDeckDuplicate(name)) _savedChanged(); });
+    var del = document.createElement('button'); del.type='button'; del.className='saved-del nb nb-red nb-s';
+    del.title='Delete'; del.setAttribute('aria-label','Delete '+name); del.textContent='\u2715';
     del.addEventListener('click', function(){
       if(confirm('Delete saved deck "'+name+'"?')){
         var d=_savedLoad(); delete d[name]; _savedWrite(d); renderSavedDecks();
       }
     });
-    row.appendChild(nm); row.appendChild(del);
+    row.appendChild(nm); row.appendChild(sv); row.appendChild(dup); row.appendChild(del);
     listEl.appendChild(row);
   });
 }
@@ -890,6 +989,13 @@ function saveDeckAs(){
   var inp = document.getElementById('savedNameInp');
   var name = inp ? inp.value.trim() : '';
   if(!name){ inp && inp.focus(); return; }
+  if(!saveDeckTo(name)) return;
+  if(inp) inp.value = '';
+  var btn = document.getElementById('savedSaveBtn');
+  if(btn){ var orig=btn.textContent; btn.textContent='\u2713 Saved'; setTimeout(function(){ btn.textContent=orig; },1400); }
+}
+/* The deck lists as they stand, under that name, asking before one is overwritten: the Save field's and each saved deck's own Save. */
+function saveDeckTo(name){
   var allEmpty = true;
   var entry = {};
   Object.keys(DECK_IDS).forEach(function(k){
@@ -898,7 +1004,7 @@ function saveDeckAs(){
     entry[k] = v;
     if(v) allEmpty = false;
   });
-  if(allEmpty){ alert('All deck lists are empty.'); return; }
+  if(allEmpty){ alert('All deck lists are empty.'); return false; }
   entry.mode = _gameMode;
   /* Only when there is something to write, so a main-game deck's saved shape is unchanged. */
   if(typeof tdReadStatRow === 'function'){
@@ -906,18 +1012,41 @@ function saveDeckAs(){
     if(st) Object.keys(st).forEach(function(k){ entry[k] = st[k]; });
   }
   var d = _savedLoad();
-  if(d[name] && !confirm('"'+name+'" already exists. Overwrite?')) return;
+  if(d[name] && !confirm('"'+name+'" already exists. Overwrite?')) return false;
   d[name] = entry;
   /* Nothing below may run after a failed write: each of them says the deck was saved. */
-  if(!_savedWrite(d)) return;
-  if(inp) inp.value = '';
+  if(!_savedWrite(d)) return false;
+  _savedChanged();
+  return true;
+}
+/* A copy under the next free "(Copy)" name, as Deck Lists' Duplicate names it; '' when there is none to copy or the write failed. */
+function savedDeckDuplicate(dn){
+  var d = _savedLoad();
+  if(!d[dn]) return '';
+  var copyName = dn + ' (Copy)', n = 2;
+  while(d[copyName]){ copyName = dn + ' (Copy '+n+')'; n++; }
+  d[copyName] = JSON.parse(JSON.stringify(d[dn]));
+  return _savedWrite(d) ? copyName : '';
+}
+function _savedChanged(){
   renderSavedDecks();
   _dlDirty = true;
   var dlPane = document.getElementById('pane-decklists');
   if(dlPane && dlPane.style.display !== 'none') { _dlDirty=false; renderDeckLists(); }
   _updateDLCount();
-  var btn = document.getElementById('savedSaveBtn');
-  if(btn){ var orig=btn.textContent; btn.textContent='\u2713 Saved'; setTimeout(function(){ btn.textContent=orig; },1400); }
+}
+/* Saved Decks' arrow: open, the list takes the panel from the deck lists (catalog.css); shut, it is the strip under them. */
+function toggleSavedDecks(open){
+  var dp = document.querySelector('.dp'), b = document.getElementById('savedTog');
+  if(!dp) return;
+  open = (open === undefined) ? !dp.classList.contains('saved-open') : !!open;
+  dp.classList.toggle('saved-open', open);
+  if(b){
+    var say = open ? 'Collapse Saved Decks' : 'Expand Saved Decks';
+    b.setAttribute('aria-expanded', open ? 'true' : 'false');
+    b.setAttribute('aria-label', say); b.title = say;
+    b.innerHTML = uiIco(open ? 'arrow-down' : 'arrow-up');
+  }
 }
 
 function _updateDLCount(){

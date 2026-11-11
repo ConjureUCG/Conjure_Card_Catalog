@@ -30,8 +30,6 @@
   font-variant-numeric:tabular-nums}
 .td-sr-in:focus{outline:none;border-color:var(--txt-accent)}
 .td-sr-lvl{width:118px;letter-spacing:.14em;}
-.td-sr-echo{font-family:'Crimson Pro',serif;font-size:.8rem;color:var(--tm);
-  font-style:italic;max-width:340px}
 @media (min-width:900px){
   .td-statrow{flex-wrap:nowrap;gap:8px;padding:4px 8px;border:2px solid var(--gd);
     background:color-mix(in srgb,var(--go) 6%,transparent)}
@@ -45,7 +43,6 @@
   .td-sr-in{height:27px;box-sizing:border-box;border-radius:0;
     background:color-mix(in srgb,var(--st) 12%,transparent);border-color:color-mix(in srgb,var(--st) 30%,transparent)}
   .td-sr-in:focus{border-color:var(--st)}
-  .td-sr-echo{max-width:220px;line-height:1.15}
 }
 
 /* No padding, border or background: .td-top carries them for the whole strip. */
@@ -303,16 +300,48 @@ body.rebirth .td-half{
     "essdeck susp    play    field   field"
     "wish    banish  play    essarea hand";
 }
-/* Deck and Grave on the Essence row, to its left, as the author asked; the panel stands over them, beside
-   the Field. Each pile track is one card wide, or half the panel when that is wider; Essence and Hand halve the rest. */
+/* The Field the whole width, grown by tdFitTable (--td-gfill) to the window's foot; under it the panel, then Deck, Grave,
+   the Essence area and the Hand (the author, 9 November). Each pile track is one card wide. */
 body.rebirth #tdBoard > .td-half-mine{
-  grid-template-columns:repeat(2, max(calc(var(--td-cw) + 22px + var(--td-rail)),
-                                      calc((var(--td-play-w,212px) - 10px) / 2)))
-                        minmax(0,1fr) minmax(0,1fr);
+  grid-template-columns:auto repeat(2, calc(var(--td-cw) + 22px + var(--td-rail))) minmax(0,1fr) minmax(0,1fr);
   grid-template-areas:
-    "play    play    field   field"
-    "deck    grave   essarea hand";
+    "field field field field   field"
+    "play  deck  grave essarea hand";
 }
+@media (min-width:901px){
+  /* In that row the panel's three stats stand one over another at its left, a quarter smaller, and Shuffle and Undo side by
+     side over the turn tracker right of them (the author, 9 November). The stats set the row's height, and tdFitTable makes
+     the cards as tall as the row. */
+  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-row{display:grid;row-gap:14px;column-gap:8px;
+    align-items:start;grid-template-columns:auto 188px;
+    grid-template-areas:"atk side" "hp side" "mp side"}
+  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-stat{zoom:.75}
+  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-stat[data-ctr='atk']{grid-area:atk}
+  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-stat[data-ctr='hp']{grid-area:hp}
+  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-stat[data-ctr='mp']{grid-area:mp}
+  /* Both in the one area, the bar at its top and the tracker under it by the bar's 29px and a gap; the tracker sets no height
+     (contain), so a phase that draws a pixel taller never moves the cards, and scrolls if it ever outgrows the stats. */
+  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-row > .td-play-bar{grid-area:side;align-self:start}
+  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-play .td-ctr-row > .td-turn-host{grid-area:side;align-self:stretch;
+    margin-top:33px;contain:size;overflow:hidden auto;scrollbar-width:thin}
+  /* The panel makes that row tall enough for the Essence tally four to a column (tdEssenceTallyHTML). */
+  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-esstally{grid-template-rows:repeat(var(--ess-rows4,4),min-content);
+    flex-basis:calc(34px * var(--ess-cols4,1) + 4px)}
+  body.rebirth #tdBoard > .td-half-mine:not(.td-rbside) .td-zone[data-zone='essarea'] .td-zacts{
+    left:calc(var(--td-rail,30px) + 34px * var(--ess-cols4,1) + 10px)}
+  /* A window too narrow for that row (tdFitTable): the panel beside the Field, over the Deck, as it stood before. */
+  body.rebirth #tdBoard > .td-half-mine.td-rbside{
+    grid-template-columns:repeat(2, max(calc(var(--td-cw) + 22px + var(--td-rail)), var(--td-play-w,212px)))
+                          minmax(0,1fr) minmax(0,1fr);
+    grid-template-areas:
+      "play    field   field   field"
+      "deck    grave   essarea hand";
+  }
+  /* There the Field sets the row's height; the panel takes that height and scrolls when its contents are taller. */
+  body.rebirth #tdBoard > .td-half-mine.td-rbside > .td-play{contain:size;scrollbar-width:thin}
+}
+body.rebirth #tdBoard > .td-half-mine > .td-zone[data-zone=field] > .td-zbody{
+  min-height:calc(var(--td-ch) * 2 + 42px + var(--td-gfill,0px))}
 .td-play{grid-area:play}
 .td-zone[data-zone=deck]{grid-area:deck}
 .td-zone[data-zone=essdeck]{grid-area:essdeck}
@@ -1035,6 +1064,16 @@ body.light .tbl-link{color:var(--gr)}
   filter:drop-shadow(0 3px 7px color-mix(in srgb,var(--black) 55%,transparent))}
 /* Child, not descendant: edOrbSvg nests an svg in an svg, and a px width on the inner one is scaled by the outer (174px for 86). */
 .td-ctr-orbbox>svg{width:86px;height:86px;display:block;overflow:visible}
+/* The template's icon set (tdStatIconHTML): its layers stacked in the box as a token's (.td-gorb); a second copy in the
+   second hue fades in across the first, from top right to bottom left, as edOrbSvg's two-hue fill runs. */
+.td-ctr-orbbox,.rb-corb{position:relative;--si-fs:34px}
+.rb-corb{--si-fs:10px}
+.td-sicon-b{-webkit-mask-image:linear-gradient(210deg,transparent 30%,#000 70%);
+  mask-image:linear-gradient(210deg,transparent 30%,#000 70%)}
+.td-sicon .m-orb-img{position:absolute;inset:0;display:grid;place-items:center}
+.td-sicon .m-orb-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.td-sicon .m-orb-img span{position:relative;font:700 var(--si-fs)/1 var(--card-font,serif);color:var(--white);
+  text-shadow:0 1px 2px color-mix(in srgb,var(--black) 85%,transparent),0 0 2px color-mix(in srgb,var(--black) 70%,transparent)}
 /* A grid, not a flex column, so the set field is exactly as wide as the two buttons above it. */
 .td-ctr.td-ctr-stat{flex-direction:row;align-items:center;gap:7px}
 .td-ctr.td-ctr-stat .td-ctr-btns{display:grid;grid-template-columns:1fr 1fr;
@@ -1880,6 +1919,14 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
   overflow:hidden auto}
 /* Keyed on the zone, not .td-esstally + .td-zacts, so the pair does not move when the first essence lands. */
 .td-zone[data-zone='essarea'] .td-zacts{left:calc(var(--td-rail,30px) + 38px + 6px);right:auto}
+/* Rebirth's tally three to a column, a column more as colours arrive, so the Essence area keeps one row's height (the
+   author, 9 November); its Lock and Unlock step aside by the columns it has (--ess-cols on the zone). */
+body.rebirth .td-esstally{display:grid;grid-template-rows:repeat(var(--ess-rows,3),min-content);grid-auto-flow:column;
+  grid-auto-columns:minmax(30px,auto);justify-content:center;align-content:start;flex:0 0 calc(34px * var(--ess-cols,1) + 4px)}
+body.rebirth .td-zone[data-zone='essarea'] .td-zacts{left:calc(var(--td-rail,30px) + 34px * var(--ess-cols,1) + 10px)}
+/* Its cards paint in the stacks' order (tdEssStacks); one a player put down by hand stands over them. */
+body.rebirth .td-zone[data-zone='essarea'] > .td-zbody > :is(.td-card,.td-group){z-index:var(--td-ez,90)}
+body.rebirth .td-zone[data-zone='essarea'] > .td-zbody > :is(.td-card,.td-group):hover{z-index:200}
 .td-esstally-b{display:flex;flex-direction:column;align-items:center;gap:1px;
   padding:4px 5px 3px;border-radius:8px;border:2px solid transparent;
   background:linear-gradient(var(--tok-fill,#888),var(--tok-fill,#888)) padding-box,
@@ -2013,7 +2060,7 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
 .td-dice-err{min-height:1.2em;padding:5px 10px 0;
   font-family:'Crimson Pro',Georgia,serif;font-size:.84rem;color:var(--re-hi)}
 
-.td-play .td-mkrow-drops .td-mkbtn.td-dicebtn{
+:is(.td-play,.td-gmk) .td-mkrow-drops .td-mkbtn.td-dicebtn{
   height:29px;font-size:.74rem;letter-spacing:.05em;
   display:flex;align-items:center;justify-content:center;gap:5px;
   white-space:nowrap;
@@ -2024,16 +2071,23 @@ body.light .td-zone[data-zone='hand'].td-shown{--td-fill:#f2ecf7}
   color:#f0e0b0;
   text-shadow:0 1px 0 #1a1430,0 0 7px rgba(232,201,106,.35);
   transition:background .15s,color .15s,box-shadow .15s}
-.td-play .td-mkrow-drops .td-mkbtn.td-dicebtn:hover{
+:is(.td-play,.td-gmk) .td-mkrow-drops .td-mkbtn.td-dicebtn:hover{
   background:linear-gradient(180deg,#4a3f84,#2e2557) padding-box,
              var(--td-gold) border-box;
   color:#fff6d8;box-shadow:0 0 11px rgba(232,201,106,.34)}
 /* tdDiceSyncBtn puts .on back after every re-render of the counter row. */
-.td-play .td-mkrow-drops .td-mkbtn.td-dicebtn.on{
+:is(.td-play,.td-gmk) .td-mkrow-drops .td-mkbtn.td-dicebtn.on{
   background:linear-gradient(180deg,#5b4ea0,#382d6b) padding-box,
              var(--td-gold) border-box;
   color:#fff6d8;box-shadow:0 0 12px rgba(232,201,106,.5),
                            inset 0 0 10px rgba(232,201,106,.22)}
+/* Rebirth's Keyword, Special and Color lists and the Dice Tray in the map's bar, right of Cover Fog, all four as wide as
+   the widest (the author, 9 November). */
+.td-gmk{display:inline-flex;flex:0 0 auto}
+.td-gmk:empty{display:none}
+.td-gmk > .td-ctr.td-ctr-make{display:block;padding:0;border:0;border-radius:0;background:none;box-shadow:none;min-width:0}
+.td-gmk .td-ctr-make .td-mkrow-drops{display:grid;grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:1fr;gap:6px}
+.td-gmk .td-mkbtn.td-dropb,.td-gmk .td-mkrow-drops .td-mkbtn.td-dicebtn{height:24px;padding:0 10px;font-size:.7rem;letter-spacing:.03em}
 
 @media (prefers-reduced-motion:reduce){
   .td-dice-total.on{animation:none;transform:none;
@@ -2374,12 +2428,15 @@ body.light{--gf-fill:#e8e9ec;--gf-line:rgba(26,20,16,.28)}
 /* A card's Health with its damage taken off (edOrbsHTMLHurt): the numeral reddened. */
 .td-card .m-orb-hurt svg.o-top > text:last-of-type,.td-zoom .m-orb-hurt svg.o-top > text:last-of-type{fill:#ffaaa3}
 .td-zoom-gtok .td-gzface{position:relative;margin:0 auto}
-.td-zoom-gtok .td-gzface .td-gorb{transform-style:preserve-3d;--orbS:9px}
-.td-zoom-gtok .td-gorb svg.o-top{transform:translateZ(calc(var(--orbS) * var(--orbN,1)))}
-.td-zoom-gtok .td-gorb svg.o-mid1,.td-zoom-gtok .td-gorb .o-gal{transform:translateZ(var(--orbS))}
-.td-zoom-gtok .td-gorb svg.o-mid2{transform:translateZ(calc(var(--orbS) * 2))}
-.td-zoom-gtok .td-gorb .o-sheen{transform:translateZ(calc(var(--orbS) * var(--orbN,1) - .1px))}
-.td-zoom-gtok .td-gorb .o-ring{transform:translateZ(calc(var(--orbS) * var(--orbN,1) + .1px))}
+.td-zoom-gtok .td-gzface .td-gorb{--orbS:9px}
+/* In the zoom, a token's icon - its own zoom, or on the art of the card it is connected to - keeps its layers apart as a
+   face's stat icons do (frames.css), so they turn with the card. */
+#tdZoom .td-gorb,#tdZoom .td-artdeco,#tdZoom .td-adtok,#tdZoom .td-addmg{transform-style:preserve-3d}
+#tdZoom .td-gorb svg.o-top{transform:translateZ(calc(var(--orbS) * var(--orbN,1)))}
+#tdZoom .td-gorb svg.o-mid1,#tdZoom .td-gorb .o-gal{transform:translateZ(var(--orbS))}
+#tdZoom .td-gorb svg.o-mid2{transform:translateZ(calc(var(--orbS) * 2))}
+#tdZoom .td-gorb .o-sheen{transform:translateZ(calc(var(--orbS) * var(--orbN,1) - .1px))}
+#tdZoom .td-gorb .o-ring{transform:translateZ(calc(var(--orbS) * var(--orbN,1) + .1px))}
 .td-gzname{margin-top:10px;text-align:center;font-family:Cinzel,serif;font-weight:700;font-size:1.05rem;
   letter-spacing:.04em;color:var(--tx);
   text-shadow:0 1px 3px color-mix(in srgb,var(--black) 80%,transparent)}

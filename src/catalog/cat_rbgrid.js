@@ -315,11 +315,14 @@ function tdGfBarHTML(){
                 : btn('pic', 'Picture&hellip;', null, 'A picture under the map'))
       + btn('ln', 'Grid lines', g.ln !== false, 'Show or hide the grid lines');
     if(typeof tdMapDmBarHTML === 'function') h += tdMapDmBarHTML();
-    if(typeof tdMapsHere === 'function' && tdMapsHere())
-      h += btn('pers', 'Persistent tokens', !!TD.board.gpers,
-               'On: every token stays where it is when the map changes. Off: every token stays with the map it was on')
-        + btn('notes', 'Notes', typeof tdNotesOpen === 'function' && tdNotesOpen(), 'DM Notes');
   }
+  /* Keyword, Special, Color and the Dice Tray, right of Cover Fog (the author, 9 November): tdRenderCounters fills it, as
+     it filled the panel with them before. */
+  h += "<span class='td-gmk' id='tdGbarMk'></span>";
+  if(dm && typeof tdMapsHere === 'function' && tdMapsHere())
+    h += btn('pers', 'Persistent tokens', !!TD.board.gpers,
+             'On: every token stays where it is when the map changes. Off: every token stays with the map it was on')
+      + btn('notes', 'Notes', typeof tdNotesOpen === 'function' && tdNotesOpen(), 'DM Notes');
   h += "<span class='td-gsp'></span>";
   if(own) h += tdGfIconBtnHTML()
     + btn('me', 'My token', null, 'Put your icon on the map as a token')
