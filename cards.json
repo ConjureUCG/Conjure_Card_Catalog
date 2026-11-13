@@ -3,7 +3,7 @@
   "name": "Conjure UCG",
   "format": 2,
   "game": "main",
-  "cardCount": 1591,
+  "cardCount": 1592,
   "keywordCount": 108,
   "lookSlots": 0,
   "markCount": 1,
@@ -102628,6 +102628,80 @@
    "sagaId": "Infinite",
    "cid": "c1awha5x06qxkfn",
    "id": "cmum242zfee9y9",
+   "mark": "wm_cmudw0ix3xj34z",
+   "range": ""
+  },
+  {
+   "name": "_Ancient of Atrophy",
+   "manaCost": "IIIVVV",
+   "cmc": "6",
+   "colors": [
+    "indigo",
+    "violet"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Ancient",
+    "Giant",
+    "Slimy",
+    "Spirit"
+   ],
+   "orbs": [
+    {
+     "type": "attack and arcane",
+     "value": "*"
+    },
+    {
+     "type": "health",
+     "value": "*"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "attack": "*",
+   "health": "*",
+   "arcane": "*A",
+   "ruleText": "* is equal to the number of -1 counters among Field Cards.",
+   "flavor": "\"Terrible thought, brought about by terrible fate.\"",
+   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art-uploads/image87.webp",
+   "art": "",
+   "saga": "Infinite",
+   "revision": "Rev 1.0",
+   "artist": "Midjourney",
+   "designer": "ConjureUCG LLC 2026",
+   "lastUpdated": "2026-11-12",
+   "variants": [
+    {
+     "id": "v1",
+     "label": "Default",
+     "art": "",
+     "imageUrl": "",
+     "artXf": {
+      "z": 1,
+      "x": 0,
+      "y": 7,
+      "r": 0,
+      "f": 1
+     }
+    }
+   ],
+   "variant": "v1",
+   "sagaId": "Infinite",
+   "id": "cmwe6e6b2ll6ah",
+   "_src": "mse",
+   "flavorRows": 1,
+   "cid": "cmwe6e6b20wkl9ujh4w3n",
+   "sagaIds": [
+    "Infinite"
+   ],
    "mark": "wm_cmudw0ix3xj34z",
    "range": ""
   }

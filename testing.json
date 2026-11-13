@@ -3,7 +3,7 @@
   "name": "Conjure UCG",
   "format": 2,
   "testing": true,
-  "cardCount": 48
+  "cardCount": 49
  },
  "cards": [
   {
@@ -2474,6 +2474,81 @@
    ],
    "testing": 1,
    "lastUpdated": "2026-11-04",
+   "range": ""
+  },
+  {
+   "name": "_Ancient of Progress",
+   "manaCost": "OOOGGG",
+   "cmc": "6",
+   "colors": [
+    "orange",
+    "green"
+   ],
+   "superTypes": [
+    "Character"
+   ],
+   "subTypes": [
+    "Ancient",
+    "Giant",
+    "Spirit",
+    "Alchemist"
+   ],
+   "orbs": [
+    {
+     "type": "attack",
+     "value": "*"
+    },
+    {
+     "type": "health and arcane",
+     "value": "*"
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    },
+    {
+     "type": "hidden",
+     "value": ""
+    }
+   ],
+   "attack": "*",
+   "health": "*",
+   "arcane": "*H",
+   "ruleText": "* is equal to the number of +1 counters among Field Cards you control.",
+   "flavor": "\"Perfection is the enemy of progress.\" - Winston Churchill",
+   "imageUrl": "https://cdn.jsdelivr.net/gh/ConjureUCG/Conjure_Card_Catalog@main/art-uploads/image87.webp",
+   "art": "",
+   "saga": "Infinite",
+   "revision": "Rev 1.0",
+   "artist": "Midjourney",
+   "designer": "ConjureUCG LLC 2026",
+   "lastUpdated": "2026-11-12",
+   "variants": [
+    {
+     "id": "v1",
+     "label": "Default",
+     "art": "",
+     "imageUrl": "",
+     "artXf": {
+      "z": 1,
+      "x": 0,
+      "y": 7,
+      "r": 0,
+      "f": 1
+     }
+    }
+   ],
+   "variant": "v1",
+   "sagaId": "Infinite",
+   "id": "cmwe6aduy4cc2k",
+   "_src": "mse",
+   "flavorRows": 1,
+   "cid": "cmwe6aduyntx8m59h2trn",
+   "sagaIds": [
+    "Infinite"
+   ],
+   "mark": "wm_cmudw0ix3xj34z",
+   "testing": 1,
    "range": ""
   }
  ]
